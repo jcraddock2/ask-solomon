@@ -60,3 +60,59 @@ const VERSES: Verse[] = [
     tags: ["wisdom"],
   },
 ];
+export default function Page() {
+  const [mode, setMode] = useState<"all" | "encouragement" | "finances" | "wisdom">("encouragement");
+  const [q, setQ] = useState("");
+
+  const filtered = useMemo(() => {
+    const query = q.trim().toLowerCase();
+    return VERSES.filter((v) => {
+      const matchesMode = mode === "all" ? true : v.tags.includes(mode);
+      const matchesQuery =
+        query.length === 0 ? true : (v.ref + " " + v.text).toLowerCase().includes(query);
+      return matchesMode && matchesQuery;
+    });
+  }, [mode, q]);
+
+  return (
+    <main style={{ maxWidth: 820, margin: "0 auto", padding: 20, fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" }}>
+      <header style={{ marginBottom: 16 }}>
+        <h1 style={{ margin: 0, fontSize: 34 }}>Ask Solomon</h1>
+        <p style={{ marginTop: 8, marginBottom: 0, color: "#444" }}>
+          Encouragement first—wisdom from Proverbs for what you’re facing right now.
+        </p>
+      </header>
+
+      <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
+        <button onClick={() => setMode("encouragement")}>Encourage Me</button>
+        <button onClick={() => setMode("finances")}>Help Me Financially</button>
+        <button onClick={() => setMode("wisdom")}>Give Me Wisdom</button>
+        <button onClick={() => setMode("all")}>Show All</button>
+      </section>
+
+      <section style={{ marginBottom: 16 }}>
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Search… (fear, anxiety, money, discipline, plans)"
+          style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid #ddd", fontSize: 16 }}
+        />
+      </section>
+
+      <section style={{ display: "grid", gap: 12 }}>
+        {filtered.map((v) => (
+          <article key={v.ref} style={{ padding: 16, borderRadius: 16, border: "1px solid #eee", background: "#fff" }}>
+            <strong style={{ fontSize: 14 }}>{v.ref}</strong>
+            <p style={{ marginTop: 10, marginBottom: 0, lineHeight: 1.55, fontSize: 16 }}>{v.text}</p>
+          </article>
+        ))}
+
+        {filtered.length === 0 && (
+          <div style={{ padding: 16, border: "1px dashed #bbb", borderRadius: 12, color: "#444" }}>
+            No matches. Try a different word.
+          </div>
+        )}
+      </section>
+    </main>
+  );
+}
