@@ -91,20 +91,34 @@ export default function Page() {
       </header>
 
       <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
-        <button onClick={() => setMode("encouragement")}>Encourage Me</button>
-        <button onClick={() => setMode("finances")}>Help Me Financially</button>
-        <button onClick={() => setMode("wisdom")}>Give Me Wisdom</button>
-        <button onClick={() => setMode("all")}>Show All</button>
-      </section>
+  <button onClick={() => { setMode("encouragement"); setSub("all"); }}>
+    Encourage Me
+  </button>
 
-      <section style={{ marginBottom: 16 }}>
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Search… (fear, anxiety, money, discipline, plans)"
-          style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid #ddd", fontSize: 16 }}
-        />
-      </section>
+  <button onClick={() => { setMode("finances"); setSub("all"); }}>
+    Help Me Financially
+  </button>
+
+  <button onClick={() => { setMode("wisdom"); setSub("all"); }}>
+    Give Me Wisdom
+  </button>
+
+  <button onClick={() => { setMode("all"); setSub("all"); }}>
+    Show All
+  </button>
+</section>
+
+{mode === "encouragement" && (
+  <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
+    <button onClick={() => setSub("all")}>All Encouragement</button>
+    <button onClick={() => setSub("peace")}>Peace</button>
+    <button onClick={() => setSub("strength")}>Strength</button>
+    <button onClick={() => setSub("direction")}>Direction</button>
+    <button onClick={() => setSub("confidence")}>Confidence</button>
+    <button onClick={() => setSub("hope")}>Hope</button>
+  </section>
+)}
+
 
       <section style={{ display: "grid", gap: 12 }}>
         {filtered.map((v) => (
