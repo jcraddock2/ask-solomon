@@ -68,6 +68,7 @@ const VERSES: Verse[] = [
 
 export default function Page() {
   const [mode, setMode] = useState<"all" | "encouragement" | "finances" | "wisdom">("encouragement");
+ const [sub, setSub] = useState<Sub | "all">("all");
   const [q, setQ] = useState("");
 
   const filtered = useMemo(() => {
