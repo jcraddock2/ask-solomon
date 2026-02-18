@@ -109,7 +109,7 @@ const filtered = useMemo(() => {
   <button onClick={() => pickMode("wisdom")}>Give Me Wisdom</button>
   <button onClick={() => pickMode("all")}>Show All</button>
 </section>
->
+
 
 {mode === "encouragement" && (
   <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
