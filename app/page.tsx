@@ -90,22 +90,11 @@ export default function Page() {
         </p>
       </header>
 
-      <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
-  <button onClick={() => { setMode("encouragement"); setSub("all"); }}>
-    Encourage Me
-  </button>
-
-  <button onClick={() => { setMode("finances"); setSub("all"); }}>
-    Help Me Financially
-  </button>
-
-  <button onClick={() => { setMode("wisdom"); setSub("all"); }}>
-    Give Me Wisdom
-  </button>
-
-  <button onClick={() => { setMode("all"); setSub("all"); }}>
-    Show All
-  </button>
+  <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
+  <button onClick={() => { setMode("encouragement"); setSub("all"); }}>Encourage Me</button>
+  <button onClick={() => { setMode("finances"); setSub("all"); }}>Help Me Financially</button>
+  <button onClick={() => { setMode("wisdom"); setSub("all"); }}>Give Me Wisdom</button>
+  <button onClick={() => { setMode("all"); setSub("all"); }}>Show All</button>
 </section>
 
 {mode === "encouragement" && (
@@ -118,6 +107,7 @@ export default function Page() {
     <button onClick={() => setSub("hope")}>Hope</button>
   </section>
 )}
+
 
 
       <section style={{ display: "grid", gap: 12 }}>
