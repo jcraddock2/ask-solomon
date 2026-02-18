@@ -8,7 +8,7 @@ type Verse = {
   ref: string;
   text: string;
   tags: Array<"encouragement" | "finances" | "wisdom">;
-  sub?: Sub;
+  sub?: Sub; 
 };
 
 const VERSES: Verse[] = [
@@ -77,7 +77,9 @@ const filtered = useMemo(() => {
   return VERSES.filter((v) => {
     const matchesMode = mode === "all" ? true : v.tags.includes(mode);
 
-    const matchesSub = sub === "all" ? true : v.tags.includes(sub);
+  const matchesSub = sub === "all" ? true : v.sub === sub;
+ 
+    
 
     const matchesQuery =
       query.length === 0
