@@ -71,15 +71,22 @@ export default function Page() {
  const [sub, setSub] = useState<Sub | "all">("all");
   const [q, setQ] = useState("");
 
-  const filtered = useMemo(() => {
-    const query = q.trim().toLowerCase();
-    return VERSES.filter((v) => {
-      const matchesMode = mode === "all" ? true : v.tags.includes(mode);
-      const matchesQuery =
-        query.length === 0 ? true : (v.ref + " " + v.text).toLowerCase().includes(query);
-      return matchesMode && matchesQuery;
-    });
-  }, [mode, q]);
+const filtered = useMemo(() => {
+  const query = q.trim().toLowerCase();
+
+  return VERSES.filter((v) => {
+    const matchesMode = mode === "all" ? true : v.tags.includes(mode);
+
+    const matchesSub = sub === "all" ? true : v.tags.includes(sub);
+
+    const matchesQuery =
+      query.length === 0
+        ? true
+        : (v.ref + " " + v.text).toLowerCase().includes(query);
+
+    return matchesMode && matchesSub && matchesQuery;
+  });
+}, [mode, sub, q]);
 
   return (
     <main style={{ maxWidth: 820, margin: "0 auto", padding: 20, fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" }}>
