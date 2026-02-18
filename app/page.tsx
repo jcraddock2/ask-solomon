@@ -70,6 +70,10 @@ export default function Page() {
   const [mode, setMode] = useState<"all" | "encouragement" | "finances" | "wisdom">("encouragement");
  const [sub, setSub] = useState<Sub | "all">("all");
   const [q, setQ] = useState("");
+const pickMode = (m: typeof mode) => {
+  setMode(m);
+  setSub("all");
+};
 
 const filtered = useMemo(() => {
   const query = q.trim().toLowerCase();
@@ -100,11 +104,12 @@ const filtered = useMemo(() => {
       </header>
 
   <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
-  <button onClick={() => { setMode("encouragement"); setSub("all"); }}>Encourage Me</button>
-  <button onClick={() => { setMode("finances"); setSub("all"); }}>Help Me Financially</button>
-  <button onClick={() => { setMode("wisdom"); setSub("all"); }}>Give Me Wisdom</button>
-  <button onClick={() => { setMode("all"); setSub("all"); }}>Show All</button>
+  <button onClick={() => pickMode("encouragement")}>Encourage Me</button>
+  <button onClick={() => pickMode("finances")}>Help Me Financially</button>
+  <button onClick={() => pickMode("wisdom")}>Give Me Wisdom</button>
+  <button onClick={() => pickMode("all")}>Show All</button>
 </section>
+>
 
 {mode === "encouragement" && (
   <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
