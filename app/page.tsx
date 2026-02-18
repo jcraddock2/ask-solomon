@@ -93,6 +93,21 @@ const filtered = useMemo(() => {
     return matchesMode && matchesSub && matchesQuery;
   });
 }, [mode, sub, q]);
+const pillBase: React.CSSProperties = {
+  padding: "10px 14px",
+  borderRadius: 999,
+  border: "1px solid #ddd",
+  background: "#f2f2f2",
+  color: "#111",
+  cursor: "pointer",
+};
+
+const pillActive: React.CSSProperties = {
+  ...pillBase,
+  background: "#111",
+  color: "#fff",
+  border: "1px solid #111",
+};
 
   return (
     <main style={{ maxWidth: 820, margin: "0 auto", padding: 20, fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" }}>
@@ -104,21 +119,79 @@ const filtered = useMemo(() => {
       </header>
 
   <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
-  <button onClick={() => pickMode("encouragement")}>Encourage Me</button>
-  <button onClick={() => pickMode("finances")}>Help Me Financially</button>
-  <button onClick={() => pickMode("wisdom")}>Give Me Wisdom</button>
-  <button onClick={() => pickMode("all")}>Show All</button>
+  <button
+    onClick={() => pickMode("encouragement")}
+    style={mode === "encouragement" ? pillActive : pillBase}
+  >
+    Encourage Me
+  </button>
+
+  <button
+    onClick={() => pickMode("finances")}
+    style={mode === "finances" ? pillActive : pillBase}
+  >
+    Help Me Financially
+  </button>
+
+  <button
+    onClick={() => pickMode("wisdom")}
+    style={mode === "wisdom" ? pillActive : pillBase}
+  >
+    Give Me Wisdom
+  </button>
+
+  <button
+    onClick={() => pickMode("all")}
+    style={mode === "all" ? pillActive : pillBase}
+  >
+    Show All
+  </button>
 </section>
 
 
 {mode === "encouragement" && (
   <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
-    <button onClick={() => setSub("all")}>All Encouragement</button>
-    <button onClick={() => setSub("peace")}>Peace</button>
-    <button onClick={() => setSub("strength")}>Strength</button>
-    <button onClick={() => setSub("direction")}>Direction</button>
-    <button onClick={() => setSub("confidence")}>Confidence</button>
-    <button onClick={() => setSub("hope")}>Hope</button>
+    <button
+      onClick={() => setSub("all")}
+      style={sub === "all" ? pillActive : pillBase}
+    >
+      All Encouragement
+    </button>
+
+    <button
+      onClick={() => setSub("peace")}
+      style={sub === "peace" ? pillActive : pillBase}
+    >
+      Peace
+    </button>
+
+    <button
+      onClick={() => setSub("strength")}
+      style={sub === "strength" ? pillActive : pillBase}
+    >
+      Strength
+    </button>
+
+    <button
+      onClick={() => setSub("direction")}
+      style={sub === "direction" ? pillActive : pillBase}
+    >
+      Direction
+    </button>
+
+    <button
+      onClick={() => setSub("confidence")}
+      style={sub === "confidence" ? pillActive : pillBase}
+    >
+      Confidence
+    </button>
+
+    <button
+      onClick={() => setSub("hope")}
+      style={sub === "hope" ? pillActive : pillBase}
+    >
+      Hope
+    </button>
   </section>
 )}
 
