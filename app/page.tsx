@@ -159,7 +159,7 @@ const pillActive: React.CSSProperties = {
         </p>
       </header>
 
- <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
+<section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
   <button
     onClick={() => pickMode("encouragement")}
     style={mode === "encouragement" ? pillActive : pillBase}
@@ -188,6 +188,7 @@ const pillActive: React.CSSProperties = {
     Show All
   </button>
 </section>
+
 
 {mode === "encouragement" && sub !== "all" && (
   <div style={{ marginBottom: 10 }}>
