@@ -148,6 +148,13 @@ const pillActive: React.CSSProperties = {
   </button>
 </section>
 
+{mode === "encouragement" && sub !== "all" && (
+  <div style={{ marginBottom: 10 }}>
+    <button onClick={() => setSub("all")} style={pillBase}>
+      Clear: {sub}
+    </button>
+  </div>
+)}
 
 {mode === "encouragement" && (
   <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
