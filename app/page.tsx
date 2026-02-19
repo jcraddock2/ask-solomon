@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+
 
 type Sub = "peace" | "strength" | "direction" | "confidence" | "hope";
 
@@ -66,10 +68,49 @@ const VERSES: Verse[] = [
   },
 ];
 
-export default function Page() {
+export default function Page() { 
+ const router = useRouter();
+const searchParams = useSearchParams();
+ 
   const [mode, setMode] = useState<"all" | "encouragement" | "finances" | "wisdom">("encouragement");
  const [sub, setSub] = useState<Sub | "all">("all");
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState(""); 
+  useEffect(() => {
+  const urlMode = (searchParams.get("mode") ?? "encouragement") as typeof mode;
+  const urlSub = (searchParams.get("sub") ?? "all") as typeof sub;
+  const urlQ = searchParams.get("q") ?? "";
+
+  const validModes: Array<typeof mode> = ["all", "encouragement", "finances", "wisdom"];
+  const validSubs: Array<typeof sub> = ["all", "peace", "strength", "direction", "confidence", "hope"];
+
+  const nextMode = validModes.includes(urlMode) ? urlMode : "encouragement";
+  const nextSub = validSubs.includes(urlSub) ? urlSub : "all";
+
+  setMode(nextMode);
+  setSub(nextMode === "encouragement" ? nextSub : "all");
+  setQ(urlQ);
+}, [searchParams]);
+const setUrl = (next: { mode?: typeof mode; sub?: typeof sub; q?: string }) => {
+  const nextMode = next.mode ?? mode;
+  const nextSub = next.sub ?? sub;
+  const nextQ = next.q ?? q;
+
+  const params = new URLSearchParams();
+
+  if (nextMode !== "encouragement") params.set("mode", nextMode);
+  if (nextMode === "encouragement" && nextSub !== "all") params.set("sub", nextSub);
+  if (nextQ.trim().length > 0) params.set("q", nextQ.trim());
+
+  const qs = params.toString();
+  router.replace(qs ? `/?${qs}` : `/`);
+};
+
+const pickMode = (m: typeof mode) => {
+  setMode(m);
+  setSub("all");
+  setUrl({ mode: m, sub: "all" });
+};
+
 const pickMode = (m: typeof mode) => {
   setMode(m);
   setSub("all");
@@ -150,51 +191,100 @@ const pillActive: React.CSSProperties = {
 
 {mode === "encouragement" && sub !== "all" && (
   <div style={{ marginBottom: 10 }}>
-    <button onClick={() => setSub("all")} style={pillBase}>
+    <button
+      onClick={() => {
+        setSub("all");
+        setUrl({ mode, sub: "all" });
+      }}
+      style={pillBase}
+    >
       Clear: {sub}
     </button>
   </div>
 )}
 
+
+    Give Me Wisdom
+  </button>
+
+  <button
+    onClick={() => pickMode("all")}
+    style={mode === "all" ? pillActive : pillBase}
+  >
+    Show All
+  </button>
+</section>
+
+{mode === "encouragement" && sub !== "all" && (
+  <div style={{ marginBottom: 10 }}>
+    <button
+      onClick={() => {
+        setSub("all");
+        setUrl({ mode, sub: "all" });
+      }}
+      style={pillBase}
+    >
+      Clear: {sub}
+    </button>
+  </div>
+)}
 {mode === "encouragement" && (
   <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
     <button
-      onClick={() => setSub("all")}
+      onClick={() => {
+        setSub("all");
+        setUrl({ mode, sub: "all" });
+      }}
       style={sub === "all" ? pillActive : pillBase}
     >
       All Encouragement
     </button>
 
     <button
-      onClick={() => setSub("peace")}
+      onClick={() => {
+        setSub("peace");
+        setUrl({ mode, sub: "peace" });
+      }}
       style={sub === "peace" ? pillActive : pillBase}
     >
       Peace
     </button>
 
     <button
-      onClick={() => setSub("strength")}
+      onClick={() => {
+        setSub("strength");
+        setUrl({ mode, sub: "strength" });
+      }}
       style={sub === "strength" ? pillActive : pillBase}
     >
       Strength
     </button>
 
     <button
-      onClick={() => setSub("direction")}
+      onClick={() => {
+        setSub("direction");
+        setUrl({ mode, sub: "direction" });
+      }}
       style={sub === "direction" ? pillActive : pillBase}
     >
       Direction
     </button>
 
     <button
-      onClick={() => setSub("confidence")}
+      onClick={() => {
+        setSub("confidence");
+        setUrl({ mode, sub: "confidence" });
+      }}
       style={sub === "confidence" ? pillActive : pillBase}
     >
       Confidence
     </button>
 
     <button
-      onClick={() => setSub("hope")}
+      onClick={() => {
+        setSub("hope");
+        setUrl({ mode, sub: "hope" });
+      }}
       style={sub === "hope" ? pillActive : pillBase}
     >
       Hope
@@ -202,15 +292,21 @@ const pillActive: React.CSSProperties = {
   </section>
 )}
 
+<section style={{ display: "grid", gap: 12 }}>
+  {filtered.map((v) => (
+    <article
+      key={v.ref}
+      style={{ padding: 16, borderRadius: 16, border: "1px solid #eee", background: "#fff" }}
+    >
+      <strong style={{ fontSize: 14 }}>{v.ref}</strong>
+      <p style={{ marginTop: 10, marginBottom: 0, lineHeight: 1.55, fontSize: 16 }}>
+        {v.text}
+      </p>
+    </article>
+  ))}
+</section>
 
-
-      <section style={{ display: "grid", gap: 12 }}>
-        {filtered.map((v) => (
-          <article key={v.ref} style={{ padding: 16, borderRadius: 16, border: "1px solid #eee", background: "#fff" }}>
-            <strong style={{ fontSize: 14 }}>{v.ref}</strong>
-            <p style={{ marginTop: 10, marginBottom: 0, lineHeight: 1.55, fontSize: 16 }}>{v.text}</p>
-          </article>
-        ))}
+         
 
         {filtered.length === 0 && (
           <div style={{ padding: 16, border: "1px dashed #bbb", borderRadius: 12, color: "#444" }}>
