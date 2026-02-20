@@ -72,21 +72,36 @@ export default function BookPage() {
             Unlock Lifetime
           </a>
 
-          <a
-            href={pdfUrl}
-            target="_blank"
-            rel="noreferrer"
-            style={{
-              padding: "10px 12px",
-              borderRadius: 12,
-              border: "1px solid #ddd",
-              textDecoration: "none",
-              color: "#111",
-              fontWeight: 700,
-            }}
-          >
-            Open PDF in New Tab
-          </a>
+          {isPro ? (
+  <a
+    href={pdfUrl}
+    target="_blank"
+    rel="noreferrer"
+    style={{
+      padding: "10px 12px",
+      borderRadius: 12,
+      border: "1px solid #ddd",
+      textDecoration: "none",
+      color: "#111",
+      fontWeight: 700,
+    }}
+  >
+    Open PDF in New Tab
+  </a>
+) : (
+  <span
+    style={{
+      padding: "10px 12px",
+      borderRadius: 12,
+      border: "1px solid #ddd",
+      color: "#777",
+      fontWeight: 700,
+      display: "inline-block",
+    }}
+  >
+    Full Book (Lifetime)
+  </span>
+)}
         </div>
       </header>
 
