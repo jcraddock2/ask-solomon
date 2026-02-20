@@ -1,16 +1,16 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-
+type Mode = "all" | "encouragement" | "finances" | "wisdom";
 type Sub = "peace" | "strength" | "direction" | "confidence" | "hope";
 
 type Verse = {
   ref: string;
   text: string;
   tags: Array<"encouragement" | "finances" | "wisdom">;
-  sub?: Sub; 
+  sub?: Sub;
 };
 
 const VERSES: Verse[] = [
@@ -68,90 +68,111 @@ const VERSES: Verse[] = [
   },
 ];
 
-export default function Page() { 
- const router = useRouter();
-const searchParams = useSearchParams();
- 
-  const [mode, setMode] = useState<"all" | "encouragement" | "finances" | "wisdom">("encouragement");
- const [sub, setSub] = useState<Sub | "all">("all");
-  const [q, setQ] = useState(""); 
+const VALID_MODES: Mode[] = ["all", "encouragement", "finances", "wisdom"];
+const VALID_SUBS: Array<Sub | "all"> = ["all", "peace", "strength", "direction", "confidence", "hope"];
+
+export default function Page() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [mode, setMode] = useState<Mode>("encouragement");
+  const [sub, setSub] = useState<Sub | "all">("all");
+  const [q, setQ] = useState("");
+
+  // Button styles
+  const pillBase: React.CSSProperties = {
+    padding: "10px 14px",
+    borderRadius: 999,
+    border: "1px solid #ddd",
+    background: "#f2f2f2",
+    color: "#111",
+    cursor: "pointer",
+  };
+
+  const pillActive: React.CSSProperties = {
+    ...pillBase,
+    background: "#111",
+    color: "#fff",
+    border: "1px solid #111",
+  };
+
+  // Write state -> URL (shareable)
+  const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
+    const nextMode = next.mode ?? mode;
+    const nextSub = next.sub ?? sub;
+    const nextQ = next.q ?? q;
+
+    const params = new URLSearchParams();
+
+    // keep URL short: only write non-defaults
+    if (nextMode !== "encouragement") params.set("mode", nextMode);
+    if (nextMode === "encouragement" && nextSub !== "all") params.set("sub", nextSub);
+    if (nextQ.trim().length > 0) params.set("q", nextQ.trim());
+
+    const qs = params.toString();
+    router.replace(qs ? `/?${qs}` : `/`);
+  };
+
+  // Read URL -> state (refresh/share loads same filters)
   useEffect(() => {
-  const urlMode = (searchParams.get("mode") ?? "encouragement") as typeof mode;
-  const urlSub = (searchParams.get("sub") ?? "all") as typeof sub;
-  const urlQ = searchParams.get("q") ?? "";
+    const rawMode = (searchParams.get("mode") ?? "encouragement") as Mode;
+    const rawSub = (searchParams.get("sub") ?? "all") as Sub | "all";
+    const rawQ = searchParams.get("q") ?? "";
 
-  const validModes: Array<typeof mode> = ["all", "encouragement", "finances", "wisdom"];
-  const validSubs: Array<typeof sub> = ["all", "peace", "strength", "direction", "confidence", "hope"];
+    const nextMode: Mode = VALID_MODES.includes(rawMode) ? rawMode : "encouragement";
+    const nextSub: Sub | "all" = VALID_SUBS.includes(rawSub) ? rawSub : "all";
 
-  const nextMode = validModes.includes(urlMode) ? urlMode : "encouragement";
-  const nextSub = validSubs.includes(urlSub) ? urlSub : "all";
+    setMode(nextMode);
+    setSub(nextMode === "encouragement" ? nextSub : "all");
+    setQ(rawQ);
+  }, [searchParams]);
 
-  setMode(nextMode);
-  setSub(nextMode === "encouragement" ? nextSub : "all");
-  setQ(urlQ);
-}, [searchParams]);
-const setUrl = (next: { mode?: typeof mode; sub?: typeof sub; q?: string }) => {
-  const nextMode = next.mode ?? mode;
-  const nextSub = next.sub ?? sub;
-  const nextQ = next.q ?? q;
+  const pickMode = (m: Mode) => {
+    setMode(m);
+    setSub("all");
+    setUrl({ mode: m, sub: "all" });
+  };
 
-  const params = new URLSearchParams();
+  const pickSub = (s: Sub | "all") => {
+    setSub(s);
+    setUrl({ mode, sub: s });
+  };
 
-  if (nextMode !== "encouragement") params.set("mode", nextMode);
-  if (nextMode === "encouragement" && nextSub !== "all") params.set("sub", nextSub);
-  if (nextQ.trim().length > 0) params.set("q", nextQ.trim());
+  const onQueryChange = (val: string) => {
+    setQ(val);
+    setUrl({ q: val });
+  };
 
-  const qs = params.toString();
-  router.replace(qs ? `/?${qs}` : `/`);
-};
+  const filtered = useMemo(() => {
+    const query = q.trim().toLowerCase();
 
-const pickMode = (m: typeof mode) => {
-  setMode(m);
-  setSub("all");
-  setUrl({ mode: m, sub: "all" });
-};
+    return VERSES.filter((v) => {
+      const matchesMode = mode === "all" ? true : v.tags.includes(mode === "all" ? "encouragement" : (mode as any));
 
-const pickMode = (m: typeof mode) => {
-  setMode(m);
-  setSub("all");
-};
+      // safer mode check without "any"
+      const modeOk = mode === "all" ? true : v.tags.includes(mode);
 
-const filtered = useMemo(() => {
-  const query = q.trim().toLowerCase();
+      const subOk =
+        mode !== "encouragement" || sub === "all" ? true : v.sub === sub;
 
-  return VERSES.filter((v) => {
-    const matchesMode = mode === "all" ? true : v.tags.includes(mode);
+      const queryOk =
+        query.length === 0
+          ? true
+          : (v.ref + " " + v.text).toLowerCase().includes(query);
 
-  const matchesSub = sub === "all" ? true : v.sub === sub;
- 
-    
-
-    const matchesQuery =
-      query.length === 0
-        ? true
-        : (v.ref + " " + v.text).toLowerCase().includes(query);
-
-    return matchesMode && matchesSub && matchesQuery;
-  });
-}, [mode, sub, q]);
-const pillBase: React.CSSProperties = {
-  padding: "10px 14px",
-  borderRadius: 999,
-  border: "1px solid #ddd",
-  background: "#f2f2f2",
-  color: "#111",
-  cursor: "pointer",
-};
-
-const pillActive: React.CSSProperties = {
-  ...pillBase,
-  background: "#111",
-  color: "#fff",
-  border: "1px solid #111",
-};
+      return modeOk && subOk && queryOk;
+    });
+  }, [mode, sub, q]);
 
   return (
-    <main style={{ maxWidth: 820, margin: "0 auto", padding: 20, fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif" }}>
+    <main
+      style={{
+        maxWidth: 820,
+        margin: "0 auto",
+        padding: 20,
+        fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+      }}
+    >
       <header style={{ marginBottom: 16 }}>
         <h1 style={{ margin: 0, fontSize: 34 }}>Ask Solomon</h1>
         <p style={{ marginTop: 8, marginBottom: 0, color: "#444" }}>
@@ -159,155 +180,90 @@ const pillActive: React.CSSProperties = {
         </p>
       </header>
 
-<section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
-  <button
-    onClick={() => pickMode("encouragement")}
-    style={mode === "encouragement" ? pillActive : pillBase}
-  >
-    Encourage Me
-  </button>
+      {/* Search */}
+      <div style={{ marginBottom: 14 }}>
+        <input
+          value={q}
+          onChange={(e) => onQueryChange(e.target.value)}
+          placeholder="Search by word or reference..."
+          style={{
+            width: "100%",
+            padding: "12px 14px",
+            borderRadius: 14,
+            border: "1px solid #ddd",
+            fontSize: 16,
+            outline: "none",
+          }}
+        />
+      </div>
 
-  <button
-    onClick={() => pickMode("finances")}
-    style={mode === "finances" ? pillActive : pillBase}
-  >
-    Help Me Financially
-  </button>
+      {/* Mode buttons */}
+      <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
+        <button onClick={() => pickMode("encouragement")} style={mode === "encouragement" ? pillActive : pillBase}>
+          Encourage Me
+        </button>
+        <button onClick={() => pickMode("finances")} style={mode === "finances" ? pillActive : pillBase}>
+          Help Me Financially
+        </button>
+        <button onClick={() => pickMode("wisdom")} style={mode === "wisdom" ? pillActive : pillBase}>
+          Give Me Wisdom
+        </button>
+        <button onClick={() => pickMode("all")} style={mode === "all" ? pillActive : pillBase}>
+          Show All
+        </button>
+      </section>
 
-  <button
-    onClick={() => pickMode("wisdom")}
-    style={mode === "wisdom" ? pillActive : pillBase}
-  >
-    Give Me Wisdom
-  </button>
+      {/* Clear sub pill */}
+      {mode === "encouragement" && sub !== "all" && (
+        <div style={{ marginBottom: 10 }}>
+          <button onClick={() => pickSub("all")} style={pillBase}>
+            Clear: {sub}
+          </button>
+        </div>
+      )}
 
-  <button
-    onClick={() => pickMode("all")}
-    style={mode === "all" ? pillActive : pillBase}
-  >
-    Show All
-  </button>
-</section>
+      {/* Sub buttons */}
+      {mode === "encouragement" && (
+        <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
+          <button onClick={() => pickSub("all")} style={sub === "all" ? pillActive : pillBase}>
+            All Encouragement
+          </button>
+          <button onClick={() => pickSub("peace")} style={sub === "peace" ? pillActive : pillBase}>
+            Peace
+          </button>
+          <button onClick={() => pickSub("strength")} style={sub === "strength" ? pillActive : pillBase}>
+            Strength
+          </button>
+          <button onClick={() => pickSub("direction")} style={sub === "direction" ? pillActive : pillBase}>
+            Direction
+          </button>
+          <button onClick={() => pickSub("confidence")} style={sub === "confidence" ? pillActive : pillBase}>
+            Confidence
+          </button>
+          <button onClick={() => pickSub("hope")} style={sub === "hope" ? pillActive : pillBase}>
+            Hope
+          </button>
+        </section>
+      )}
 
-
-{mode === "encouragement" && sub !== "all" && (
-  <div style={{ marginBottom: 10 }}>
-    <button
-      onClick={() => {
-        setSub("all");
-        setUrl({ mode, sub: "all" });
-      }}
-      style={pillBase}
-    >
-      Clear: {sub}
-    </button>
-  </div>
-)}
-
-
-    Give Me Wisdom
-  </button>
-
-  <button
-    onClick={() => pickMode("all")}
-    style={mode === "all" ? pillActive : pillBase}
-  >
-    Show All
-  </button>
-</section>
-
-{mode === "encouragement" && sub !== "all" && (
-  <div style={{ marginBottom: 10 }}>
-    <button
-      onClick={() => {
-        setSub("all");
-        setUrl({ mode, sub: "all" });
-      }}
-      style={pillBase}
-    >
-      Clear: {sub}
-    </button>
-  </div>
-)}
-{mode === "encouragement" && (
-  <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
-    <button
-      onClick={() => {
-        setSub("all");
-        setUrl({ mode, sub: "all" });
-      }}
-      style={sub === "all" ? pillActive : pillBase}
-    >
-      All Encouragement
-    </button>
-
-    <button
-      onClick={() => {
-        setSub("peace");
-        setUrl({ mode, sub: "peace" });
-      }}
-      style={sub === "peace" ? pillActive : pillBase}
-    >
-      Peace
-    </button>
-
-    <button
-      onClick={() => {
-        setSub("strength");
-        setUrl({ mode, sub: "strength" });
-      }}
-      style={sub === "strength" ? pillActive : pillBase}
-    >
-      Strength
-    </button>
-
-    <button
-      onClick={() => {
-        setSub("direction");
-        setUrl({ mode, sub: "direction" });
-      }}
-      style={sub === "direction" ? pillActive : pillBase}
-    >
-      Direction
-    </button>
-
-    <button
-      onClick={() => {
-        setSub("confidence");
-        setUrl({ mode, sub: "confidence" });
-      }}
-      style={sub === "confidence" ? pillActive : pillBase}
-    >
-      Confidence
-    </button>
-
-    <button
-      onClick={() => {
-        setSub("hope");
-        setUrl({ mode, sub: "hope" });
-      }}
-      style={sub === "hope" ? pillActive : pillBase}
-    >
-      Hope
-    </button>
-  </section>
-)}
-
-<section style={{ display: "grid", gap: 12 }}>
-  {filtered.map((v) => (
-    <article
-      key={v.ref}
-      style={{ padding: 16, borderRadius: 16, border: "1px solid #eee", background: "#fff" }}
-    >
-      <strong style={{ fontSize: 14 }}>{v.ref}</strong>
-      <p style={{ marginTop: 10, marginBottom: 0, lineHeight: 1.55, fontSize: 16 }}>
-        {v.text}
-      </p>
-    </article>
-  ))}
-</section>
-
-         
+      {/* Results */}
+      <section style={{ display: "grid", gap: 12 }}>
+        {filtered.map((v) => (
+          <article
+            key={v.ref}
+            style={{
+              padding: 16,
+              borderRadius: 16,
+              border: "1px solid #eee",
+              background: "#fff",
+            }}
+          >
+            <strong style={{ fontSize: 14 }}>{v.ref}</strong>
+            <p style={{ marginTop: 10, marginBottom: 0, lineHeight: 1.55, fontSize: 16 }}>
+              {v.text}
+            </p>
+          </article>
+        ))}
 
         {filtered.length === 0 && (
           <div style={{ padding: 16, border: "1px dashed #bbb", borderRadius: 12, color: "#444" }}>
