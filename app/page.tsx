@@ -143,26 +143,26 @@ export default function Page() {
     setUrl({ q: val });
   };
 
-  const filtered = useMemo(() => {
-    const query = q.trim().toLowerCase();
+ const filtered = useMemo(() => {
+  const query = q.trim().toLowerCase();
 
-    return VERSES.filter((v) => {
-      const matchesMode = mode === "all" ? true : v.tags.includes(mode === "all" ? "encouragement" : (mode as any));
+  return VERSES.filter((v) => {
+    const modeOk = mode === "all" ? true : v.tags.includes(mode);
 
-      // safer mode check without "any"
-      const modeOk = mode === "all" ? true : v.tags.includes(mode);
+    const subOk =
+      mode !== "encouragement" || sub === "all"
+        ? true
+        : v.sub === sub;
 
-      const subOk =
-        mode !== "encouragement" || sub === "all" ? true : v.sub === sub;
+    const queryOk =
+      query.length === 0
+        ? true
+        : (v.ref + " " + v.text).toLowerCase().includes(query);
 
-      const queryOk =
-        query.length === 0
-          ? true
-          : (v.ref + " " + v.text).toLowerCase().includes(query);
+    return modeOk && subOk && queryOk;
+  });
+}, [mode, sub, q]);
 
-      return modeOk && subOk && queryOk;
-    });
-  }, [mode, sub, q]);
 
   return (
     <main
