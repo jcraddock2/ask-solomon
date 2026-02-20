@@ -71,14 +71,6 @@ const VERSES: Verse[] = [
 const VALID_MODES: Mode[] = ["all", "encouragement", "finances", "wisdom"];
 const VALID_SUBS: Array<Sub | "all"> = ["all", "peace", "strength", "direction", "confidence", "hope"];
 
-export default function Page() {
-  return (
-    <Suspense fallback={<div style={{ padding: 20 }}>Loading...</div>}>
-      <PageInner />
-    </Suspense>
-  );
-}
-
   export default function Page() {
   return (
     <Suspense fallback={<div style={{ padding: 20 }}>Loading...</div>}>
