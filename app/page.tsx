@@ -248,11 +248,27 @@ function PageInner() {
   return (
     <main style={container}>
       <header style={{ marginBottom: 16 }}>
-        <h1 style={{ margin: 0, fontSize: 34 }}>Ask Solomon</h1>
-        <p style={{ marginTop: 8, marginBottom: 0, color: "#444" }}>
-          Encouragement first—wisdom from Proverbs for what you’re facing right now.
-        </p>
-      </header>
+  <h1 style={{ margin: 0, fontSize: 34 }}>Ask Solomon</h1>
+  <p style={{ marginTop: 8, marginBottom: 0, color: "#444" }}>
+    Encouragement first—wisdom from Proverbs for what you’re facing right now.
+  </p>
+
+  <a
+    href="/book"
+    style={{
+      padding: "10px 12px",
+      borderRadius: 12,
+      border: "1px solid #ddd",
+      textDecoration: "none",
+      color: "#111",
+      fontWeight: 700,
+      display: "inline-block",
+      marginTop: 12,
+    }}
+  >
+    Read the Book →
+  </a>
+</header>
 
       {/* Top mode buttons */}
       <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
