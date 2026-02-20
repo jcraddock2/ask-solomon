@@ -79,34 +79,7 @@ const VALID_SUBS: Array<Sub | "all"> = ["all", "peace", "strength", "direction",
   );
 }
 
-function PageInner() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
 
-  const [mode, setMode] = useState<Mode>("encouragement");
-  const [sub, setSub] = useState<Sub | "all">("all");
-  const [q, setQ] = useState("");
-
-  // Button styles
-  const pillBase: React.CSSProperties = {
-    padding: "10px 14px",
-    borderRadius: 999,
-    border: "1px solid #ddd",
-    background: "#f2f2f2",
-    color: "#111",
-    cursor: "pointer",
-  };
-
-  const pillActive: React.CSSProperties = {
-    ...pillBase,
-    background: "#111",
-    color: "#fff",
-    border: "1px solid #111",
-  };
-
-  // Write state -> URL (shareable)
-  const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
-    const nextMode = next.mode ?? mode;
     const nextSub = next.sub ?? sub;
     const nextQ = next.q ?? q;
 
@@ -171,6 +144,16 @@ function PageInner() {
   });
 }, [mode, sub, q]);
 
+const copyLink = async () => {
+  try {
+    await navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1200);
+  } catch {
+    const text = window.location.href;
+    window.prompt("Copy this link:", text);
+  }
+};
 
   return (
     <main
@@ -231,27 +214,47 @@ function PageInner() {
       )}
 
       {/* Sub buttons */}
-      {mode === "encouragement" && (
-        <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
-          <button onClick={() => pickSub("all")} style={sub === "all" ? pillActive : pillBase}>
-            All Encouragement
-          </button>
-          <button onClick={() => pickSub("peace")} style={sub === "peace" ? pillActive : pillBase}>
-            Peace
-          </button>
-          <button onClick={() => pickSub("strength")} style={sub === "strength" ? pillActive : pillBase}>
-            Strength
-          </button>
-          <button onClick={() => pickSub("direction")} style={sub === "direction" ? pillActive : pillBase}>
-            Direction
-          </button>
-          <button onClick={() => pickSub("confidence")} style={sub === "confidence" ? pillActive : pillBase}>
-            Confidence
-          </button>
-          <button onClick={() => pickSub("hope")} style={sub === "hope" ? pillActive : pillBase}>
-            Hope
-          </button>
-        </section>
+      {mode === "encouragement" && sub !== "all" && (
+  <div style={{ marginBottom: 10 }}>
+    <button onClick={() => pickSub("all")} style={pillBase}>
+      Clear: {sub}
+    </button>
+  </div>
+)}
+
+{/* Sub buttons */}
+{mode === "encouragement" && (
+  <>
+    <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
+      <button onClick={() => pickSub("all")} style={sub === "all" ? pillActive : pillBase}>
+        All Encouragement
+      </button>
+      <button onClick={() => pickSub("peace")} style={sub === "peace" ? pillActive : pillBase}>
+        Peace
+      </button>
+      <button onClick={() => pickSub("strength")} style={sub === "strength" ? pillActive : pillBase}>
+        Strength
+      </button>
+      <button onClick={() => pickSub("direction")} style={sub === "direction" ? pillActive : pillBase}>
+        Direction
+      </button>
+      <button onClick={() => pickSub("confidence")} style={sub === "confidence" ? pillActive : pillBase}>
+        Confidence
+      </button>
+      <button onClick={() => pickSub("hope")} style={sub === "hope" ? pillActive : pillBase}>
+        Hope
+      </button>
+    </section>
+
+    <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
+      <button onClick={copyLink} style={copied ? pillActive : pillBase}>
+        {copied ? "Copied!" : "Copy Link"}
+      </button>
+    </div>
+  </>
+)}
+
+ 
       )}
 
       {/* Results */}
