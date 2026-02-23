@@ -6,6 +6,7 @@ export default function BookPage() {
 
   const isPro = isProUser();
 
+  // Free sample (short, not full access)
   const sample = [
     {
       title: "Wisdom is the main thing",
@@ -33,125 +34,32 @@ export default function BookPage() {
         maxWidth: 1100,
         margin: "0 auto",
         padding: 20,
-        fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+        fontFamily:
+          "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
       }}
     >
       <header style={{ marginBottom: 14 }}>
-        <h1 style={{ margin: 0, fontSize: 28 }}>Success Secrets of Solomon</h1>
+        <h1 style={{ margin: 0, fontSize: 28 }}>
+          Success Secrets of Solomon
+        </h1>
         <p style={{ marginTop: 8, marginBottom: 0, color: "#444" }}>
-          Read the full book inside the app with Lifetime unlock. Enjoy a short free sample below.
+          Read the full book inside the app with Lifetime unlock. Enjoy a short
+          free sample below.
         </p>
 
-<div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 12 }}>
-  <a
-    href="/"
-    style={{
-      padding: "10px 12px",
-      borderRadius: 12,
-      border: "1px solid #ddd",
-      textDecoration: "none",
-      color: "#111",
-      fontWeight: 700,
-    }}
-  >
-    ← Back to Ask Solomon
-  </a>
-
-  <a
-    href="/upgrade"
-    style={{
-      padding: "10px 12px",
-      borderRadius: 12,
-      border: "1px solid #111",
-      background: "#111",
-      color: "#fff",
-      textDecoration: "none",
-      fontWeight: 700,
-    }}
-  >
-    Unlock Lifetime
-  </a>
-
-  {isPro ? (
-    <a
-      href={pdfUrl}
-      target="_blank"
-      rel="noreferrer"
-      style={{
-        padding: "10px 12px",
-        borderRadius: 12,
-        border: "1px solid #ddd",
-        textDecoration: "none",
-        color: "#111",
-        fontWeight: 700,
-      }}
-    >
-      Open PDF in New Tab
-    </a>
-  ) : (
-    <span
-      style={{
-        padding: "10px 12px",
-        borderRadius: 12,
-        border: "1px solid #ddd",
-        color: "#777",
-        fontWeight: 700,
-        display: "inline-block",
-      }}
-    >
-      Full Book (Lifetime)
-    </span>
-  )}
-</div>
-    ← Back to Ask Solomon
-  </a>
-
-  <a
-    href="/upgrade"
-    style={{
-      padding: "10px 12px",
-      borderRadius: 12,
-      border: "1px solid #111",
-      background: "#111",
-      color: "#fff",
-      textDecoration: "none",
-      fontWeight: 700,
-    }}
-  >
-    Unlock Lifetime
-  </a>
-
-  {isPro ? (
-    <a
-      href={pdfUrl}
-      target="_blank"
-      rel="noreferrer"
-      style={{
-        padding: "10px 12px",
-        borderRadius: 12,
-        border: "1px solid #ddd",
-        textDecoration: "none",
-        color: "#111",
-        fontWeight: 700,
-      }}
-    >
-      Open PDF in New Tab
-    </a>
-  ) : (
-    <span
-      style={{
-        padding: "10px 12px",
-        borderRadius: 12,
-        border: "1px solid #ddd",
-        color: "#777",
-        fontWeight: 700,
-        display: "inline-block",
-      }}
-    >
-      Full Book (Lifetime)
-    </span>
-  )}
-</div>
+        {/* Buttons row */}
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 12 }}>
+          <a
+            href="/"
+            style={{
+              padding: "10px 12px",
+              borderRadius: 12,
+              border: "1px solid #ddd",
+              textDecoration: "none",
+              color: "#111",
+              fontWeight: 700,
+            }}
+          >
             ← Back to Ask Solomon
           </a>
 
@@ -170,67 +78,42 @@ export default function BookPage() {
             Unlock Lifetime
           </a>
 
- {isPro ? (
-  <a
-    href={pdfUrl}
-    target="_blank"
-    rel="noreferrer"
-    style={{
-      padding: "10px 12px",
-      borderRadius: 12,
-      border: "1px solid #ddd",
-      textDecoration: "none",
-      color: "#111",
-      fontWeight: 700,
-    }}
-  >
-    Open PDF in New Tab
-  </a>
-) : (
-  <span
-    style={{
-      padding: "10px 12px",
-      borderRadius: 12,
-      border: "1px solid #ddd",
-      color: "#777",
-      fontWeight: 700,
-      display: "inline-block",
-    }}
-  >
-    Full Book (Lifetime)
-  </span>
-)}
-) : (
-  <span
-    style={{
-      padding: "10px 12px",
-      borderRadius: 12,
-      border: "1px solid #ddd",
-      color: "#777",
-      fontWeight: 700,
-      display: "inline-block",
-    }}
-  >
-    Full Book (Lifetime)
-  </span>
-)}
-) : (
-  <span
-    style={{
-      padding: "10px 12px",
-      borderRadius: 12,
-      border: "1px solid #ddd",
-      color: "#777",
-      fontWeight: 700,
-      display: "inline-block",
-    }}
-  >
-    Full Book (Lifetime)
-  </span>
-)}
+          {/* Gate PDF access: only Pro sees the real PDF link */}
+          {isPro ? (
+            <a
+              href={pdfUrl}
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                padding: "10px 12px",
+                borderRadius: 12,
+                border: "1px solid #ddd",
+                textDecoration: "none",
+                color: "#111",
+                fontWeight: 700,
+              }}
+            >
+              Open PDF in New Tab
+            </a>
+          ) : (
+            <span
+              style={{
+                padding: "10px 12px",
+                borderRadius: 12,
+                border: "1px solid #ddd",
+                color: "#777",
+                fontWeight: 700,
+                display: "inline-block",
+              }}
+              title="Lifetime unlock required"
+            >
+              Full Book (Lifetime)
+            </span>
+          )}
         </div>
       </header>
 
+      {/* Pro experience */}
       {isPro ? (
         <>
           <div
@@ -254,6 +137,7 @@ export default function BookPage() {
           </p>
         </>
       ) : (
+        /* Free experience */
         <section
           style={{
             border: "1px solid #eee",
@@ -265,7 +149,8 @@ export default function BookPage() {
         >
           <h2 style={{ marginTop: 0, fontSize: 18 }}>Free Sample</h2>
           <p style={{ marginTop: 6, color: "#555" }}>
-            Here’s a taste of the book. Unlock Lifetime to read the full text inside the app.
+            Here’s a taste of the book. Unlock Lifetime to read the full text
+            inside the app.
           </p>
 
           <div style={{ display: "grid", gap: 12, marginTop: 12 }}>
@@ -280,7 +165,14 @@ export default function BookPage() {
                 }}
               >
                 <h3 style={{ margin: 0, fontSize: 16 }}>{s.title}</h3>
-                <p style={{ marginTop: 10, marginBottom: 10, lineHeight: 1.45, color: "#222" }}>
+                <p
+                  style={{
+                    marginTop: 10,
+                    marginBottom: 10,
+                    lineHeight: 1.45,
+                    color: "#222",
+                  }}
+                >
                   {s.body}
                 </p>
                 <div style={{ color: "#666", fontSize: 12 }}>{s.ref}</div>
