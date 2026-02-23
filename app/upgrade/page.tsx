@@ -1,4 +1,5 @@
 "use client";
+
 export default function UpgradePage() {
   return (
     <main
@@ -9,44 +10,40 @@ export default function UpgradePage() {
         fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
       }}
     >
-      <header style={{ marginBottom: 14 }}>
-        <h1 style={{ margin: 0, fontSize: 28 }}>Unlock Lifetime</h1>
-        <p style={{ marginTop: 8, marginBottom: 0, color: "#444" }}>
-          Lifetime access includes the full book and premium features that turn Ask Solomon into your personal guide.
+      <header style={{ marginBottom: 20 }}>
+        <h1 style={{ margin: 0, fontSize: 34 }}>Unlock Lifetime Access</h1>
+
+        <p style={{ marginTop: 10, fontSize: 18, color: "#444", lineHeight: 1.5 }}>
+          Ask Solomon is your personal source of wisdom, encouragement, and direction —
+          rooted in Proverbs and designed for real life.
         </p>
       </header>
 
       <section
         style={{
           border: "1px solid #eee",
-          borderRadius: 16,
-          padding: 16,
+          borderRadius: 18,
+          padding: 20,
           background: "#fff",
-          boxShadow: "0 1px 10px rgba(0,0,0,0.04)",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
         }}
       >
-        <h2 style={{ marginTop: 0, fontSize: 18 }}>What you get</h2>
-        <ul style={{ marginTop: 8, marginBottom: 0, color: "#222", lineHeight: 1.6 }}>
-          <li><b>Full book access</b> inside the app (Success Secrets of Solomon)</li>
-          <li><b>Favorites</b> — save your best wisdom (next)</li>
-          <li><b>Daily Wisdom</b> mode + streak (next)</li>
-          <li><b>Premium prompts</b> and deeper guidance (next)</li>
+        <h2 style={{ marginTop: 0 }}>Lifetime Includes:</h2>
+
+        <ul style={{ lineHeight: 1.7, color: "#222" }}>
+          <li><b>Full Book Access</b> — Success Secrets of Solomon (inside the app)</li>
+          <li><b>Unlimited Wisdom Cards</b> — encouragement, prayer, and insight</li>
+          <li><b>Favorites</b> — save what speaks to you (coming next)</li>
+          <li><b>Daily Wisdom Mode</b> — guided daily reflection (coming)</li>
+          <li><b>Future Premium Features</b> — included forever</li>
         </ul>
 
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 14 }}>
-          <a
-            href="/"
-            style={{
-              padding: "10px 12px",
-              borderRadius: 12,
-              border: "1px solid #ddd",
-              textDecoration: "none",
-              color: "#111",
-              fontWeight: 700,
-            }}
-          >
-            ← Back to Ask Solomon
-          </a>
+        <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid #eee" }}>
+          <h3 style={{ margin: 0 }}>One-Time Payment • Lifetime Access</h3>
+
+          <p style={{ marginTop: 8, color: "#555" }}>
+            No subscriptions. No renewals. Pay once — use forever.
+          </p>
 
           <a
             href="#"
@@ -55,23 +52,38 @@ export default function UpgradePage() {
               alert("Stripe checkout will be connected next.");
             }}
             style={{
-              padding: "10px 12px",
-              borderRadius: 12,
-              border: "1px solid #111",
+              marginTop: 16,
+              display: "inline-block",
+              padding: "14px 18px",
+              borderRadius: 14,
               background: "#111",
               color: "#fff",
               textDecoration: "none",
               fontWeight: 800,
+              fontSize: 16,
             }}
           >
             Unlock Lifetime
           </a>
-        </div>
 
-        <p style={{ marginTop: 12, color: "#666", fontSize: 12 }}>
-          Checkout is a placeholder right now. Next step: connect Stripe lifetime purchase + unlock access.
-        </p>
+          <p style={{ marginTop: 12, fontSize: 12, color: "#666" }}>
+            Founding access — early supporters receive all future upgrades.
+          </p>
+        </div>
       </section>
+
+      <div style={{ marginTop: 18 }}>
+        <a
+          href="/"
+          style={{
+            color: "#555",
+            textDecoration: "none",
+            fontWeight: 600,
+          }}
+        >
+          ← Back to Ask Solomon
+        </a>
+      </div>
     </main>
   );
 }
