@@ -3,7 +3,7 @@ import Stripe from "stripe";
 export const runtime = "nodejs";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
-
+console.log("Stripe key prefix:", (process.env.STRIPE_SECRET_KEY || "").slice(0, 7));
 export async function POST(_req: Request) {
   try {
     const priceId = process.env.STRIPE_PRICE_ID;
