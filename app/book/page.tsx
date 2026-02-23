@@ -46,7 +46,21 @@ export default function BookPage() {
           Read the full book inside the app with Lifetime unlock. Enjoy a short
           free sample below.
         </p>
-
+<a
+  href="/book"
+  style={{
+    padding: "10px 12px",
+    borderRadius: 12,
+    border: "1px solid #ddd",
+    textDecoration: "none",
+    color: "#111",
+    fontWeight: 700,
+    display: "inline-block",
+    marginTop: 12,
+  }}
+>
+  Read the Book →
+</a>
         {/* Buttons row */}
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 12 }}>
           <a
