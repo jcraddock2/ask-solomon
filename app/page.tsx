@@ -252,21 +252,7 @@ function PageInner() {
   <p style={{ marginTop: 8, marginBottom: 0, color: "#444" }}>
     Encouragement first—wisdom from Proverbs for what you’re facing right now.
   </p>
-<a
-  href="/book"
-  style={{
-    padding: "10px 12px",
-    borderRadius: 12,
-    border: "1px solid #ddd",
-    textDecoration: "none",
-    color: "#111",
-    fontWeight: 700,
-    display: "inline-block",
-    marginTop: 12,
-  }}
->
-  Read the Book →
-</a>
+
   <a
     href="/book"
     style={{
