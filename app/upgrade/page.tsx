@@ -72,7 +72,28 @@ export default function UpgradePage() {
 
           <button
             type="button"
-            onClick={() => alert("Stripe checkout will be connected next.")}
+           onClick={async () => {
+  try {
+    const res = await fetch("/api/stripe/checkout", { method: "POST" });
+    const text = await res.text();
+
+    if (!res.ok) {
+      alert(text || "Checkout failed. Please try again.");
+      return;
+    }
+
+    const data = JSON.parse(text);
+    if (!data?.url) {
+      alert("Checkout created, but no URL returned.");
+      return;
+    }
+
+    window.location.href = data.url;
+  } catch (err: any) {
+    alert(err?.message || "Unexpected error starting checkout.");
+  }
+}}
+            
             style={{
               marginTop: 14,
               display: "inline-block",
