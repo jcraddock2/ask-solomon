@@ -27,7 +27,14 @@ export async function POST(_req: Request) {
     });
 
     return Response.json({ url: session.url });
-  } catch (err: any) {
-    return new Response(err?.message ?? "Stripe error", { status: 500 });
-  }
+ } catch (err: any) {
+  console.error("Stripe error (full):", err);
+
+  const msg =
+    err?.raw?.message ||
+    err?.message ||
+    "Stripe error";
+
+  return new Response(msg, { status: 500 });
+}
 }
