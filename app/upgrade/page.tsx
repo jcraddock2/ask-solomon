@@ -39,11 +39,16 @@ export default function UpgradePage() {
         </ul>
 
         <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid #eee" }}>
-          <h3 style={{ margin: 0 }}>One-Time Payment • Lifetime Access</h3>
+  <h3 style={{ margin: 0 }}>Founding Member Lifetime Access</h3>
 
-          <p style={{ marginTop: 8, color: "#555" }}>
-            No subscriptions. No renewals. Pay once — use forever.
-          </p>
+<p style={{ marginTop: 8, color: "#555" }}>
+  <span style={{ textDecoration: "line-through", marginRight: 8 }}>$39</span>
+  <b>$29 Founding Price</b>
+</p>
+
+<p style={{ marginTop: 6, color: "#555" }}>
+  One-time payment. Lifetime access. Early supporters receive all future premium features.
+</p>
 
           <a
             href="#"
