@@ -4,6 +4,15 @@ export const runtime = "nodejs";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
+export async function GET() {
+  return Response.json({
+    ok: true,
+    hasStripeSecret: !!process.env.STRIPE_SECRET_KEY,
+    hasPriceId: !!process.env.STRIPE_PRICE_ID,
+    hasBaseUrl: !!process.env.NEXT_PUBLIC_BASE_URL,
+  });
+}
+
 export async function POST() {
   try {
     const priceId = process.env.STRIPE_PRICE_ID;
