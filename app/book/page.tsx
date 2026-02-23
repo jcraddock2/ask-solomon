@@ -42,18 +42,116 @@ export default function BookPage() {
           Read the full book inside the app with Lifetime unlock. Enjoy a short free sample below.
         </p>
 
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 12 }}>
-          <a
-            href="/"
-            style={{
-              padding: "10px 12px",
-              borderRadius: 12,
-              border: "1px solid #ddd",
-              textDecoration: "none",
-              color: "#111",
-              fontWeight: 700,
-            }}
-          >
+<div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 12 }}>
+  <a
+    href="/"
+    style={{
+      padding: "10px 12px",
+      borderRadius: 12,
+      border: "1px solid #ddd",
+      textDecoration: "none",
+      color: "#111",
+      fontWeight: 700,
+    }}
+  >
+    ← Back to Ask Solomon
+  </a>
+
+  <a
+    href="/upgrade"
+    style={{
+      padding: "10px 12px",
+      borderRadius: 12,
+      border: "1px solid #111",
+      background: "#111",
+      color: "#fff",
+      textDecoration: "none",
+      fontWeight: 700,
+    }}
+  >
+    Unlock Lifetime
+  </a>
+
+  {isPro ? (
+    <a
+      href={pdfUrl}
+      target="_blank"
+      rel="noreferrer"
+      style={{
+        padding: "10px 12px",
+        borderRadius: 12,
+        border: "1px solid #ddd",
+        textDecoration: "none",
+        color: "#111",
+        fontWeight: 700,
+      }}
+    >
+      Open PDF in New Tab
+    </a>
+  ) : (
+    <span
+      style={{
+        padding: "10px 12px",
+        borderRadius: 12,
+        border: "1px solid #ddd",
+        color: "#777",
+        fontWeight: 700,
+        display: "inline-block",
+      }}
+    >
+      Full Book (Lifetime)
+    </span>
+  )}
+</div>
+    ← Back to Ask Solomon
+  </a>
+
+  <a
+    href="/upgrade"
+    style={{
+      padding: "10px 12px",
+      borderRadius: 12,
+      border: "1px solid #111",
+      background: "#111",
+      color: "#fff",
+      textDecoration: "none",
+      fontWeight: 700,
+    }}
+  >
+    Unlock Lifetime
+  </a>
+
+  {isPro ? (
+    <a
+      href={pdfUrl}
+      target="_blank"
+      rel="noreferrer"
+      style={{
+        padding: "10px 12px",
+        borderRadius: 12,
+        border: "1px solid #ddd",
+        textDecoration: "none",
+        color: "#111",
+        fontWeight: 700,
+      }}
+    >
+      Open PDF in New Tab
+    </a>
+  ) : (
+    <span
+      style={{
+        padding: "10px 12px",
+        borderRadius: 12,
+        border: "1px solid #ddd",
+        color: "#777",
+        fontWeight: 700,
+        display: "inline-block",
+      }}
+    >
+      Full Book (Lifetime)
+    </span>
+  )}
+</div>
             ← Back to Ask Solomon
           </a>
 
