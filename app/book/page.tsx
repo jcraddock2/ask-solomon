@@ -110,19 +110,20 @@ export default function BookPage() {
               Open PDF in New Tab
             </a>
           ) : (
-            <span
-              style={{
-                padding: "10px 12px",
-                borderRadius: 12,
-                border: "1px solid #ddd",
-                color: "#777",
-                fontWeight: 700,
-                display: "inline-block",
-              }}
-              title="Lifetime unlock required"
-            >
-              Full Book (Lifetime)
-            </span>
+       <a
+  href="/upgrade"
+  style={{
+    padding: "10px 12px",
+    borderRadius: 12,
+    border: "1px solid #ddd",
+    color: "#777",
+    fontWeight: 700,
+    display: "inline-block",
+    textDecoration: "none",
+  }}
+>
+  Full Book (Lifetime)
+</a>
           )}
         </div>
       </header>
