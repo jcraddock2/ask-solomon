@@ -1,3 +1,5 @@
 export function isProUser(): boolean {
-  return false;
+  if (typeof window === "undefined") return false;
+
+  return localStorage.getItem("asksolomon_pro") === "1";
 }
