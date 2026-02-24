@@ -1,6 +1,9 @@
 "use client";
-
+import { useEffect } from "react";
 export default function SuccessPage() {
+useEffect(() => {
+  localStorage.setItem("asksolomon_pro", "1");
+}, []);
   return (
     <main
       style={{
