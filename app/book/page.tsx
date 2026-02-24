@@ -1,10 +1,15 @@
+"use client";
+import { useEffect, useState } from "react";
 import { isProUser } from "../lib/access";
-
 export default function BookPage() {
   const pdfUrl =
     "https://authorfiles.xulonauthors.com/Galley/C/CRADDOCKJOHN_106823/Files/successsecrets_txt4.pdf";
 
-  const isPro = isProUser();
+const [isPro, setIsPro] = useState(false);
+
+useEffect(() => {
+  setIsPro(isProUser());
+}, []);
 
   // Free sample (short, not full access)
   const sample = [
