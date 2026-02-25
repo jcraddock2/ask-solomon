@@ -271,7 +271,7 @@ function PageInner() {
         {/* ✅ Welcome Pro message */}
         {isPro && (
           <div style={{ marginTop: 10, color: "#2c7a2c", fontWeight: 800 }}>
-            Welcome, Pro Member ✨
+           Welcome, Founding Member ✨
           </div>
         )}
 
