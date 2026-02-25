@@ -1,17 +1,19 @@
 "use client";
 import { useEffect, useState } from "react";
 import { isProUser } from "../lib/access";
+
 export default function BookPage() {
-  const pdfUrl =
-    "https://authorfiles.xulonauthors.com/Galley/C/CRADDOCKJOHN_106823/Files/successsecrets_txt4.pdf";
 
-const [isPro, setIsPro] = useState(false);
+  // ✅ Local hosted mobile-optimized PDF
+  const pdfUrl = "/successsecrets.pdf";
 
-useEffect(() => {
-  setIsPro(isProUser());
-}, []);
+  const [isPro, setIsPro] = useState(false);
 
-  // Free sample (short, not full access)
+  useEffect(() => {
+    setIsPro(isProUser());
+  }, []);
+
+  // Free sample (short preview only)
   const sample = [
     {
       title: "Wisdom is the main thing",
@@ -48,26 +50,11 @@ useEffect(() => {
           Success Secrets of Solomon
         </h1>
         <p style={{ marginTop: 8, marginBottom: 0, color: "#444" }}>
-          Read the full book inside the app with Lifetime unlock. Enjoy a short
-          free sample below.
+          Read the full book inside the app with Lifetime unlock.
         </p>
-<a
-  href="/book"
-  style={{
-    padding: "10px 12px",
-    borderRadius: 12,
-    border: "1px solid #ddd",
-    textDecoration: "none",
-    color: "#111",
-    fontWeight: 700,
-    display: "inline-block",
-    marginTop: 12,
-  }}
->
-  Read the Book →
-</a>
-        {/* Buttons row */}
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 12 }}>
+
+        {/* Navigation buttons */}
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 14 }}>
           <a
             href="/"
             style={{
@@ -82,23 +69,24 @@ useEffect(() => {
             ← Back to Ask Solomon
           </a>
 
-          <a
-            href="/upgrade"
-            style={{
-              padding: "10px 12px",
-              borderRadius: 12,
-              border: "1px solid #111",
-              background: "#111",
-              color: "#fff",
-              textDecoration: "none",
-              fontWeight: 700,
-            }}
-          >
-            Unlock Lifetime
-          </a>
+          {!isPro && (
+            <a
+              href="/upgrade"
+              style={{
+                padding: "10px 12px",
+                borderRadius: 12,
+                border: "1px solid #111",
+                background: "#111",
+                color: "#fff",
+                textDecoration: "none",
+                fontWeight: 700,
+              }}
+            >
+              Unlock Lifetime
+            </a>
+          )}
 
-          {/* Gate PDF access: only Pro sees the real PDF link */}
-          {isPro ? (
+          {isPro && (
             <a
               href={pdfUrl}
               target="_blank"
@@ -114,26 +102,10 @@ useEffect(() => {
             >
               Open PDF in New Tab
             </a>
-          ) : (
-       <a
-  href="/upgrade"
-  style={{
-    padding: "10px 12px",
-    borderRadius: 12,
-    border: "1px solid #ddd",
-    color: "#777",
-    fontWeight: 700,
-    display: "inline-block",
-    textDecoration: "none",
-  }}
->
-  Full Book (Lifetime)
-</a>
           )}
         </div>
       </header>
 
-      {/* Pro experience */}
       {isPro ? (
         <>
           <div
@@ -141,7 +113,7 @@ useEffect(() => {
               border: "1px solid #eee",
               borderRadius: 16,
               overflow: "hidden",
-              height: "78vh",
+              height: "80vh",
               background: "#fff",
             }}
           >
@@ -153,11 +125,10 @@ useEffect(() => {
           </div>
 
           <p style={{ marginTop: 10, color: "#666", fontSize: 12 }}>
-            If the PDF doesn’t display in your browser, use “Open PDF in New Tab.”
+            If the PDF doesn’t display on mobile, tap “Open PDF in New Tab.”
           </p>
         </>
       ) : (
-        /* Free experience */
         <section
           style={{
             border: "1px solid #eee",
@@ -169,8 +140,7 @@ useEffect(() => {
         >
           <h2 style={{ marginTop: 0, fontSize: 18 }}>Free Sample</h2>
           <p style={{ marginTop: 6, color: "#555" }}>
-            Here’s a taste of the book. Unlock Lifetime to read the full text
-            inside the app.
+            Here’s a preview. Unlock Lifetime to read the full book inside the app.
           </p>
 
           <div style={{ display: "grid", gap: 12, marginTop: 12 }}>
