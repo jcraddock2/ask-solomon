@@ -2,6 +2,7 @@
 
 import React, { Suspense, useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { isProUser } from "./lib/access";
 
 type Mode = "encouragement" | "wisdom" | "prayer";
 type Sub = "peace" | "strength" | "direction" | "confidence" | "hope";
@@ -105,6 +106,12 @@ function PageInner() {
   const params = useSearchParams();
   const [, startTransition] = useTransition();
 
+  // ---- Pro state (for polish) ----
+  const [isPro, setIsPro] = useState(false);
+  useEffect(() => {
+    setIsPro(isProUser());
+  }, []);
+
   // ---- Read current URL state (source of truth) ----
   const urlMode = safeMode(params.get("mode"));
   const urlSub = safeSub(params.get("sub"));
@@ -142,7 +149,7 @@ function PageInner() {
       const nextQuery = sp.toString();
       const currentQuery = params.toString();
 
-      if (nextQuery === currentQuery) return; // ✅ prevents unnecessary replaces (common freeze cause)
+      if (nextQuery === currentQuery) return; // ✅ prevents unnecessary replaces
 
       startTransition(() => {
         router.replace(nextQuery ? `?${nextQuery}` : "?", { scroll: false });
@@ -153,7 +160,6 @@ function PageInner() {
 
   // ---- UI handlers ----
   const onSetMode = (m: Mode) => {
-    // Update UI immediately
     setMode(m);
 
     // If leaving encouragement, sub becomes irrelevant (reset to all)
@@ -163,7 +169,6 @@ function PageInner() {
       return;
     }
 
-    // Going to encouragement: keep existing sub (or default)
     setUrl({ mode: m });
   };
 
@@ -174,7 +179,6 @@ function PageInner() {
 
   const onChangeQ = (value: string) => {
     setQ(value);
-    // (Optional) you can debounce this later; this immediate version is still safe
     setUrl({ q: value });
   };
 
@@ -210,7 +214,7 @@ function PageInner() {
     border: "1px solid #ddd",
     background: "#fff",
     cursor: "pointer",
-    fontWeight: 600,
+    fontWeight: 700,
   };
 
   const pillOn: React.CSSProperties = {
@@ -226,7 +230,7 @@ function PageInner() {
     border: "1px solid #ddd",
     background: "#fff",
     cursor: "pointer",
-    fontWeight: 600,
+    fontWeight: 700,
     fontSize: 13,
   };
 
@@ -245,30 +249,46 @@ function PageInner() {
     boxShadow: "0 1px 10px rgba(0,0,0,0.04)",
   };
 
+  const linkBtn: React.CSSProperties = {
+    padding: "10px 12px",
+    borderRadius: 12,
+    border: "1px solid #ddd",
+    textDecoration: "none",
+    color: "#111",
+    fontWeight: 800,
+    display: "inline-block",
+  };
+
   return (
     <main style={container}>
       <header style={{ marginBottom: 16 }}>
-  <h1 style={{ margin: 0, fontSize: 34 }}>Ask Solomon</h1>
-  <p style={{ marginTop: 8, marginBottom: 0, color: "#444" }}>
-    Encouragement first—wisdom from Proverbs for what you’re facing right now.
-  </p>
+        <h1 style={{ margin: 0, fontSize: 34 }}>Ask Solomon</h1>
 
-  <a
-    href="/book"
-    style={{
-      padding: "10px 12px",
-      borderRadius: 12,
-      border: "1px solid #ddd",
-      textDecoration: "none",
-      color: "#111",
-      fontWeight: 700,
-      display: "inline-block",
-      marginTop: 12,
-    }}
-  >
-    Read the Book →
-  </a>
-</header>
+        <p style={{ marginTop: 8, marginBottom: 0, color: "#444" }}>
+          Encouragement first—wisdom from Proverbs for what you’re facing right now.
+        </p>
+
+        {/* ✅ Welcome Pro message */}
+        {isPro && (
+          <div style={{ marginTop: 10, color: "#2c7a2c", fontWeight: 800 }}>
+            Welcome, Pro Member ✨
+          </div>
+        )}
+
+        {/* Top links */}
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 12 }}>
+          <a href="/book" style={linkBtn}>
+            Read the Book →
+          </a>
+
+          {/* ✅ Hide Upgrade once Pro */}
+          {!isPro && (
+            <a href="/upgrade" style={linkBtn}>
+              Upgrade →
+            </a>
+          )}
+        </div>
+      </header>
 
       {/* Top mode buttons */}
       <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
@@ -338,7 +358,11 @@ function PageInner() {
               <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "baseline" }}>
                 <h3 style={{ margin: 0, fontSize: 16 }}>{item.title}</h3>
                 <span style={{ color: "#666", fontSize: 12 }}>
-                  {item.mode === "encouragement" ? (item.sub ? item.sub.toUpperCase() : "ENCOURAGEMENT") : item.mode.toUpperCase()}
+                  {item.mode === "encouragement"
+                    ? item.sub
+                      ? item.sub.toUpperCase()
+                      : "ENCOURAGEMENT"
+                    : item.mode.toUpperCase()}
                 </span>
               </div>
               <p style={{ marginTop: 10, marginBottom: 10, lineHeight: 1.45, color: "#222" }}>{item.body}</p>
@@ -348,9 +372,10 @@ function PageInner() {
         )}
       </section>
 
-      <footer style={{ marginTop: 18, color: "#777", fontSize: 12 }}>
-        URL state is enabled (mode/sub/q). Use back/forward safely—no freezing loops.
+      <footer style={{ marginTop: 18, color: "#999", fontSize: 12 }}>
+        © {new Date().getFullYear()} Ask Solomon
       </footer>
     </main>
   );
 }
+   
