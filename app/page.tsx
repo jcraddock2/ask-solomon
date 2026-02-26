@@ -201,7 +201,15 @@ function PageInner() {
   }, [mode, sub, q]);
 
   // ---- Styles ----
-  const container: React.CSSProperties = {
+ const container: React.CSSProperties = {
+  maxWidth: 920,
+  margin: "40px auto",
+  padding: 28,
+  background: "#ffffff",
+  borderRadius: 24,
+  boxShadow: "0 10px 40px rgba(0,0,0,0.06)",
+  fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+};
     maxWidth: 820,
     margin: "0 auto",
     padding: 20,
@@ -260,7 +268,8 @@ function PageInner() {
   };
 
   return (
-    <main style={container}>
+    <div style={{ background: "#f6f7f9", minHeight: "100vh", padding: 20 }}>
+  <main style={container}>
       <header style={{ marginBottom: 16 }}>
         <h1 style={{ margin: 0, fontSize: 34 }}>Ask Solomon</h1>
 
@@ -376,6 +385,7 @@ function PageInner() {
         © {new Date().getFullYear()} Ask Solomon
       </footer>
     </main>
+</div>
   );
 }
    
