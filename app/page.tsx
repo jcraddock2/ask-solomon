@@ -107,20 +107,25 @@ function PageInner() {
   };
 
   const cardStyle: React.CSSProperties = {
-    background: "#fff",
-    borderRadius: 18,
-    border: "1px solid rgba(0,0,0,0.08)",
-    boxShadow: "0 10px 40px rgba(0,0,0,0.06)",
-    padding: 16,
-  };
+  background: "#fff",
+  borderRadius: 20,
+  border: "1px solid rgba(0,0,0,0.08)",
+  boxShadow: "0 16px 44px rgba(0,0,0,0.07)",
+  padding: 18,
+};
 
-  const softCardStyle: React.CSSProperties = {
-    background: "#fff",
-    borderRadius: 16,
-    border: "1px solid rgba(0,0,0,0.08)",
-    boxShadow: "0 8px 24px rgba(0,0,0,0.05)",
-    padding: 14,
-  };
+<article
+  key={`${item.ref}-${idx}`}
+  style={softCardStyle}
+  onMouseEnter={(e) => {
+    (e.currentTarget as any).style.transform = "translateY(-1px)";
+    (e.currentTarget as any).style.boxShadow = "0 14px 34px rgba(0,0,0,0.08)";
+  }}
+  onMouseLeave={(e) => {
+    (e.currentTarget as any).style.transform = "translateY(0px)";
+    (e.currentTarget as any).style.boxShadow = "0 10px 26px rgba(0,0,0,0.06)";
+  }}
+> 
 
   const pillBtnBase: React.CSSProperties = {
     padding: "10px 12px",
