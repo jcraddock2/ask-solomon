@@ -279,7 +279,7 @@ style={{
   transform: mode === "encouragement" ? "translateY(-1px)" : "translateY(0px)",
   boxShadow:
     mode === "encouragement"
-      ? "0 10px 22px rgba(0,0,0,0.18)"
+     ? "0 12px 26px rgba(0,0,0,0.20)"
       : "0 2px 6px rgba(0,0,0,0.04)",
 }}
     onClick={() => {
@@ -298,8 +298,8 @@ style={{
       color: mode === "wisdom" ? "#fff" : "#111",
       boxShadow:
         mode === "wisdom"
-          ? "0 6px 16px rgba(0,0,0,0.15)"
-          : "0 2px 6px rgba(0,0,0,0.04)",
+        ? "0 12px 26px rgba(0,0,0,0.20)"
+      : "0 2px 6px rgba(0,0,0,0.04)",
     }}
     onClick={() => {
       setMode("wisdom");
@@ -317,8 +317,8 @@ style={{
       color: mode === "success" ? "#fff" : "#111",
       boxShadow:
         mode === "success"
-          ? "0 6px 16px rgba(0,0,0,0.15)"
-          : "0 2px 6px rgba(0,0,0,0.04)",
+          ? "0 12px 26px rgba(0,0,0,0.20)"
+      : "0 2px 6px rgba(0,0,0,0.04)",
     }}
     onClick={() => {
       setMode("success");
