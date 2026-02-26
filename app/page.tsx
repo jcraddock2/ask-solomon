@@ -272,6 +272,20 @@ const ACCENT_SOFT = "rgba(37,99,235,0.28)";
 
         {/* MAIN CARD */}
         <section style={cardStyle}>
+       <div
+  style={{
+    position: "sticky",
+    top: 10,
+    zIndex: 10,
+    background: "rgba(255,255,255,0.92)",
+    backdropFilter: "blur(8px)",
+    borderRadius: 16,
+    padding: 12,
+    border: "1px solid rgba(0,0,0,0.06)",
+    boxShadow: "0 8px 20px rgba(0,0,0,0.06)",
+    marginBottom: 14,
+  }}
+>
           {/* MODE BUTTONS */}
  <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
   <button
