@@ -1,96 +1,427 @@
 "use client";
 
-import React, { Suspense, useCallback, useEffect, useMemo, useState, useTransition } from "react";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { isProUser } from "./lib/access";
+import { isProUser } from "./lib/access"; // <-- keep this if you already have it
 
-type Mode = "encouragement" | "wisdom" | "prayer";
+type Mode = "encouragement" | "wisdom" | "success";
 type Sub = "peace" | "strength" | "direction" | "confidence" | "hope";
 
 type Item = {
-  id: string;
-  mode: Mode;
-  sub?: Sub; // only used for encouragement items
   title: string;
   body: string;
-  ref?: string;
+  ref: string;
+  mode: Mode;
+  sub?: Sub;
 };
 
-// ✅ Replace/expand this list with your real Solomon content.
-// The filtering + URL wiring will work regardless.
-const ITEMS: Item[] = [
+const DATA: Item[] = [
+  // Encouragement (with subs)
   {
-    id: "e1",
+    title: "Peace in anxious moments",
+    body: "When your mind is racing, choose the calm path—wisdom steadies the heart.",
+    ref: "Proverbs 12:25",
     mode: "encouragement",
     sub: "peace",
-    title: "Peace in the storm",
-    body: "You don’t need to carry tomorrow’s weight today. Breathe. Be still. Trust the next step will be shown.",
-    ref: "Proverbs 3:5–6",
   },
   {
-    id: "e2",
+    title: "Strength for the day",
+    body: "Don’t quit in the pressure—steady courage grows quietly and wins later.",
+    ref: "Proverbs 24:10",
     mode: "encouragement",
     sub: "strength",
-    title: "Strength for the grind",
-    body: "You’re not weak because you feel pressure—you’re being trained. Keep showing up.",
-    ref: "Proverbs 24:10",
   },
   {
-    id: "e3",
+    title: "Direction when unsure",
+    body: "Seek counsel and walk the next right step—clarity comes with motion.",
+    ref: "Proverbs 11:14",
     mode: "encouragement",
     sub: "direction",
-    title: "Direction when you feel stuck",
-    body: "Clarity often comes after movement. Do the next right thing, and your path will widen.",
-    ref: "Proverbs 16:9",
   },
   {
-    id: "e4",
+    title: "Confidence without arrogance",
+    body: "Confidence is built on truth and discipline, not applause.",
+    ref: "Proverbs 3:5–6",
     mode: "encouragement",
     sub: "confidence",
-    title: "Confidence without arrogance",
-    body: "You can be humble and certain. Your identity is stable even when circumstances aren’t.",
-    ref: "Proverbs 28:1",
   },
   {
-    id: "e5",
+    title: "Hope for the long road",
+    body: "Delay doesn’t mean denial—keep sowing and stay faithful in small steps.",
+    ref: "Proverbs 13:12",
     mode: "encouragement",
     sub: "hope",
-    title: "Hope that holds",
-    body: "Even delay is not denial. Keep building. Keep believing. Keep moving forward.",
-    ref: "Proverbs 23:18",
   },
+
+  // Wisdom
   {
-    id: "w1",
+    title: "Wisdom is the main thing",
+    body: "If you’re unsure what to do next—choose wisdom first. It will shape every other decision.",
+    ref: "Proverbs 4:7",
     mode: "wisdom",
-    title: "A gentle answer",
-    body: "Strength isn’t volume. It’s control. A calm response can disarm conflict faster than force.",
-    ref: "Proverbs 15:1",
   },
   {
-    id: "p1",
-    mode: "prayer",
-    title: "Prayer for today",
-    body: "Lord, give me clarity, courage, and peace. Help me do the next right thing with a clean heart.",
+    title: "Guard your heart",
+    body: "Your inner life drives your outer life—protect what influences you most.",
+    ref: "Proverbs 4:23",
+    mode: "wisdom",
+  },
+
+  // Success
+  {
+    title: "Diligence wins",
+    body: "Consistency beats intensity. Small disciplined actions create real outcomes.",
+    ref: "Proverbs 10:4",
+    mode: "success",
+  },
+  {
+    title: "Plans + counsel",
+    body: "Strong results come from strong planning—wisdom multiplies when tested by counsel.",
+    ref: "Proverbs 15:22",
+    mode: "success",
   },
 ];
 
-const SUBS: { key: Sub; label: string }[] = [
-  { key: "peace", label: "Peace" },
-  { key: "strength", label: "Strength" },
-  { key: "direction", label: "Direction" },
-  { key: "confidence", label: "Confidence" },
-  { key: "hope", label: "Hope" },
-];
+function PageInner() {
+  const router = useRouter();
+  const params = useSearchParams();
 
-function safeMode(v: string | null): Mode {
-  if (v === "wisdom" || v === "prayer" || v === "encouragement") return v;
-  return "encouragement";
-}
+  const [mode, setMode] = useState<Mode>("encouragement");
+  const [sub, setSub] = useState<Sub | "all">("all");
+  const [q, setQ] = useState("");
+  const [isPro, setIsPro] = useState(false);
 
-function safeSub(v: string | null): Sub | "all" {
-  if (v === "all") return "all";
-  if (v === "peace" || v === "strength" || v === "direction" || v === "confidence" || v === "hope") return v;
-  return "all";
+  // ---- styles (design v1 live) ----
+  const outerStyle: React.CSSProperties = {
+    minHeight: "100vh",
+    background: "#f4f5f7", // soft gray background
+    padding: 18,
+  };
+
+  const pageStyle: React.CSSProperties = {
+    maxWidth: 860,
+    margin: "0 auto",
+    padding: 18,
+    fontFamily:
+      "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+  };
+
+  const cardStyle: React.CSSProperties = {
+    background: "#fff",
+    borderRadius: 18,
+    border: "1px solid rgba(0,0,0,0.08)",
+    boxShadow: "0 10px 40px rgba(0,0,0,0.06)",
+    padding: 16,
+  };
+
+  const softCardStyle: React.CSSProperties = {
+    background: "#fff",
+    borderRadius: 16,
+    border: "1px solid rgba(0,0,0,0.08)",
+    boxShadow: "0 8px 24px rgba(0,0,0,0.05)",
+    padding: 14,
+  };
+
+  const pillBtnBase: React.CSSProperties = {
+    padding: "10px 12px",
+    borderRadius: 999,
+    border: "1px solid rgba(0,0,0,0.10)",
+    background: "#fff",
+    cursor: "pointer",
+    fontWeight: 650,
+    fontSize: 14,
+    transition: "transform 120ms ease, box-shadow 120ms ease, background 120ms ease",
+  };
+
+  const premiumBtnStyle: React.CSSProperties = {
+    padding: "12px 16px",
+    borderRadius: 14,
+    border: "1px solid rgba(0,0,0,0.10)",
+    background: "#111",
+    color: "#fff",
+    fontWeight: 800,
+    boxShadow: "0 8px 20px rgba(0,0,0,0.10)",
+    cursor: "pointer",
+    transition: "transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease",
+  };
+
+  // ---- helpers ----
+  const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
+    const nextMode = next.mode ?? mode;
+    const nextSub = next.sub ?? sub;
+    const nextQ = next.q ?? q;
+
+    const p = new URLSearchParams();
+    // keep URL short: only write non-defaults
+    if (nextMode !== "encouragement") p.set("mode", nextMode);
+    if (nextMode === "encouragement" && nextSub !== "all") p.set("sub", nextSub);
+    if (nextQ.trim().length > 0) p.set("q", nextQ.trim());
+
+    const qs = p.toString();
+    router.replace(qs ? `/?${qs}` : `/`);
+  };
+
+  // ---- init from URL + pro state ----
+  useEffect(() => {
+    setIsPro(isProUser());
+
+    const m = (params.get("mode") as Mode) || "encouragement";
+    const s = (params.get("sub") as Sub) || "all";
+    const qq = params.get("q") || "";
+
+    // validate a bit (avoid bad params)
+    const safeMode: Mode =
+      m === "encouragement" || m === "wisdom" || m === "success"
+        ? m
+        : "encouragement";
+
+    const safeSub: Sub | "all" =
+      s === "peace" || s === "strength" || s === "direction" || s === "confidence" || s === "hope"
+        ? s
+        : "all";
+
+    setMode(safeMode);
+    setSub(safeMode === "encouragement" ? safeSub : "all");
+    setQ(qq);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ---- filtered results ----
+  const results = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+
+    return DATA.filter((item) => {
+      if (item.mode !== mode) return false;
+      if (mode === "encouragement" && sub !== "all" && item.sub !== sub) return false;
+
+      if (!needle) return true;
+
+      const hay = `${item.title} ${item.body} ${item.ref}`.toLowerCase();
+      return hay.includes(needle);
+    });
+  }, [mode, sub, q]);
+
+  const subButtons: { label: string; value: Sub }[] = [
+    { label: "Peace", value: "peace" },
+    { label: "Strength", value: "strength" },
+    { label: "Direction", value: "direction" },
+    { label: "Confidence", value: "confidence" },
+    { label: "Hope", value: "hope" },
+  ];
+
+  return (
+    <div style={outerStyle}>
+      <main style={pageStyle}>
+        {/* HEADER */}
+        <header style={{ marginBottom: 14 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start" }}>
+            <div>
+              <h1 style={{ margin: 0, fontSize: 36, letterSpacing: "-0.6px", lineHeight: 1.1 }}>
+                Ask Solomon
+              </h1>
+              <p style={{ marginTop: 10, marginBottom: 0, color: "#555", fontSize: 15, lineHeight: 1.5 }}>
+                Encouragement first—wisdom from Proverbs for what you’re facing right now.
+              </p>
+            </div>
+
+            {/* Premium / Upgrade */}
+            {!isPro ? (
+              <button
+                style={premiumBtnStyle}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as any).style.transform = "translateY(-1px)";
+                  (e.currentTarget as any).style.boxShadow = "0 10px 24px rgba(0,0,0,0.14)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as any).style.transform = "translateY(0px)";
+                  (e.currentTarget as any).style.boxShadow = "0 8px 20px rgba(0,0,0,0.10)";
+                }}
+                onClick={() => router.push("/upgrade")}
+              >
+                Premium
+              </button>
+            ) : (
+              <div style={{ fontSize: 13, fontWeight: 750, color: "#111", paddingTop: 6 }}>
+                ✅ Pro Active
+              </div>
+            )}
+          </div>
+        </header>
+
+        {/* MAIN CARD */}
+        <section style={cardStyle}>
+          {/* MODE BUTTONS */}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
+            <button
+              style={{
+                ...pillBtnBase,
+                background: mode === "encouragement" ? "#111" : "#fff",
+                color: mode === "encouragement" ? "#fff" : "#111",
+              }}
+              onClick={() => {
+                setMode("encouragement");
+                setSub("all");
+                setUrl({ mode: "encouragement", sub: "all" });
+              }}
+            >
+              Encourage Me
+            </button>
+
+            <button
+              style={{
+                ...pillBtnBase,
+                background: mode === "wisdom" ? "#111" : "#fff",
+                color: mode === "wisdom" ? "#fff" : "#111",
+              }}
+              onClick={() => {
+                setMode("wisdom");
+                setSub("all");
+                setUrl({ mode: "wisdom", sub: "all" });
+              }}
+            >
+              Wisdom
+            </button>
+
+            <button
+              style={{
+                ...pillBtnBase,
+                background: mode === "success" ? "#111" : "#fff",
+                color: mode === "success" ? "#fff" : "#111",
+              }}
+              onClick={() => {
+                setMode("success");
+                setSub("all");
+                setUrl({ mode: "success", sub: "all" });
+              }}
+            >
+              Success
+            </button>
+
+            <button
+              style={{ ...pillBtnBase, marginLeft: "auto" }}
+              onClick={() => router.push("/book")}
+              title="Book page"
+            >
+              Book
+            </button>
+          </div>
+
+          {/* SUB BUTTONS (only for encouragement) */}
+          {mode === "encouragement" && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
+              <button
+                style={{
+                  ...pillBtnBase,
+                  background: sub === "all" ? "#111" : "#fff",
+                  color: sub === "all" ? "#fff" : "#111",
+                }}
+                onClick={() => {
+                  setSub("all");
+                  setUrl({ sub: "all" });
+                }}
+              >
+                All
+              </button>
+
+              {subButtons.map((b) => (
+                <button
+                  key={b.value}
+                  style={{
+                    ...pillBtnBase,
+                    background: sub === b.value ? "#111" : "#fff",
+                    color: sub === b.value ? "#fff" : "#111",
+                  }}
+                  onClick={() => {
+                    setSub(b.value);
+                    setUrl({ sub: b.value });
+                  }}
+                >
+                  {b.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* SEARCH */}
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
+            <input
+              value={q}
+              onChange={(e) => {
+                setQ(e.target.value);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") setUrl({ q });
+              }}
+              placeholder="Search keywords (press Enter)…"
+              style={{
+                flex: "1 1 320px",
+                padding: "12px 12px",
+                borderRadius: 14,
+                border: "1px solid rgba(0,0,0,0.12)",
+                outline: "none",
+                fontSize: 14,
+              }}
+            />
+            <button
+              style={{
+                ...pillBtnBase,
+                padding: "12px 14px",
+                borderRadius: 14,
+              }}
+              onClick={() => setUrl({ q })}
+            >
+              Search
+            </button>
+            <button
+              style={{
+                ...pillBtnBase,
+                padding: "12px 14px",
+                borderRadius: 14,
+                opacity: q.trim().length ? 1 : 0.6,
+              }}
+              onClick={() => {
+                setQ("");
+                setUrl({ q: "" });
+              }}
+              disabled={!q.trim().length}
+            >
+              Clear
+            </button>
+          </div>
+
+          {/* RESULTS */}
+          <div style={{ display: "grid", gap: 12 }}>
+            {results.length === 0 ? (
+              <div style={{ color: "#666", fontSize: 14, padding: 8 }}>
+                No matches. Try a different keyword.
+              </div>
+            ) : (
+              results.map((item, idx) => (
+                <article key={`${item.ref}-${idx}`} style={softCardStyle}>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                    <div style={{ fontWeight: 800, fontSize: 16, letterSpacing: "-0.2px" }}>
+                      {item.title}
+                    </div>
+                    <div style={{ color: "#666", fontSize: 13, fontWeight: 700, whiteSpace: "nowrap" }}>
+                      {item.ref}
+                    </div>
+                  </div>
+                  <p style={{ marginTop: 8, marginBottom: 0, color: "#333", lineHeight: 1.55, fontSize: 14 }}>
+                    {item.body}
+                  </p>
+                </article>
+              ))
+            )}
+          </div>
+
+          {/* FOOTER NOTE */}
+          <div style={{ marginTop: 14, color: "#777", fontSize: 12, lineHeight: 1.4 }}>
+            Tip: Use the mode buttons + sub-buttons, then search within that view.
+          </div>
+        </section>
+      </main>
+    </div>
+  );
 }
 
 export default function Page() {
@@ -100,292 +431,3 @@ export default function Page() {
     </Suspense>
   );
 }
-
-function PageInner() {
-  const router = useRouter();
-  const params = useSearchParams();
-  const [, startTransition] = useTransition();
-
-  // ---- Pro state (for polish) ----
-  const [isPro, setIsPro] = useState(false);
-  useEffect(() => {
-    setIsPro(isProUser());
-  }, []);
-
-  // ---- Read current URL state (source of truth) ----
-  const urlMode = safeMode(params.get("mode"));
-  const urlSub = safeSub(params.get("sub"));
-  const urlQ = (params.get("q") ?? "").toString();
-
-  // ---- Local UI state (prevents laggy typing & avoids jitter) ----
-  const [mode, setMode] = useState<Mode>(urlMode);
-  const [sub, setSub] = useState<Sub | "all">(urlSub);
-  const [q, setQ] = useState<string>(urlQ);
-
-  // Keep local state synced when user navigates back/forward or URL changes externally.
-  useEffect(() => {
-    setMode(urlMode);
-    setSub(urlSub);
-    setQ(urlQ);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [urlMode, urlSub, urlQ]);
-
-  // ✅ Critical: URL setter that does NOT cause loops/freezing.
-  // - builds query string
-  // - only calls router.replace if the URL would actually change
-  const setUrl = useCallback(
-    (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
-      const nextMode = next.mode ?? mode;
-      const nextSub = next.sub ?? sub;
-      const nextQ = (next.q ?? q) ?? "";
-
-      const sp = new URLSearchParams();
-
-      // keep URL short: only write non-defaults
-      if (nextMode !== "encouragement") sp.set("mode", nextMode);
-      if (nextMode === "encouragement" && nextSub !== "all") sp.set("sub", nextSub);
-      if (nextQ.trim().length > 0) sp.set("q", nextQ.trim());
-
-      const nextQuery = sp.toString();
-      const currentQuery = params.toString();
-
-      if (nextQuery === currentQuery) return; // ✅ prevents unnecessary replaces
-
-      startTransition(() => {
-        router.replace(nextQuery ? `?${nextQuery}` : "?", { scroll: false });
-      });
-    },
-    [mode, sub, q, params, router, startTransition]
-  );
-
-  // ---- UI handlers ----
-  const onSetMode = (m: Mode) => {
-    setMode(m);
-
-    // If leaving encouragement, sub becomes irrelevant (reset to all)
-    if (m !== "encouragement") {
-      setSub("all");
-      setUrl({ mode: m, sub: "all" });
-      return;
-    }
-
-    setUrl({ mode: m });
-  };
-
-  const onSetSub = (s: Sub | "all") => {
-    setSub(s);
-    setUrl({ sub: s, mode: "encouragement" });
-  };
-
-  const onChangeQ = (value: string) => {
-    setQ(value);
-    setUrl({ q: value });
-  };
-
-  // ---- Filtering (fast + stable) ----
-  const filtered = useMemo(() => {
-    const query = q.trim().toLowerCase();
-
-    return ITEMS.filter((item) => {
-      if (item.mode !== mode) return false;
-
-      if (mode === "encouragement") {
-        if (sub !== "all" && item.sub !== sub) return false;
-      }
-
-      if (!query) return true;
-
-      const hay = `${item.title} ${item.body} ${item.ref ?? ""}`.toLowerCase();
-      return hay.includes(query);
-    });
-  }, [mode, sub, q]);
-
-  // ---- Styles ----
- const container: React.CSSProperties = {
-  maxWidth: 920,
-  margin: "40px auto",
-  padding: 28,
-  background: "#ffffff",
-  borderRadius: 24,
-  boxShadow: "0 10px 40px rgba(0,0,0,0.06)",
-  fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
-};
-    maxWidth: 820,
-    margin: "0 auto",
-    padding: 20,
-    fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
-  };
-
-  const pill: React.CSSProperties = {
-    padding: "10px 12px",
-    borderRadius: 12,
-    border: "1px solid #ddd",
-    background: "#fff",
-    cursor: "pointer",
-    fontWeight: 700,
-  };
-
-  const pillOn: React.CSSProperties = {
-    ...pill,
-    border: "1px solid #111",
-    background: "#111",
-    color: "#fff",
-  };
-
-  const subPill: React.CSSProperties = {
-    padding: "8px 10px",
-    borderRadius: 999,
-    border: "1px solid #ddd",
-    background: "#fff",
-    cursor: "pointer",
-    fontWeight: 700,
-    fontSize: 13,
-  };
-
-  const subPillOn: React.CSSProperties = {
-    ...subPill,
-    border: "1px solid #111",
-    background: "#111",
-    color: "#fff",
-  };
-
-  const card: React.CSSProperties = {
-    border: "1px solid #eee",
-    borderRadius: 16,
-    padding: 14,
-    background: "#fff",
-    boxShadow: "0 1px 10px rgba(0,0,0,0.04)",
-  };
-
-  const linkBtn: React.CSSProperties = {
-    padding: "10px 12px",
-    borderRadius: 12,
-    border: "1px solid #ddd",
-    textDecoration: "none",
-    color: "#111",
-    fontWeight: 800,
-    display: "inline-block",
-  };
-
-  return (
-    <div style={{ background: "#f6f7f9", minHeight: "100vh", padding: 20 }}>
-  <main style={container}>
-      <header style={{ marginBottom: 16 }}>
-        <h1 style={{ margin: 0, fontSize: 34 }}>Ask Solomon</h1>
-
-        <p style={{ marginTop: 8, marginBottom: 0, color: "#444" }}>
-          Encouragement first—wisdom from Proverbs for what you’re facing right now.
-        </p>
-
-        {/* ✅ Welcome Pro message */}
-        {isPro && (
-          <div style={{ marginTop: 10, color: "#2c7a2c", fontWeight: 800 }}>
-           Welcome, Founding Member ✨
-          </div>
-        )}
-
-        {/* Top links */}
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 12 }}>
-          <a href="/book" style={linkBtn}>
-            Read the Book →
-          </a>
-
-          {/* ✅ Hide Upgrade once Pro */}
-          {!isPro && (
-            <a href="/upgrade" style={linkBtn}>
-              Upgrade →
-            </a>
-          )}
-        </div>
-      </header>
-
-      {/* Top mode buttons */}
-      <section style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
-        <button
-          type="button"
-          onClick={() => onSetMode("encouragement")}
-          style={mode === "encouragement" ? pillOn : pill}
-        >
-          Encourage Me
-        </button>
-        <button type="button" onClick={() => onSetMode("wisdom")} style={mode === "wisdom" ? pillOn : pill}>
-          Wisdom
-        </button>
-        <button type="button" onClick={() => onSetMode("prayer")} style={mode === "prayer" ? pillOn : pill}>
-          Prayer
-        </button>
-      </section>
-
-      {/* Encouragement sub-buttons */}
-      {mode === "encouragement" && (
-        <section style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
-          <button type="button" onClick={() => onSetSub("all")} style={sub === "all" ? subPillOn : subPill}>
-            All
-          </button>
-          {SUBS.map((s) => (
-            <button
-              key={s.key}
-              type="button"
-              onClick={() => onSetSub(s.key)}
-              style={sub === s.key ? subPillOn : subPill}
-            >
-              {s.label}
-            </button>
-          ))}
-        </section>
-      )}
-
-      {/* Search */}
-      <section style={{ marginBottom: 14 }}>
-        <input
-          value={q}
-          onChange={(e) => onChangeQ(e.target.value)}
-          placeholder="Search…"
-          style={{
-            width: "100%",
-            padding: "12px 12px",
-            borderRadius: 12,
-            border: "1px solid #ddd",
-            outline: "none",
-            fontSize: 14,
-          }}
-        />
-        <div style={{ marginTop: 8, color: "#666", fontSize: 12 }}>
-          Tip: Use the buttons to narrow first, then search.
-        </div>
-      </section>
-
-      {/* Results */}
-      <section style={{ display: "grid", gap: 12 }}>
-        {filtered.length === 0 ? (
-          <div style={{ padding: 14, border: "1px dashed #ddd", borderRadius: 16, color: "#555" }}>
-            No matches. Try a different filter or search.
-          </div>
-        ) : (
-          filtered.map((item) => (
-            <article key={item.id} style={card}>
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "baseline" }}>
-                <h3 style={{ margin: 0, fontSize: 16 }}>{item.title}</h3>
-                <span style={{ color: "#666", fontSize: 12 }}>
-                  {item.mode === "encouragement"
-                    ? item.sub
-                      ? item.sub.toUpperCase()
-                      : "ENCOURAGEMENT"
-                    : item.mode.toUpperCase()}
-                </span>
-              </div>
-              <p style={{ marginTop: 10, marginBottom: 10, lineHeight: 1.45, color: "#222" }}>{item.body}</p>
-              {item.ref ? <div style={{ color: "#555", fontSize: 12 }}>{item.ref}</div> : null}
-            </article>
-          ))
-        )}
-      </section>
-
-      <footer style={{ marginTop: 18, color: "#999", fontSize: 12 }}>
-        © {new Date().getFullYear()} Ask Solomon
-      </footer>
-    </main>
-</div>
-  );
-}
-   
