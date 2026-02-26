@@ -208,8 +208,8 @@ const subButtons: { label: string; value: Sub }[] = [
   { label: "Hope", value: "hope" },
 ];
 
-return ( 
-    <div style={outerStyle}>
+return (
+  <div style={outerStyle}>
       <main style={pageStyle}>
         {/* HEADER */}
         <header style={{ marginBottom: 24 }}>
