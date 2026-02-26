@@ -145,7 +145,8 @@ const pillBtnBase: React.CSSProperties = {
     transition: "transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease",
   };
 const ACCENT = "#2563eb"; // brand blue (Tailwind blue-600-ish)
-const ACCENT_SOFT = "rgba(37,99,235,0.14)";
+const ACCENT_SOFT = "rgba(37,99,235,0.28)";
+  
   // ---- URL helper (safe) ----
   const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
     const nextMode = next.mode ?? mode;
