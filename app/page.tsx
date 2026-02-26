@@ -270,61 +270,72 @@ const pillBtnBase: React.CSSProperties = {
         {/* MAIN CARD */}
         <section style={cardStyle}>
           {/* MODE BUTTONS */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
-            <button
-                      background: mode === "encouragement" ? "#111" : "#fff",
-                color: mode === "encouragement" ? "#fff" : "#111",
-              boxShadow: mode === "encouragement"
-  ? "0 6px 16px rgba(0,0,0,0.15)"
-  : "0 2px 6px rgba(0,0,0,0.04)",
-              }}
-              onClick={() => {
-                setMode("encouragement");
-                setSub("all");
-                setUrl({ mode: "encouragement", sub: "all" });
-              }}
-            >
-              Encourage Me
-            </button>
+ <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
+  <button
+    style={{
+      ...pillBtnBase,
+      background: mode === "encouragement" ? "#111" : "#fff",
+      color: mode === "encouragement" ? "#fff" : "#111",
+      boxShadow:
+        mode === "encouragement"
+          ? "0 6px 16px rgba(0,0,0,0.15)"
+          : "0 2px 6px rgba(0,0,0,0.04)",
+    }}
+    onClick={() => {
+      setMode("encouragement");
+      setSub("all");
+      setUrl({ mode: "encouragement", sub: "all" });
+    }}
+  >
+    Encourage Me
+  </button>
 
-            <button
-              style={{
-                ...pillBtnBase,
-                background: mode === "wisdom" ? "#111" : "#fff",
-                color: mode === "wisdom" ? "#fff" : "#111",
-              }}
-              onClick={() => {
-                setMode("wisdom");
-                setSub("all");
-                setUrl({ mode: "wisdom", sub: "all" });
-              }}
-            >
-              Wisdom
-            </button>
+  <button
+    style={{
+      ...pillBtnBase,
+      background: mode === "wisdom" ? "#111" : "#fff",
+      color: mode === "wisdom" ? "#fff" : "#111",
+      boxShadow:
+        mode === "wisdom"
+          ? "0 6px 16px rgba(0,0,0,0.15)"
+          : "0 2px 6px rgba(0,0,0,0.04)",
+    }}
+    onClick={() => {
+      setMode("wisdom");
+      setSub("all");
+      setUrl({ mode: "wisdom", sub: "all" });
+    }}
+  >
+    Wisdom
+  </button>
 
-            <button
-              style={{
-                ...pillBtnBase,
-                background: mode === "success" ? "#111" : "#fff",
-                color: mode === "success" ? "#fff" : "#111",
-              }}
-              onClick={() => {
-                setMode("success");
-                setSub("all");
-                setUrl({ mode: "success", sub: "all" });
-              }}
-            >
-              Success
-            </button>
+  <button
+    style={{
+      ...pillBtnBase,
+      background: mode === "success" ? "#111" : "#fff",
+      color: mode === "success" ? "#fff" : "#111",
+      boxShadow:
+        mode === "success"
+          ? "0 6px 16px rgba(0,0,0,0.15)"
+          : "0 2px 6px rgba(0,0,0,0.04)",
+    }}
+    onClick={() => {
+      setMode("success");
+      setSub("all");
+      setUrl({ mode: "success", sub: "all" });
+    }}
+  >
+    Success
+  </button>
 
-            <button
-              style={{ ...pillBtnBase, marginLeft: "auto" }}
-              onClick={() => router.push("/book")}
-              title="Book page"
-            >
-              Book
-            </button>
-          </div>
+  <button
+    style={{ ...pillBtnBase, marginLeft: "auto" }}
+    onClick={() => router.push("/book")}
+    title="Book page"
+  >
+    Book
+  </button>
+</div>
 
           {/* SUB BUTTONS */}
           {mode === "encouragement" && (
