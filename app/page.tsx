@@ -217,16 +217,17 @@ function PageInner() {
             }}
           >
             <div>
-              <h1
-                style={{
-                  margin: 0,
-                  fontSize: 36,
-                  letterSpacing: "-0.6px",
-                  lineHeight: 1.1,
-                }}
-              >
-                Ask Solomon
-              </h1>
+            <h1
+  style={{
+    margin: 0,
+    fontSize: 38,
+    letterSpacing: "-0.8px",
+    lineHeight: 1.05,
+    fontWeight: 800,
+  }}
+>
+  Ask Solomon
+</h1> 
               <p
                 style={{
                   marginTop: 10,
