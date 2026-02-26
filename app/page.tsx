@@ -94,7 +94,7 @@ function PageInner() {
   // ---- styles (design v1 live + app-like cards) ----
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
-    background: "#f4f5f7",
+   background: "#eef2ff",
     padding: 18,
   };
 
