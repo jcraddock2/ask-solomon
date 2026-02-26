@@ -2,7 +2,7 @@
 
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { isProUser } from "./lib/access"; // <-- keep this if you already have it
+import { isProUser } from "./lib/access"; // adjust ONLY if your path differs
 
 type Mode = "encouragement" | "wisdom" | "success";
 type Sub = "peace" | "strength" | "direction" | "confidence" | "hope";
@@ -91,10 +91,10 @@ function PageInner() {
   const [q, setQ] = useState("");
   const [isPro, setIsPro] = useState(false);
 
-  // ---- styles (design v1 live) ----
+  // ---- styles (design v1 live + app-like cards) ----
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
-    background: "#f4f5f7", // soft gray background
+    background: "#f4f5f7",
     padding: 18,
   };
 
@@ -102,30 +102,24 @@ function PageInner() {
     maxWidth: 860,
     margin: "0 auto",
     padding: 18,
-    fontFamily:
-      "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+    fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
   };
 
   const cardStyle: React.CSSProperties = {
-  background: "#fff",
-  borderRadius: 20,
-  border: "1px solid rgba(0,0,0,0.08)",
-  boxShadow: "0 16px 44px rgba(0,0,0,0.07)",
-  padding: 18,
-};
+    background: "#fff",
+    borderRadius: 20,
+    border: "1px solid rgba(0,0,0,0.08)",
+    boxShadow: "0 16px 44px rgba(0,0,0,0.07)",
+    padding: 18,
+  };
 
-<article
-  key={`${item.ref}-${idx}`}
-  style={softCardStyle}
-  onMouseEnter={(e) => {
-    (e.currentTarget as any).style.transform = "translateY(-1px)";
-    (e.currentTarget as any).style.boxShadow = "0 14px 34px rgba(0,0,0,0.08)";
-  }}
-  onMouseLeave={(e) => {
-    (e.currentTarget as any).style.transform = "translateY(0px)";
-    (e.currentTarget as any).style.boxShadow = "0 10px 26px rgba(0,0,0,0.06)";
-  }}
-> 
+  const softCardStyle: React.CSSProperties = {
+    background: "#fff",
+    borderRadius: 18,
+    border: "1px solid rgba(0,0,0,0.08)",
+    boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
+    padding: 16,
+  };
 
   const pillBtnBase: React.CSSProperties = {
     padding: "10px 12px",
@@ -135,7 +129,6 @@ function PageInner() {
     cursor: "pointer",
     fontWeight: 650,
     fontSize: 14,
-    transition: "transform 120ms ease, box-shadow 120ms ease, background 120ms ease",
   };
 
   const premiumBtnStyle: React.CSSProperties = {
@@ -150,14 +143,14 @@ function PageInner() {
     transition: "transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease",
   };
 
-  // ---- helpers ----
+  // ---- URL helper (safe) ----
   const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
     const nextMode = next.mode ?? mode;
     const nextSub = next.sub ?? sub;
     const nextQ = next.q ?? q;
 
     const p = new URLSearchParams();
-    // keep URL short: only write non-defaults
+
     if (nextMode !== "encouragement") p.set("mode", nextMode);
     if (nextMode === "encouragement" && nextSub !== "all") p.set("sub", nextSub);
     if (nextQ.trim().length > 0) p.set("q", nextQ.trim());
@@ -174,11 +167,8 @@ function PageInner() {
     const s = (params.get("sub") as Sub) || "all";
     const qq = params.get("q") || "";
 
-    // validate a bit (avoid bad params)
     const safeMode: Mode =
-      m === "encouragement" || m === "wisdom" || m === "success"
-        ? m
-        : "encouragement";
+      m === "encouragement" || m === "wisdom" || m === "success" ? m : "encouragement";
 
     const safeSub: Sub | "all" =
       s === "peace" || s === "strength" || s === "direction" || s === "confidence" || s === "hope"
@@ -200,7 +190,6 @@ function PageInner() {
       if (mode === "encouragement" && sub !== "all" && item.sub !== sub) return false;
 
       if (!needle) return true;
-
       const hay = `${item.title} ${item.body} ${item.ref}`.toLowerCase();
       return hay.includes(needle);
     });
@@ -219,17 +208,38 @@ function PageInner() {
       <main style={pageStyle}>
         {/* HEADER */}
         <header style={{ marginBottom: 14 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 12,
+              alignItems: "flex-start",
+            }}
+          >
             <div>
-              <h1 style={{ margin: 0, fontSize: 36, letterSpacing: "-0.6px", lineHeight: 1.1 }}>
+              <h1
+                style={{
+                  margin: 0,
+                  fontSize: 36,
+                  letterSpacing: "-0.6px",
+                  lineHeight: 1.1,
+                }}
+              >
                 Ask Solomon
               </h1>
-              <p style={{ marginTop: 10, marginBottom: 0, color: "#555", fontSize: 15, lineHeight: 1.5 }}>
+              <p
+                style={{
+                  marginTop: 10,
+                  marginBottom: 0,
+                  color: "#555",
+                  fontSize: 15,
+                  lineHeight: 1.5,
+                }}
+              >
                 Encouragement first—wisdom from Proverbs for what you’re facing right now.
               </p>
             </div>
 
-            {/* Premium / Upgrade */}
             {!isPro ? (
               <button
                 style={premiumBtnStyle}
@@ -311,7 +321,7 @@ function PageInner() {
             </button>
           </div>
 
-          {/* SUB BUTTONS (only for encouragement) */}
+          {/* SUB BUTTONS */}
           {mode === "encouragement" && (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
               <button
@@ -351,9 +361,7 @@ function PageInner() {
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
             <input
               value={q}
-              onChange={(e) => {
-                setQ(e.target.value);
-              }}
+              onChange={(e) => setQ(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") setUrl({ q });
               }}
@@ -367,6 +375,7 @@ function PageInner() {
                 fontSize: 14,
               }}
             />
+
             <button
               style={{
                 ...pillBtnBase,
@@ -377,6 +386,7 @@ function PageInner() {
             >
               Search
             </button>
+
             <button
               style={{
                 ...pillBtnBase,
@@ -402,7 +412,18 @@ function PageInner() {
               </div>
             ) : (
               results.map((item, idx) => (
-                <article key={`${item.ref}-${idx}`} style={softCardStyle}>
+                <article
+                  key={`${item.ref}-${idx}`}
+                  style={softCardStyle}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as any).style.transform = "translateY(-1px)";
+                    (e.currentTarget as any).style.boxShadow = "0 14px 34px rgba(0,0,0,0.08)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as any).style.transform = "translateY(0px)";
+                    (e.currentTarget as any).style.boxShadow = "0 10px 26px rgba(0,0,0,0.06)";
+                  }}
+                >
                   <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
                     <div style={{ fontWeight: 800, fontSize: 16, letterSpacing: "-0.2px" }}>
                       {item.title}
@@ -419,7 +440,6 @@ function PageInner() {
             )}
           </div>
 
-          {/* FOOTER NOTE */}
           <div style={{ marginTop: 14, color: "#777", fontSize: 12, lineHeight: 1.4 }}>
             Tip: Use the mode buttons + sub-buttons, then search within that view.
           </div>
