@@ -272,15 +272,16 @@ const pillBtnBase: React.CSSProperties = {
           {/* MODE BUTTONS */}
  <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
   <button
-    style={{
-      ...pillBtnBase,
-      background: mode === "encouragement" ? "#111" : "#fff",
-      color: mode === "encouragement" ? "#fff" : "#111",
-      boxShadow:
-        mode === "encouragement"
-          ? "0 6px 16px rgba(0,0,0,0.15)"
-          : "0 2px 6px rgba(0,0,0,0.04)",
-    }}
+style={{
+  ...pillBtnBase,
+  background: mode === "encouragement" ? "#111" : "#f8f8f8",
+  color: mode === "encouragement" ? "#fff" : "#333",
+  transform: mode === "encouragement" ? "translateY(-1px)" : "translateY(0px)",
+  boxShadow:
+    mode === "encouragement"
+      ? "0 10px 22px rgba(0,0,0,0.18)"
+      : "0 2px 6px rgba(0,0,0,0.04)",
+}}
     onClick={() => {
       setMode("encouragement");
       setSub("all");
