@@ -207,7 +207,7 @@ function PageInner() {
     <div style={outerStyle}>
       <main style={pageStyle}>
         {/* HEADER */}
-        <header style={{ marginBottom: 20 }}>
+        <header style={{ marginBottom: 24 }}>
           <div
             style={{
               display: "flex",
@@ -229,13 +229,14 @@ function PageInner() {
   Ask Solomon
 </h1> 
               <p
-                style={{
-                  marginTop: 10,
-                  marginBottom: 0,
-                  color: "#555",
-                  fontSize: 15,
-                  lineHeight: 1.5,
-                }}
+               style={{
+  marginTop: 8,
+  marginBottom: 0,
+  color: "#555",
+  fontSize: 16,
+  lineHeight: 1.55,
+  maxWidth: 620,
+}}
               >
                 Encouragement first—wisdom from Proverbs for what you’re facing right now.
               </p>
