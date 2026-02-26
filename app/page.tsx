@@ -259,22 +259,20 @@ function PageInner() {
         </header>
 
         {/* MAIN CARD */}
-        <section style={cardStyle}>
-          {/* STICKY CONTROLS */}
-          <div
-            style={{
-              position: "sticky",
-              top: 10,
-              zIndex: 10,
-              background: "rgba(255,255,255,0.92)",
-              backdropFilter: "blur(8px)",
-              borderRadius: 16,
-              padding: 12,
-              border: "1px solid rgba(0,0,0,0.06)",
-              boxShadow: "0 8px 20px rgba(0,0,0,0.06)",
-              marginBottom: 14,
-            }}
-          >
+      <section style={cardStyle}>
+  {/* STICKY CONTROLS */}
+  <div
+    style={{
+      position: "sticky",
+      top: 0, // 🔥 change from 10 to 0 (prevents weird gap)
+      zIndex: 20, // slightly higher to avoid overlap issues
+      background: "#ffffff", // solid for cleaner scroll feel
+      padding: 16,
+      borderBottom: "1px solid rgba(0,0,0,0.06)",
+      boxShadow: "0 10px 24px rgba(0,0,0,0.06)",
+      marginBottom: 16,
+    }}
+  >
             {/* MODE BUTTONS */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
               <button
