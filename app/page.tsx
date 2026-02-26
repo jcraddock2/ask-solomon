@@ -99,7 +99,7 @@ function PageInner() {
   };
 
   const pageStyle: React.CSSProperties = {
-    maxWidth: 860,
+    maxWidth: 760,
     margin: "0 auto",
     padding: 18,
     fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
