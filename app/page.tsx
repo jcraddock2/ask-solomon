@@ -441,30 +441,58 @@ style={{
               </div>
             ) : (
               results.map((item, idx) => (
-                <article
-                  key={`${item.ref}-${idx}`}
-                  style={softCardStyle}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as any).style.transform = "translateY(-1px)";
-                    (e.currentTarget as any).style.boxShadow = "0 14px 34px rgba(0,0,0,0.08)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as any).style.transform = "translateY(0px)";
-                    (e.currentTarget as any).style.boxShadow = "0 10px 26px rgba(0,0,0,0.06)";
-                  }}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-                    <div style={{
-  fontWeight: 850,
-  fontSize: 17,
-  letterSpacing: "-0.2px",
-  lineHeight: 1.2,
-}}
-                  </div>
-                  <p style={{ marginTop: 8, marginBottom: 0, color: "#333", lineHeight: 1.55, fontSize: 14 }}>
-                    {item.body}
-                  </p>
-                </article>
+              <article
+  key={`${item.ref}-${idx}`}
+  style={softCardStyle}
+  onMouseEnter={(e) => {
+    (e.currentTarget as any).style.transform = "translateY(-1px)";
+    (e.currentTarget as any).style.boxShadow = "0 14px 34px rgba(0,0,0,0.08)";
+  }}
+  onMouseLeave={(e) => {
+    (e.currentTarget as any).style.transform = "translateY(0px)";
+    (e.currentTarget as any).style.boxShadow = "0 10px 26px rgba(0,0,0,0.06)";
+  }}
+>
+  <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+    <div
+      style={{
+        fontWeight: 850,
+        fontSize: 17,
+        letterSpacing: "-0.2px",
+        lineHeight: 1.2,
+      }}
+    >
+      {item.title}
+    </div>
+
+    <div
+      style={{
+        color: "#111",
+        fontSize: 12,
+        fontWeight: 800,
+        whiteSpace: "nowrap",
+        padding: "6px 10px",
+        borderRadius: 999,
+        border: "1px solid rgba(0,0,0,0.10)",
+        background: "rgba(255,255,255,0.75)",
+      }}
+    >
+      {item.ref}
+    </div>
+  </div>
+
+  <p
+    style={{
+      marginTop: 8,
+      marginBottom: 0,
+      color: "#2b2b2b",
+      lineHeight: 1.6,
+      fontSize: 14,
+    }}
+  >
+    {item.body}
+  </p>
+</article>
               ))
             )}
           </div>
