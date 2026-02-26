@@ -200,15 +200,15 @@ const ACCENT_SOFT = "rgba(37,99,235,0.28)";
     });
   }, [mode, sub, q]);
 
-  const subButtons: { label: string; value: Sub }[] = [
-    { label: "Peace", value: "peace" },
-    { label: "Strength", value: "strength" },
-    { label: "Direction", value: "direction" },
-    { label: "Confidence", value: "confidence" },
-    { label: "Hope", value: "hope" },
-  ];
+const subButtons: { label: string; value: Sub }[] = [
+  { label: "Peace", value: "peace" },
+  { label: "Strength", value: "strength" },
+  { label: "Direction", value: "direction" },
+  { label: "Confidence", value: "confidence" },
+  { label: "Hope", value: "hope" },
+];
 
-  return (
+return ( 
     <div style={outerStyle}>
       <main style={pageStyle}>
         {/* HEADER */}
