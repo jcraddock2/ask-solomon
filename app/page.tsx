@@ -94,7 +94,8 @@ function PageInner() {
   // ---- styles (design v1 live + app-like cards) ----
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
-  background: "radial-gradient(1200px 600px at 20% 0%, rgba(37,99,235,0.12), transparent 60%), #eef2ff",
+  background:
+  "radial-gradient(1200px 700px at 20% 0%, rgba(37,99,235,0.18), transparent 60%), #eef2ff",
     padding: 18,
   };
 
@@ -109,7 +110,7 @@ function PageInner() {
     background: "#fff",
     borderRadius: 20,
     border: "1px solid rgba(0,0,0,0.08)",
-    boxShadow: "0 16px 44px rgba(0,0,0,0.07)",
+    boxShadow: "0 24px 70px rgba(0,0,0,0.10)",
     padding: 18,
   };
 
@@ -457,7 +458,7 @@ style={{
     <div
       style={{
         fontWeight: 850,
-        fontSize: 17,
+        fontSize: 18,
         letterSpacing: "-0.2px",
         lineHeight: 1.2,
       }}
@@ -485,7 +486,7 @@ style={{
     style={{
       marginTop: 8,
       marginBottom: 0,
-      color: "#2b2b2b",
+    color: "rgba(0,0,0,0.74)",
       lineHeight: 1.6,
       fontSize: 14,
     }}
