@@ -144,7 +144,8 @@ const pillBtnBase: React.CSSProperties = {
     cursor: "pointer",
     transition: "transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease",
   };
-
+const ACCENT = "#2563eb"; // brand blue (Tailwind blue-600-ish)
+const ACCENT_SOFT = "rgba(37,99,235,0.14)";
   // ---- URL helper (safe) ----
   const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
     const nextMode = next.mode ?? mode;
@@ -383,9 +384,9 @@ style={{
       if (e.key === "Enter") setUrl({ q });
     }}
     onFocus={(e) => {
-      (e.currentTarget as any).style.boxShadow =
-        "0 0 0 3px rgba(59,130,246,0.15)";
-    }}
+  (e.currentTarget as any).style.boxShadow =
+    `0 0 0 3px ${ACCENT_SOFT}`;
+}}
     onBlur={(e) => {
       (e.currentTarget as any).style.boxShadow =
         "inset 0 1px 2px rgba(0,0,0,0.04)";
