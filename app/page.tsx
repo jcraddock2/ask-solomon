@@ -110,13 +110,16 @@ function PageInner() {
     fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
   };
 
-  const cardStyle: React.CSSProperties = {
-    background: "#fff",
-    borderRadius: 20,
-    border: "1px solid rgba(0,0,0,0.08)",
-    boxShadow: "0 24px 70px rgba(0,0,0,0.10)",
-    padding: 18,
-  };
+const cardStyle: React.CSSProperties = {
+  background: "#fff",
+  borderRadius: 20,
+  border: "1px solid rgba(0,0,0,0.08)",
+  boxShadow: "0 24px 70px rgba(0,0,0,0.10)",
+  padding: 18,
+
+  height: "72vh",          // 🔥 forces scroll area
+  overflowY: "auto",       // 🔥 enables scrolling inside the card
+};
 
   const softCardStyle: React.CSSProperties = {
     background: "#fff",
