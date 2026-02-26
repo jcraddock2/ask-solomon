@@ -374,52 +374,62 @@ style={{
             </div>
           )}
 
-          {/* SEARCH */}
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
-            <input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") setUrl({ q });
-              }}
-              placeholder="Search keywords (press Enter)…"
-              style={{
-                flex: "1 1 320px",
-                padding: "12px 12px",
-                borderRadius: 14,
-                border: "1px solid rgba(0,0,0,0.12)",
-                outline: "none",
-                fontSize: 14,
-              }}
-            />
+         {/* SEARCH */}
+<div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
+  <input
+    value={q}
+    onChange={(e) => setQ(e.target.value)}
+    onKeyDown={(e) => {
+      if (e.key === "Enter") setUrl({ q });
+    }}
+    onFocus={(e) => {
+      (e.currentTarget as any).style.boxShadow =
+        "0 0 0 3px rgba(59,130,246,0.15)";
+    }}
+    onBlur={(e) => {
+      (e.currentTarget as any).style.boxShadow =
+        "inset 0 1px 2px rgba(0,0,0,0.04)";
+    }}
+    placeholder="Search keywords (press Enter)…"
+    style={{
+      flex: "1 1 320px",
+      padding: "14px 14px",
+      borderRadius: 16,
+      border: "1px solid rgba(0,0,0,0.10)",
+      outline: "none",
+      fontSize: 14,
+      boxShadow: "inset 0 1px 2px rgba(0,0,0,0.04)",
+      transition: "all 120ms ease",
+    }}
+  />
 
-            <button
-              style={{
-                ...pillBtnBase,
-                padding: "12px 14px",
-                borderRadius: 14,
-              }}
-              onClick={() => setUrl({ q })}
-            >
-              Search
-            </button>
+  <button
+    style={{
+      ...pillBtnBase,
+      padding: "12px 14px",
+      borderRadius: 14,
+    }}
+    onClick={() => setUrl({ q })}
+  >
+    Search
+  </button>
 
-            <button
-              style={{
-                ...pillBtnBase,
-                padding: "12px 14px",
-                borderRadius: 14,
-                opacity: q.trim().length ? 1 : 0.6,
-              }}
-              onClick={() => {
-                setQ("");
-                setUrl({ q: "" });
-              }}
-              disabled={!q.trim().length}
-            >
-              Clear
-            </button>
-          </div>
+  <button
+    style={{
+      ...pillBtnBase,
+      padding: "12px 14px",
+      borderRadius: 14,
+      opacity: q.trim().length ? 1 : 0.6,
+    }}
+    onClick={() => {
+      setQ("");
+      setUrl({ q: "" });
+    }}
+    disabled={!q.trim().length}
+  >
+    Clear
+  </button>
+</div>
 
           {/* RESULTS */}
           <div style={{ display: "grid", gap: 12 }}>
