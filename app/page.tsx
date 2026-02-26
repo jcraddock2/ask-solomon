@@ -121,15 +121,17 @@ function PageInner() {
     padding: 16,
   };
 
-  const pillBtnBase: React.CSSProperties = {
-    padding: "10px 12px",
-    borderRadius: 999,
-    border: "1px solid rgba(0,0,0,0.10)",
-    background: "#fff",
-    cursor: "pointer",
-    fontWeight: 650,
-    fontSize: 14,
-  };
+const pillBtnBase: React.CSSProperties = {
+  padding: "10px 14px",
+  borderRadius: 999,
+  border: "1px solid rgba(0,0,0,0.08)",
+  background: "#fff",
+  cursor: "pointer",
+  fontWeight: 650,
+  fontSize: 14,
+  boxShadow: "0 2px 6px rgba(0,0,0,0.04)",
+  transition: "all 140ms ease",
+}; 
 
   const premiumBtnStyle: React.CSSProperties = {
     padding: "12px 16px",
@@ -270,10 +272,11 @@ function PageInner() {
           {/* MODE BUTTONS */}
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
             <button
-              style={{
-                ...pillBtnBase,
-                background: mode === "encouragement" ? "#111" : "#fff",
+                      background: mode === "encouragement" ? "#111" : "#fff",
                 color: mode === "encouragement" ? "#fff" : "#111",
+              boxShadow: mode === "encouragement"
+  ? "0 6px 16px rgba(0,0,0,0.15)"
+  : "0 2px 6px rgba(0,0,0,0.04)",
               }}
               onClick={() => {
                 setMode("encouragement");
