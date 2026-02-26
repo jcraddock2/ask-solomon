@@ -94,7 +94,7 @@ function PageInner() {
   // ---- styles (design v1 live + app-like cards) ----
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
-   background: "#eef2ff",
+  background: "radial-gradient(1200px 600px at 20% 0%, rgba(37,99,235,0.12), transparent 60%), #eef2ff",
     padding: 18,
   };
 
@@ -454,12 +454,12 @@ style={{
                   }}
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-                    <div style={{ fontWeight: 800, fontSize: 16, letterSpacing: "-0.2px" }}>
-                      {item.title}
-                    </div>
-                    <div style={{ color: "#666", fontSize: 13, fontWeight: 700, whiteSpace: "nowrap" }}>
-                      {item.ref}
-                    </div>
+                    <div style={{
+  fontWeight: 850,
+  fontSize: 17,
+  letterSpacing: "-0.2px",
+  lineHeight: 1.2,
+}}
                   </div>
                   <p style={{ marginTop: 8, marginBottom: 0, color: "#333", lineHeight: 1.55, fontSize: 14 }}>
                     {item.body}
