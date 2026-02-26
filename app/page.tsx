@@ -207,7 +207,7 @@ function PageInner() {
     <div style={outerStyle}>
       <main style={pageStyle}>
         {/* HEADER */}
-        <header style={{ marginBottom: 14 }}>
+        <header style={{ marginBottom: 20 }}>
           <div
             style={{
               display: "flex",
