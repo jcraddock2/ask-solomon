@@ -2,10 +2,10 @@
 
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { isProUser } from "./lib/access"; // <-- change ONLY if your path differs
 
 type Mode = "encouragement" | "wisdom" | "success";
 type Sub = "peace" | "strength" | "direction" | "confidence" | "hope";
-type SubOrAll = Sub | "all";
 
 type Item = {
   title: string;
@@ -82,104 +82,50 @@ const DATA: Item[] = [
   },
 ];
 
-const subCommentary: Record<Sub, string> = {
-  peace: "When your mind is loud and the pressure is real, peace begins with trust—not control.",
-  strength: "Real strength isn’t noise or force—it’s steadiness under pressure.",
-  direction: "Clarity comes when you stop chasing options and start seeking wisdom.",
-  confidence: "Confidence grows when identity is anchored deeper than circumstances.",
-  hope: "Hope is not denial—it’s the decision to believe tomorrow can still improve.",
-};
-
-function clampMode(v: string | null): Mode {
-  if (v === "wisdom" || v === "success" || v === "encouragement") return v;
-  return "encouragement";
-}
-
-function clampSub(v: string | null): SubOrAll {
-  if (v === "peace" || v === "strength" || v === "direction" || v === "confidence" || v === "hope") return v;
-  return "all";
-}
-
 function PageInner() {
   const router = useRouter();
   const params = useSearchParams();
 
-  // Read URL params
-  const initialMode = clampMode(params.get("mode"));
-  const initialSub = clampSub(params.get("sub"));
-  const initialQ = params.get("q") ?? "";
+  const [mode, setMode] = useState<Mode>("encouragement");
+  const [sub, setSub] = useState<Sub | "all">("all");
+  const [q, setQ] = useState("");
+  const [isPro, setIsPro] = useState(false);
 
-  const [mode, setMode] = useState<Mode>(initialMode);
-  const [sub, setSub] = useState<SubOrAll>(initialSub);
-  const [q, setQ] = useState<string>(initialQ);
+  // ---- brand accent (premium refined) ----
+  const ACCENT = "#2563eb";
+  const ACCENT_SOFT = "rgba(37,99,235,0.28)";
 
-  // Keep state in sync if user uses back/forward buttons
-  useEffect(() => {
-    const nextMode = clampMode(params.get("mode"));
-    const nextSub = clampSub(params.get("sub"));
-    const nextQ = params.get("q") ?? "";
-
-    setMode(nextMode);
-    setSub(nextSub);
-    setQ(nextQ);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params]);
-
-  const setUrl = (next: { mode?: Mode; sub?: SubOrAll; q?: string }) => {
-    const nextMode = next.mode ?? mode;
-    const nextSub = next.sub ?? sub;
-    const nextQ = next.q ?? q;
-
-    const sp = new URLSearchParams();
-
-    // Keep URL short: only write non-defaults
-    if (nextMode !== "encouragement") sp.set("mode", nextMode);
-    if (nextMode === "encouragement" && nextSub !== "all") sp.set("sub", nextSub);
-    if (nextQ.trim().length > 0) sp.set("q", nextQ.trim());
-
-    const qs = sp.toString();
-    router.push(qs ? `/?${qs}` : `/`);
-  };
-
-  const results = useMemo(() => {
-    const needle = q.trim().toLowerCase();
-
-    return DATA.filter((item) => {
-      if (item.mode !== mode) return false;
-      if (mode === "encouragement" && sub !== "all") {
-        if (item.sub !== sub) return false;
-      }
-      if (!needle) return true;
-
-      const hay = `${item.title} ${item.body} ${item.ref}`.toLowerCase();
-      return hay.includes(needle);
-    });
-  }, [mode, sub, q]);
-
+  // ---- styles ----
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
-    background: "linear-gradient(180deg, #f6f8fb 0%, #ffffff 55%)",
-    padding: 16,
+    background:
+      "radial-gradient(1200px 700px at 20% 0%, rgba(37,99,235,0.18), transparent 60%), #eef2ff",
+    padding: 18,
   };
 
   const pageStyle: React.CSSProperties = {
-    maxWidth: 920,
+    maxWidth: 760,
+    minHeight: 520,
     margin: "0 auto",
+    padding: 18,
     fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
-    color: "#111",
   };
 
-  // Internal scroll panel (fixes mobile scroll weirdness)
-  const cardStyle: React.CSSProperties = {
-    background: "#fff",
-    borderRadius: 20,
-    border: "1px solid rgba(0,0,0,0.08)",
-    boxShadow: "0 24px 70px rgba(0,0,0,0.10)",
-    padding: 18,
-    height: "72vh",
-    overflowY: "auto",
-    WebkitOverflowScrolling: "touch",
-  };
+const cardStyle: React.CSSProperties = {
+  background: "#fff",
+  borderRadius: 20,
+  border: "1px solid rgba(0,0,0,0.08)",
+  boxShadow: "0 24px 70px rgba(0,0,0,0.10)",
+  padding: 18,
+
+  height: "72vh",          
+  overflowY: "auto",
+
+  // ✅ MOBILE SCROLL FIX
+  WebkitOverflowScrolling: "touch",
+  overscrollBehavior: "contain",
+  touchAction: "pan-y",
+};
 
   const softCardStyle: React.CSSProperties = {
     background: "#fff",
@@ -188,111 +134,273 @@ function PageInner() {
     boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
     padding: 16,
     transition: "transform 140ms ease, box-shadow 140ms ease",
-    cursor: "default",
   };
 
-  const pillBtn: React.CSSProperties = {
+  const pillBtnBase: React.CSSProperties = {
     padding: "10px 14px",
     borderRadius: 999,
-    border: "1px solid rgba(0,0,0,0.12)",
+    border: "1px solid rgba(0,0,0,0.08)",
     background: "#fff",
+    cursor: "pointer",
+    fontWeight: 650,
     fontSize: 14,
+    boxShadow: "0 2px 6px rgba(0,0,0,0.04)",
+    transition: "all 140ms ease",
+  };
+
+  const premiumBtnStyle: React.CSSProperties = {
+    padding: "12px 16px",
+    borderRadius: 14,
+    border: "1px solid rgba(0,0,0,0.10)",
+    background: "#111",
+    color: "#fff",
+    fontWeight: 800,
+    boxShadow: "0 8px 20px rgba(0,0,0,0.10)",
     cursor: "pointer",
+    transition: "transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease",
   };
 
-  const pillBtnActive: React.CSSProperties = {
-    ...pillBtn,
-    border: "1px solid rgba(0,0,0,0.18)",
-    boxShadow: "0 10px 22px rgba(0,0,0,0.08)",
-    fontWeight: 700,
+  const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
+    const nextMode = next.mode ?? mode;
+    const nextSub = next.sub ?? sub;
+    const nextQ = next.q ?? q;
+
+    const p = new URLSearchParams();
+    if (nextMode !== "encouragement") p.set("mode", nextMode);
+    if (nextMode === "encouragement" && nextSub !== "all") p.set("sub", nextSub);
+    if (nextQ.trim().length > 0) p.set("q", nextQ.trim());
+
+    const qs = p.toString();
+    router.replace(qs ? `/?${qs}` : `/`);
   };
 
-  const subBtn: React.CSSProperties = {
-    padding: "8px 12px",
-    borderRadius: 999,
-    border: "1px solid rgba(0,0,0,0.12)",
-    background: "#fff",
-    fontSize: 13,
-    cursor: "pointer",
-  };
+  useEffect(() => {
+    setIsPro(isProUser());
 
-  const subBtnActive: React.CSSProperties = {
-    ...subBtn,
-    border: "1px solid rgba(0,0,0,0.18)",
-    boxShadow: "0 10px 22px rgba(0,0,0,0.08)",
-    fontWeight: 700,
-  };
+    const m = (params.get("mode") as Mode) || "encouragement";
+    const s = (params.get("sub") as Sub) || "all";
+    const qq = params.get("q") || "";
+
+    const safeMode: Mode =
+      m === "encouragement" || m === "wisdom" || m === "success" ? m : "encouragement";
+
+    const safeSub: Sub | "all" =
+      s === "peace" || s === "strength" || s === "direction" || s === "confidence" || s === "hope"
+        ? s
+        : "all";
+
+    setMode(safeMode);
+    setSub(safeMode === "encouragement" ? safeSub : "all");
+    setQ(qq);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const results = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+    return DATA.filter((item) => {
+      if (item.mode !== mode) return false;
+      if (mode === "encouragement" && sub !== "all" && item.sub !== sub) return false;
+      if (!needle) return true;
+      const hay = `${item.title} ${item.body} ${item.ref}`.toLowerCase();
+      return hay.includes(needle);
+    });
+  }, [mode, sub, q]);
+
+  const subButtons: { label: string; value: Sub }[] = [
+    { label: "Peace", value: "peace" },
+    { label: "Strength", value: "strength" },
+    { label: "Direction", value: "direction" },
+    { label: "Confidence", value: "confidence" },
+    { label: "Hope", value: "hope" },
+  ];
 
   return (
     <div style={outerStyle}>
       <main style={pageStyle}>
-        <header style={{ marginBottom: 16 }}>
-          <h1 style={{ margin: 0, fontSize: 34, letterSpacing: -0.4 }}>Ask Solomon</h1>
-          <p style={{ marginTop: 8, marginBottom: 0, color: "#444" }}>
-            Encouragement first—wisdom from Proverbs for what you’re facing right now.
-          </p>
+        {/* HEADER */}
+        <header style={{ marginBottom: 24 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start" }}>
+            <div>
+              <h1
+                style={{
+                  margin: 0,
+                  fontSize: 38,
+                  letterSpacing: "-0.8px",
+                  lineHeight: 1.05,
+                  fontWeight: 800,
+                }}
+              >
+                Ask Solomon
+              </h1>
+              <p
+                style={{
+                  marginTop: 8,
+                  marginBottom: 0,
+                  color: "#555",
+                  fontSize: 16,
+                  lineHeight: 1.55,
+                  maxWidth: 620,
+                }}
+              >
+                Encouragement first—wisdom from Proverbs for what you’re facing right now.
+              </p>
+            </div>
+
+            {!isPro ? (
+              <button
+                style={premiumBtnStyle}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as any).style.transform = "translateY(-1px)";
+                  (e.currentTarget as any).style.boxShadow = "0 10px 24px rgba(0,0,0,0.14)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as any).style.transform = "translateY(0px)";
+                  (e.currentTarget as any).style.boxShadow = "0 8px 20px rgba(0,0,0,0.10)";
+                }}
+                onClick={() => router.push("/upgrade")}
+              >
+                Premium
+              </button>
+            ) : (
+              <div style={{ fontSize: 13, fontWeight: 750, color: "#111", paddingTop: 6 }}>✅ Pro Active</div>
+            )}
+          </div>
         </header>
 
-        <section style={cardStyle}>
-          {/* STICKY CONTROLS */}
-          <div
-            style={{
-              position: "sticky",
-              top: 10,
-              zIndex: 10,
-              background: "rgba(255,255,255,0.92)",
-              backdropFilter: "blur(8px)",
-              borderRadius: 16,
-              padding: 12,
-              border: "1px solid rgba(0,0,0,0.06)",
-              boxShadow: "0 14px 40px rgba(0,0,0,0.06)",
-              marginBottom: 14,
-            }}
-          >
+        {/* MAIN CARD */}
+      <section style={cardStyle}>
+  {/* STICKY CONTROLS */}
+  <div
+    style={{
+      position: "sticky",
+      top: 0, // 🔥 change from 10 to 0 (prevents weird gap)
+      zIndex: 20, // slightly higher to avoid overlap issues
+      background: "#ffffff", // solid for cleaner scroll feel
+      padding: 16,
+      borderBottom: "1px solid rgba(0,0,0,0.06)",
+      boxShadow: "0 10px 24px rgba(0,0,0,0.06)",
+      marginBottom: 16,
+    }}
+  >
             {/* MODE BUTTONS */}
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
               <button
-                style={mode === "encouragement" ? pillBtnActive : pillBtn}
+                style={{
+                  ...pillBtnBase,
+                  background: mode === "encouragement" ? "#111" : "#fff",
+                  color: mode === "encouragement" ? "#fff" : "#111",
+                  transform: mode === "encouragement" ? "translateY(-1px)" : "translateY(0px)",
+                  boxShadow:
+                    mode === "encouragement"
+                      ? "0 12px 26px rgba(0,0,0,0.20)"
+                      : "0 2px 6px rgba(0,0,0,0.04)",
+                }}
+                onMouseEnter={(e) => {
+                  if (mode !== "encouragement") {
+                    (e.currentTarget as any).style.transform = "translateY(-1px)";
+                    (e.currentTarget as any).style.boxShadow = "0 8px 18px rgba(0,0,0,0.10)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (mode !== "encouragement") {
+                    (e.currentTarget as any).style.transform = "translateY(0px)";
+                    (e.currentTarget as any).style.boxShadow = "0 2px 6px rgba(0,0,0,0.04)";
+                  }
+                }}
                 onClick={() => {
                   setMode("encouragement");
                   setSub("all");
-                  setQ("");
-                  setUrl({ mode: "encouragement", sub: "all", q: "" });
+                  setUrl({ mode: "encouragement", sub: "all" });
                 }}
               >
                 Encourage Me
               </button>
 
               <button
-                style={mode === "wisdom" ? pillBtnActive : pillBtn}
+                style={{
+                  ...pillBtnBase,
+                  background: mode === "wisdom" ? "#111" : "#fff",
+                  color: mode === "wisdom" ? "#fff" : "#111",
+                  transform: mode === "wisdom" ? "translateY(-1px)" : "translateY(0px)",
+                  boxShadow:
+                    mode === "wisdom"
+                      ? "0 12px 26px rgba(0,0,0,0.20)"
+                      : "0 2px 6px rgba(0,0,0,0.04)",
+                }}
+                onMouseEnter={(e) => {
+                  if (mode !== "wisdom") {
+                    (e.currentTarget as any).style.transform = "translateY(-1px)";
+                    (e.currentTarget as any).style.boxShadow = "0 8px 18px rgba(0,0,0,0.10)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (mode !== "wisdom") {
+                    (e.currentTarget as any).style.transform = "translateY(0px)";
+                    (e.currentTarget as any).style.boxShadow = "0 2px 6px rgba(0,0,0,0.04)";
+                  }
+                }}
                 onClick={() => {
                   setMode("wisdom");
                   setSub("all");
-                  setQ("");
-                  setUrl({ mode: "wisdom", sub: "all", q: "" });
+                  setUrl({ mode: "wisdom", sub: "all" });
                 }}
               >
                 Wisdom
               </button>
 
               <button
-                style={mode === "success" ? pillBtnActive : pillBtn}
+                style={{
+                  ...pillBtnBase,
+                  background: mode === "success" ? "#111" : "#fff",
+                  color: mode === "success" ? "#fff" : "#111",
+                  transform: mode === "success" ? "translateY(-1px)" : "translateY(0px)",
+                  boxShadow:
+                    mode === "success"
+                      ? "0 12px 26px rgba(0,0,0,0.20)"
+                      : "0 2px 6px rgba(0,0,0,0.04)",
+                }}
+                onMouseEnter={(e) => {
+                  if (mode !== "success") {
+                    (e.currentTarget as any).style.transform = "translateY(-1px)";
+                    (e.currentTarget as any).style.boxShadow = "0 8px 18px rgba(0,0,0,0.10)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (mode !== "success") {
+                    (e.currentTarget as any).style.transform = "translateY(0px)";
+                    (e.currentTarget as any).style.boxShadow = "0 2px 6px rgba(0,0,0,0.04)";
+                  }
+                }}
                 onClick={() => {
                   setMode("success");
                   setSub("all");
-                  setQ("");
-                  setUrl({ mode: "success", sub: "all", q: "" });
+                  setUrl({ mode: "success", sub: "all" });
                 }}
               >
                 Success
               </button>
+
+              <button
+                style={{ ...pillBtnBase, marginLeft: "auto" }}
+                onClick={() => router.push("/book")}
+                title="Book page"
+              >
+                Book
+              </button>
             </div>
 
-            {/* SUB TOPICS */}
+            {/* SUB BUTTONS */}
             {mode === "encouragement" && (
-              <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
                 <button
-                  style={sub === "all" ? subBtnActive : subBtn}
+                  style={{
+                    ...pillBtnBase,
+                    background: sub === "all" ? "#111" : "#fff",
+                    color: sub === "all" ? "#fff" : "#111",
+                    transform: sub === "all" ? "translateY(-1px)" : "translateY(0px)",
+                    boxShadow:
+                      sub === "all" ? "0 10px 22px rgba(0,0,0,0.16)" : "0 2px 6px rgba(0,0,0,0.04)",
+                  }}
                   onClick={() => {
                     setSub("all");
                     setUrl({ sub: "all" });
@@ -300,87 +408,71 @@ function PageInner() {
                 >
                   All
                 </button>
-                <button
-                  style={sub === "peace" ? subBtnActive : subBtn}
-                  onClick={() => {
-                    setSub("peace");
-                    setUrl({ sub: "peace" });
-                  }}
-                >
-                  Peace
-                </button>
-                <button
-                  style={sub === "strength" ? subBtnActive : subBtn}
-                  onClick={() => {
-                    setSub("strength");
-                    setUrl({ sub: "strength" });
-                  }}
-                >
-                  Strength
-                </button>
-                <button
-                  style={sub === "direction" ? subBtnActive : subBtn}
-                  onClick={() => {
-                    setSub("direction");
-                    setUrl({ sub: "direction" });
-                  }}
-                >
-                  Direction
-                </button>
-                <button
-                  style={sub === "confidence" ? subBtnActive : subBtn}
-                  onClick={() => {
-                    setSub("confidence");
-                    setUrl({ sub: "confidence" });
-                  }}
-                >
-                  Confidence
-                </button>
-                <button
-                  style={sub === "hope" ? subBtnActive : subBtn}
-                  onClick={() => {
-                    setSub("hope");
-                    setUrl({ sub: "hope" });
-                  }}
-                >
-                  Hope
-                </button>
+
+                {subButtons.map((b) => (
+                  <button
+                    key={b.value}
+                    style={{
+                      ...pillBtnBase,
+                      background: sub === b.value ? "#111" : "#fff",
+                      color: sub === b.value ? "#fff" : "#111",
+                      transform: sub === b.value ? "translateY(-1px)" : "translateY(0px)",
+                      boxShadow:
+                        sub === b.value ? "0 10px 22px rgba(0,0,0,0.16)" : "0 2px 6px rgba(0,0,0,0.04)",
+                    }}
+                    onClick={() => {
+                      setSub(b.value);
+                      setUrl({ sub: b.value });
+                    }}
+                  >
+                    {b.label}
+                  </button>
+                ))}
               </div>
             )}
 
             {/* SEARCH */}
-            <div style={{ marginTop: 12, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               <input
                 value={q}
-                onChange={(e) => {
-                  const next = e.target.value;
-                  setQ(next);
-                  setUrl({ q: next });
+                onChange={(e) => setQ(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") setUrl({ q });
                 }}
-                placeholder="Search a keyword (e.g., fear, diligence, counsel)…"
+                onFocus={(e) => {
+                  (e.currentTarget as any).style.boxShadow = `0 0 0 3px ${ACCENT_SOFT}`;
+                }}
+                onBlur={(e) => {
+                  (e.currentTarget as any).style.boxShadow = "inset 0 1px 2px rgba(0,0,0,0.04)";
+                }}
+                placeholder="Search keywords (press Enter)…"
                 style={{
-                  flex: 1,
-                  minWidth: 240,
-                  padding: "10px 12px",
-                  borderRadius: 12,
-                  border: "1px solid rgba(0,0,0,0.14)",
+                  flex: "1 1 320px",
+                  padding: "14px 14px",
+                  borderRadius: 16,
+                  border: "1px solid rgba(0,0,0,0.10)",
                   outline: "none",
                   fontSize: 14,
+                  boxShadow: "inset 0 1px 2px rgba(0,0,0,0.04)",
+                  transition: "all 120ms ease",
                 }}
               />
 
               <button
+                style={{ ...pillBtnBase, padding: "12px 14px", borderRadius: 14 }}
+                onClick={() => setUrl({ q })}
+              >
+                Search
+              </button>
+
+              <button
                 style={{
-                  padding: "10px 14px",
-                  borderRadius: 12,
-                  border: "1px solid rgba(0,0,0,0.14)",
-                  background: q.trim().length ? "#111" : "#ddd",
-                  color: q.trim().length ? "#fff" : "#555",
-                  fontSize: 14,
-                  cursor: q.trim().length ? "pointer" : "not-allowed",
+                  ...pillBtnBase,
+                  padding: "12px 14px",
+                  borderRadius: 14,
+                  opacity: q.trim().length ? 1 : 0.6,
                 }}
                 onClick={() => {
-                  if (!q.trim().length) return;
                   setQ("");
                   setUrl({ q: "" });
                 }}
@@ -392,26 +484,23 @@ function PageInner() {
           </div>
 
           {/* RESULTS */}
-          {mode === "encouragement" && sub !== "all" && (
-            <div
-              style={{
-                marginBottom: 16,
-                padding: 12,
-                background: "#f8fafc",
-                borderRadius: 12,
-                fontSize: 15,
-                color: "#444",
-              }}
-            >
-              {subCommentary[sub as Sub]}
-            </div>
-          )}
-
+       {mode === "encouragement" && sub !== "all" && (
+  <div
+    style={{
+      marginBottom: 16,
+      padding: 12,
+      background: "#f8fafc",
+      borderRadius: 12,
+      fontSize: 15,
+      color: "#444"
+    }}
+  >
+    {subCommentary[sub]}
+  </div>
+)} 
           <div style={{ display: "grid", gap: 12 }}>
             {results.length === 0 ? (
-              <div style={{ color: "#666", fontSize: 14, padding: 8 }}>
-                No matches. Try a different keyword.
-              </div>
+              <div style={{ color: "#666", fontSize: 14, padding: 8 }}>No matches. Try a different keyword.</div>
             ) : (
               results.map((item, idx) => (
                 <article
@@ -426,20 +515,54 @@ function PageInner() {
                     (e.currentTarget as any).style.boxShadow = "0 10px 26px rgba(0,0,0,0.06)";
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "baseline" }}>
-                    <h3 style={{ margin: 0, fontSize: 18 }}>{item.title}</h3>
-                    <span style={{ color: "#666", fontSize: 13, whiteSpace: "nowrap" }}>{item.ref}</span>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                    <div
+                      style={{
+                        fontWeight: 850,
+                        fontSize: 18,
+                        letterSpacing: "-0.2px",
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      {item.title}
+                    </div>
+
+                    <div
+                      style={{
+                        color: "#111",
+                        fontSize: 12,
+                        fontWeight: 800,
+                        whiteSpace: "nowrap",
+                        padding: "6px 10px",
+                        borderRadius: 999,
+                        border: "1px solid rgba(0,0,0,0.10)",
+                        background: "rgba(255,255,255,0.75)",
+                      }}
+                    >
+                      {item.ref}
+                    </div>
                   </div>
-                  <p style={{ marginTop: 10, marginBottom: 0, color: "#333", lineHeight: 1.45 }}>{item.body}</p>
+
+                  <p
+                    style={{
+                      marginTop: 8,
+                      marginBottom: 0,
+                      color: "rgba(0,0,0,0.74)",
+                      lineHeight: 1.6,
+                      fontSize: 14,
+                    }}
+                  >
+                    {item.body}
+                  </p>
                 </article>
               ))
             )}
           </div>
-        </section>
 
-        <footer style={{ marginTop: 14, color: "#777", fontSize: 12 }}>
-          <span>Tip: Use “Encourage Me” first, then narrow down by a sub-topic.</span>
-        </footer>
+          <div style={{ marginTop: 16, color: "rgba(0,0,0,0.55)", fontSize: 12, lineHeight: 1.4 }}>
+            Tip: Use the mode buttons + sub-buttons, then search within that view.
+          </div>
+        </section>
       </main>
     </div>
   );
