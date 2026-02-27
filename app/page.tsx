@@ -561,18 +561,49 @@ const cardStyle: React.CSSProperties = {
                       {item.title}
                     </div>
 
-                    <div
-                      style={{
-                        color: "#111",
-                        fontSize: 12,
-                        fontWeight: 800,
-                        whiteSpace: "nowrap",
-                        padding: "6px 10px",
-                        borderRadius: 999,
-                        border: "1px solid rgba(0,0,0,0.10)",
-                        background: "rgba(255,255,255,0.75)",
-                      }}
-                    >
+                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+  <div
+    style={{
+      color: "#111",
+      fontSize: 12,
+      fontWeight: 800,
+      whiteSpace: "nowrap",
+      padding: "6px 10px",
+      borderRadius: 999,
+      border: "1px solid rgba(0,0,0,0.10)",
+      background: "rgba(255,255,255,0.75)",
+    }}
+  >
+    {item.ref}
+  </div>
+
+  <button
+    onClick={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const key = `${item.ref}-${idx}`;
+      copyItem(item, key);
+    }}
+    style={{
+      padding: "6px 10px",
+      borderRadius: 999,
+      border: "1px solid rgba(0,0,0,0.10)",
+      background:
+        copiedKey === `${item.ref}-${idx}`
+          ? "#111"
+          : "rgba(255,255,255,0.75)",
+      color:
+        copiedKey === `${item.ref}-${idx}`
+          ? "#fff"
+          : "#111",
+      fontSize: 12,
+      fontWeight: 700,
+      cursor: "pointer",
+    }}
+  >
+    {copiedKey === `${item.ref}-${idx}` ? "Copied" : "Copy"}
+  </button>
+</div> 
                       {item.ref}
                     </div>
                   </div>
