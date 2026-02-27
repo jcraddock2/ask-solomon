@@ -2,10 +2,11 @@
 
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { isProUser } from "./lib/access"; // <-- change ONLY if your path differs
 
+/** ---------------- TYPES ---------------- */
 type Mode = "encouragement" | "wisdom" | "success";
 type Sub = "peace" | "strength" | "direction" | "confidence" | "hope";
+type SubOrAll = Sub | "all";
 
 type Item = {
   title: string;
@@ -15,8 +16,9 @@ type Item = {
   sub?: Sub;
 };
 
+/** ---------------- DATA ---------------- */
 const DATA: Item[] = [
-  // Encouragement (with subs)
+  // Encouragement
   {
     title: "Peace in anxious moments",
     body: "When your mind is racing, choose the calm path—wisdom steadies the heart.",
@@ -66,6 +68,12 @@ const DATA: Item[] = [
     ref: "Proverbs 4:23",
     mode: "wisdom",
   },
+  {
+    title: "The wise listen",
+    body: "Wisdom doesn’t need to win the moment—wisdom wants to win the outcome.",
+    ref: "Proverbs 12:15",
+    mode: "wisdom",
+  },
 
   // Success
   {
@@ -80,82 +88,189 @@ const DATA: Item[] = [
     ref: "Proverbs 15:22",
     mode: "success",
   },
+  {
+    title: "Build slowly, build strong",
+    body: "Real success is a system. Keep showing up—God rewards faithful work.",
+    ref: "Proverbs 13:11",
+    mode: "success",
+  },
 ];
+
+/** One-line commentary for encouragement subs */
 const subCommentary = {
   peace: "When your mind is loud and the pressure is real, peace begins with trust—not control.",
   strength: "Real strength isn’t noise or force—it’s steadiness under pressure.",
   direction: "Clarity comes when you stop chasing options and start seeking wisdom.",
   confidence: "Confidence grows when identity is anchored deeper than circumstances.",
-  hope: "Hope is not denial—it’s the decision to believe tomorrow can still improve."
+  hope: "Hope is not denial—it’s the decision to believe tomorrow can still improve.",
 } as const;
+
+const subButtons: { label: string; value: Sub }[] = [
+  { label: "Peace", value: "peace" },
+  { label: "Strength", value: "strength" },
+  { label: "Direction", value: "direction" },
+  { label: "Confidence", value: "confidence" },
+  { label: "Hope", value: "hope" },
+];
+
+/** Helpers */
+function clampMode(v: string | null): Mode {
+  if (v === "wisdom" || v === "success" || v === "encouragement") return v;
+  return "encouragement";
+}
+function clampSub(v: string | null): SubOrAll {
+  if (v === "peace" || v === "strength" || v === "direction" || v === "confidence" || v === "hope") return v;
+  return "all";
+}
+
+/** ---------------- PAGE ---------------- */
 function PageInner() {
   const router = useRouter();
   const params = useSearchParams();
 
   const [mode, setMode] = useState<Mode>("encouragement");
-  const [sub, setSub] = useState<Sub | "all">("all");
-  const [q, setQ] = useState("");
+  const [sub, setSub] = useState<SubOrAll>("all");
+  const [q, setQ] = useState<string>("");
   const [isPro, setIsPro] = useState(false);
-const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+  // Copy button state
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
   // ---- brand accent (premium refined) ----
   const ACCENT = "#2563eb";
   const ACCENT_SOFT = "rgba(37,99,235,0.28)";
-const copyItem = async (
-  item: { title: string; body: string; ref: string },
-  key: string
-) => {
-  const text = `${item.title}\n${item.body}\n— ${item.ref}`;
 
-  try {
-    await navigator.clipboard.writeText(text);
-    setCopiedKey(key);
-    setTimeout(() => setCopiedKey(null), 900);
-  } catch {
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand("copy");
-    document.body.removeChild(ta);
+  // On first load / back-forward: hydrate from URL
+  useEffect(() => {
+    const nextMode = clampMode(params.get("mode"));
+    const nextSub = clampSub(params.get("sub"));
+    const nextQ = params.get("q") ?? "";
 
-    setCopiedKey(key);
-    setTimeout(() => setCopiedKey(null), 900);
-  }
-};
-  // ---- styles ----
+    setMode(nextMode);
+    setSub(nextSub);
+    setQ(nextQ);
+
+    // Keep your Pro logic here if you already have it; placeholder:
+    // setIsPro(isProUser());
+  }, [params]);
+
+  const setUrl = (next: { mode?: Mode; sub?: SubOrAll; q?: string }) => {
+    const nextMode = next.mode ?? mode;
+    const nextSub = next.sub ?? sub;
+    const nextQ = next.q ?? q;
+
+    const sp = new URLSearchParams();
+    if (nextMode !== "encouragement") sp.set("mode", nextMode);
+    if (nextMode === "encouragement" && nextSub !== "all") sp.set("sub", nextSub);
+    if (nextQ.trim().length) sp.set("q", nextQ.trim());
+
+    const qs = sp.toString();
+    router.push(qs ? `/?${qs}` : `/`);
+  };
+
+  const results = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+
+    return DATA.filter((item) => {
+      if (item.mode !== mode) return false;
+
+      if (mode === "encouragement" && sub !== "all") {
+        if (item.sub !== sub) return false;
+      }
+
+      if (!needle) return true;
+
+      const hay = `${item.title} ${item.body} ${item.ref}`.toLowerCase();
+      return hay.includes(needle);
+    });
+  }, [mode, sub, q]);
+
+  const copyItem = async (item: { title: string; body: string; ref: string }, key: string) => {
+    const text = `${item.title}\n${item.body}\n— ${item.ref}`;
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(null), 900);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(null), 900);
+    }
+  };
+
+  /** ---------------- STYLES ---------------- */
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
-    background:
-      "radial-gradient(1200px 700px at 20% 0%, rgba(37,99,235,0.18), transparent 60%), #eef2ff",
-    padding: 18,
+    padding: 16,
+    background: `radial-gradient(900px 500px at 15% 0%, ${ACCENT_SOFT} 0%, rgba(255,255,255,0) 60%),
+                 linear-gradient(180deg, #f6f8fb 0%, #ffffff 60%)`,
   };
 
   const pageStyle: React.CSSProperties = {
-    maxWidth: 760,
-    minHeight: 520,
+    maxWidth: 920,
     margin: "0 auto",
-    padding: 18,
     fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+    color: "#0f172a",
   };
 
-const cardStyle: React.CSSProperties = {
-  background: "#fff",
-  borderRadius: 20,
-  border: "1px solid rgba(0,0,0,0.08)",
-  boxShadow: "0 24px 70px rgba(0,0,0,0.10)",
-  padding: 18,
+  const cardStyle: React.CSSProperties = {
+    background: "rgba(255,255,255,0.92)",
+    borderRadius: 20,
+    border: "1px solid rgba(0,0,0,0.08)",
+    boxShadow: "0 24px 70px rgba(0,0,0,0.10)",
+    padding: 18,
+    height: "72vh",
+    overflowY: "auto",
+    WebkitOverflowScrolling: "touch",
+  };
 
-  height: "72vh",          
-  overflowY: "auto",
+  const glowDivider: React.CSSProperties = {
+    height: 1,
+    background: `linear-gradient(90deg, rgba(0,0,0,0) 0%, ${ACCENT_SOFT} 25%, rgba(0,0,0,0.10) 50%, ${ACCENT_SOFT} 75%, rgba(0,0,0,0) 100%)`,
+    margin: "10px 0 2px",
+  };
 
-  // ✅ MOBILE SCROLL FIX
-  WebkitOverflowScrolling: "touch",
-  overscrollBehavior: "contain",
-  touchAction: "pan-y",
-};
+  const pillBase: React.CSSProperties = {
+    padding: "10px 14px",
+    borderRadius: 999,
+    border: "1px solid rgba(0,0,0,0.12)",
+    background: "rgba(255,255,255,0.75)",
+    fontSize: 14,
+    fontWeight: 800,
+    cursor: "pointer",
+  };
+
+  const pillActive: React.CSSProperties = {
+    ...pillBase,
+    border: `1px solid ${ACCENT_SOFT}`,
+    boxShadow: `0 18px 40px ${ACCENT_SOFT}`,
+  };
+
+  const subPillBase: React.CSSProperties = {
+    padding: "8px 12px",
+    borderRadius: 999,
+    border: "1px solid rgba(0,0,0,0.12)",
+    background: "rgba(255,255,255,0.70)",
+    fontSize: 13,
+    fontWeight: 800,
+    cursor: "pointer",
+  };
+
+  const subPillActive: React.CSSProperties = {
+    ...subPillBase,
+    border: `1px solid ${ACCENT_SOFT}`,
+    boxShadow: `0 16px 34px ${ACCENT_SOFT}`,
+  };
 
   const softCardStyle: React.CSSProperties = {
-    background: "#fff",
+    background: "rgba(255,255,255,0.90)",
     borderRadius: 18,
     border: "1px solid rgba(0,0,0,0.08)",
     boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
@@ -163,270 +278,103 @@ const cardStyle: React.CSSProperties = {
     transition: "transform 140ms ease, box-shadow 140ms ease",
   };
 
-  const pillBtnBase: React.CSSProperties = {
-    padding: "10px 14px",
-    borderRadius: 999,
-    border: "1px solid rgba(0,0,0,0.08)",
-    background: "#fff",
-    cursor: "pointer",
-    fontWeight: 650,
-    fontSize: 14,
-    boxShadow: "0 2px 6px rgba(0,0,0,0.04)",
-    transition: "all 140ms ease",
+  const stickyStyle: React.CSSProperties = {
+    position: "sticky",
+    top: 10,
+    zIndex: 10,
+    background: "rgba(255,255,255,0.92)",
+    backdropFilter: "blur(10px)",
+    borderRadius: 16,
+    padding: 12,
+    border: "1px solid rgba(0,0,0,0.06)",
+    boxShadow: `0 18px 60px rgba(0,0,0,0.07)`,
+    marginBottom: 14,
   };
 
-  const premiumBtnStyle: React.CSSProperties = {
-    padding: "12px 16px",
-    borderRadius: 14,
-    border: "1px solid rgba(0,0,0,0.10)",
-    background: "#111",
-    color: "#fff",
-    fontWeight: 800,
-    boxShadow: "0 8px 20px rgba(0,0,0,0.10)",
-    cursor: "pointer",
-    transition: "transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease",
-  };
-
-  const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
-    const nextMode = next.mode ?? mode;
-    const nextSub = next.sub ?? sub;
-    const nextQ = next.q ?? q;
-
-    const p = new URLSearchParams();
-    if (nextMode !== "encouragement") p.set("mode", nextMode);
-    if (nextMode === "encouragement" && nextSub !== "all") p.set("sub", nextSub);
-    if (nextQ.trim().length > 0) p.set("q", nextQ.trim());
-
-    const qs = p.toString();
-    router.replace(qs ? `/?${qs}` : `/`);
-  };
-
-  useEffect(() => {
-    setIsPro(isProUser());
-
-    const m = (params.get("mode") as Mode) || "encouragement";
-    const s = (params.get("sub") as Sub) || "all";
-    const qq = params.get("q") || "";
-
-    const safeMode: Mode =
-      m === "encouragement" || m === "wisdom" || m === "success" ? m : "encouragement";
-
-    const safeSub: Sub | "all" =
-      s === "peace" || s === "strength" || s === "direction" || s === "confidence" || s === "hope"
-        ? s
-        : "all";
-
-    setMode(safeMode);
-    setSub(safeMode === "encouragement" ? safeSub : "all");
-    setQ(qq);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const results = useMemo(() => {
-    const needle = q.trim().toLowerCase();
-    return DATA.filter((item) => {
-      if (item.mode !== mode) return false;
-      if (mode === "encouragement" && sub !== "all" && item.sub !== sub) return false;
-      if (!needle) return true;
-      const hay = `${item.title} ${item.body} ${item.ref}`.toLowerCase();
-      return hay.includes(needle);
-    });
-  }, [mode, sub, q]);
-
-  const subButtons: { label: string; value: Sub }[] = [
-    { label: "Peace", value: "peace" },
-    { label: "Strength", value: "strength" },
-    { label: "Direction", value: "direction" },
-    { label: "Confidence", value: "confidence" },
-    { label: "Hope", value: "hope" },
-  ];
+  /** ---------------- UI ---------------- */
   return (
     <div style={outerStyle}>
       <main style={pageStyle}>
         {/* HEADER */}
-        <header style={{ marginBottom: 24 }}>
+        <header style={{ marginBottom: 18 }}>
           <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start" }}>
             <div>
-              <h1
-                style={{
-                  margin: 0,
-                  fontSize: 38,
-                  letterSpacing: "-0.8px",
-                  lineHeight: 1.05,
-                  fontWeight: 800,
-                }}
-              >
+              <h1 style={{ margin: 0, fontSize: 38, letterSpacing: "-0.8px", lineHeight: 1.05, fontWeight: 900 }}>
                 Ask Solomon
               </h1>
-              <p
-                style={{
-                  marginTop: 8,
-                  marginBottom: 0,
-                  color: "#555",
-                  fontSize: 16,
-                  lineHeight: 1.55,
-                  maxWidth: 620,
-                }}
-              >
+              <p style={{ marginTop: 8, marginBottom: 0, color: "#334155", fontWeight: 650 }}>
                 Encouragement first—wisdom from Proverbs for what you’re facing right now.
               </p>
             </div>
 
-            {!isPro ? (
-              <button
-                style={premiumBtnStyle}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as any).style.transform = "translateY(-1px)";
-                  (e.currentTarget as any).style.boxShadow = "0 10px 24px rgba(0,0,0,0.14)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as any).style.transform = "translateY(0px)";
-                  (e.currentTarget as any).style.boxShadow = "0 8px 20px rgba(0,0,0,0.10)";
-                }}
-                onClick={() => router.push("/upgrade")}
-              >
-                Premium
-              </button>
-            ) : (
-              <div style={{ fontSize: 13, fontWeight: 750, color: "#111", paddingTop: 6 }}>✅ Pro Active</div>
-            )}
+            {/* optional status badge */}
+            <div
+              style={{
+                padding: "7px 10px",
+                borderRadius: 999,
+                border: "1px solid rgba(0,0,0,0.10)",
+                background: "rgba(255,255,255,0.75)",
+                color: "#111",
+                fontWeight: 900,
+                fontSize: 12,
+                whiteSpace: "nowrap",
+              }}
+              title={isPro ? "Pro Enabled" : "Free Mode"}
+            >
+              {isPro ? "PRO" : "FREE"}
+            </div>
           </div>
+
+          <div style={glowDivider} />
         </header>
 
-        {/* MAIN CARD */}
-      <section style={cardStyle}>
-  {/* STICKY CONTROLS */}
-  <div
-    style={{
-      position: "sticky",
-      top: 0, // 🔥 change from 10 to 0 (prevents weird gap)
-      zIndex: 20, // slightly higher to avoid overlap issues
-      background: "#ffffff", // solid for cleaner scroll feel
-      padding: 16,
-      borderBottom: "1px solid rgba(0,0,0,0.06)",
-      boxShadow: "0 10px 24px rgba(0,0,0,0.06)",
-      marginBottom: 16,
-    }}
-  >
+        <section style={cardStyle}>
+          {/* STICKY CONTROLS */}
+          <div style={stickyStyle}>
             {/* MODE BUTTONS */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               <button
-                style={{
-                  ...pillBtnBase,
-                  background: mode === "encouragement" ? "#111" : "#fff",
-                  color: mode === "encouragement" ? "#fff" : "#111",
-                  transform: mode === "encouragement" ? "translateY(-1px)" : "translateY(0px)",
-                  boxShadow:
-                    mode === "encouragement"
-                      ? "0 12px 26px rgba(0,0,0,0.20)"
-                      : "0 2px 6px rgba(0,0,0,0.04)",
-                }}
-                onMouseEnter={(e) => {
-                  if (mode !== "encouragement") {
-                    (e.currentTarget as any).style.transform = "translateY(-1px)";
-                    (e.currentTarget as any).style.boxShadow = "0 8px 18px rgba(0,0,0,0.10)";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (mode !== "encouragement") {
-                    (e.currentTarget as any).style.transform = "translateY(0px)";
-                    (e.currentTarget as any).style.boxShadow = "0 2px 6px rgba(0,0,0,0.04)";
-                  }
-                }}
+                style={mode === "encouragement" ? pillActive : pillBase}
                 onClick={() => {
                   setMode("encouragement");
                   setSub("all");
-                  setUrl({ mode: "encouragement", sub: "all" });
+                  setQ("");
+                  setUrl({ mode: "encouragement", sub: "all", q: "" });
                 }}
               >
                 Encourage Me
               </button>
 
               <button
-                style={{
-                  ...pillBtnBase,
-                  background: mode === "wisdom" ? "#111" : "#fff",
-                  color: mode === "wisdom" ? "#fff" : "#111",
-                  transform: mode === "wisdom" ? "translateY(-1px)" : "translateY(0px)",
-                  boxShadow:
-                    mode === "wisdom"
-                      ? "0 12px 26px rgba(0,0,0,0.20)"
-                      : "0 2px 6px rgba(0,0,0,0.04)",
-                }}
-                onMouseEnter={(e) => {
-                  if (mode !== "wisdom") {
-                    (e.currentTarget as any).style.transform = "translateY(-1px)";
-                    (e.currentTarget as any).style.boxShadow = "0 8px 18px rgba(0,0,0,0.10)";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (mode !== "wisdom") {
-                    (e.currentTarget as any).style.transform = "translateY(0px)";
-                    (e.currentTarget as any).style.boxShadow = "0 2px 6px rgba(0,0,0,0.04)";
-                  }
-                }}
+                style={mode === "wisdom" ? pillActive : pillBase}
                 onClick={() => {
                   setMode("wisdom");
                   setSub("all");
-                  setUrl({ mode: "wisdom", sub: "all" });
+                  setQ("");
+                  setUrl({ mode: "wisdom", sub: "all", q: "" });
                 }}
               >
                 Wisdom
               </button>
 
               <button
-                style={{
-                  ...pillBtnBase,
-                  background: mode === "success" ? "#111" : "#fff",
-                  color: mode === "success" ? "#fff" : "#111",
-                  transform: mode === "success" ? "translateY(-1px)" : "translateY(0px)",
-                  boxShadow:
-                    mode === "success"
-                      ? "0 12px 26px rgba(0,0,0,0.20)"
-                      : "0 2px 6px rgba(0,0,0,0.04)",
-                }}
-                onMouseEnter={(e) => {
-                  if (mode !== "success") {
-                    (e.currentTarget as any).style.transform = "translateY(-1px)";
-                    (e.currentTarget as any).style.boxShadow = "0 8px 18px rgba(0,0,0,0.10)";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (mode !== "success") {
-                    (e.currentTarget as any).style.transform = "translateY(0px)";
-                    (e.currentTarget as any).style.boxShadow = "0 2px 6px rgba(0,0,0,0.04)";
-                  }
-                }}
+                style={mode === "success" ? pillActive : pillBase}
                 onClick={() => {
                   setMode("success");
                   setSub("all");
-                  setUrl({ mode: "success", sub: "all" });
+                  setQ("");
+                  setUrl({ mode: "success", sub: "all", q: "" });
                 }}
               >
                 Success
               </button>
-
-              <button
-                style={{ ...pillBtnBase, marginLeft: "auto" }}
-                onClick={() => router.push("/book")}
-                title="Book page"
-              >
-                Book
-              </button>
             </div>
 
-            {/* SUB BUTTONS */}
+            {/* SUB TOPICS */}
             {mode === "encouragement" && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
+              <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
                 <button
-                  style={{
-                    ...pillBtnBase,
-                    background: sub === "all" ? "#111" : "#fff",
-                    color: sub === "all" ? "#fff" : "#111",
-                    transform: sub === "all" ? "translateY(-1px)" : "translateY(0px)",
-                    boxShadow:
-                      sub === "all" ? "0 10px 22px rgba(0,0,0,0.16)" : "0 2px 6px rgba(0,0,0,0.04)",
-                  }}
+                  style={sub === "all" ? subPillActive : subPillBase}
                   onClick={() => {
                     setSub("all");
                     setUrl({ sub: "all" });
@@ -438,14 +386,7 @@ const cardStyle: React.CSSProperties = {
                 {subButtons.map((b) => (
                   <button
                     key={b.value}
-                    style={{
-                      ...pillBtnBase,
-                      background: sub === b.value ? "#111" : "#fff",
-                      color: sub === b.value ? "#fff" : "#111",
-                      transform: sub === b.value ? "translateY(-1px)" : "translateY(0px)",
-                      boxShadow:
-                        sub === b.value ? "0 10px 22px rgba(0,0,0,0.16)" : "0 2px 6px rgba(0,0,0,0.04)",
-                    }}
+                    style={sub === b.value ? subPillActive : subPillBase}
                     onClick={() => {
                       setSub(b.value);
                       setUrl({ sub: b.value });
@@ -458,51 +399,45 @@ const cardStyle: React.CSSProperties = {
             )}
 
             {/* SEARCH */}
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <div style={{ marginTop: 12, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
               <input
                 value={q}
-                onChange={(e) => setQ(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") setUrl({ q });
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setQ(next);
+                  setUrl({ q: next });
                 }}
-                onFocus={(e) => {
-                  (e.currentTarget as any).style.boxShadow = `0 0 0 3px ${ACCENT_SOFT}`;
-                }}
-                onBlur={(e) => {
-                  (e.currentTarget as any).style.boxShadow = "inset 0 1px 2px rgba(0,0,0,0.04)";
-                }}
-                placeholder="Search keywords (press Enter)…"
+                placeholder="Search a keyword (e.g., fear, diligence, counsel)…"
                 style={{
-                  flex: "1 1 320px",
-                  padding: "14px 14px",
-                  borderRadius: 16,
-                  border: "1px solid rgba(0,0,0,0.10)",
+                  flex: 1,
+                  minWidth: 240,
+                  padding: "11px 12px",
+                  borderRadius: 14,
+                  border: "1px solid rgba(0,0,0,0.14)",
                   outline: "none",
                   fontSize: 14,
-                  boxShadow: "inset 0 1px 2px rgba(0,0,0,0.04)",
-                  transition: "all 120ms ease",
+                  background: "rgba(255,255,255,0.85)",
+                  boxShadow: `0 0 0 6px rgba(37,99,235,0.12)`,
                 }}
               />
 
               <button
-                style={{ ...pillBtnBase, padding: "12px 14px", borderRadius: 14 }}
-                onClick={() => setUrl({ q })}
-              >
-                Search
-              </button>
-
-              <button
-                style={{
-                  ...pillBtnBase,
-                  padding: "12px 14px",
-                  borderRadius: 14,
-                  opacity: q.trim().length ? 1 : 0.6,
-                }}
                 onClick={() => {
+                  if (!q.trim()) return;
                   setQ("");
                   setUrl({ q: "" });
                 }}
-                disabled={!q.trim().length}
+                disabled={!q.trim()}
+                style={{
+                  padding: "11px 14px",
+                  borderRadius: 14,
+                  border: "1px solid rgba(0,0,0,0.14)",
+                  background: q.trim() ? "#0f172a" : "rgba(0,0,0,0.08)",
+                  color: q.trim() ? "#fff" : "#334155",
+                  fontSize: 14,
+                  fontWeight: 800,
+                  cursor: q.trim() ? "pointer" : "not-allowed",
+                }}
               >
                 Clear
               </button>
@@ -510,123 +445,116 @@ const cardStyle: React.CSSProperties = {
           </div>
 
           {/* RESULTS */}
-       {mode === "encouragement" && sub !== "all" && (
-<div
-  style={{
-    marginBottom: 14,
-    padding: 14,
-    borderRadius: 16,
-    border: "1px solid rgba(0,0,0,0.08)",
-    background: "rgba(255,255,255,0.92)",
-    backdropFilter: "blur(10px)",
-    boxShadow: "0 14px 34px rgba(0,0,0,0.08)",
-    color: "#2b2b2b",
-    fontSize: 15,
-    lineHeight: 1.45,
-  }}
->
-  <div style={{ fontSize: 12, color: "#666", marginBottom: 6, letterSpacing: 0.2 }}>
-    Solomon’s note
-  </div>
-  {subCommentary[sub as keyof typeof subCommentary]}
-</div>
-)} 
+          {mode === "encouragement" && sub !== "all" && (
+            <div
+              style={{
+                marginBottom: 12,
+                padding: 14,
+                borderRadius: 16,
+                border: "1px solid rgba(0,0,0,0.08)",
+                background: "rgba(255,255,255,0.92)",
+                backdropFilter: "blur(10px)",
+                boxShadow: "0 14px 34px rgba(0,0,0,0.08)",
+                color: "#1f2937",
+                fontSize: 15,
+                lineHeight: 1.45,
+              }}
+            >
+              <div style={{ fontSize: 12, color: "#64748b", marginBottom: 6, letterSpacing: 0.2, fontWeight: 800 }}>
+                Solomon’s note
+              </div>
+              {subCommentary[sub as keyof typeof subCommentary]}
+            </div>
+          )}
+
+          <div style={{ marginBottom: 10, fontSize: 12, color: "#64748b", fontWeight: 800 }}>
+            Showing {results.length} result{results.length === 1 ? "" : "s"}
+          </div>
+
           <div style={{ display: "grid", gap: 12 }}>
             {results.length === 0 ? (
-              <div style={{ color: "#666", fontSize: 14, padding: 8 }}>No matches. Try a different keyword.</div>
+              <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 700 }}>
+                No matches. Try a different keyword.
+              </div>
             ) : (
-              results.map((item, idx) => (
-                <article
-                  key={`${item.ref}-${idx}`}
-                  style={softCardStyle}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as any).style.transform = "translateY(-1px)";
-                    (e.currentTarget as any).style.boxShadow = "0 14px 34px rgba(0,0,0,0.08)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as any).style.transform = "translateY(0px)";
-                    (e.currentTarget as any).style.boxShadow = "0 10px 26px rgba(0,0,0,0.06)";
-                  }}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-                    <div
-                      style={{
-                        fontWeight: 850,
-                        fontSize: 18,
-                        letterSpacing: "-0.2px",
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      {item.title}
-                    </div>
-
-                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-  <div
-    style={{
-      color: "#111",
-      fontSize: 12,
-      fontWeight: 800,
-      whiteSpace: "nowrap",
-      padding: "6px 10px",
-      borderRadius: 999,
-      border: "1px solid rgba(0,0,0,0.10)",
-      background: "rgba(255,255,255,0.75)",
-    }}
-  >
-    {item.ref}
-  </div>
-
-  <button
-    onClick={(e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const key = `${item.ref}-${idx}`;
-      copyItem(item, key);
-    }}
-    style={{
-      padding: "6px 10px",
-      borderRadius: 999,
-      border: "1px solid rgba(0,0,0,0.10)",
-      background:
-        copiedKey === `${item.ref}-${idx}`
-          ? "#111"
-          : "rgba(255,255,255,0.75)",
-      color:
-        copiedKey === `${item.ref}-${idx}`
-          ? "#fff"
-          : "#111",
-      fontSize: 12,
-      fontWeight: 700,
-      cursor: "pointer",
-    }}
-  >
-    {copiedKey === `${item.ref}-${idx}` ? "Copied" : "Copy"}
-  </button>
-</div> 
-                      {item.ref}
-                    </div>
-                  </div>
-
-                  <p
-                    style={{
-                      marginTop: 8,
-                      marginBottom: 0,
-                      color: "rgba(0,0,0,0.74)",
-                      lineHeight: 1.6,
-                      fontSize: 14,
+              results.map((item, idx) => {
+                const key = `${item.ref}-${idx}`;
+                return (
+                  <article
+                    key={key}
+                    style={softCardStyle}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as any).style.transform = "translateY(-1px)";
+                      (e.currentTarget as any).style.boxShadow = "0 14px 34px rgba(0,0,0,0.08)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as any).style.transform = "translateY(0px)";
+                      (e.currentTarget as any).style.boxShadow = "0 10px 26px rgba(0,0,0,0.06)";
                     }}
                   >
-                    {item.body}
-                  </p>
-                </article>
-              ))
+                    <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                      <div
+                        style={{
+                          fontWeight: 900,
+                          fontSize: 18,
+                          letterSpacing: "-0.2px",
+                          lineHeight: 1.2,
+                        }}
+                      >
+                        {item.title}
+                      </div>
+
+                      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                        <div
+                          style={{
+                            color: "#111",
+                            fontSize: 12,
+                            fontWeight: 900,
+                            whiteSpace: "nowrap",
+                            padding: "6px 10px",
+                            borderRadius: 999,
+                            border: "1px solid rgba(0,0,0,0.10)",
+                            background: "rgba(255,255,255,0.75)",
+                          }}
+                        >
+                          {item.ref}
+                        </div>
+
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            copyItem(item, key);
+                          }}
+                          style={{
+                            padding: "6px 10px",
+                            borderRadius: 999,
+                            border: "1px solid rgba(0,0,0,0.10)",
+                            background: copiedKey === key ? "#0f172a" : "rgba(255,255,255,0.75)",
+                            color: copiedKey === key ? "#fff" : "#0f172a",
+                            fontSize: 12,
+                            fontWeight: 900,
+                            cursor: "pointer",
+                          }}
+                        >
+                          {copiedKey === key ? "Copied" : "Copy"}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div style={{ marginTop: 10, color: "#0f172a", fontSize: 14, lineHeight: 1.5, fontWeight: 650 }}>
+                      {item.body}
+                    </div>
+                  </article>
+                );
+              })
             )}
           </div>
-
-          <div style={{ marginTop: 16, color: "rgba(0,0,0,0.55)", fontSize: 12, lineHeight: 1.4 }}>
-            Tip: Use the mode buttons + sub-buttons, then search within that view.
-          </div>
         </section>
+
+        <footer style={{ marginTop: 14, color: "#64748b", fontSize: 12, fontWeight: 700 }}>
+          Tip: Use “Encourage Me” first, then narrow down by a sub-topic.
+        </footer>
       </main>
     </div>
   );
