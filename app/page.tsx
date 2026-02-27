@@ -239,8 +239,7 @@ const cardStyle: React.CSSProperties = {
     { label: "Direction", value: "direction" },
     { label: "Confidence", value: "confidence" },
     { label: "Hope", value: "hope" },
-  ];
-
+  
   return (
     <div style={outerStyle}>
       <main style={pageStyle}>
