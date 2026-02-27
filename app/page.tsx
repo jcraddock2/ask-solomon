@@ -492,14 +492,18 @@ const cardStyle: React.CSSProperties = {
           {/* RESULTS */}
        {mode === "encouragement" && sub !== "all" && (
   <div
-    style={{
-      marginBottom: 16,
-      padding: 12,
-      background: "#f8fafc",
-      borderRadius: 12,
-      fontSize: 15,
-      color: "#444"
-    }}
+  style={{
+  marginBottom: 14,
+  padding: 14,
+  borderRadius: 16,
+  border: "1px solid rgba(0,0,0,0.08)",
+  background: "rgba(255,255,255,0.92)",
+  backdropFilter: "blur(10px)",
+  boxShadow: "0 14px 34px rgba(0,0,0,0.08)",
+  color: "#2b2b2b",
+  fontSize: 15,
+  lineHeight: 1.45,
+}}
   >
     {subCommentary[sub]}
   </div>
