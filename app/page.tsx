@@ -81,7 +81,19 @@ const DATA: Item[] = [
     mode: "success",
   },
 ];
+];
 
+const subCommentary: Record<Sub, string> = {
+  peace: "When your mind is loud and the pressure is real, peace begins with trust—not control.",
+  strength: "Real strength isn’t noise or force—it’s steadiness under pressure.",
+  direction: "Clarity comes when you stop chasing options and start seeking wisdom.",
+  confidence: "Confidence grows when identity is anchored deeper than circumstances.",
+  hope: "Hope is not denial—it’s the decision to believe tomorrow can still improve."
+};
+
+function PageInner() {
+  const router = useRouter();
+  const params = useSearchParams();
 function PageInner() {
   const router = useRouter();
   const params = useSearchParams();
