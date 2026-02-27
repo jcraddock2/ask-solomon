@@ -81,7 +81,7 @@ const DATA: Item[] = [
     mode: "success",
   },
 ];
-];
+
 
 const subCommentary: Record<Sub, string> = {
   peace: "When your mind is loud and the pressure is real, peace begins with trust—not control.",
