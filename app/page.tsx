@@ -117,8 +117,13 @@ const cardStyle: React.CSSProperties = {
   boxShadow: "0 24px 70px rgba(0,0,0,0.10)",
   padding: 18,
 
-  height: "72vh",          // 🔥 forces scroll area
-  overflowY: "auto",       // 🔥 enables scrolling inside the card
+  height: "72vh",          
+  overflowY: "auto",
+
+  // ✅ MOBILE SCROLL FIX
+  WebkitOverflowScrolling: "touch",
+  overscrollBehavior: "contain",
+  touchAction: "pan-y",
 };
 
   const softCardStyle: React.CSSProperties = {
