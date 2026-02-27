@@ -2,6 +2,7 @@
 
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { isProUser } from "./lib/access";
 
 /** ---------------- TYPES ---------------- */
 type Mode = "encouragement" | "wisdom" | "success";
@@ -90,13 +91,12 @@ const DATA: Item[] = [
   },
   {
     title: "Build slowly, build strong",
-    body: "Real success is a system. Keep showing up—God rewards faithful work.",
+    body: "Real success is a system. Keep showing up—faithful work compounds.",
     ref: "Proverbs 13:11",
     mode: "success",
   },
 ];
 
-/** One-line commentary for encouragement subs */
 const subCommentary = {
   peace: "When your mind is loud and the pressure is real, peace begins with trust—not control.",
   strength: "Real strength isn’t noise or force—it’s steadiness under pressure.",
@@ -113,7 +113,6 @@ const subButtons: { label: string; value: Sub }[] = [
   { label: "Hope", value: "hope" },
 ];
 
-/** Helpers */
 function clampMode(v: string | null): Mode {
   if (v === "wisdom" || v === "success" || v === "encouragement") return v;
   return "encouragement";
@@ -123,7 +122,6 @@ function clampSub(v: string | null): SubOrAll {
   return "all";
 }
 
-/** ---------------- PAGE ---------------- */
 function PageInner() {
   const router = useRouter();
   const params = useSearchParams();
@@ -131,16 +129,16 @@ function PageInner() {
   const [mode, setMode] = useState<Mode>("encouragement");
   const [sub, setSub] = useState<SubOrAll>("all");
   const [q, setQ] = useState<string>("");
-  const [isPro, setIsPro] = useState(false);
+  const [isPro, setIsPro] = useState<boolean>(false);
 
   // Copy button state
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
-  // ---- brand accent (premium refined) ----
+  // Brand accent (matches your glow vibe)
   const ACCENT = "#2563eb";
   const ACCENT_SOFT = "rgba(37,99,235,0.28)";
 
-  // On first load / back-forward: hydrate from URL
+  // Hydrate state from URL + Pro from localStorage
   useEffect(() => {
     const nextMode = clampMode(params.get("mode"));
     const nextSub = clampSub(params.get("sub"));
@@ -150,8 +148,12 @@ function PageInner() {
     setSub(nextSub);
     setQ(nextQ);
 
-    // Keep your Pro logic here if you already have it; placeholder:
-    // setIsPro(isProUser());
+    // Pro status
+    try {
+      setIsPro(isProUser());
+    } catch {
+      setIsPro(false);
+    }
   }, [params]);
 
   const setUrl = (next: { mode?: Mode; sub?: SubOrAll; q?: string }) => {
@@ -231,44 +233,6 @@ function PageInner() {
     WebkitOverflowScrolling: "touch",
   };
 
-  const glowDivider: React.CSSProperties = {
-    height: 1,
-    background: `linear-gradient(90deg, rgba(0,0,0,0) 0%, ${ACCENT_SOFT} 25%, rgba(0,0,0,0.10) 50%, ${ACCENT_SOFT} 75%, rgba(0,0,0,0) 100%)`,
-    margin: "10px 0 2px",
-  };
-
-  const pillBase: React.CSSProperties = {
-    padding: "10px 14px",
-    borderRadius: 999,
-    border: "1px solid rgba(0,0,0,0.12)",
-    background: "rgba(255,255,255,0.75)",
-    fontSize: 14,
-    fontWeight: 800,
-    cursor: "pointer",
-  };
-
-  const pillActive: React.CSSProperties = {
-    ...pillBase,
-    border: `1px solid ${ACCENT_SOFT}`,
-    boxShadow: `0 18px 40px ${ACCENT_SOFT}`,
-  };
-
-  const subPillBase: React.CSSProperties = {
-    padding: "8px 12px",
-    borderRadius: 999,
-    border: "1px solid rgba(0,0,0,0.12)",
-    background: "rgba(255,255,255,0.70)",
-    fontSize: 13,
-    fontWeight: 800,
-    cursor: "pointer",
-  };
-
-  const subPillActive: React.CSSProperties = {
-    ...subPillBase,
-    border: `1px solid ${ACCENT_SOFT}`,
-    boxShadow: `0 16px 34px ${ACCENT_SOFT}`,
-  };
-
   const softCardStyle: React.CSSProperties = {
     background: "rgba(255,255,255,0.90)",
     borderRadius: 18,
@@ -291,7 +255,44 @@ function PageInner() {
     marginBottom: 14,
   };
 
-  /** ---------------- UI ---------------- */
+  const pillBase: React.CSSProperties = {
+    padding: "10px 14px",
+    borderRadius: 999,
+    border: "1px solid rgba(0,0,0,0.12)",
+    background: "rgba(255,255,255,0.75)",
+    fontSize: 14,
+    fontWeight: 900,
+    cursor: "pointer",
+  };
+
+  const pillActive: React.CSSProperties = {
+    ...pillBase,
+    border: `1px solid ${ACCENT_SOFT}`,
+    boxShadow: `0 18px 40px ${ACCENT_SOFT}`,
+  };
+
+  const subPillBase: React.CSSProperties = {
+    padding: "8px 12px",
+    borderRadius: 999,
+    border: "1px solid rgba(0,0,0,0.12)",
+    background: "rgba(255,255,255,0.70)",
+    fontSize: 13,
+    fontWeight: 900,
+    cursor: "pointer",
+  };
+
+  const subPillActive: React.CSSProperties = {
+    ...subPillBase,
+    border: `1px solid ${ACCENT_SOFT}`,
+    boxShadow: `0 16px 34px ${ACCENT_SOFT}`,
+  };
+
+  const glowDivider: React.CSSProperties = {
+    height: 1,
+    background: `linear-gradient(90deg, rgba(0,0,0,0) 0%, ${ACCENT_SOFT} 25%, rgba(0,0,0,0.10) 50%, ${ACCENT_SOFT} 75%, rgba(0,0,0,0) 100%)`,
+    margin: "10px 0 2px",
+  };
+
   return (
     <div style={outerStyle}>
       <main style={pageStyle}>
@@ -307,21 +308,58 @@ function PageInner() {
               </p>
             </div>
 
-            {/* optional status badge */}
-            <div
-              style={{
-                padding: "7px 10px",
-                borderRadius: 999,
-                border: "1px solid rgba(0,0,0,0.10)",
-                background: "rgba(255,255,255,0.75)",
-                color: "#111",
-                fontWeight: 900,
-                fontSize: 12,
-                whiteSpace: "nowrap",
-              }}
-              title={isPro ? "Pro Enabled" : "Free Mode"}
-            >
-              {isPro ? "PRO" : "FREE"}
+            {/* RESTORED HEADER ACTIONS */}
+            <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+              <div
+                style={{
+                  padding: "7px 10px",
+                  borderRadius: 999,
+                  border: "1px solid rgba(0,0,0,0.10)",
+                  background: "rgba(255,255,255,0.75)",
+                  color: "#111",
+                  fontWeight: 900,
+                  fontSize: 12,
+                  whiteSpace: "nowrap",
+                }}
+                title={isPro ? "Pro Enabled" : "Free Mode"}
+              >
+                {isPro ? "PRO" : "FREE"}
+              </div>
+
+              <button
+                onClick={() => router.push("/book")}
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: 999,
+                  border: "1px solid rgba(0,0,0,0.12)",
+                  background: "rgba(255,255,255,0.80)",
+                  fontSize: 13,
+                  fontWeight: 900,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Book
+              </button>
+
+              {!isPro && (
+                <button
+                  onClick={() => router.push("/upgrade")}
+                  style={{
+                    padding: "10px 12px",
+                    borderRadius: 999,
+                    border: "1px solid rgba(0,0,0,0.12)",
+                    background: "#0f172a",
+                    color: "#fff",
+                    fontSize: 13,
+                    fontWeight: 900,
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  Upgrade (Lifetime)
+                </button>
+              )}
             </div>
           </div>
 
@@ -435,7 +473,7 @@ function PageInner() {
                   background: q.trim() ? "#0f172a" : "rgba(0,0,0,0.08)",
                   color: q.trim() ? "#fff" : "#334155",
                   fontSize: 14,
-                  fontWeight: 800,
+                  fontWeight: 900,
                   cursor: q.trim() ? "pointer" : "not-allowed",
                 }}
               >
@@ -444,7 +482,7 @@ function PageInner() {
             </div>
           </div>
 
-          {/* RESULTS */}
+          {/* SUB COMMENTARY */}
           {mode === "encouragement" && sub !== "all" && (
             <div
               style={{
@@ -460,20 +498,21 @@ function PageInner() {
                 lineHeight: 1.45,
               }}
             >
-              <div style={{ fontSize: 12, color: "#64748b", marginBottom: 6, letterSpacing: 0.2, fontWeight: 800 }}>
+              <div style={{ fontSize: 12, color: "#64748b", marginBottom: 6, letterSpacing: 0.2, fontWeight: 900 }}>
                 Solomon’s note
               </div>
               {subCommentary[sub as keyof typeof subCommentary]}
             </div>
           )}
 
-          <div style={{ marginBottom: 10, fontSize: 12, color: "#64748b", fontWeight: 800 }}>
+          <div style={{ marginBottom: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>
             Showing {results.length} result{results.length === 1 ? "" : "s"}
           </div>
 
+          {/* RESULTS GRID */}
           <div style={{ display: "grid", gap: 12 }}>
             {results.length === 0 ? (
-              <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 700 }}>
+              <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
                 No matches. Try a different keyword.
               </div>
             ) : (
@@ -493,14 +532,7 @@ function PageInner() {
                     }}
                   >
                     <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-                      <div
-                        style={{
-                          fontWeight: 900,
-                          fontSize: 18,
-                          letterSpacing: "-0.2px",
-                          lineHeight: 1.2,
-                        }}
-                      >
+                      <div style={{ fontWeight: 900, fontSize: 18, letterSpacing: "-0.2px", lineHeight: 1.2 }}>
                         {item.title}
                       </div>
 
@@ -552,7 +584,7 @@ function PageInner() {
           </div>
         </section>
 
-        <footer style={{ marginTop: 14, color: "#64748b", fontSize: 12, fontWeight: 700 }}>
+        <footer style={{ marginTop: 14, color: "#64748b", fontSize: 12, fontWeight: 800 }}>
           Tip: Use “Encourage Me” first, then narrow down by a sub-topic.
         </footer>
       </main>
