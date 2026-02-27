@@ -484,6 +484,20 @@ const cardStyle: React.CSSProperties = {
           </div>
 
           {/* RESULTS */}
+       {mode === "encouragement" && sub !== "all" && (
+  <div
+    style={{
+      marginBottom: 16,
+      padding: 12,
+      background: "#f8fafc",
+      borderRadius: 12,
+      fontSize: 15,
+      color: "#444"
+    }}
+  >
+    {subCommentary[sub]}
+  </div>
+)} 
           <div style={{ display: "grid", gap: 12 }}>
             {results.length === 0 ? (
               <div style={{ color: "#666", fontSize: 14, padding: 8 }}>No matches. Try a different keyword.</div>
