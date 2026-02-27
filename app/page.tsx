@@ -491,22 +491,25 @@ const cardStyle: React.CSSProperties = {
 
           {/* RESULTS */}
        {mode === "encouragement" && sub !== "all" && (
-  <div
-style={{
-  marginBottom: 14,
-  padding: 14,
-  borderRadius: 16,
-  border: "1px solid rgba(0,0,0,0.08)",
-  background: "rgba(255,255,255,0.92)",
-  backdropFilter: "blur(10px)",
-  boxShadow: "0 14px 34px rgba(0,0,0,0.08)",
-  color: "#2b2b2b",
-  fontSize: 15,
-  lineHeight: 1.45,
-}}
-     >
-   {subCommentary[sub as keyof typeof subCommentary]} 
+<div
+  style={{
+    marginBottom: 14,
+    padding: 14,
+    borderRadius: 16,
+    border: "1px solid rgba(0,0,0,0.08)",
+    background: "rgba(255,255,255,0.92)",
+    backdropFilter: "blur(10px)",
+    boxShadow: "0 14px 34px rgba(0,0,0,0.08)",
+    color: "#2b2b2b",
+    fontSize: 15,
+    lineHeight: 1.45,
+  }}
+>
+  <div style={{ fontSize: 12, color: "#666", marginBottom: 6, letterSpacing: 0.2 }}>
+    Solomon’s note
   </div>
+  {subCommentary[sub as keyof typeof subCommentary]}
+</div>
 )} 
           <div style={{ display: "grid", gap: 12 }}>
             {results.length === 0 ? (
