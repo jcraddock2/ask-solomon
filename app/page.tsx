@@ -96,11 +96,32 @@ function PageInner() {
   const [sub, setSub] = useState<Sub | "all">("all");
   const [q, setQ] = useState("");
   const [isPro, setIsPro] = useState(false);
-
+const [copiedKey, setCopiedKey] = useState<string | null>(null);
   // ---- brand accent (premium refined) ----
   const ACCENT = "#2563eb";
   const ACCENT_SOFT = "rgba(37,99,235,0.28)";
+const copyItem = async (
+  item: { title: string; body: string; ref: string },
+  key: string
+) => {
+  const text = `${item.title}\n${item.body}\n— ${item.ref}`;
 
+  try {
+    await navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(null), 900);
+  } catch {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(null), 900);
+  }
+};
   // ---- styles ----
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
