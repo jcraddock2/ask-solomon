@@ -2,7 +2,7 @@
 
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { isProUser } from "./lib/access";
+import { isProUser } from "./lib/access"; // If this errors, change to "../lib/access"
 
 type Mode = "encouragement" | "wisdom" | "success";
 type Sub = "peace" | "strength" | "direction" | "confidence" | "hope";
@@ -136,11 +136,15 @@ function PageInner() {
   const [favoriteKeys, setFavoriteKeys] = useState<Record<string, true>>({});
 
   const [searchFocused, setSearchFocused] = useState(false);
-const [focusKey, setFocusKey] = useState<string | null>(null);
+
+  // Today’s Focus: store one chosen verse key
+  const [focusKey, setFocusKey] = useState<string | null>(null);
+
+  const favoritesCount = Object.keys(favoriteKeys).length;
+
   const ACCENT = "#2563eb";
   const ACCENT_SOFT = "rgba(37,99,235,0.28)";
 
-  // Hydrate from URL + Pro + Favorites
   useEffect(() => {
     const nextMode = clampMode(params.get("mode"));
     const nextSub = clampSub(params.get("sub"));
@@ -164,19 +168,19 @@ const [focusKey, setFocusKey] = useState<string | null>(null);
     }
   }, [params]);
 
-const setUrl = (next: { mode?: Mode; sub?: SubOrAll; q?: string }) => {
-  const nextMode = next.mode ?? mode;
-  const nextSub = next.sub ?? sub;
-  const nextQ = next.q ?? q;
+  const setUrl = (next: { mode?: Mode; sub?: SubOrAll; q?: string }) => {
+    const nextMode = next.mode ?? mode;
+    const nextSub = next.sub ?? sub;
+    const nextQ = next.q ?? q;
 
-  const sp = new URLSearchParams();
-  if (nextMode !== "encouragement") sp.set("mode", nextMode);
-  if (nextMode === "encouragement" && nextSub !== "all") sp.set("sub", nextSub);
-  if (nextQ.trim().length) sp.set("q", nextQ.trim());
+    const sp = new URLSearchParams();
+    if (nextMode !== "encouragement") sp.set("mode", nextMode);
+    if (nextMode === "encouragement" && nextSub !== "all") sp.set("sub", nextSub);
+    if (nextQ.trim().length) sp.set("q", nextQ.trim());
 
-  const qs = sp.toString();
-  router.push(qs ? `/?${qs}` : `/`);
-};
+    const qs = sp.toString();
+    router.push(qs ? `/?${qs}` : `/`);
+  };
 
   const toggleFavorite = (key: string) => {
     setFavoriteKeys((prev) => {
@@ -214,30 +218,32 @@ const setUrl = (next: { mode?: Mode; sub?: SubOrAll; q?: string }) => {
     }
   };
 
-const results = useMemo(() => {
-  const needle = q.trim().toLowerCase();
+  const results = useMemo(() => {
+    const needle = q.trim().toLowerCase();
 
-  return DATA.filter((item) => {
-    if (item.mode !== mode) return false;
+    return DATA.filter((item) => {
+      if (item.mode !== mode) return false;
 
-    if (mode === "encouragement" && sub !== "all") {
-      if (item.sub !== sub) return false;
-    }
+      if (mode === "encouragement" && sub !== "all") {
+        if (item.sub !== sub) return false;
+      }
 
-    // Today’s Focus: if focusKey exists, show only that one item
-    const key = `${item.ref}-${item.title}`;
-    if (focusKey && key !== focusKey) return false;
+      const key = `${item.ref}-${item.title}`;
 
-    // Favorites filter
-    if (favoritesOnly && !favoriteKeys[key]) return false;
+      // Today’s Focus: show only the selected verse
+      if (focusKey && key !== focusKey) return false;
 
-    // Search filter
-    if (!needle) return true;
+      // Favorites-only filter
+      if (favoritesOnly && !favoriteKeys[key]) return false;
 
-    const hay = `${item.title} ${item.body} ${item.ref}`.toLowerCase();
-    return hay.includes(needle);
-  });
-}, [mode, sub, q, favoritesOnly, favoriteKeys, focusKey]);
+      // Search filter
+      if (!needle) return true;
+
+      const hay = `${item.title} ${item.body} ${item.ref}`.toLowerCase();
+      return hay.includes(needle);
+    });
+  }, [mode, sub, q, favoritesOnly, favoriteKeys, focusKey]);
+
   // -------- styles --------
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
@@ -270,7 +276,7 @@ const results = useMemo(() => {
     border: "1px solid rgba(0,0,0,0.08)",
     boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
     padding: 16,
-    transition: "transform 140ms ease, box-shadow 140ms ease",
+    transition: "transform 120ms ease, box-shadow 120ms ease",
   };
 
   const stickyStyle: React.CSSProperties = {
@@ -410,6 +416,7 @@ const results = useMemo(() => {
               <button
                 style={mode === "encouragement" ? pillActive : pillBase}
                 onClick={() => {
+                  setFocusKey(null);
                   setMode("encouragement");
                   setSub("all");
                   setQ("");
@@ -423,6 +430,7 @@ const results = useMemo(() => {
               <button
                 style={mode === "wisdom" ? pillActive : pillBase}
                 onClick={() => {
+                  setFocusKey(null);
                   setMode("wisdom");
                   setSub("all");
                   setQ("");
@@ -433,33 +441,63 @@ const results = useMemo(() => {
                 Wisdom
               </button>
 
-<button
-  style={focusKey ? pillActive : pillBase}
-  onClick={() => {
-    const pool = DATA.filter((item) => {
-      if (item.mode !== mode) return false;
-      if (mode === "encouragement" && sub !== "all") return item.sub === sub;
-      return true;
-    });
+              <button
+                style={mode === "success" ? pillActive : pillBase}
+                onClick={() => {
+                  setFocusKey(null);
+                  setMode("success");
+                  setSub("all");
+                  setQ("");
+                  setFavoritesOnly(false);
+                  setUrl({ mode: "success", sub: "all", q: "" });
+                }}
+              >
+                Success
+              </button>
 
-    const pick = pool[Math.floor(Math.random() * Math.max(1, pool.length))];
-    if (!pick) return;
+              <button
+                style={favoritesOnly ? pillActive : pillBase}
+                onClick={() => {
+                  setFocusKey(null); // turn off Today’s Focus
+                  setFavoritesOnly((v) => !v);
+                }}
+              >
+                ⭐ Favorites{favoritesCount ? ` (${favoritesCount})` : ""}
+              </button>
 
-    setFocusKey(`${pick.ref}-${pick.title}`);
-    setFavoritesOnly(false);
-    setQ("");
-    setUrl({ q: "" });
-  }}
-  title="One verse to focus on today"
->
-  <button style={favoritesOnly ? pillActive : pillBase} onClick={() => {
-  setFocusKey(null);                 // turn off Today's Focus
-  setFavoritesOnly((v) => !v); // make sure favorites turns off     // toggle favorites
-}}
-  ⭐ Favorites{Object.keys(favoriteKeys).length ? ` (${Object.keys(favoriteKeys).length})` : ""}
-</button>
-  ✨ Today’s Focus
-</button>
+              <button
+                style={focusKey ? pillActive : pillBase}
+                onClick={() => {
+                  // turn off favorites when focusing
+                  setFavoritesOnly(false);
+
+                  const pool = DATA.filter((item) => {
+                    if (item.mode !== mode) return false;
+                    if (mode === "encouragement" && sub !== "all") return item.sub === sub;
+                    return true;
+                  });
+
+                  const pick = pool[Math.floor(Math.random() * Math.max(1, pool.length))];
+                  if (!pick) return;
+
+                  setFocusKey(`${pick.ref}-${pick.title}`);
+                  setQ("");
+                  setUrl({ q: "" });
+                }}
+                title="One verse to focus on today"
+              >
+                ✨ Today’s Focus
+              </button>
+
+              {focusKey && (
+                <button
+                  style={pillBase}
+                  onClick={() => setFocusKey(null)}
+                  title="Show all verses again"
+                >
+                  Show All
+                </button>
+              )}
             </div>
 
             {mode === "encouragement" && (
@@ -467,6 +505,7 @@ const results = useMemo(() => {
                 <button
                   style={sub === "all" ? subPillActive : subPillBase}
                   onClick={() => {
+                    setFocusKey(null);
                     setSub("all");
                     setUrl({ sub: "all" });
                   }}
@@ -479,6 +518,7 @@ const results = useMemo(() => {
                     key={b.value}
                     style={sub === b.value ? subPillActive : subPillBase}
                     onClick={() => {
+                      setFocusKey(null);
                       setSub(b.value);
                       setUrl({ sub: b.value });
                     }}
@@ -493,6 +533,7 @@ const results = useMemo(() => {
               <input
                 value={q}
                 onChange={(e) => {
+                  setFocusKey(null); // searching should show all (not single focus)
                   const next = e.target.value;
                   setQ(next);
                   setUrl({ q: next });
@@ -516,6 +557,7 @@ const results = useMemo(() => {
               <button
                 onClick={() => {
                   if (!q.trim()) return;
+                  setFocusKey(null);
                   setQ("");
                   setUrl({ q: "" });
                 }}
@@ -565,21 +607,21 @@ const results = useMemo(() => {
           <div style={{ display: "grid", gap: 12 }}>
             {results.length === 0 ? (
               <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
-               {favoritesOnly && Object.keys(favoriteKeys).length === 0
-  ? "You haven’t saved any favorites yet. Tap ☆ on a verse to save it."
-  : "No matches. Try a different keyword."}
+                {favoritesOnly && favoritesCount === 0
+                  ? "You haven’t saved any favorites yet. Tap ☆ on a verse to save it."
+                  : "No matches. Try a different keyword."}
               </div>
             ) : (
               results.map((item, idx) => {
-                const favKey = `${item.ref}-${item.title}`;
-                const keyForCopy = favKey;
+                const key = `${item.ref}-${item.title}`;
+                const keyForCopy = key;
 
                 return (
                   <article
-                    key={`${favKey}-${idx}`}
+                    key={`${key}-${idx}`}
                     style={softCardStyle}
                     onMouseEnter={(e) => {
-                      (e.currentTarget as any).style.transform = "translateY(-1px)";
+                      (e.currentTarget as any).style.transform = "translateY(-2px)";
                       (e.currentTarget as any).style.boxShadow = "0 14px 34px rgba(0,0,0,0.08)";
                     }}
                     onMouseLeave={(e) => {
@@ -612,21 +654,21 @@ const results = useMemo(() => {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            toggleFavorite(favKey);
+                            toggleFavorite(key);
                           }}
                           style={{
                             padding: "6px 10px",
                             borderRadius: 999,
                             border: "1px solid rgba(0,0,0,0.10)",
-                            background: favoriteKeys[favKey] ? "#0f172a" : "rgba(255,255,255,0.75)",
-                            color: favoriteKeys[favKey] ? "#fff" : "#0f172a",
+                            background: favoriteKeys[key] ? "#0f172a" : "rgba(255,255,255,0.75)",
+                            color: favoriteKeys[key] ? "#fff" : "#0f172a",
                             fontSize: 12,
                             fontWeight: 900,
                             cursor: "pointer",
                           }}
-                          title={favoriteKeys[favKey] ? "Remove from Favorites" : "Save to Favorites"}
+                          title={favoriteKeys[key] ? "Remove from Favorites" : "Save to Favorites"}
                         >
-                          {favoriteKeys[favKey] ? "★" : "☆"}
+                          {favoriteKeys[key] ? "★" : "☆"}
                         </button>
 
                         <button
@@ -654,9 +696,10 @@ const results = useMemo(() => {
                     <div style={{ marginTop: 10, color: "#0f172a", fontSize: 14, lineHeight: 1.5, fontWeight: 650 }}>
                       {item.body}
                     </div>
+
                     <div style={{ marginTop: 8, fontSize: 12, color: "#64748b", fontWeight: 800 }}>
-  Save this. Sit with it. Apply it today.
-</div>
+                      Save this. Sit with it. Apply it today.
+                    </div>
                   </article>
                 );
               })
