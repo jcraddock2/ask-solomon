@@ -2,261 +2,164 @@
 
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { isProUser } from "./lib/access"; // If this errors, change to "../lib/access"
 
-type Mode = "encouragement" | "wisdom" | "success";
+type Mode = "encouragement" | "wisdom" | "wealth" | "success";
 type Sub = "peace" | "strength" | "direction" | "confidence" | "hope";
-type SubOrAll = Sub | "all";
 
 type Item = {
   title: string;
   body: string;
   ref: string;
   mode: Mode;
-  sub?: Sub;
+  sub?: Sub; // only used for encouragement sub-topics
 };
 
-const DATA: Item[] = [
-  // Encouragement
-  {
-    title: "Peace in anxious moments",
-    body: "When your mind is racing, choose the calm path—wisdom steadies the heart.",
-    ref: "Proverbs 12:25",
-    mode: "encouragement",
-    sub: "peace",
-  },
-  {
-    title: "Strength for the day",
-    body: "Don’t quit in the pressure—steady courage grows quietly and wins later.",
-    ref: "Proverbs 24:10",
-    mode: "encouragement",
-    sub: "strength",
-  },
-  {
-    title: "Direction when unsure",
-    body: "Seek counsel and walk the next right step—clarity comes with motion.",
-    ref: "Proverbs 11:14",
-    mode: "encouragement",
-    sub: "direction",
-  },
-  {
-    title: "Confidence without arrogance",
-    body: "Confidence is built on truth and discipline, not applause.",
-    ref: "Proverbs 3:5–6",
-    mode: "encouragement",
-    sub: "confidence",
-  },
-  {
-    title: "Hope for the long road",
-    body: "Delay doesn’t mean denial—keep sowing and stay faithful in small steps.",
-    ref: "Proverbs 13:12",
-    mode: "encouragement",
-    sub: "hope",
-  },
+const MODES: { key: Mode; label: string }[] = [
+  { key: "encouragement", label: "Encourage Me" },
+  { key: "wisdom", label: "Wisdom" },
+  { key: "wealth", label: "Wealth" },
+  { key: "success", label: "Success" },
+];
 
-  // Wisdom
-  {
-    title: "Wisdom is the main thing",
-    body: "If you’re unsure what to do next—choose wisdom first. It will shape every other decision.",
-    ref: "Proverbs 4:7",
-    mode: "wisdom",
-  },
-  {
-    title: "Guard your heart",
-    body: "Your inner life drives your outer life—protect what influences you most.",
-    ref: "Proverbs 4:23",
-    mode: "wisdom",
-  },
-  {
-    title: "The wise listen",
-    body: "Wisdom doesn’t need to win the moment—wisdom wants to win the outcome.",
-    ref: "Proverbs 12:15",
-    mode: "wisdom",
-  },
-
-  // Success
-  {
-    title: "Diligence wins",
-    body: "Consistency beats intensity. Small disciplined actions create real outcomes.",
-    ref: "Proverbs 10:4",
-    mode: "success",
-  },
-  {
-    title: "Plans + counsel",
-    body: "Strong results come from strong planning—wisdom multiplies when tested by counsel.",
-    ref: "Proverbs 15:22",
-    mode: "success",
-  },
-  {
-    title: "Build slowly, build strong",
-    body: "Real success is a system. Keep showing up—faithful work compounds.",
-    ref: "Proverbs 13:11",
-    mode: "success",
-  },
+const SUBS: { key: Sub; label: string }[] = [
+  { key: "peace", label: "Peace" },
+  { key: "strength", label: "Strength" },
+  { key: "direction", label: "Direction" },
+  { key: "confidence", label: "Confidence" },
+  { key: "hope", label: "Hope" },
 ];
 
 const subCommentary: Record<Sub, string> = {
-  peace: "When your mind is loud and the pressure is real, peace begins with trust—not control.",
-  strength: "Real strength isn’t noise or force—it’s steadiness under pressure.",
-  direction: "Clarity comes when you stop chasing options and start seeking wisdom.",
-  confidence: "Confidence grows when identity is anchored deeper than circumstances.",
-  hope: "Hope is not denial—it’s the decision to believe tomorrow can still improve.",
+  peace:
+    "Peace isn’t the absence of trouble—it’s the presence of God’s order in your mind. Slow down. Let wisdom settle your spirit before you act.",
+  strength:
+    "Strength isn’t hype. It’s quiet endurance. Take the next right step, even if it’s small—God builds giants one faithful choice at a time.",
+  direction:
+    "Direction comes after alignment. Ask: what is wise, what is true, what is pure—and then move. God steers a moving ship.",
+  confidence:
+    "Confidence is obedience with your shoulders back. You don’t need permission to do what’s right—just courage to begin.",
+  hope:
+    "Hope is a decision to see beyond the moment. Lift your eyes: today is not the whole story. Keep sowing—harvest comes.",
 };
 
-const subButtons: { label: string; value: Sub }[] = [
-  { label: "Peace", value: "peace" },
-  { label: "Strength", value: "strength" },
-  { label: "Direction", value: "direction" },
-  { label: "Confidence", value: "confidence" },
-  { label: "Hope", value: "hope" },
+const DATA: Item[] = [
+  // ENCOURAGEMENT
+  {
+    mode: "encouragement",
+    sub: "peace",
+    title: "Guard your heart",
+    body: "Protect what you allow into your mind. Peace is built by boundaries—what you focus on grows.",
+    ref: "Proverbs 4:23",
+  },
+  {
+    mode: "encouragement",
+    sub: "strength",
+    title: "Do not fear sudden terror",
+    body: "When fear tries to rush you, refuse it. Wisdom steadies you when emotions spike.",
+    ref: "Proverbs 3:25–26",
+  },
+  {
+    mode: "encouragement",
+    sub: "direction",
+    title: "He will make your paths straight",
+    body: "Acknowledge God in your decisions. Guidance often comes one step at a time—move in faith.",
+    ref: "Proverbs 3:5–6",
+  },
+  {
+    mode: "encouragement",
+    sub: "confidence",
+    title: "The righteous are bold",
+    body: "Confidence grows when you live clean and decisive. Integrity gives you a backbone.",
+    ref: "Proverbs 28:1",
+  },
+  {
+    mode: "encouragement",
+    sub: "hope",
+    title: "Your hope will not be cut off",
+    body: "Keep doing what’s wise and right. God protects the long-term outcome of faithful people.",
+    ref: "Proverbs 23:18",
+  },
+
+  // WISDOM
+  {
+    mode: "wisdom",
+    title: "Wisdom is the main thing",
+    body: "If you’re unsure what to do next—choose wisdom first. It will shape every other decision.",
+    ref: "Proverbs 4:7",
+  },
+  {
+    mode: "wisdom",
+    title: "Get understanding",
+    body: "Don’t just collect information—seek understanding. It saves time, money, and pain.",
+    ref: "Proverbs 4:5",
+  },
+
+  // WEALTH
+  {
+    mode: "wealth",
+    title: "Diligent hands bring wealth",
+    body: "Wealth is often the reward of consistency. Do the work you don’t feel like doing.",
+    ref: "Proverbs 10:4",
+  },
+  {
+    mode: "wealth",
+    title: "Honor the Lord with your wealth",
+    body: "Put God first in your resources. Trust changes how you spend, save, and give.",
+    ref: "Proverbs 3:9–10",
+  },
+
+  // SUCCESS
+  {
+    mode: "success",
+    title: "Commit your work",
+    body: "Give God your plans, then execute with discipline. Consistency turns prayers into progress.",
+    ref: "Proverbs 16:3",
+  },
+  {
+    mode: "success",
+    title: "Plans succeed with counsel",
+    body: "Don’t isolate. The right feedback protects you from blind spots and speeds your results.",
+    ref: "Proverbs 15:22",
+  },
 ];
 
-function clampMode(v: string | null): Mode {
-  if (v === "wisdom" || v === "success" || v === "encouragement") return v;
-  return "encouragement";
-}
-function clampSub(v: string | null): SubOrAll {
-  if (v === "peace" || v === "strength" || v === "direction" || v === "confidence" || v === "hope") return v;
-  return "all";
+function safeParse<T>(raw: string | null, fallback: T): T {
+  if (!raw) return fallback;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
 }
 
 function PageInner() {
   const router = useRouter();
-  const params = useSearchParams();
+  const sp = useSearchParams();
 
-  const [mode, setMode] = useState<Mode>("encouragement");
-  const [sub, setSub] = useState<SubOrAll>("all");
-  const [q, setQ] = useState<string>("");
+  const modeFromUrl = (sp.get("mode") as Mode) || "encouragement";
+  const subFromUrl = (sp.get("sub") as Sub) || "all";
+  const qFromUrl = sp.get("q") || "";
 
-  const [isPro, setIsPro] = useState<boolean>(false);
+  const [mode, setMode] = useState<Mode>(modeFromUrl);
+  const [sub, setSub] = useState<Sub | "all">(subFromUrl);
+  const [q, setQ] = useState<string>(qFromUrl);
 
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [favoriteKeys, setFavoriteKeys] = useState<Record<string, boolean>>({});
+  const [copiedKey, setCopiedKey] = useState<string>("");
 
-  const [favoritesOnly, setFavoritesOnly] = useState<boolean>(false);
-  const [favoriteKeys, setFavoriteKeys] = useState<Record<string, true>>({});
-
-  const [searchFocused, setSearchFocused] = useState(false);
-
-  // Today’s Focus: store one chosen verse key
-  const [focusKey, setFocusKey] = useState<string | null>(null);
-
-  const favoritesCount = Object.keys(favoriteKeys).length;
-
-  const ACCENT = "#2563eb";
-  const ACCENT_SOFT = "rgba(37,99,235,0.28)";
-
-  useEffect(() => {
-    const nextMode = clampMode(params.get("mode"));
-    const nextSub = clampSub(params.get("sub"));
-    const nextQ = params.get("q") ?? "";
-
-    setMode(nextMode);
-    setSub(nextSub);
-    setQ(nextQ);
-
-    try {
-      setIsPro(isProUser());
-    } catch {
-      setIsPro(false);
-    }
-
-    try {
-      const raw = localStorage.getItem("asksolomon:favorites");
-      if (raw) setFavoriteKeys(JSON.parse(raw));
-    } catch {
-      // ignore
-    }
-  }, [params]);
-
-  const setUrl = (next: { mode?: Mode; sub?: SubOrAll; q?: string }) => {
-    const nextMode = next.mode ?? mode;
-    const nextSub = next.sub ?? sub;
-    const nextQ = next.q ?? q;
-
-    const sp = new URLSearchParams();
-    if (nextMode !== "encouragement") sp.set("mode", nextMode);
-    if (nextMode === "encouragement" && nextSub !== "all") sp.set("sub", nextSub);
-    if (nextQ.trim().length) sp.set("q", nextQ.trim());
-
-    const qs = sp.toString();
-    router.push(qs ? `/?${qs}` : `/`);
-  };
-
-  const toggleFavorite = (key: string) => {
-    setFavoriteKeys((prev) => {
-      const next = { ...prev };
-      if (next[key]) delete next[key];
-      else next[key] = true;
-
-      try {
-        localStorage.setItem("asksolomon:favorites", JSON.stringify(next));
-      } catch {
-        // ignore
-      }
-
-      return next;
-    });
-  };
-
-  const copyItem = async (item: { title: string; body: string; ref: string }, key: string) => {
-    const text = `${item.title}\n${item.body}\n— ${item.ref}`;
-
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedKey(key);
-      setTimeout(() => setCopiedKey(null), 900);
-    } catch {
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      document.body.removeChild(ta);
-
-      setCopiedKey(key);
-      setTimeout(() => setCopiedKey(null), 900);
-    }
-  };
-
-  const results = useMemo(() => {
-    const needle = q.trim().toLowerCase();
-
-    return DATA.filter((item) => {
-      if (item.mode !== mode) return false;
-
-      if (mode === "encouragement" && sub !== "all") {
-        if (item.sub !== sub) return false;
-      }
-
-      const key = `${item.ref}-${item.title}`;
-
-      // Today’s Focus: show only the selected verse
-      if (focusKey && key !== focusKey) return false;
-
-      // Favorites-only filter
-      if (favoritesOnly && !favoriteKeys[key]) return false;
-
-      // Search filter
-      if (!needle) return true;
-
-      const hay = `${item.title} ${item.body} ${item.ref}`.toLowerCase();
-      return hay.includes(needle);
-    });
-  }, [mode, sub, q, favoritesOnly, favoriteKeys, focusKey]);
-
-  // -------- styles --------
+  // ---- styles
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
-    padding: 16,
-    background: `radial-gradient(900px 500px at 15% 0%, ${ACCENT_SOFT} 0%, rgba(255,255,255,0) 60%),
-                 linear-gradient(180deg, #f6f8fb 0%, #ffffff 60%)`,
+    background:
+      "radial-gradient(1200px 600px at 30% 10%, rgba(99,102,241,0.14), transparent 60%), radial-gradient(900px 500px at 80% 25%, rgba(16,185,129,0.12), transparent 60%), linear-gradient(180deg, #f8fafc, #ffffff)",
   };
 
   const pageStyle: React.CSSProperties = {
-    maxWidth: 920,
+    maxWidth: 980,
     margin: "0 auto",
+    padding: 20,
     fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
-    color: "#0f172a",
   };
 
   const cardStyle: React.CSSProperties = {
@@ -271,358 +174,248 @@ function PageInner() {
   };
 
   const softCardStyle: React.CSSProperties = {
-    background: "rgba(255,255,255,0.90)",
+    background: "#fff",
     borderRadius: 18,
     border: "1px solid rgba(0,0,0,0.08)",
     boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
     padding: 16,
-    transition: "transform 120ms ease, box-shadow 120ms ease",
+    transition: "transform 140ms ease, box-shadow 140ms ease",
   };
 
-  const stickyStyle: React.CSSProperties = {
-    position: "sticky",
-    top: 10,
-    zIndex: 10,
-    background: "rgba(255,255,255,0.92)",
-    backdropFilter: "blur(10px)",
-    borderRadius: 16,
-    padding: 12,
-    border: "1px solid rgba(0,0,0,0.06)",
-    boxShadow: `0 18px 60px rgba(0,0,0,0.07)`,
-    marginBottom: 14,
-  };
-
-  const pillBase: React.CSSProperties = {
-    padding: "10px 14px",
+  const pillBtn = (active: boolean): React.CSSProperties => ({
+    border: "1px solid rgba(0,0,0,0.10)",
+    background: active ? "rgba(17,24,39,0.92)" : "rgba(255,255,255,0.92)",
+    color: active ? "#fff" : "#111",
     borderRadius: 999,
-    border: "1px solid rgba(0,0,0,0.12)",
-    background: "rgba(255,255,255,0.75)",
-    fontSize: 14,
-    fontWeight: 900,
+    padding: "10px 12px",
     cursor: "pointer",
-    color: "#0f172a",
-  };
-
-  const pillActive: React.CSSProperties = {
-    ...pillBase,
-    background: "#0f172a",
-    color: "#fff",
-    border: "1px solid rgba(0,0,0,0.18)",
-    boxShadow: "0 18px 40px rgba(0,0,0,0.14)",
-  };
-
-  const subPillBase: React.CSSProperties = {
-    padding: "8px 12px",
-    borderRadius: 999,
-    border: "1px solid rgba(0,0,0,0.12)",
-    background: "rgba(255,255,255,0.70)",
+    fontWeight: 900,
     fontSize: 13,
-    fontWeight: 900,
+  });
+
+  const smallBtn: React.CSSProperties = {
+    border: "1px solid rgba(0,0,0,0.10)",
+    background: "rgba(255,255,255,0.92)",
+    borderRadius: 14,
+    padding: "10px 12px",
     cursor: "pointer",
-    color: "#0f172a",
+    fontWeight: 900,
+    fontSize: 13,
   };
 
-  const subPillActive: React.CSSProperties = {
-    ...subPillBase,
-    background: "#0f172a",
-    color: "#fff",
-    border: "1px solid rgba(0,0,0,0.18)",
-    boxShadow: "0 16px 34px rgba(0,0,0,0.12)",
+  // ---- load favorites
+  useEffect(() => {
+    const saved = safeParse<Record<string, boolean>>(localStorage.getItem("asksolomon:favorites"), {});
+    setFavoriteKeys(saved);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("asksolomon:favorites", JSON.stringify(favoriteKeys));
+  }, [favoriteKeys]);
+
+  // ---- url sync helper
+  const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
+    const nextMode = next.mode ?? mode;
+    const nextSub = next.sub ?? sub;
+    const nextQ = next.q ?? q;
+
+    const params = new URLSearchParams();
+    if (nextMode !== "encouragement") params.set("mode", nextMode);
+    if (nextMode === "encouragement" && nextSub !== "all") params.set("sub", nextSub);
+    if (nextQ.trim().length > 0) params.set("q", nextQ.trim());
+
+    const qs = params.toString();
+    router.push(qs ? `/?${qs}` : "/");
   };
 
-  const glowDivider: React.CSSProperties = {
-  height: 1,
-  background: "rgba(0,0,0,0.08)",
-  margin: "10px 0 2px",
-};
+  // keep state aligned when URL changes (refresh/back buttons)
+  useEffect(() => {
+    setMode(modeFromUrl);
+    setSub(subFromUrl);
+    setQ(qFromUrl);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sp]);
+
+  const favoritesCount = useMemo(() => Object.keys(favoriteKeys).length, [favoriteKeys]);
+
+  const toggleFavorite = (key: string) => {
+    setFavoriteKeys((prev) => {
+      const next = { ...prev };
+      if (next[key]) delete next[key];
+      else next[key] = true;
+      return next;
+    });
+  };
+
+  const handleCopy = async (item: Item, key: string) => {
+    const text = `${item.title}\n\n${item.body}\n\n${item.ref}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(""), 900);
+    } catch {
+      // fallback: do nothing (still safe)
+    }
+  };
+
+  const results = useMemo(() => {
+    const query = q.trim().toLowerCase();
+
+    let list = DATA.filter((d) => d.mode === mode);
+
+    if (mode === "encouragement" && sub !== "all") {
+      list = list.filter((d) => d.sub === sub);
+    }
+
+    if (query.length > 0) {
+      list = list.filter((d) => {
+        const hay = `${d.title} ${d.body} ${d.ref}`.toLowerCase();
+        return hay.includes(query);
+      });
+    }
+
+    // favorites filter is based on computed keys
+    if (favoritesOnly) {
+      list = list.filter((d) => {
+        const key = `${d.ref}-${d.title}`;
+        return !!favoriteKeys[key];
+      });
+    }
+
+    return list;
+  }, [mode, sub, q, favoritesOnly, favoriteKeys]);
+
   return (
     <div style={outerStyle}>
       <main style={pageStyle}>
-        {/* HEADER */}
-        <header style={{ marginBottom: 18 }}>
-    <div style={{ marginBottom: 28 }}>
-  {/* TOP ROW */}
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: 10,
-    }}
-  >
-    <h1
-      style={{
-        margin: 0,
-        fontSize: 38,
-        fontWeight: 700,
-        letterSpacing: "-0.5px",
-      }}
-    >
-      Ask Solomon
-    </h1>
-
-    {/* HEADER ACTIONS */}
-    <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-      <div
-        style={{
-          padding: "7px 10px",
-          borderRadius: 999,
-          border: "1px solid rgba(0,0,0,0.10)",
-          background: "rgba(255,255,255,0.75)",
-          color: "#111",
-          fontWeight: 900,
-          fontSize: 12,
-          whiteSpace: "nowrap",
-        }}
-        title={isPro ? "Pro Enabled" : "Free Mode"}
-      >
-        {isPro ? "PRO" : "FREE"}
-      </div>
-    </div>
-  </div>
-
-  {/* SUBTITLE */}
-  <p
-    style={{
-      margin: 0,
-      color: "#555",
-      fontSize: 16,
-      lineHeight: 1.5,
-    }}
-  >
-    Ancient wisdom. Real-world direction.
-    <span style={{ fontWeight: 600 }}>
-      {" "}Find the right word for this moment.
-    </span>
-  </p>
-</div> 
-              <button
-                onClick={() => router.push("/book")}
-                style={{
-                  padding: "10px 12px",
-                  borderRadius: 999,
-                  border: "1px solid rgba(0,0,0,0.12)",
-                  background: "rgba(255,255,255,0.80)",
-                  fontSize: 13,
-                  fontWeight: 900,
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                Book
-              </button>
-
-              {!isPro && (
-                <button
-                  onClick={() => router.push("/upgrade")}
-                  style={{
-                    padding: "10px 12px",
-                    borderRadius: 999,
-                    border: "1px solid rgba(0,0,0,0.12)",
-                    background: "#0f172a",
-                    color: "#fff",
-                    fontSize: 13,
-                    fontWeight: 900,
-                    cursor: "pointer",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  Upgrade (Lifetime)
-                </button>
-              )}
+        <header style={{ marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
+            <h1 style={{ margin: 0, fontSize: 34, letterSpacing: -0.5 }}>Ask Solomon</h1>
+            <div style={{ fontSize: 12, fontWeight: 900, color: "#334155" }}>
+              Favorites: {favoritesCount}
             </div>
           </div>
 
-          <div style={glowDivider} />
+          <p style={{ marginTop: 8, marginBottom: 0, color: "#334155", fontWeight: 700 }}>
+            Encouragement first—wisdom from Proverbs for what you’re facing right now.
+          </p>
         </header>
 
         <section style={cardStyle}>
           {/* STICKY CONTROLS */}
-          <div style={stickyStyle}>
+          <div
+            style={{
+              position: "sticky",
+              top: 10,
+              zIndex: 10,
+              background: "rgba(248,250,252,0.85)",
+              backdropFilter: "blur(10px)",
+              WebkitBackdropFilter: "blur(10px)",
+              border: "1px solid rgba(0,0,0,0.06)",
+              borderRadius: 18,
+              padding: 12,
+              boxShadow: "0 12px 28px rgba(0,0,0,0.08)",
+              marginBottom: 14,
+            }}
+          >
+            {/* MODE BUTTONS */}
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <button
-                style={mode === "encouragement" ? pillActive : pillBase}
-                onClick={() => {
-                  setFocusKey(null);
-                  setMode("encouragement");
-                  setSub("all");
-                  setQ("");
-                  setFavoritesOnly(false);
-                  setUrl({ mode: "encouragement", sub: "all", q: "" });
-                }}
-              >
-                Encourage Me
-              </button>
-
-              <button
-                style={mode === "wisdom" ? pillActive : pillBase}
-                onClick={() => {
-                  setFocusKey(null);
-                  setMode("wisdom");
-                  setSub("all");
-                  setQ("");
-                  setFavoritesOnly(false);
-                  setUrl({ mode: "wisdom", sub: "all", q: "" });
-                }}
-              >
-                Wisdom
-              </button>
-
-              <button
-                style={mode === "success" ? pillActive : pillBase}
-                onClick={() => {
-                  setFocusKey(null);
-                  setMode("success");
-                  setSub("all");
-                  setQ("");
-                  setFavoritesOnly(false);
-                  setUrl({ mode: "success", sub: "all", q: "" });
-                }}
-              >
-                Success
-              </button>
-
-              <button
-                style={favoritesOnly ? pillActive : pillBase}
-                onClick={() => {
-                  setFocusKey(null); // turn off Today’s Focus
-                  setFavoritesOnly((v) => !v);
-                }}
-              >
-                ⭐ Favorites{favoritesCount ? ` (${favoritesCount})` : ""}
-              </button>
-
-              <button
-                style={focusKey ? pillActive : pillBase}
-                onClick={() => {
-                  // turn off favorites when focusing
-                  setFavoritesOnly(false);
-
-                  const pool = DATA.filter((item) => {
-                    if (item.mode !== mode) return false;
-                    if (mode === "encouragement" && sub !== "all") return item.sub === sub;
-                    return true;
-                  });
-
-                  const pick = pool[Math.floor(Math.random() * Math.max(1, pool.length))];
-                  if (!pick) return;
-
-                  setFocusKey(`${pick.ref}-${pick.title}`);
-                  setQ("");
-                  setUrl({ q: "" });
-                }}
-                title="One verse to focus on today"
-              >
-                ✨ Today’s Focus
-              </button>
-
-              {focusKey && (
+              {MODES.map((m) => (
                 <button
-                  style={pillBase}
-                  onClick={() => setFocusKey(null)}
-                  title="Show all verses again"
+                  key={m.key}
+                  type="button"
+                  onClick={() => {
+                    setMode(m.key);
+                    const nextSub: Sub | "all" = m.key === "encouragement" ? "all" : "all";
+                    setSub(nextSub);
+                    setUrl({ mode: m.key, sub: "all" });
+                  }}
+                  style={pillBtn(mode === m.key)}
                 >
-                  Show All
+                  {m.label}
                 </button>
-              )}
+              ))}
+
+              <button
+                type="button"
+                onClick={() => setFavoritesOnly((v) => !v)}
+                style={{
+                  ...pillBtn(favoritesOnly),
+                  display: "flex",
+                  gap: 8,
+                  alignItems: "center",
+                }}
+                title="Show only saved favorites"
+              >
+                <span>☆</span>
+                <span>Favorites</span>
+              </button>
             </div>
 
+            {/* SUB BUTTONS (only for encouragement) */}
             {mode === "encouragement" && (
-              <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
                 <button
-                  style={sub === "all" ? subPillActive : subPillBase}
+                  type="button"
                   onClick={() => {
-                    setFocusKey(null);
                     setSub("all");
                     setUrl({ sub: "all" });
                   }}
+                  style={pillBtn(sub === "all")}
                 >
                   All
                 </button>
 
-                {subButtons.map((b) => (
+                {SUBS.map((s) => (
                   <button
-                    key={b.value}
-                    style={sub === b.value ? subPillActive : subPillBase}
+                    key={s.key}
+                    type="button"
                     onClick={() => {
-                      setFocusKey(null);
-                      setSub(b.value);
-                      setUrl({ sub: b.value });
+                      setSub(s.key);
+                      setUrl({ sub: s.key });
                     }}
+                    style={pillBtn(sub === s.key)}
                   >
-                    {b.label}
+                    {s.label}
                   </button>
                 ))}
               </div>
             )}
 
-            <div style={{ marginTop: 12, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+            {/* SEARCH */}
+            <div style={{ display: "flex", gap: 10, marginTop: 10, flexWrap: "wrap" }}>
               <input
                 value={q}
                 onChange={(e) => {
-                  setFocusKey(null); // searching should show all (not single focus)
-                  const next = e.target.value;
-                  setQ(next);
-                  setUrl({ q: next });
+                  setQ(e.target.value);
+                  setUrl({ q: e.target.value });
                 }}
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setSearchFocused(false)}
-                placeholder="Search a keyword (e.g., fear, diligence, counsel)…"
+                placeholder="Search keyword (e.g., fear, counsel, diligence)…"
                 style={{
                   flex: 1,
                   minWidth: 240,
-                  padding: "11px 12px",
+                  border: "1px solid rgba(0,0,0,0.12)",
                   borderRadius: 14,
-                  border: "1px solid rgba(0,0,0,0.14)",
+                  padding: "10px 12px",
+                  fontWeight: 700,
                   outline: "none",
-                  fontSize: 14,
-                  background: "rgba(255,255,255,0.85)",
-                  boxShadow: searchFocused ? `0 0 0 6px rgba(37,99,235,0.18)` : "none",
                 }}
               />
 
               <button
+                type="button"
                 onClick={() => {
-                  if (!q.trim()) return;
-                  setFocusKey(null);
                   setQ("");
                   setUrl({ q: "" });
                 }}
-                disabled={!q.trim()}
-                style={{
-                  padding: "11px 14px",
-                  borderRadius: 14,
-                  border: "1px solid rgba(0,0,0,0.14)",
-                  background: q.trim() ? "#0f172a" : "rgba(0,0,0,0.08)",
-                  color: q.trim() ? "#fff" : "#334155",
-                  fontSize: 14,
-                  fontWeight: 900,
-                  cursor: q.trim() ? "pointer" : "not-allowed",
-                }}
+                style={smallBtn}
               >
                 Clear
               </button>
             </div>
           </div>
 
-          {mode === "encouragement" && sub !== "all" && (
-            <div
-              style={{
-                marginBottom: 12,
-                padding: 14,
-                borderRadius: 16,
-                border: "1px solid rgba(0,0,0,0.08)",
-                background: "rgba(255,255,255,0.92)",
-                backdropFilter: "blur(10px)",
-                boxShadow: "0 14px 34px rgba(0,0,0,0.08)",
-                color: "#1f2937",
-                fontSize: 15,
-                lineHeight: 1.45,
-              }}
-            >
-              <div style={{ fontSize: 12, color: "#64748b", marginBottom: 6, letterSpacing: 0.2, fontWeight: 900 }}>
-                Solomon’s note
-                    {/* SOLOMON’S NOTE */}
+          {/* SOLOMON’S NOTE */}
           {mode === "encouragement" && sub !== "all" && subCommentary[sub as Sub] && (
             <div
               style={{
@@ -657,7 +450,7 @@ function PageInner() {
                   : "No matches. Try a different keyword."}
               </div>
             ) : (
-              results.map((item, idx) => {
+              results.map((item) => {
                 const key = `${item.ref}-${item.title}`;
                 const isFav = !!favoriteKeys[key];
                 const isCopied = copiedKey === key;
