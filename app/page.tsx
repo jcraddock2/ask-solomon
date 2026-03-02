@@ -622,15 +622,33 @@ function PageInner() {
             >
               <div style={{ fontSize: 12, color: "#64748b", marginBottom: 6, letterSpacing: 0.2, fontWeight: 900 }}>
                 Solomon’s note
+                    {/* SOLOMON’S NOTE */}
+          {mode === "encouragement" && sub !== "all" && subCommentary[sub as Sub] && (
+            <div
+              style={{
+                marginTop: 10,
+                marginBottom: 12,
+                padding: 12,
+                borderRadius: 14,
+                border: "1px solid rgba(0,0,0,0.08)",
+                background: "rgba(255,255,255,0.75)",
+              }}
+            >
+              <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 6 }}>
+                Solomon’s note
               </div>
-              {subCommentary[sub as Sub]}
+              <div style={{ fontSize: 14, color: "#334155", lineHeight: 1.5 }}>
+                {subCommentary[sub as Sub]}
+              </div>
             </div>
           )}
 
+          {/* RESULTS COUNT */}
           <div style={{ marginBottom: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>
             Showing {results.length} result{results.length === 1 ? "" : "s"}
           </div>
 
+          {/* RESULTS GRID */}
           <div style={{ display: "grid", gap: 12 }}>
             {results.length === 0 ? (
               <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
@@ -641,102 +659,78 @@ function PageInner() {
             ) : (
               results.map((item, idx) => {
                 const key = `${item.ref}-${item.title}`;
-                const keyForCopy = key;
+                const isFav = !!favoriteKeys[key];
+                const isCopied = copiedKey === key;
 
                 return (
-                  <article
-                    key={`${key}-${idx}`}
-                    style={softCardStyle}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as any).style.transform = "translateY(-2px)";
-                      (e.currentTarget as any).style.boxShadow = "0 14px 34px rgba(0,0,0,0.08)";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as any).style.transform = "translateY(0px)";
-                      (e.currentTarget as any).style.boxShadow = "0 10px 26px rgba(0,0,0,0.06)";
+                  <div
+                    key={key}
+                    style={{
+                      ...softCardStyle,
+                      transform: "translateY(0px)",
                     }}
                   >
-                    <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-                      <div style={{ fontWeight: 900, fontSize: 18, letterSpacing: "-0.2px", lineHeight: 1.2 }}>
-                        {item.title}
-                      </div>
-
-                      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                        <div
-                          style={{
-                            color: "#111",
-                            fontSize: 12,
-                            fontWeight: 900,
-                            whiteSpace: "nowrap",
-                            padding: "6px 10px",
-                            borderRadius: 999,
-                            border: "1px solid rgba(0,0,0,0.10)",
-                            background: "rgba(255,255,255,0.75)",
-                          }}
-                        >
-                          {item.ref}
+                    <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 900, fontSize: 15, color: "#111" }}>
+                          {item.title}
                         </div>
 
+                        <div style={{ marginTop: 6, fontSize: 16, lineHeight: 1.6, color: "#222" }}>
+                          {item.body}
+                        </div>
+
+                        <div style={{ marginTop: 10, fontSize: 13, color: "#64748b", fontWeight: 700 }}>
+                          {item.ref}
+                        </div>
+                      </div>
+
+                      {/* RIGHT ACTIONS */}
+                      <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
                         <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            toggleFavorite(key);
-                          }}
+                          type="button"
+                          onClick={() => toggleFavorite(key)}
                           style={{
-                            padding: "6px 10px",
-                            borderRadius: 999,
                             border: "1px solid rgba(0,0,0,0.10)",
-                            background: favoriteKeys[key] ? "#0f172a" : "rgba(255,255,255,0.75)",
-                            color: favoriteKeys[key] ? "#fff" : "#0f172a",
-                            fontSize: 12,
-                            fontWeight: 900,
+                            background: "rgba(255,255,255,0.85)",
+                            borderRadius: 12,
+                            padding: "8px 10px",
                             cursor: "pointer",
+                            fontWeight: 900,
                           }}
-                          title={favoriteKeys[key] ? "Remove from Favorites" : "Save to Favorites"}
+                          title={isFav ? "Remove favorite" : "Save favorite"}
                         >
-                          {favoriteKeys[key] ? "★" : "☆"}
+                          {isFav ? "★" : "☆"}
                         </button>
 
                         <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            copyItem(item, keyForCopy);
-                          }}
+                          type="button"
+                          onClick={() => handleCopy(item, key)}
                           style={{
-                            padding: "6px 10px",
-                            borderRadius: 999,
                             border: "1px solid rgba(0,0,0,0.10)",
-                            background: copiedKey === keyForCopy ? "#0f172a" : "rgba(255,255,255,0.75)",
-                            color: copiedKey === keyForCopy ? "#fff" : "#0f172a",
-                            fontSize: 12,
-                            fontWeight: 900,
+                            background: "rgba(255,255,255,0.85)",
+                            borderRadius: 12,
+                            padding: "8px 10px",
                             cursor: "pointer",
+                            fontWeight: 900,
+                            fontSize: 12,
                           }}
                         >
-                          {copiedKey === keyForCopy ? "Copied" : "Copy"}
+                          {isCopied ? "Copied" : "Copy"}
                         </button>
                       </div>
                     </div>
 
-                    <div style={{ marginTop: 10, color: "#0f172a", fontSize: 14, lineHeight: 1.5, fontWeight: 650 }}>
-                      {item.body}
-                    </div>
-
-                    <div style={{ marginTop: 8, fontSize: 12, color: "#64748b", fontWeight: 800 }}>
+                    {/* MICRO PROMPT (premium feel) */}
+                    <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 800 }}>
                       Save this. Sit with it. Apply it today.
                     </div>
-                  </article>
+                  </div>
                 );
               })
             )}
           </div>
         </section>
-
-        <footer style={{ marginTop: 14, color: "#64748b", fontSize: 12, fontWeight: 800 }}>
-          Tip: Star what you love, then tap Favorites to see only saved items.
-        </footer>
       </main>
     </div>
   );
