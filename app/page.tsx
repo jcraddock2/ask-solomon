@@ -2,16 +2,17 @@
 
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { isProUser } from "./lib/access"; // <-- if your access.ts lives elsewhere, adjust path
 
 type Mode = "encouragement" | "wisdom" | "wealth" | "success";
 type Sub = "peace" | "strength" | "direction" | "confidence" | "hope";
 
-type Item = {
+type VerseItem = {
   title: string;
   body: string;
   ref: string;
   mode: Mode;
-  sub?: Sub; // only used for encouragement sub-topics
+  sub?: Sub; // used only when mode === "encouragement"
 };
 
 const MODES: { key: Mode; label: string }[] = [
@@ -31,19 +32,25 @@ const SUBS: { key: Sub; label: string }[] = [
 
 const subCommentary: Record<Sub, string> = {
   peace:
-    "Peace isn’t the absence of trouble—it’s the presence of God’s order in your mind. Slow down. Let wisdom settle your spirit before you act.",
+    "Peace isn’t the absence of pressure—it’s the presence of order in your mind. Slow down. Let wisdom settle you before you act.",
   strength:
-    "Strength isn’t hype. It’s quiet endurance. Take the next right step, even if it’s small—God builds giants one faithful choice at a time.",
+    "Strength isn’t hype. It’s endurance. Take the next right step—quietly, consistently—and God will meet you in motion.",
   direction:
-    "Direction comes after alignment. Ask: what is wise, what is true, what is pure—and then move. God steers a moving ship.",
+    "Direction comes after alignment. Choose what is wise, true, and clean—then move. God steers a moving ship.",
   confidence:
-    "Confidence is obedience with your shoulders back. You don’t need permission to do what’s right—just courage to begin.",
+    "Confidence is obedience with your shoulders back. Integrity gives you backbone. Begin before you feel ready.",
   hope:
-    "Hope is a decision to see beyond the moment. Lift your eyes: today is not the whole story. Keep sowing—harvest comes.",
+    "Hope is the decision to see beyond the moment. Today isn’t the whole story. Keep sowing—harvest comes.",
 };
 
-const DATA: Item[] = [
-  // ENCOURAGEMENT
+/**
+ * ✅ PASTE YOUR FULL DATASET HERE
+ * Keep the shape: { title, body, ref, mode, sub? }
+ * - mode must be one of: encouragement | wisdom | wealth | success
+ * - sub only for encouragement items
+ */
+const DATA: VerseItem[] = [
+  // --- SAMPLE (safe placeholders) ---
   {
     mode: "encouragement",
     sub: "peace",
@@ -53,34 +60,11 @@ const DATA: Item[] = [
   },
   {
     mode: "encouragement",
-    sub: "strength",
-    title: "Do not fear sudden terror",
-    body: "When fear tries to rush you, refuse it. Wisdom steadies you when emotions spike.",
-    ref: "Proverbs 3:25–26",
-  },
-  {
-    mode: "encouragement",
     sub: "direction",
     title: "He will make your paths straight",
-    body: "Acknowledge God in your decisions. Guidance often comes one step at a time—move in faith.",
+    body: "Trust God beyond your understanding. Guidance often comes one step at a time—move in faith.",
     ref: "Proverbs 3:5–6",
   },
-  {
-    mode: "encouragement",
-    sub: "confidence",
-    title: "The righteous are bold",
-    body: "Confidence grows when you live clean and decisive. Integrity gives you a backbone.",
-    ref: "Proverbs 28:1",
-  },
-  {
-    mode: "encouragement",
-    sub: "hope",
-    title: "Your hope will not be cut off",
-    body: "Keep doing what’s wise and right. God protects the long-term outcome of faithful people.",
-    ref: "Proverbs 23:18",
-  },
-
-  // WISDOM
   {
     mode: "wisdom",
     title: "Wisdom is the main thing",
@@ -88,38 +72,16 @@ const DATA: Item[] = [
     ref: "Proverbs 4:7",
   },
   {
-    mode: "wisdom",
-    title: "Get understanding",
-    body: "Don’t just collect information—seek understanding. It saves time, money, and pain.",
-    ref: "Proverbs 4:5",
-  },
-
-  // WEALTH
-  {
     mode: "wealth",
     title: "Diligent hands bring wealth",
     body: "Wealth is often the reward of consistency. Do the work you don’t feel like doing.",
     ref: "Proverbs 10:4",
   },
   {
-    mode: "wealth",
-    title: "Honor the Lord with your wealth",
-    body: "Put God first in your resources. Trust changes how you spend, save, and give.",
-    ref: "Proverbs 3:9–10",
-  },
-
-  // SUCCESS
-  {
     mode: "success",
     title: "Commit your work",
     body: "Give God your plans, then execute with discipline. Consistency turns prayers into progress.",
     ref: "Proverbs 16:3",
-  },
-  {
-    mode: "success",
-    title: "Plans succeed with counsel",
-    body: "Don’t isolate. The right feedback protects you from blind spots and speeds your results.",
-    ref: "Proverbs 15:22",
   },
 ];
 
@@ -136,23 +98,28 @@ function PageInner() {
   const router = useRouter();
   const sp = useSearchParams();
 
-  const modeFromUrl = (sp.get("mode") as Mode) || "encouragement";
-  const subFromUrl = (sp.get("sub") as Sub) || "all";
-  const qFromUrl = sp.get("q") || "";
+  // URL -> initial state
+  const urlMode = (sp.get("mode") as Mode) || "encouragement";
+  const urlSub = (sp.get("sub") as Sub) || "all";
+  const urlQ = sp.get("q") || "";
 
-  const [mode, setMode] = useState<Mode>(modeFromUrl);
-  const [sub, setSub] = useState<Sub | "all">(subFromUrl);
-  const [q, setQ] = useState<string>(qFromUrl);
+  const [mode, setMode] = useState<Mode>(urlMode);
+  const [sub, setSub] = useState<Sub | "all">(urlSub);
+  const [q, setQ] = useState<string>(urlQ);
+
+  const [isPro, setIsPro] = useState(false);
 
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [favoriteKeys, setFavoriteKeys] = useState<Record<string, boolean>>({});
   const [copiedKey, setCopiedKey] = useState<string>("");
 
-  // ---- styles
+  const [hoverKey, setHoverKey] = useState<string>("");
+
+  // ---- styles (kept verbose like your “premium glow” build)
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
     background:
-      "radial-gradient(1200px 600px at 30% 10%, rgba(99,102,241,0.14), transparent 60%), radial-gradient(900px 500px at 80% 25%, rgba(16,185,129,0.12), transparent 60%), linear-gradient(180deg, #f8fafc, #ffffff)",
+      "radial-gradient(1200px 700px at 20% 10%, rgba(99,102,241,0.18), transparent 60%), radial-gradient(900px 500px at 85% 25%, rgba(16,185,129,0.14), transparent 60%), linear-gradient(180deg, #f8fafc, #ffffff)",
   };
 
   const pageStyle: React.CSSProperties = {
@@ -160,6 +127,35 @@ function PageInner() {
     margin: "0 auto",
     padding: 20,
     fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+  };
+
+  const headerRow: React.CSSProperties = {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 12,
+    flexWrap: "wrap",
+  };
+
+  const badgeStyle = (pro: boolean): React.CSSProperties => ({
+    fontSize: 12,
+    fontWeight: 900,
+    padding: "6px 10px",
+    borderRadius: 999,
+    border: "1px solid rgba(0,0,0,0.10)",
+    background: pro ? "rgba(16,185,129,0.14)" : "rgba(99,102,241,0.12)",
+    color: "#111",
+  });
+
+  const headerBtn: React.CSSProperties = {
+    border: "1px solid rgba(0,0,0,0.10)",
+    background: "rgba(255,255,255,0.92)",
+    borderRadius: 14,
+    padding: "10px 12px",
+    cursor: "pointer",
+    fontWeight: 900,
+    fontSize: 13,
+    boxShadow: "0 10px 24px rgba(0,0,0,0.06)",
   };
 
   const cardStyle: React.CSSProperties = {
@@ -179,7 +175,7 @@ function PageInner() {
     border: "1px solid rgba(0,0,0,0.08)",
     boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
     padding: 16,
-    transition: "transform 140ms ease, box-shadow 140ms ease",
+    transition: "transform 160ms ease, box-shadow 160ms ease",
   };
 
   const pillBtn = (active: boolean): React.CSSProperties => ({
@@ -191,19 +187,29 @@ function PageInner() {
     cursor: "pointer",
     fontWeight: 900,
     fontSize: 13,
+    boxShadow: active ? "0 14px 30px rgba(0,0,0,0.16)" : "0 10px 24px rgba(0,0,0,0.06)",
   });
 
-  const smallBtn: React.CSSProperties = {
+  const miniBtn: React.CSSProperties = {
     border: "1px solid rgba(0,0,0,0.10)",
     background: "rgba(255,255,255,0.92)",
-    borderRadius: 14,
-    padding: "10px 12px",
+    borderRadius: 12,
+    padding: "8px 10px",
     cursor: "pointer",
     fontWeight: 900,
-    fontSize: 13,
+    fontSize: 12,
   };
 
-  // ---- load favorites
+  // ---- PRO detection
+  useEffect(() => {
+    try {
+      setIsPro(isProUser());
+    } catch {
+      setIsPro(false);
+    }
+  }, []);
+
+  // ---- favorites load/save
   useEffect(() => {
     const saved = safeParse<Record<string, boolean>>(localStorage.getItem("asksolomon:favorites"), {});
     setFavoriteKeys(saved);
@@ -213,13 +219,15 @@ function PageInner() {
     localStorage.setItem("asksolomon:favorites", JSON.stringify(favoriteKeys));
   }, [favoriteKeys]);
 
-  // ---- url sync helper
+  // ---- URL sync helper (keeps your app shareable / refresh-safe)
   const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
     const nextMode = next.mode ?? mode;
     const nextSub = next.sub ?? sub;
     const nextQ = next.q ?? q;
 
     const params = new URLSearchParams();
+
+    // keep URL short: only write non-defaults
     if (nextMode !== "encouragement") params.set("mode", nextMode);
     if (nextMode === "encouragement" && nextSub !== "all") params.set("sub", nextSub);
     if (nextQ.trim().length > 0) params.set("q", nextQ.trim());
@@ -228,11 +236,11 @@ function PageInner() {
     router.push(qs ? `/?${qs}` : "/");
   };
 
-  // keep state aligned when URL changes (refresh/back buttons)
+  // keep state aligned when back/forward/refresh changes search params
   useEffect(() => {
-    setMode(modeFromUrl);
-    setSub(subFromUrl);
-    setQ(qFromUrl);
+    setMode(urlMode);
+    setSub(urlSub);
+    setQ(urlQ);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sp]);
 
@@ -247,17 +255,18 @@ function PageInner() {
     });
   };
 
-  const handleCopy = async (item: Item, key: string) => {
+  const handleCopy = async (item: VerseItem, key: string) => {
     const text = `${item.title}\n\n${item.body}\n\n${item.ref}`;
     try {
       await navigator.clipboard.writeText(text);
       setCopiedKey(key);
-      setTimeout(() => setCopiedKey(""), 900);
+      window.setTimeout(() => setCopiedKey(""), 900);
     } catch {
-      // fallback: do nothing (still safe)
+      // silent fail
     }
   };
 
+  // ---- results pipeline (mode/sub/search/favorites)
   const results = useMemo(() => {
     const query = q.trim().toLowerCase();
 
@@ -274,11 +283,10 @@ function PageInner() {
       });
     }
 
-    // favorites filter is based on computed keys
     if (favoritesOnly) {
       list = list.filter((d) => {
-        const key = `${d.ref}-${d.title}`;
-        return !!favoriteKeys[key];
+        const k = `${d.ref}-${d.title}`;
+        return !!favoriteKeys[k];
       });
     }
 
@@ -288,11 +296,37 @@ function PageInner() {
   return (
     <div style={outerStyle}>
       <main style={pageStyle}>
+        {/* HEADER */}
         <header style={{ marginBottom: 16 }}>
-          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
-            <h1 style={{ margin: 0, fontSize: 34, letterSpacing: -0.5 }}>Ask Solomon</h1>
-            <div style={{ fontSize: 12, fontWeight: 900, color: "#334155" }}>
-              Favorites: {favoritesCount}
+          <div style={headerRow}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
+              <h1 style={{ margin: 0, fontSize: 34, letterSpacing: -0.5 }}>Ask Solomon</h1>
+              <span style={badgeStyle(isPro)}>{isPro ? "PRO" : "FREE"}</span>
+
+              <span style={{ fontSize: 12, fontWeight: 900, color: "#334155" }}>
+                Favorites: {favoritesCount}
+              </span>
+            </div>
+
+            <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+              <button type="button" style={headerBtn} onClick={() => router.push("/book")}>
+                Book
+              </button>
+
+              {!isPro && (
+                <button
+                  type="button"
+                  style={{
+                    ...headerBtn,
+                    background: "rgba(17,24,39,0.92)",
+                    color: "#fff",
+                    border: "1px solid rgba(0,0,0,0.16)",
+                  }}
+                  onClick={() => router.push("/upgrade")}
+                >
+                  Upgrade (Lifetime)
+                </button>
+              )}
             </div>
           </div>
 
@@ -301,6 +335,7 @@ function PageInner() {
           </p>
         </header>
 
+        {/* MAIN CARD */}
         <section style={cardStyle}>
           {/* STICKY CONTROLS */}
           <div
@@ -326,8 +361,7 @@ function PageInner() {
                   type="button"
                   onClick={() => {
                     setMode(m.key);
-                    const nextSub: Sub | "all" = m.key === "encouragement" ? "all" : "all";
-                    setSub(nextSub);
+                    setSub("all");
                     setUrl({ mode: m.key, sub: "all" });
                   }}
                   style={pillBtn(mode === m.key)}
@@ -352,7 +386,7 @@ function PageInner() {
               </button>
             </div>
 
-            {/* SUB BUTTONS (only for encouragement) */}
+            {/* SUB BUTTONS (Encouragement only) */}
             {mode === "encouragement" && (
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
                 <button
@@ -387,8 +421,9 @@ function PageInner() {
               <input
                 value={q}
                 onChange={(e) => {
-                  setQ(e.target.value);
-                  setUrl({ q: e.target.value });
+                  const val = e.target.value;
+                  setQ(val);
+                  setUrl({ q: val });
                 }}
                 placeholder="Search keyword (e.g., fear, counsel, diligence)…"
                 style={{
@@ -408,7 +443,7 @@ function PageInner() {
                   setQ("");
                   setUrl({ q: "" });
                 }}
-                style={smallBtn}
+                style={headerBtn}
               >
                 Clear
               </button>
@@ -454,20 +489,22 @@ function PageInner() {
                 const key = `${item.ref}-${item.title}`;
                 const isFav = !!favoriteKeys[key];
                 const isCopied = copiedKey === key;
+                const hovered = hoverKey === key;
 
                 return (
                   <div
                     key={key}
                     style={{
                       ...softCardStyle,
-                      transform: "translateY(0px)",
+                      transform: hovered ? "translateY(-2px)" : "translateY(0px)",
+                      boxShadow: hovered ? "0 18px 44px rgba(0,0,0,0.12)" : softCardStyle.boxShadow,
                     }}
+                    onMouseEnter={() => setHoverKey(key)}
+                    onMouseLeave={() => setHoverKey("")}
                   >
                     <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 900, fontSize: 15, color: "#111" }}>
-                          {item.title}
-                        </div>
+                        <div style={{ fontWeight: 900, fontSize: 15, color: "#111" }}>{item.title}</div>
 
                         <div style={{ marginTop: 6, fontSize: 16, lineHeight: 1.6, color: "#222" }}>
                           {item.body}
@@ -514,7 +551,7 @@ function PageInner() {
                       </div>
                     </div>
 
-                    {/* MICRO PROMPT (premium feel) */}
+                    {/* MICRO PROMPT */}
                     <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 800 }}>
                       Save this. Sit with it. Apply it today.
                     </div>
