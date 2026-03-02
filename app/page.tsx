@@ -112,7 +112,8 @@ function PageInner() {
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [favoriteKeys, setFavoriteKeys] = useState<Record<string, boolean>>({});
   const [copiedKey, setCopiedKey] = useState<string>("");
-
+const [todayFocusOn, setTodayFocusOn] = useState(false);
+const [todayFocusKey, setTodayFocusKey] = useState<string>("");
   const [hoverKey, setHoverKey] = useState<string>("");
 const [todayFocusOn, setTodayFocusOn] = useState(false);
 const [todayFocusKey, setTodayFocusKey] = useState<string>("");
