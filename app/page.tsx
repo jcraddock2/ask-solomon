@@ -115,8 +115,7 @@ function PageInner() {
 const [todayFocusOn, setTodayFocusOn] = useState(false);
 const [todayFocusKey, setTodayFocusKey] = useState<string>("");
   const [hoverKey, setHoverKey] = useState<string>("");
-const [todayFocusOn, setTodayFocusOn] = useState(false);
-const [todayFocusKey, setTodayFocusKey] = useState<string>("");
+
   // ---- styles (kept verbose like your “premium glow” build)
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
