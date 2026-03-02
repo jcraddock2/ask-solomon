@@ -448,7 +448,10 @@ const [focusKey, setFocusKey] = useState<string | null>(null);
   }}
   title="One verse to focus on today"
 >
-  <button style={favoritesOnly ? pillActive : pillBase} onClick={() => setFavoritesOnly((v) => !v)}>
+  <button style={favoritesOnly ? pillActive : pillBase} onClick={() => {
+  setFocusKey(null);                 // turn off Today's Focus
+  setFavoritesOnly((v) => !v); // make sure favorites turns off     // toggle favorites
+}}
   ⭐ Favorites{Object.keys(favoriteKeys).length ? ` (${Object.keys(favoriteKeys).length})` : ""}
 </button>
   ✨ Today’s Focus
