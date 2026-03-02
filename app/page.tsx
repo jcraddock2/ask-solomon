@@ -164,19 +164,19 @@ const [focusKey, setFocusKey] = useState<string | null>(null);
     }
   }, [params]);
 
-  const setUrl = (next: { mode?: Mode; sub?: SubOrAll; q?: string }) => {
-    const nextMode = next.mode ?? mode;
-    const nextSub = next.sub ?? sub;
-    const nextQ = next.q ?? q;
+const setUrl = (next: { mode?: Mode; sub?: SubOrAll; q?: string }) => {
+  const nextMode = next.mode ?? mode;
+  const nextSub = next.sub ?? sub;
+  const nextQ = next.q ?? q;
 
-    const sp = new URLSearchParams();
-    if (nextMode !== "encouragement") sp.set("mode", nextMode);
-    if (nextMode === "encouragement" && nextSub !== "all") sp.set("sub", nextSub);
-    if (nextQ.trim().length) sp.set("q", nextQ.trim());
+  const sp = new URLSearchParams();
+  if (nextMode !== "encouragement") sp.set("mode", nextMode);
+  if (nextMode === "encouragement" && nextSub !== "all") sp.set("sub", nextSub);
+  if (nextQ.trim().length) sp.set("q", nextQ.trim());
 
-    const qs = sp.toString();
-    router.push(qs ? `/?${qs}` : `/`);
-  };
+  const qs = sp.toString();
+  router.push(qs ? `/?${qs}` : `/`);
+};
 
   const toggleFavorite = (key: string) => {
     setFavoriteKeys((prev) => {
