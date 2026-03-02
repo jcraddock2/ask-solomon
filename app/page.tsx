@@ -130,7 +130,8 @@ function PageInner() {
   const [sub, setSub] = useState<SubOrAll>("all");
   const [q, setQ] = useState<string>("");
   const [isPro, setIsPro] = useState<boolean>(false);
-
+const [favoritesOnly, setFavoritesOnly] = useState<boolean>(false);
+const [favoriteKeys, setFavoriteKeys] = useState<Record<string, true>>({});
   // Copy button state
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
@@ -139,28 +140,32 @@ function PageInner() {
   const ACCENT_SOFT = "rgba(37,99,235,0.28)";
 
   // Hydrate state from URL + Pro from localStorage
-  useEffect(() => {
-    const nextMode = clampMode(params.get("mode"));
-    const nextSub = clampSub(params.get("sub"));
-    const nextQ = params.get("q") ?? "";
+// Hydrate state from URL + Pro + Favorites
+useEffect(() => {
+  const nextMode = clampMode(params.get("mode"));
+  const nextSub = clampSub(params.get("sub"));
+  const nextQ = params.get("q") ?? "";
 
-    setMode(nextMode);
-    setSub(nextSub);
-    setQ(nextQ);
+  setMode(nextMode);
+  setSub(nextSub);
+  setQ(nextQ);
 
-    // Pro status
-    try {
-      setIsPro(isProUser());
-    } catch {
-      setIsPro(false);
-    }
-  }, [params]);
+  // Pro status
+  try {
+    setIsPro(isProUser());
+  } catch {
+    setIsPro(false);
+  }
 
-  const setUrl = (next: { mode?: Mode; sub?: SubOrAll; q?: string }) => {
-    const nextMode = next.mode ?? mode;
-    const nextSub = next.sub ?? sub;
-    const nextQ = next.q ?? q;
-
+  // Favorites
+  try {
+    const raw = localStorage.getItem("asksolomon:favorites");
+    if (raw) setFavoriteKeys(JSON.parse(raw));
+  } catch {
+    // ignore
+  }
+}, [params]);
+  
     const sp = new URLSearchParams();
     if (nextMode !== "encouragement") sp.set("mode", nextMode);
     if (nextMode === "encouragement" && nextSub !== "all") sp.set("sub", nextSub);
@@ -179,13 +184,14 @@ function PageInner() {
       if (mode === "encouragement" && sub !== "all") {
         if (item.sub !== sub) return false;
       }
-
+const favKey = `${item.ref}-${item.title}`;
+if (favoritesOnly && !favoriteKeys[favKey]) return false;
       if (!needle) return true;
 
       const hay = `${item.title} ${item.body} ${item.ref}`.toLowerCase();
       return hay.includes(needle);
     });
-  }, [mode, sub, q]);
+  }, [mode, sub, q, favoritesOnly, favoriteKeys]);
 
   const copyItem = async (item: { title: string; body: string; ref: string }, key: string) => {
     const text = `${item.title}\n${item.body}\n— ${item.ref}`;
