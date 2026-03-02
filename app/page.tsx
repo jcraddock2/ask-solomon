@@ -429,23 +429,16 @@ const [focusKey, setFocusKey] = useState<string | null>(null);
                 Wisdom
               </button>
 
-              <button
-                style={mode === "success" ? pillActive : pillBase}
-                onClick={() => {
-                  setMode("success");
-                  setSub("all");
-                  setQ("");
-                  setFavoritesOnly(false);
-                  setUrl({ mode: "success", sub: "all", q: "" });
-                }}
-              >
-                Success
-              </button>
-
-            
+<button
+  style={focusKey ? pillActive : pillBase}
+  onClick={() => {
+    const pool = DATA.filter((item) => {
+      if (item.mode !== mode) return false;
+      if (mode === "encouragement" && sub !== "all") return item.sub === sub;
+      return true;
+    });
 
     const pick = pool[Math.floor(Math.random() * Math.max(1, pool.length))];
-
     if (!pick) return;
 
     setFocusKey(`${pick.ref}-${pick.title}`);
