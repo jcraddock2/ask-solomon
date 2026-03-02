@@ -114,7 +114,8 @@ function PageInner() {
   const [copiedKey, setCopiedKey] = useState<string>("");
 
   const [hoverKey, setHoverKey] = useState<string>("");
-
+const [todayFocusOn, setTodayFocusOn] = useState(false);
+const [todayFocusKey, setTodayFocusKey] = useState<string>("");
   // ---- styles (kept verbose like your “premium glow” build)
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
@@ -290,8 +291,14 @@ function PageInner() {
       });
     }
 
-    return list;
-  }, [mode, sub, q, favoritesOnly, favoriteKeys]);
+   // ✅ Today’s Focus: show only the selected verse
+if (todayFocusOn) {
+  if (!todayFocusKey) return [];
+  return list.filter((d) => `${d.ref}-${d.title}` === todayFocusKey);
+}
+
+return list;
+  }, [mode, sub, q, favoritesOnly, favoriteKeys, todayFocusOn, todayFocusKey]);
 
   return (
     <div style={outerStyle}>
