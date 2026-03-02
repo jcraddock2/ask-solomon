@@ -214,26 +214,30 @@ const setUrl = (next: { mode?: Mode; sub?: SubOrAll; q?: string }) => {
     }
   };
 
-  const results = useMemo(() => {
-    const needle = q.trim().toLowerCase();
+const results = useMemo(() => {
+  const needle = q.trim().toLowerCase();
 
-    return DATA.filter((item) => {
-      if (item.mode !== mode) return false;
+  return DATA.filter((item) => {
+    if (item.mode !== mode) return false;
 
-      if (mode === "encouragement" && sub !== "all") {
-        if (item.sub !== sub) return false;
-      }
+    if (mode === "encouragement" && sub !== "all") {
+      if (item.sub !== sub) return false;
+    }
 
-      const favKey = `${item.ref}-${item.title}`;
-      if (favoritesOnly && !favoriteKeys[favKey]) return false;
+    // Today’s Focus: if focusKey exists, show only that one item
+    const key = `${item.ref}-${item.title}`;
+    if (focusKey && key !== focusKey) return false;
 
-      if (!needle) return true;
+    // Favorites filter
+    if (favoritesOnly && !favoriteKeys[key]) return false;
 
-      const hay = `${item.title} ${item.body} ${item.ref}`.toLowerCase();
-      return hay.includes(needle);
-    });
-  }, [mode, sub, q, favoritesOnly, favoriteKeys]);
+    // Search filter
+    if (!needle) return true;
 
+    const hay = `${item.title} ${item.body} ${item.ref}`.toLowerCase();
+    return hay.includes(needle);
+  });
+}, [mode, sub, q, favoritesOnly, favoriteKeys, focusKey]);
   // -------- styles --------
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
