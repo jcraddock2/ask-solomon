@@ -3,8 +3,7 @@
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isProUser } from "./lib/access";
-const [favoritesOnly, setFavoritesOnly] = useState(false);
-const [favoriteKeys, setFavoriteKeys] = useState<Record<string, true>>({});
+
 /** ---------------- TYPES ---------------- */
 type Mode = "encouragement" | "wisdom" | "success";
 type Sub = "peace" | "strength" | "direction" | "confidence" | "hope";
@@ -144,10 +143,7 @@ function PageInner() {
     const nextMode = clampMode(params.get("mode"));
     const nextSub = clampSub(params.get("sub"));
     const nextQ = params.get("q") ?? "";
-try {
-  const raw = localStorage.getItem("asksolomon:favorites");
-  if (raw) setFavoriteKeys(JSON.parse(raw));
-} catch {}
+
     setMode(nextMode);
     setSub(nextSub);
     setQ(nextQ);
@@ -189,43 +185,11 @@ try {
       const hay = `${item.title} ${item.body} ${item.ref}`.toLowerCase();
       return hay.includes(needle);
     });
- }, [mode, sub, q, favoritesOnly, favoriteKeys]);
-const key = `${item.ref}-${item.title}`;
-if (favoritesOnly && !favoriteKeys[key]) return false;
-  const <button
-  onClick={(e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggleFavorite(key);
-  }}
-  style={{
-    padding: "6px 10px",
-    borderRadius: 999,
-    border: "1px solid rgba(0,0,0,0.10)",
-    background: favoriteKeys[key] ? "#0f172a" : "rgba(255,255,255,0.75)",
-    color: favoriteKeys[key] ? "#fff" : "#0f172a",
-    fontSize: 12,
-    fontWeight: 900,
-    cursor: "pointer",
-  }}
-  title={favoriteKeys[key] ? "Remove from Favorites" : "Save to Favorites"}
->
-  {favoriteKeys[key] ? "★" : "☆"}
-</button>copyItem = async (item: { title: string; body: string; ref: string }, key: string) => {
+  }, [mode, sub, q]);
+
+  const copyItem = async (item: { title: string; body: string; ref: string }, key: string) => {
     const text = `${item.title}\n${item.body}\n— ${item.ref}`;
-const toggleFavorite = (key: string) => {
-  setFavoriteKeys((prev) => {
-    const next = { ...prev };
-    if (next[key]) delete next[key];
-    else next[key] = true;
 
-    try {
-      localStorage.setItem("asksolomon:favorites", JSON.stringify(next));
-    } catch {}
-
-    return next;
-  });
-};
     try {
       await navigator.clipboard.writeText(text);
       setCopiedKey(key);
