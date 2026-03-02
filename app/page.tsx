@@ -175,24 +175,25 @@ useEffect(() => {
     router.push(qs ? `/?${qs}` : `/`);
   };
 
-  const results = useMemo(() => {
-    const needle = q.trim().toLowerCase();
+ const results = useMemo(() => {
+  const needle = q.trim().toLowerCase();
 
-    return DATA.filter((item) => {
-      if (item.mode !== mode) return false;
+  return DATA.filter((item) => {
+    if (item.mode !== mode) return false;
 
-      if (mode === "encouragement" && sub !== "all") {
-        if (item.sub !== sub) return false;
-      }
-const favKey = `${item.ref}-${item.title}`;
-if (favoritesOnly && !favoriteKeys[favKey]) return false;
-      if (!needle) return true;
+    if (mode === "encouragement" && sub !== "all") {
+      if (item.sub !== sub) return false;
+    }
 
-      const hay = `${item.title} ${item.body} ${item.ref}`.toLowerCase();
-      return hay.includes(needle);
-    });
-  }, [mode, sub, q, favoritesOnly, favoriteKeys]);
+    const favKey = `${item.ref}-${item.title}`;
+    if (favoritesOnly && !favoriteKeys[favKey]) return false;
 
+    if (!needle) return true;
+
+    const hay = `${item.title} ${item.body} ${item.ref}`.toLowerCase();
+    return hay.includes(needle);
+  });
+}, [mode, sub, q, favoritesOnly, favoriteKeys]);
   const copyItem = async (item: { title: string; body: string; ref: string }, key: string) => {
     const text = `${item.title}\n${item.body}\n— ${item.ref}`;
 
