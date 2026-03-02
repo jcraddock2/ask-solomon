@@ -136,7 +136,7 @@ function PageInner() {
   const [favoriteKeys, setFavoriteKeys] = useState<Record<string, true>>({});
 
   const [searchFocused, setSearchFocused] = useState(false);
-
+const [focusKey, setFocusKey] = useState<string | null>(null);
   const ACCENT = "#2563eb";
   const ACCENT_SOFT = "rgba(37,99,235,0.28)";
 
@@ -442,9 +442,21 @@ function PageInner() {
                 Success
               </button>
 
-              <button style={favoritesOnly ? pillActive : pillBase} onClick={() => setFavoritesOnly((v) => !v)}>
-               ⭐ Favorites{Object.keys(favoriteKeys).length ? ` (${Object.keys(favoriteKeys).length})` : ""}
-              </button>
+            
+
+    const pick = pool[Math.floor(Math.random() * Math.max(1, pool.length))];
+
+    if (!pick) return;
+
+    setFocusKey(`${pick.ref}-${pick.title}`);
+    setFavoritesOnly(false);
+    setQ("");
+    setUrl({ q: "" });
+  }}
+  title="One verse to focus on today"
+>
+  ✨ Today’s Focus
+</button>
             </div>
 
             {mode === "encouragement" && (
