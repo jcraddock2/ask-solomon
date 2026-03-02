@@ -331,11 +331,10 @@ function PageInner() {
   };
 
   const glowDivider: React.CSSProperties = {
-    height: 1,
-    background: `linear-gradient(90deg, rgba(0,0,0,0) 0%, ${ACCENT_SOFT} 25%, rgba(0,0,0,0.10) 50%, ${ACCENT_SOFT} 75%, rgba(0,0,0,0) 100%)`,
-    margin: "10px 0 2px",
-  };
-
+  height: 1,
+  background: "rgba(0,0,0,0.08)",
+  margin: "10px 0 2px",
+};
   return (
     <div style={outerStyle}>
       <main style={pageStyle}>
