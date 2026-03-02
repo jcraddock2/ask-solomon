@@ -4,7 +4,6 @@ import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isProUser } from "./lib/access";
 
-/** ---------------- TYPES ---------------- */
 type Mode = "encouragement" | "wisdom" | "success";
 type Sub = "peace" | "strength" | "direction" | "confidence" | "hope";
 type SubOrAll = Sub | "all";
@@ -17,7 +16,6 @@ type Item = {
   sub?: Sub;
 };
 
-/** ---------------- DATA ---------------- */
 const DATA: Item[] = [
   // Encouragement
   {
@@ -97,13 +95,13 @@ const DATA: Item[] = [
   },
 ];
 
-const subCommentary = {
+const subCommentary: Record<Sub, string> = {
   peace: "When your mind is loud and the pressure is real, peace begins with trust—not control.",
   strength: "Real strength isn’t noise or force—it’s steadiness under pressure.",
   direction: "Clarity comes when you stop chasing options and start seeking wisdom.",
   confidence: "Confidence grows when identity is anchored deeper than circumstances.",
   hope: "Hope is not denial—it’s the decision to believe tomorrow can still improve.",
-} as const;
+};
 
 const subButtons: { label: string; value: Sub }[] = [
   { label: "Peace", value: "peace" },
@@ -129,43 +127,48 @@ function PageInner() {
   const [mode, setMode] = useState<Mode>("encouragement");
   const [sub, setSub] = useState<SubOrAll>("all");
   const [q, setQ] = useState<string>("");
+
   const [isPro, setIsPro] = useState<boolean>(false);
-const [favoritesOnly, setFavoritesOnly] = useState<boolean>(false);
-const [favoriteKeys, setFavoriteKeys] = useState<Record<string, true>>({});
-  // Copy button state
+
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
-  // Brand accent (matches your glow vibe)
+  const [favoritesOnly, setFavoritesOnly] = useState<boolean>(false);
+  const [favoriteKeys, setFavoriteKeys] = useState<Record<string, true>>({});
+
+  const [searchFocused, setSearchFocused] = useState(false);
+
   const ACCENT = "#2563eb";
   const ACCENT_SOFT = "rgba(37,99,235,0.28)";
 
-  // Hydrate state from URL + Pro from localStorage
-// Hydrate state from URL + Pro + Favorites
-useEffect(() => {
-  const nextMode = clampMode(params.get("mode"));
-  const nextSub = clampSub(params.get("sub"));
-  const nextQ = params.get("q") ?? "";
+  // Hydrate from URL + Pro + Favorites
+  useEffect(() => {
+    const nextMode = clampMode(params.get("mode"));
+    const nextSub = clampSub(params.get("sub"));
+    const nextQ = params.get("q") ?? "";
 
-  setMode(nextMode);
-  setSub(nextSub);
-  setQ(nextQ);
+    setMode(nextMode);
+    setSub(nextSub);
+    setQ(nextQ);
 
-  // Pro status
-  try {
-    setIsPro(isProUser());
-  } catch {
-    setIsPro(false);
-  }
+    try {
+      setIsPro(isProUser());
+    } catch {
+      setIsPro(false);
+    }
 
-  // Favorites
-  try {
-    const raw = localStorage.getItem("asksolomon:favorites");
-    if (raw) setFavoriteKeys(JSON.parse(raw));
-  } catch {
-    // ignore
-  }
-}, [params]);
-  
+    try {
+      const raw = localStorage.getItem("asksolomon:favorites");
+      if (raw) setFavoriteKeys(JSON.parse(raw));
+    } catch {
+      // ignore
+    }
+  }, [params]);
+
+  const setUrl = (next: { mode?: Mode; sub?: SubOrAll; q?: string }) => {
+    const nextMode = next.mode ?? mode;
+    const nextSub = next.sub ?? sub;
+    const nextQ = next.q ?? q;
+
     const sp = new URLSearchParams();
     if (nextMode !== "encouragement") sp.set("mode", nextMode);
     if (nextMode === "encouragement" && nextSub !== "all") sp.set("sub", nextSub);
@@ -175,25 +178,22 @@ useEffect(() => {
     router.push(qs ? `/?${qs}` : `/`);
   };
 
- const results = useMemo(() => {
-  const needle = q.trim().toLowerCase();
+  const toggleFavorite = (key: string) => {
+    setFavoriteKeys((prev) => {
+      const next = { ...prev };
+      if (next[key]) delete next[key];
+      else next[key] = true;
 
-  return DATA.filter((item) => {
-    if (item.mode !== mode) return false;
+      try {
+        localStorage.setItem("asksolomon:favorites", JSON.stringify(next));
+      } catch {
+        // ignore
+      }
 
-    if (mode === "encouragement" && sub !== "all") {
-      if (item.sub !== sub) return false;
-    }
+      return next;
+    });
+  };
 
-    const favKey = `${item.ref}-${item.title}`;
-    if (favoritesOnly && !favoriteKeys[favKey]) return false;
-
-    if (!needle) return true;
-
-    const hay = `${item.title} ${item.body} ${item.ref}`.toLowerCase();
-    return hay.includes(needle);
-  });
-}, [mode, sub, q, favoritesOnly, favoriteKeys]);
   const copyItem = async (item: { title: string; body: string; ref: string }, key: string) => {
     const text = `${item.title}\n${item.body}\n— ${item.ref}`;
 
@@ -214,7 +214,27 @@ useEffect(() => {
     }
   };
 
-  /** ---------------- STYLES ---------------- */
+  const results = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+
+    return DATA.filter((item) => {
+      if (item.mode !== mode) return false;
+
+      if (mode === "encouragement" && sub !== "all") {
+        if (item.sub !== sub) return false;
+      }
+
+      const favKey = `${item.ref}-${item.title}`;
+      if (favoritesOnly && !favoriteKeys[favKey]) return false;
+
+      if (!needle) return true;
+
+      const hay = `${item.title} ${item.body} ${item.ref}`.toLowerCase();
+      return hay.includes(needle);
+    });
+  }, [mode, sub, q, favoritesOnly, favoriteKeys]);
+
+  // -------- styles --------
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
     padding: 16,
@@ -270,12 +290,15 @@ useEffect(() => {
     fontSize: 14,
     fontWeight: 900,
     cursor: "pointer",
+    color: "#0f172a",
   };
 
   const pillActive: React.CSSProperties = {
     ...pillBase,
-    border: `1px solid ${ACCENT_SOFT}`,
-    boxShadow: `0 18px 40px ${ACCENT_SOFT}`,
+    background: "#0f172a",
+    color: "#fff",
+    border: "1px solid rgba(0,0,0,0.18)",
+    boxShadow: "0 18px 40px rgba(0,0,0,0.14)",
   };
 
   const subPillBase: React.CSSProperties = {
@@ -286,12 +309,15 @@ useEffect(() => {
     fontSize: 13,
     fontWeight: 900,
     cursor: "pointer",
+    color: "#0f172a",
   };
 
   const subPillActive: React.CSSProperties = {
     ...subPillBase,
-    border: `1px solid ${ACCENT_SOFT}`,
-    boxShadow: `0 16px 34px ${ACCENT_SOFT}`,
+    background: "#0f172a",
+    color: "#fff",
+    border: "1px solid rgba(0,0,0,0.18)",
+    boxShadow: "0 16px 34px rgba(0,0,0,0.12)",
   };
 
   const glowDivider: React.CSSProperties = {
@@ -315,7 +341,7 @@ useEffect(() => {
               </p>
             </div>
 
-            {/* RESTORED HEADER ACTIONS */}
+            {/* HEADER ACTIONS */}
             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
               <div
                 style={{
@@ -376,7 +402,6 @@ useEffect(() => {
         <section style={cardStyle}>
           {/* STICKY CONTROLS */}
           <div style={stickyStyle}>
-            {/* MODE BUTTONS */}
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               <button
                 style={mode === "encouragement" ? pillActive : pillBase}
@@ -384,6 +409,7 @@ useEffect(() => {
                   setMode("encouragement");
                   setSub("all");
                   setQ("");
+                  setFavoritesOnly(false);
                   setUrl({ mode: "encouragement", sub: "all", q: "" });
                 }}
               >
@@ -396,6 +422,7 @@ useEffect(() => {
                   setMode("wisdom");
                   setSub("all");
                   setQ("");
+                  setFavoritesOnly(false);
                   setUrl({ mode: "wisdom", sub: "all", q: "" });
                 }}
               >
@@ -408,14 +435,18 @@ useEffect(() => {
                   setMode("success");
                   setSub("all");
                   setQ("");
+                  setFavoritesOnly(false);
                   setUrl({ mode: "success", sub: "all", q: "" });
                 }}
               >
                 Success
               </button>
+
+              <button style={favoritesOnly ? pillActive : pillBase} onClick={() => setFavoritesOnly((v) => !v)}>
+                ⭐ Favorites
+              </button>
             </div>
 
-            {/* SUB TOPICS */}
             {mode === "encouragement" && (
               <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
                 <button
@@ -443,7 +474,6 @@ useEffect(() => {
               </div>
             )}
 
-            {/* SEARCH */}
             <div style={{ marginTop: 12, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
               <input
                 value={q}
@@ -452,6 +482,8 @@ useEffect(() => {
                   setQ(next);
                   setUrl({ q: next });
                 }}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setSearchFocused(false)}
                 placeholder="Search a keyword (e.g., fear, diligence, counsel)…"
                 style={{
                   flex: 1,
@@ -462,7 +494,7 @@ useEffect(() => {
                   outline: "none",
                   fontSize: 14,
                   background: "rgba(255,255,255,0.85)",
-                  boxShadow: `0 0 0 6px rgba(37,99,235,0.12)`,
+                  boxShadow: searchFocused ? `0 0 0 6px rgba(37,99,235,0.18)` : "none",
                 }}
               />
 
@@ -489,7 +521,6 @@ useEffect(() => {
             </div>
           </div>
 
-          {/* SUB COMMENTARY */}
           {mode === "encouragement" && sub !== "all" && (
             <div
               style={{
@@ -508,7 +539,7 @@ useEffect(() => {
               <div style={{ fontSize: 12, color: "#64748b", marginBottom: 6, letterSpacing: 0.2, fontWeight: 900 }}>
                 Solomon’s note
               </div>
-              {subCommentary[sub as keyof typeof subCommentary]}
+              {subCommentary[sub as Sub]}
             </div>
           )}
 
@@ -516,7 +547,6 @@ useEffect(() => {
             Showing {results.length} result{results.length === 1 ? "" : "s"}
           </div>
 
-          {/* RESULTS GRID */}
           <div style={{ display: "grid", gap: 12 }}>
             {results.length === 0 ? (
               <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
@@ -524,10 +554,12 @@ useEffect(() => {
               </div>
             ) : (
               results.map((item, idx) => {
-                const key = `${item.ref}-${idx}`;
+                const favKey = `${item.ref}-${item.title}`;
+                const keyForCopy = favKey;
+
                 return (
                   <article
-                    key={key}
+                    key={`${favKey}-${idx}`}
                     style={softCardStyle}
                     onMouseEnter={(e) => {
                       (e.currentTarget as any).style.transform = "translateY(-1px)";
@@ -563,20 +595,41 @@ useEffect(() => {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            copyItem(item, key);
+                            toggleFavorite(favKey);
                           }}
                           style={{
                             padding: "6px 10px",
                             borderRadius: 999,
                             border: "1px solid rgba(0,0,0,0.10)",
-                            background: copiedKey === key ? "#0f172a" : "rgba(255,255,255,0.75)",
-                            color: copiedKey === key ? "#fff" : "#0f172a",
+                            background: favoriteKeys[favKey] ? "#0f172a" : "rgba(255,255,255,0.75)",
+                            color: favoriteKeys[favKey] ? "#fff" : "#0f172a",
+                            fontSize: 12,
+                            fontWeight: 900,
+                            cursor: "pointer",
+                          }}
+                          title={favoriteKeys[favKey] ? "Remove from Favorites" : "Save to Favorites"}
+                        >
+                          {favoriteKeys[favKey] ? "★" : "☆"}
+                        </button>
+
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            copyItem(item, keyForCopy);
+                          }}
+                          style={{
+                            padding: "6px 10px",
+                            borderRadius: 999,
+                            border: "1px solid rgba(0,0,0,0.10)",
+                            background: copiedKey === keyForCopy ? "#0f172a" : "rgba(255,255,255,0.75)",
+                            color: copiedKey === keyForCopy ? "#fff" : "#0f172a",
                             fontSize: 12,
                             fontWeight: 900,
                             cursor: "pointer",
                           }}
                         >
-                          {copiedKey === key ? "Copied" : "Copy"}
+                          {copiedKey === keyForCopy ? "Copied" : "Copy"}
                         </button>
                       </div>
                     </div>
@@ -592,7 +645,7 @@ useEffect(() => {
         </section>
 
         <footer style={{ marginTop: 14, color: "#64748b", fontSize: 12, fontWeight: 800 }}>
-          Tip: Use “Encourage Me” first, then narrow down by a sub-topic.
+          Tip: Star what you love, then tap Favorites to see only saved items.
         </footer>
       </main>
     </div>
