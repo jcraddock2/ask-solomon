@@ -443,7 +443,7 @@ function PageInner() {
               </button>
 
               <button style={favoritesOnly ? pillActive : pillBase} onClick={() => setFavoritesOnly((v) => !v)}>
-                ⭐ Favorites
+               ⭐ Favorites{Object.keys(favoriteKeys).length ? ` (${Object.keys(favoriteKeys).length})` : ""}
               </button>
             </div>
 
@@ -550,7 +550,9 @@ function PageInner() {
           <div style={{ display: "grid", gap: 12 }}>
             {results.length === 0 ? (
               <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
-                No matches. Try a different keyword.
+               {favoritesOnly && Object.keys(favoriteKeys).length === 0
+  ? "You haven’t saved any favorites yet. Tap ☆ on a verse to save it."
+  : "No matches. Try a different keyword."}
               </div>
             ) : (
               results.map((item, idx) => {
