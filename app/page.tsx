@@ -362,38 +362,93 @@ return list;
             }}
           >
             {/* MODE BUTTONS */}
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              {MODES.map((m) => (
-                <button
-                  key={m.key}
-                  type="button"
-                  onClick={() => {
-                    setMode(m.key);
-                    setSub("all");
-                    setUrl({ mode: m.key, sub: "all" });
-                  }}
-                  style={pillBtn(mode === m.key)}
-                >
-                  {m.label}
-                </button>
-              ))}
+           {MODES.map((m) => (
+  <button
+    key={m.key}
+    type="button"
+    onClick={() => {
+      setMode(m.key);
+      setSub("all");
+      setTodayFocusOn(false);
+      setTodayFocusKey("");
+      setUrl({ mode: m.key, sub: "all" });
+    }}
+    style={pillBtn(mode === m.key)}
+  >
+    {m.label}
+  </button>
+))}
 
-              <button
-                type="button"
-                onClick={() => setFavoritesOnly((v) => !v)}
-                style={{
-                  ...pillBtn(favoritesOnly),
-                  display: "flex",
-                  gap: 8,
-                  alignItems: "center",
-                }}
-                title="Show only saved favorites"
-              >
-                <span>☆</span>
-                <span>Favorites</span>
-              </button>
-            </div>
+<button
+  type="button"
+  onClick={() => setFavoritesOnly((v) => !v)}
+  style={{
+    ...pillBtn(favoritesOnly),
+    display: "flex",
+    gap: 8,
+    alignItems: "center",
+  }}
+  title="Show only saved favorites"
+>
+  <span>☆</span>
+  <span>Favorites</span>
+</button>
 
+<button
+  type="button"
+  onClick={() => {
+    if (todayFocusOn) {
+      setTodayFocusOn(false);
+      setTodayFocusKey("");
+      return;
+    }
+
+    // Build pool from current filters BEFORE focus is applied
+    const query = q.trim().toLowerCase();
+
+    let pool = DATA.filter((d) => d.mode === mode);
+
+    if (mode === "encouragement" && sub !== "all") {
+      pool = pool.filter((d) => d.sub === sub);
+    }
+
+    if (query.length > 0) {
+      pool = pool.filter((d) => {
+        const hay = `${d.title} ${d.body} ${d.ref}`.toLowerCase();
+        return hay.includes(query);
+      });
+    }
+
+    if (favoritesOnly) {
+      pool = pool.filter((d) => {
+        const k = `${d.ref}-${d.title}`;
+        return !!favoriteKeys[k];
+      });
+    }
+
+    if (pool.length === 0) {
+      setTodayFocusOn(true);
+      setTodayFocusKey("");
+      return;
+    }
+
+    const choice = pool[Math.floor(Math.random() * pool.length)];
+    const key = `${choice.ref}-${choice.title}`;
+
+    setTodayFocusKey(key);
+    setTodayFocusOn(true);
+  }}
+  style={{
+    ...pillBtn(todayFocusOn),
+    display: "flex",
+    gap: 8,
+    alignItems: "center",
+  }}
+  title="Show one random verse from the current filter"
+>
+  <span>✨</span>
+  <span>Today’s Focus</span>
+</button>
             {/* SUB BUTTONS (Encouragement only) */}
             {mode === "encouragement" && (
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
