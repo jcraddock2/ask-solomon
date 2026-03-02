@@ -341,34 +341,62 @@ function PageInner() {
       <main style={pageStyle}>
         {/* HEADER */}
         <header style={{ marginBottom: 18 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start" }}>
-            <div>
-              <h1 style={{ margin: 0, fontSize: 38, letterSpacing: "-0.8px", lineHeight: 1.05, fontWeight: 900 }}>
-                Ask Solomon
-              </h1>
-              <p style={{ marginTop: 8, marginBottom: 0, color: "#334155", fontWeight: 650 }}>
-                Encouragement first—wisdom from Proverbs for what you’re facing right now.
-              </p>
-            </div>
+    <div style={{ marginBottom: 28 }}>
+  {/* TOP ROW */}
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 10,
+    }}
+  >
+    <h1
+      style={{
+        margin: 0,
+        fontSize: 38,
+        fontWeight: 700,
+        letterSpacing: "-0.5px",
+      }}
+    >
+      Ask Solomon
+    </h1>
 
-            {/* HEADER ACTIONS */}
-            <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-              <div
-                style={{
-                  padding: "7px 10px",
-                  borderRadius: 999,
-                  border: "1px solid rgba(0,0,0,0.10)",
-                  background: "rgba(255,255,255,0.75)",
-                  color: "#111",
-                  fontWeight: 900,
-                  fontSize: 12,
-                  whiteSpace: "nowrap",
-                }}
-                title={isPro ? "Pro Enabled" : "Free Mode"}
-              >
-                {isPro ? "PRO" : "FREE"}
-              </div>
+    {/* HEADER ACTIONS */}
+    <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+      <div
+        style={{
+          padding: "7px 10px",
+          borderRadius: 999,
+          border: "1px solid rgba(0,0,0,0.10)",
+          background: "rgba(255,255,255,0.75)",
+          color: "#111",
+          fontWeight: 900,
+          fontSize: 12,
+          whiteSpace: "nowrap",
+        }}
+        title={isPro ? "Pro Enabled" : "Free Mode"}
+      >
+        {isPro ? "PRO" : "FREE"}
+      </div>
+    </div>
+  </div>
 
+  {/* SUBTITLE */}
+  <p
+    style={{
+      margin: 0,
+      color: "#555",
+      fontSize: 16,
+      lineHeight: 1.5,
+    }}
+  >
+    Ancient wisdom. Real-world direction.
+    <span style={{ fontWeight: 600 }}>
+      {" "}Find the right word for this moment.
+    </span>
+  </p>
+</div> 
               <button
                 onClick={() => router.push("/book")}
                 style={{
