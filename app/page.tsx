@@ -639,6 +639,9 @@ function PageInner() {
                     <div style={{ marginTop: 10, color: "#0f172a", fontSize: 14, lineHeight: 1.5, fontWeight: 650 }}>
                       {item.body}
                     </div>
+                    <div style={{ marginTop: 8, fontSize: 12, color: "#64748b", fontWeight: 800 }}>
+  Save this. Sit with it. Apply it today.
+</div>
                   </article>
                 );
               })
