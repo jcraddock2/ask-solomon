@@ -270,18 +270,10 @@ const rerollTodaysFocus = () => {
     setTodayFocusKey("");
     return;
   }
-const rerollTodaysFocus = () => {
-  const pool = buildFilteredPool();
-  if (pool.length === 0) {
-    setTodayFocusKey("");
-    return;
-  }
 
   const choice = pool[Math.floor(Math.random() * pool.length)];
   setTodayFocusKey(`${choice.ref}-${choice.title}`);
-
-  return (
-    <div style={outerStyle}>
+};
       <main style={pageStyle}>
         {/* HEADER */}
         <header style={{ marginBottom: 16 }}>
