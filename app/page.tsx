@@ -1,3 +1,4 @@
+// Stable UI restore – baseline confirmed working
 "use client";
 
 import React, { Suspense, useEffect, useMemo, useState } from "react";
