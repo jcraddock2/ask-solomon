@@ -264,15 +264,16 @@ function PageInner() {
     setUrl({ q: topicQuery });
   };
 
-  const rerollTodaysFocus = () => {
-    const pool = buildFilteredPool();
-    if (pool.length === 0) {
-      setTodayFocusKey("");
-      return;
-    }
-    const choice = pool[Math.floor(Math.random() * pool.length)];
-    setTodayFocusKey(`${choice.ref}-${choice.title}`);
-  };
+const rerollTodaysFocus = () => {
+  const pool = buildFilteredPool();
+  if (pool.length === 0) {
+    setTodayFocusKey("");
+    return;
+  }
+
+  const choice = pool[Math.floor(Math.random() * pool.length)];
+  setTodayFocusKey(`${choice.ref}-${choice.title}`);
+};
 
   return (
     <div style={outerStyle}>
@@ -653,10 +654,7 @@ function PageInner() {
               })
             )}
           </div>
-
-          <div style={{ marginTop: 14, fontSize: 12, color: "#64748b", fontWeight: 800 }}>
-            Tip: Tap a Topic chip for instant search. Use Today’s Focus to get one “next step” verse.
-          </div>
+#64748b
 
           {/* Premium micro-animation (B) */}
           <style jsx global>{`
