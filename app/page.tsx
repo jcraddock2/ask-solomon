@@ -403,6 +403,22 @@ function PageInner() {
                 <span>✨</span>
                 <span>Today’s Focus</span>
               </button>
+
+  {todayFocusOn && (
+  <button
+    type="button"
+    onClick={() => {
+      setTodayFocusOn(false);
+      setTodayFocusKey("");
+    }}
+    style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
+    title="Return to normal results"
+  >
+    <span>↩️</span>
+    <span>Clear Focus</span>
+  </button>
+)}
+
             </div>
 
             {/* SUB ROW */}
