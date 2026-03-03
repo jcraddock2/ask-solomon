@@ -648,51 +648,7 @@ function PageInner() {
                     ? "No matches for Today’s Focus. Try turning off Favorites or clearing search."
                     : "No matches. Try a different keyword."}
               </div>
-            ) : (
-              results.map((item) => {
-                const key = `${item.ref}-${item.title}`;
-                const isFav = !!favoriteKeys[key];
-                const isCopied = copiedKey === key;
-                const hovered = hoverKey === key;
-
-                return (
-                  <div
-                    key={key}
-                    className="verseCard"
-                    style={{
-                      ...softCardStyle,
-                      transform: hovered ? "translateY(-2px)" : "translateY(0px)",
-                      boxShadow: hovered ? "0 18px 44px rgba(0,0,0,0.12)" : (softCardStyle.boxShadow as string),
-                    }}
-                    onMouseEnter={() => setHoverKey(key)}
-                    onMouseLeave={() => setHoverKey("")}
-                  >
-                    <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 900, fontSize: 18, color: "#111" }}>{item.title}</div>
-
-                        <div style={{ marginTop: 8, fontSize: 15, lineHeight: 1.55, color: "#111", fontWeight: 650 }}>
-                          {item.body}
-                        </div>
-
-                        <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>{item.ref}</div>
-                      </div>
-
-                      <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
-                        <button type="button" onClick={() => toggleFavorite(key)} style={miniBtn}>
-                          {isFav ? "★" : "☆"}
-                        </button>
-
-                        <button type="button" onClick={() => handleCopy(item, key)} style={{ ...miniBtn, fontSize: 12 }}>
-                          {isCopied ? "Copied" : "Copy"}
-                        </button>
-                      </div>
-                    </div>
-
-                    <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 800 }}>
-                      Save this. Sit with it. Apply it today.
-                    </div>
-                  </div>
+          
                 );
               })
             )}
