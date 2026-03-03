@@ -276,7 +276,7 @@ const rerollTodaysFocus = () => {
 };
   const choice = pool[Math.floor(Math.random() * pool.length)];
   setTodayFocusKey(`${choice.ref}-${choice.title}`);
-};
+
 
   return (
     <div style={outerStyle}>
