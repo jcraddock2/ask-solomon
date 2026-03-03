@@ -191,6 +191,7 @@ function PageInner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sp]);
 
+  // ✅ count only saved keys
   const favoritesCount = useMemo(() => Object.keys(favoriteKeys).length, [favoriteKeys]);
 
   const toggleFavorite = (key: string) => {
@@ -251,12 +252,13 @@ function PageInner() {
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, sub, q, favoritesOnly, favoriteKeys, todayFocusOn, todayFocusKey]);
+
   // ✅ Pro-only: book matches for current search
   const bookMatches = useMemo<BookMatch[]>(() => {
     if (q.trim().length === 0) return [];
     return findBookMatches(q);
   }, [q]);
-  
+
   const applyTopic = (topicQuery: string) => {
     setQ(topicQuery);
     setTodayFocusOn(false);
@@ -264,16 +266,20 @@ function PageInner() {
     setUrl({ q: topicQuery });
   };
 
-const rerollTodaysFocus = () => {
-  const pool = buildFilteredPool();
-  if (pool.length === 0) {
-    setTodayFocusKey("");
-    return;
-  }
+  const rerollTodaysFocus = () => {
+    const pool = buildFilteredPool();
+    if (pool.length === 0) {
+      setTodayFocusKey("");
+      return;
+    }
 
-  const choice = pool[Math.floor(Math.random() * pool.length)];
-  setTodayFocusKey(`${choice.ref}-${choice.title}`);
-};
+    const choice = pool[Math.floor(Math.random() * pool.length)];
+    setTodayFocusKey(`${choice.ref}-${choice.title}`);
+  };
+
+  // ✅ THE REAL JSX RETURN (this was broken in your pasted file)
+  return (
+    <div style={outerStyle}>
       <main style={pageStyle}>
         {/* HEADER */}
         <header style={{ marginBottom: 16 }}>
@@ -362,11 +368,11 @@ const rerollTodaysFocus = () => {
                 title="Show only saved favorites"
               >
                 <span>⭐</span>
-               <span>
-  {favoritesOnly
-    ? `Showing Favorites (${favoritesCount})`
-    : `Favorites (${favoritesCount})`}
-</span>
+                <span>
+                  {favoritesOnly
+                    ? `Showing Favorites (${favoritesCount})`
+                    : `Favorites (${favoritesCount})`}
+                </span>
               </button>
 
               <button
@@ -402,21 +408,20 @@ const rerollTodaysFocus = () => {
                 <span>Today’s Focus</span>
               </button>
 
-  {todayFocusOn && (
-  <button
-    type="button"
-    onClick={() => {
-      setTodayFocusOn(false);
-      setTodayFocusKey("");
-    }}
-    style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
-    title="Return to normal results"
-  >
-    <span>↩️</span>
-    <span>Clear Focus</span>
-  </button>
-)}
-
+              {todayFocusOn && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTodayFocusOn(false);
+                    setTodayFocusKey("");
+                  }}
+                  style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
+                  title="Return to normal results"
+                >
+                  <span>↩️</span>
+                  <span>Clear Focus</span>
+                </button>
+              )}
             </div>
 
             {/* SUB ROW */}
@@ -453,7 +458,7 @@ const rerollTodaysFocus = () => {
               </div>
             )}
 
-            {/* TOPICS ROW (C) */}
+            {/* TOPICS ROW */}
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
               {TOPICS.map((t) => {
                 const active = q.trim().toLowerCase() === t.query.trim().toLowerCase();
@@ -537,105 +542,99 @@ const rerollTodaysFocus = () => {
           <div style={{ marginBottom: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>
             Showing {results.length} result{results.length === 1 ? "" : "s"}
           </div>
-{/* BOOK MATCHES (Pro-only) */}
-{q.trim().length > 0 && (
-  <div style={{ marginBottom: 12 }}>
-    <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>
-      Book Matches
-    </div>
 
-    {isPro ? (
-      bookMatches.length === 0 ? (
-        <div style={{ color: "#64748b", fontSize: 13, fontWeight: 800 }}>
-          No book matches yet for “{q.trim()}”.
-        </div>
-      ) : (
-        <div style={{ display: "grid", gap: 10 }}>
-          {bookMatches.map((m) => (
-            <div
-              key={m.topic}
-              style={{
-                background: "rgba(255,255,255,0.85)",
-                border: "1px solid rgba(0,0,0,0.08)",
-                borderRadius: 16,
-                padding: 14,
-                boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
-              }}
-            >
-              <div style={{ fontWeight: 900, fontSize: 15, color: "#111" }}>
-                {m.label}
-              </div>
+          {/* BOOK MATCHES (Pro-only) */}
+          {q.trim().length > 0 && (
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>Book Matches</div>
 
-              <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
-                {m.blurb}
-              </div>
+              {isPro ? (
+                bookMatches.length === 0 ? (
+                  <div style={{ color: "#64748b", fontSize: 13, fontWeight: 800 }}>
+                    No book matches yet for “{q.trim()}”.
+                  </div>
+                ) : (
+                  <div style={{ display: "grid", gap: 10 }}>
+                    {bookMatches.map((m) => (
+                      <div
+                        key={m.topic}
+                        style={{
+                          background: "rgba(255,255,255,0.85)",
+                          border: "1px solid rgba(0,0,0,0.08)",
+                          borderRadius: 16,
+                          padding: 14,
+                          boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
+                        }}
+                      >
+                        <div style={{ fontWeight: 900, fontSize: 15, color: "#111" }}>{m.label}</div>
 
-              <div style={{ marginTop: 8, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
-                Recommended: {m.pages} • {m.chapters.join(" • ")}
-              </div>
+                        <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>{m.blurb}</div>
 
-              <div style={{ marginTop: 10 }}>
-                <button
-                  type="button"
-                  onClick={() => router.push("/book")}
+                        <div style={{ marginTop: 8, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
+                          Recommended: {m.pages} • {m.chapters.join(" • ")}
+                        </div>
+
+                        <div style={{ marginTop: 10 }}>
+                          <button
+                            type="button"
+                            onClick={() => router.push("/book")}
+                            style={{
+                              border: "1px solid rgba(0,0,0,0.10)",
+                              background: "rgba(17,24,39,0.92)",
+                              color: "#fff",
+                              borderRadius: 14,
+                              padding: "10px 12px",
+                              cursor: "pointer",
+                              fontWeight: 900,
+                              fontSize: 13,
+                            }}
+                          >
+                            Open Book
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )
+              ) : (
+                <div
                   style={{
-                    border: "1px solid rgba(0,0,0,0.10)",
-                    background: "rgba(17,24,39,0.92)",
-                    color: "#fff",
-                    borderRadius: 14,
-                    padding: "10px 12px",
-                    cursor: "pointer",
-                    fontWeight: 900,
-                    fontSize: 13,
+                    background: "rgba(255,255,255,0.85)",
+                    border: "1px solid rgba(0,0,0,0.08)",
+                    borderRadius: 16,
+                    padding: 14,
+                    boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
                   }}
                 >
-                  Open Book
-                </button>
-              </div>
+                  <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>🔒 Book Matches are a Lifetime feature</div>
+
+                  <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
+                    Upgrade to see exactly where to read this in the book.
+                  </div>
+
+                  <div style={{ marginTop: 10 }}>
+                    <button
+                      type="button"
+                      onClick={() => router.push("/upgrade")}
+                      style={{
+                        border: "1px solid rgba(0,0,0,0.10)",
+                        background: "rgba(17,24,39,0.92)",
+                        color: "#fff",
+                        borderRadius: 14,
+                        padding: "10px 12px",
+                        cursor: "pointer",
+                        fontWeight: 900,
+                        fontSize: 13,
+                      }}
+                    >
+                      Upgrade (Lifetime)
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
-          ))}
-        </div>
-      )
-    ) : (
-      <div
-        style={{
-          background: "rgba(255,255,255,0.85)",
-          border: "1px solid rgba(0,0,0,0.08)",
-          borderRadius: 16,
-          padding: 14,
-          boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
-        }}
-      >
-        <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>
-          🔒 Book Matches are a Lifetime feature
-        </div>
+          )}
 
-        <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
-          Upgrade to see exactly where to read this in the book.
-        </div>
-
-        <div style={{ marginTop: 10 }}>
-          <button
-            type="button"
-            onClick={() => router.push("/upgrade")}
-            style={{
-              border: "1px solid rgba(0,0,0,0.10)",
-              background: "rgba(17,24,39,0.92)",
-              color: "#fff",
-              borderRadius: 14,
-              padding: "10px 12px",
-              cursor: "pointer",
-              fontWeight: 900,
-              fontSize: 13,
-            }}
-          >
-            Upgrade (Lifetime)
-          </button>
-        </div>
-      </div>
-    )}
-  </div>
-)}
           {/* RESULTS GRID */}
           <div style={{ display: "grid", gap: 12 }}>
             {results.length === 0 ? (
@@ -643,29 +642,90 @@ const rerollTodaysFocus = () => {
                 {favoritesOnly && favoritesCount === 0
                   ? "You haven’t saved any favorites yet. Tap ⭐ on a verse to save it."
                   : todayFocusOn && !todayFocusKey
-                    ? "No matches for Today’s Focus. Try turning off Favorites or clearing search."
-                    : "No matches. Try a different keyword."}
+                  ? "No matches for Today’s Focus. Try turning off Favorites or clearing search."
+                  : "No matches. Try a different keyword."}
               </div>
-          
+            ) : (
+              results.map((item) => {
+                const key = `${item.ref}-${item.title}`;
+                const isFav = !!favoriteKeys[key];
+                const isCopied = copiedKey === key;
+                const hovered = hoverKey === key;
+
+                return (
+                  <div
+                    key={key}
+                    className="verseCard"
+                    style={{
+                      ...softCardStyle,
+                      transform: hovered ? "translateY(-2px)" : "translateY(0px)",
+                      boxShadow: hovered ? "0 18px 44px rgba(0,0,0,0.12)" : (softCardStyle.boxShadow as string),
+                    }}
+                    onMouseEnter={() => setHoverKey(key)}
+                    onMouseLeave={() => setHoverKey("")}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 900, fontSize: 18, color: "#111" }}>{item.title}</div>
+
+                        <div style={{ marginTop: 8, fontSize: 15, lineHeight: 1.55, color: "#111", fontWeight: 650 }}>
+                          {item.body}
+                        </div>
+
+                        <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>{item.ref}</div>
+                      </div>
+
+                      <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
+                        <button type="button" onClick={() => toggleFavorite(key)} style={miniBtn} title="Save favorite">
+                          {isFav ? "★" : "☆"}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(item as VerseItem, key)}
+                          style={{ ...miniBtn, fontSize: 12 }}
+                          title="Copy verse"
+                        >
+                          {isCopied ? "Copied" : "Copy"}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Micro-prompt */}
+                    <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 800 }}>
+                      Save this. Sit with it. Apply it today.
+                    </div>
+                  </div>
                 );
               })
             )}
           </div>
-#64748b
 
-          {/* Premium micro-animation (B) */}
+          {/* Premium micro-animation */}
           <style jsx global>{`
             @keyframes pulseGlow {
-              0% { box-shadow: 0 14px 30px rgba(0,0,0,0.16); }
-              50% { box-shadow: 0 18px 44px rgba(99,102,241,0.18); }
-              100% { box-shadow: 0 14px 30px rgba(0,0,0,0.16); }
+              0% {
+                box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
+              }
+              50% {
+                box-shadow: 0 18px 44px rgba(99, 102, 241, 0.18);
+              }
+              100% {
+                box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
+              }
             }
             .verseCard {
               animation: fadeInUp 180ms ease both;
             }
             @keyframes fadeInUp {
-              from { opacity: 0; transform: translateY(6px); }
-              to { opacity: 1; transform: translateY(0px); }
+              from {
+                opacity: 0;
+                transform: translateY(6px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0px);
+              }
             }
           `}</style>
         </section>
