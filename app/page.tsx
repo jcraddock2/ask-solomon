@@ -519,7 +519,105 @@ function PageInner() {
           <div style={{ marginBottom: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>
             Showing {results.length} result{results.length === 1 ? "" : "s"}
           </div>
+{/* BOOK MATCHES (Pro-only) */}
+{q.trim().length > 0 && (
+  <div style={{ marginBottom: 12 }}>
+    <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>
+      Book Matches
+    </div>
 
+    {isPro ? (
+      bookMatches.length === 0 ? (
+        <div style={{ color: "#64748b", fontSize: 13, fontWeight: 800 }}>
+          No book matches yet for “{q.trim()}”.
+        </div>
+      ) : (
+        <div style={{ display: "grid", gap: 10 }}>
+          {bookMatches.map((m) => (
+            <div
+              key={m.topic}
+              style={{
+                background: "rgba(255,255,255,0.85)",
+                border: "1px solid rgba(0,0,0,0.08)",
+                borderRadius: 16,
+                padding: 14,
+                boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
+              }}
+            >
+              <div style={{ fontWeight: 900, fontSize: 15, color: "#111" }}>
+                {m.label}
+              </div>
+
+              <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
+                {m.blurb}
+              </div>
+
+              <div style={{ marginTop: 8, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
+                Recommended: {m.pages} • {m.chapters.join(" • ")}
+              </div>
+
+              <div style={{ marginTop: 10 }}>
+                <button
+                  type="button"
+                  onClick={() => router.push("/book")}
+                  style={{
+                    border: "1px solid rgba(0,0,0,0.10)",
+                    background: "rgba(17,24,39,0.92)",
+                    color: "#fff",
+                    borderRadius: 14,
+                    padding: "10px 12px",
+                    cursor: "pointer",
+                    fontWeight: 900,
+                    fontSize: 13,
+                  }}
+                >
+                  Open Book
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )
+    ) : (
+      <div
+        style={{
+          background: "rgba(255,255,255,0.85)",
+          border: "1px solid rgba(0,0,0,0.08)",
+          borderRadius: 16,
+          padding: 14,
+          boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
+        }}
+      >
+        <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>
+          🔒 Book Matches are a Lifetime feature
+        </div>
+
+        <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
+          Upgrade to see exactly where to read this in the book.
+        </div>
+
+        <div style={{ marginTop: 10 }}>
+          <button
+            type="button"
+            onClick={() => router.push("/upgrade")}
+            style={{
+              border: "1px solid rgba(0,0,0,0.10)",
+              background: "rgba(17,24,39,0.92)",
+              color: "#fff",
+              borderRadius: 14,
+              padding: "10px 12px",
+              cursor: "pointer",
+              fontWeight: 900,
+              fontSize: 13,
+            }}
+          >
+            Upgrade (Lifetime)
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+)}
           {/* RESULTS GRID */}
           <div style={{ display: "grid", gap: 12 }}>
             {results.length === 0 ? (
