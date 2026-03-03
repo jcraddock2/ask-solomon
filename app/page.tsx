@@ -251,7 +251,12 @@ function PageInner() {
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, sub, q, favoritesOnly, favoriteKeys, todayFocusOn, todayFocusKey]);
-
+  // ✅ Pro-only: book matches for current search
+  const bookMatches = useMemo<BookMatch[]>(() => {
+    if (q.trim().length === 0) return [];
+    return findBookMatches(q);
+  }, [q]);
+  
   const applyTopic = (topicQuery: string) => {
     setQ(topicQuery);
     setTodayFocusOn(false);
