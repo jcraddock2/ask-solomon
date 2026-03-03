@@ -2,9 +2,14 @@
 
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { isProUser } from "./lib/access"; // <-- if your access.ts lives elsewhere, adjust path
 
-type Mode = "encouragement" | "wisdom" | "wealth" | "success";
+// If your access file path differs, adjust this import.
+// Common alternatives:
+//   import { isProUser } from "../lib/access";
+//   import { isProUser } from "./lib/access";
+import { isProUser } from "./lib/access";
+
+type Mode = "encouragement" | "wisdom" | "success";
 type Sub = "peace" | "strength" | "direction" | "confidence" | "hope";
 
 type VerseItem = {
@@ -12,13 +17,12 @@ type VerseItem = {
   body: string;
   ref: string;
   mode: Mode;
-  sub?: Sub; // used only when mode === "encouragement"
+  sub?: Sub; // only for encouragement
 };
 
 const MODES: { key: Mode; label: string }[] = [
   { key: "encouragement", label: "Encourage Me" },
   { key: "wisdom", label: "Wisdom" },
-  { key: "wealth", label: "Wealth" },
   { key: "success", label: "Success" },
 ];
 
@@ -32,25 +36,30 @@ const SUBS: { key: Sub; label: string }[] = [
 
 const subCommentary: Record<Sub, string> = {
   peace:
-    "Peace isn’t the absence of pressure—it’s the presence of order in your mind. Slow down. Let wisdom settle you before you act.",
+    "Peace isn’t the absence of trouble—it’s the presence of order in your mind. Slow down. Let wisdom settle your spirit before you act.",
   strength:
-    "Strength isn’t hype. It’s endurance. Take the next right step—quietly, consistently—and God will meet you in motion.",
+    "Strength isn’t hype. It’s quiet endurance. Take the next right step—God builds courage through consistency.",
   direction:
-    "Direction comes after alignment. Choose what is wise, true, and clean—then move. God steers a moving ship.",
+    "Direction often comes after alignment. Choose what’s wise, true, and clean—then move. God steers a moving ship.",
   confidence:
-    "Confidence is obedience with your shoulders back. Integrity gives you backbone. Begin before you feel ready.",
+    "Confidence is obedience with your shoulders back. You don’t need permission to do what’s right—just courage to begin.",
   hope:
-    "Hope is the decision to see beyond the moment. Today isn’t the whole story. Keep sowing—harvest comes.",
+    "Hope is a decision to see beyond the moment. Today is not the whole story. Keep sowing—harvest comes.",
 };
 
 /**
- * ✅ PASTE YOUR FULL DATASET HERE
- * Keep the shape: { title, body, ref, mode, sub? }
- * - mode must be one of: encouragement | wisdom | wealth | success
- * - sub only for encouragement items
+ * ✅ Replace this DATA with your full list later if you already have one.
+ * I made this intentionally “bigger” so your screen doesn’t look like it has fewer verses.
  */
 const DATA: VerseItem[] = [
-  // --- SAMPLE (safe placeholders) ---
+  // ENCOURAGEMENT — Peace
+  {
+    mode: "encouragement",
+    sub: "peace",
+    title: "Peace in anxious moments",
+    body: "When your mind is racing, choose the calm path—wisdom steadies the heart.",
+    ref: "Proverbs 12:25",
+  },
   {
     mode: "encouragement",
     sub: "peace",
@@ -60,11 +69,105 @@ const DATA: VerseItem[] = [
   },
   {
     mode: "encouragement",
+    sub: "peace",
+    title: "Gentle words soften pressure",
+    body: "When tension rises, lower your voice—wisdom turns down the fire.",
+    ref: "Proverbs 15:1",
+  },
+
+  // ENCOURAGEMENT — Strength
+  {
+    mode: "encouragement",
+    sub: "strength",
+    title: "Strength for the day",
+    body: "Don’t quit in the pressure—steady courage grows quietly and wins later.",
+    ref: "Proverbs 24:10",
+  },
+  {
+    mode: "encouragement",
+    sub: "strength",
+    title: "Endurance over impulse",
+    body: "Strong people don’t react fast—they respond wisely and finish well.",
+    ref: "Proverbs 16:32",
+  },
+  {
+    mode: "encouragement",
+    sub: "strength",
+    title: "Keep your footing",
+    body: "Your steps are established when your decisions are clean and consistent.",
+    ref: "Proverbs 4:26",
+  },
+
+  // ENCOURAGEMENT — Direction
+  {
+    mode: "encouragement",
+    sub: "direction",
+    title: "Direction when unsure",
+    body: "Seek counsel and walk the next right step—clarity comes with motion.",
+    ref: "Proverbs 11:14",
+  },
+  {
+    mode: "encouragement",
     sub: "direction",
     title: "He will make your paths straight",
-    body: "Trust God beyond your understanding. Guidance often comes one step at a time—move in faith.",
+    body: "Trust beyond your understanding. Guidance often comes one step at a time—move in faith.",
     ref: "Proverbs 3:5–6",
   },
+  {
+    mode: "encouragement",
+    sub: "direction",
+    title: "Commit your plans",
+    body: "Submit your work, then execute with discipline—momentum follows obedience.",
+    ref: "Proverbs 16:3",
+  },
+
+  // ENCOURAGEMENT — Confidence
+  {
+    mode: "encouragement",
+    sub: "confidence",
+    title: "Confidence without arrogance",
+    body: "Quiet confidence comes from integrity—stand firm without showing off.",
+    ref: "Proverbs 3:5–6",
+  },
+  {
+    mode: "encouragement",
+    sub: "confidence",
+    title: "Boldness follows righteousness",
+    body: "Fear shrinks when your conscience is clear—do what’s right and walk tall.",
+    ref: "Proverbs 28:1",
+  },
+  {
+    mode: "encouragement",
+    sub: "confidence",
+    title: "Speak with clarity",
+    body: "Let your words be clean and direct—confidence is felt in simplicity.",
+    ref: "Proverbs 10:19",
+  },
+
+  // ENCOURAGEMENT — Hope
+  {
+    mode: "encouragement",
+    sub: "hope",
+    title: "Your hope will not be cut off",
+    body: "Keep doing what’s wise and right. God protects the long-term outcome of faithful people.",
+    ref: "Proverbs 23:18",
+  },
+  {
+    mode: "encouragement",
+    sub: "hope",
+    title: "Light rises",
+    body: "Even if it’s dim right now—keep walking. Wisdom brings morning.",
+    ref: "Proverbs 4:18",
+  },
+  {
+    mode: "encouragement",
+    sub: "hope",
+    title: "Don’t envy evil",
+    body: "Stay your course. Shortcuts fade—wisdom outlasts the moment.",
+    ref: "Proverbs 24:1",
+  },
+
+  // WISDOM
   {
     mode: "wisdom",
     title: "Wisdom is the main thing",
@@ -72,16 +175,54 @@ const DATA: VerseItem[] = [
     ref: "Proverbs 4:7",
   },
   {
-    mode: "wealth",
-    title: "Diligent hands bring wealth",
-    body: "Wealth is often the reward of consistency. Do the work you don’t feel like doing.",
+    mode: "wisdom",
+    title: "Get understanding",
+    body: "Don’t just collect information—seek understanding. It saves time, money, and pain.",
+    ref: "Proverbs 4:5",
+  },
+  {
+    mode: "wisdom",
+    title: "Counsel strengthens plans",
+    body: "Plans succeed with the right voices—wisdom loves feedback.",
+    ref: "Proverbs 15:22",
+  },
+  {
+    mode: "wisdom",
+    title: "Listen first",
+    body: "Quick answers create mistakes—wisdom listens before speaking.",
+    ref: "Proverbs 18:13",
+  },
+  {
+    mode: "wisdom",
+    title: "Choose your words",
+    body: "Words can build your life or burn it—wisdom uses restraint.",
+    ref: "Proverbs 12:18",
+  },
+
+  // SUCCESS
+  {
+    mode: "success",
+    title: "Diligence wins",
+    body: "Success is often the reward of consistency. Do the work you don’t feel like doing.",
     ref: "Proverbs 10:4",
   },
   {
     mode: "success",
-    title: "Commit your work",
-    body: "Give God your plans, then execute with discipline. Consistency turns prayers into progress.",
-    ref: "Proverbs 16:3",
+    title: "Prepare and execute",
+    body: "Order your steps—clear plans multiply your results.",
+    ref: "Proverbs 21:5",
+  },
+  {
+    mode: "success",
+    title: "Steady progress beats haste",
+    body: "Fast decisions can wreck outcomes—wisdom builds success one day at a time.",
+    ref: "Proverbs 19:2",
+  },
+  {
+    mode: "success",
+    title: "Skill creates opportunity",
+    body: "Excellence opens doors—become so prepared your work speaks for you.",
+    ref: "Proverbs 22:29",
   },
 ];
 
@@ -112,15 +253,18 @@ function PageInner() {
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [favoriteKeys, setFavoriteKeys] = useState<Record<string, boolean>>({});
   const [copiedKey, setCopiedKey] = useState<string>("");
-const [todayFocusOn, setTodayFocusOn] = useState(false);
-const [todayFocusKey, setTodayFocusKey] = useState<string>("");
-  const [hoverKey, setHoverKey] = useState<string>("");
 
-  // ---- styles (kept verbose like your “premium glow” build)
+  const [todayFocusOn, setTodayFocusOn] = useState(false);
+  const [todayFocusKey, setTodayFocusKey] = useState<string>("");
+
+  const [hoverKey, setHoverKey] = useState<string>("");
+  const [searchFocused, setSearchFocused] = useState(false);
+
+  // ---- styles (matched to your “best screenshot” look)
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
     background:
-      "radial-gradient(1200px 700px at 20% 10%, rgba(99,102,241,0.18), transparent 60%), radial-gradient(900px 500px at 85% 25%, rgba(16,185,129,0.14), transparent 60%), linear-gradient(180deg, #f8fafc, #ffffff)",
+      "radial-gradient(1200px 680px at 22% 8%, rgba(99,102,241,0.20), transparent 58%), radial-gradient(1000px 560px at 82% 22%, rgba(16,185,129,0.15), transparent 60%), linear-gradient(180deg, #f8fafc, #ffffff)",
   };
 
   const pageStyle: React.CSSProperties = {
@@ -139,12 +283,12 @@ const [todayFocusKey, setTodayFocusKey] = useState<string>("");
   };
 
   const badgeStyle = (pro: boolean): React.CSSProperties => ({
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 900,
     padding: "6px 10px",
     borderRadius: 999,
     border: "1px solid rgba(0,0,0,0.10)",
-    background: pro ? "rgba(16,185,129,0.14)" : "rgba(99,102,241,0.12)",
+    background: pro ? "rgba(16,185,129,0.16)" : "rgba(99,102,241,0.14)",
     color: "#111",
   });
 
@@ -161,9 +305,9 @@ const [todayFocusKey, setTodayFocusKey] = useState<string>("");
 
   const cardStyle: React.CSSProperties = {
     background: "rgba(255,255,255,0.92)",
-    borderRadius: 20,
+    borderRadius: 22,
     border: "1px solid rgba(0,0,0,0.08)",
-    boxShadow: "0 24px 70px rgba(0,0,0,0.10)",
+    boxShadow: "0 26px 80px rgba(0,0,0,0.10)",
     padding: 18,
     height: "72vh",
     overflowY: "auto",
@@ -189,6 +333,7 @@ const [todayFocusKey, setTodayFocusKey] = useState<string>("");
     fontWeight: 900,
     fontSize: 13,
     boxShadow: active ? "0 14px 30px rgba(0,0,0,0.16)" : "0 10px 24px rgba(0,0,0,0.06)",
+    whiteSpace: "nowrap",
   });
 
   const miniBtn: React.CSSProperties = {
@@ -220,15 +365,13 @@ const [todayFocusKey, setTodayFocusKey] = useState<string>("");
     localStorage.setItem("asksolomon:favorites", JSON.stringify(favoriteKeys));
   }, [favoriteKeys]);
 
-  // ---- URL sync helper (keeps your app shareable / refresh-safe)
+  // ---- url sync helper (shareable / refresh-safe)
   const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
     const nextMode = next.mode ?? mode;
     const nextSub = next.sub ?? sub;
     const nextQ = next.q ?? q;
 
     const params = new URLSearchParams();
-
-    // keep URL short: only write non-defaults
     if (nextMode !== "encouragement") params.set("mode", nextMode);
     if (nextMode === "encouragement" && nextSub !== "all") params.set("sub", nextSub);
     if (nextQ.trim().length > 0) params.set("q", nextQ.trim());
@@ -267,37 +410,45 @@ const [todayFocusKey, setTodayFocusKey] = useState<string>("");
     }
   };
 
-  // ---- results pipeline (mode/sub/search/favorites)
-  const results = useMemo(() => {
+  // Build pool from current filters (no Today’s Focus applied)
+  const buildFilteredPool = () => {
     const query = q.trim().toLowerCase();
 
-    let list = DATA.filter((d) => d.mode === mode);
+    let pool = DATA.filter((d) => d.mode === mode);
 
     if (mode === "encouragement" && sub !== "all") {
-      list = list.filter((d) => d.sub === sub);
+      pool = pool.filter((d) => d.sub === sub);
     }
 
     if (query.length > 0) {
-      list = list.filter((d) => {
+      pool = pool.filter((d) => {
         const hay = `${d.title} ${d.body} ${d.ref}`.toLowerCase();
         return hay.includes(query);
       });
     }
 
     if (favoritesOnly) {
-      list = list.filter((d) => {
+      pool = pool.filter((d) => {
         const k = `${d.ref}-${d.title}`;
         return !!favoriteKeys[k];
       });
     }
 
-   // ✅ Today’s Focus: show only the selected verse
-if (todayFocusOn) {
-  if (!todayFocusKey) return [];
-  return list.filter((d) => `${d.ref}-${d.title}` === todayFocusKey);
-}
+    return pool;
+  };
 
-return list;
+  // ---- results pipeline (mode/sub/search/favorites + today focus)
+  const results = useMemo(() => {
+    let list = buildFilteredPool();
+
+    // ✅ Today’s Focus: show only the selected verse
+    if (todayFocusOn) {
+      if (!todayFocusKey) return [];
+      return list.filter((d) => `${d.ref}-${d.title}` === todayFocusKey);
+    }
+
+    return list;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, sub, q, favoritesOnly, favoriteKeys, todayFocusOn, todayFocusKey]);
 
   return (
@@ -307,12 +458,8 @@ return list;
         <header style={{ marginBottom: 16 }}>
           <div style={headerRow}>
             <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
-              <h1 style={{ margin: 0, fontSize: 34, letterSpacing: -0.5 }}>Ask Solomon</h1>
+              <h1 style={{ margin: 0, fontSize: 40, letterSpacing: -0.8 }}>Ask Solomon</h1>
               <span style={badgeStyle(isPro)}>{isPro ? "PRO" : "FREE"}</span>
-
-              <span style={{ fontSize: 12, fontWeight: 900, color: "#334155" }}>
-                Favorites: {favoritesCount}
-              </span>
             </div>
 
             <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
@@ -337,7 +484,7 @@ return list;
             </div>
           </div>
 
-          <p style={{ marginTop: 8, marginBottom: 0, color: "#334155", fontWeight: 700 }}>
+          <p style={{ marginTop: 8, marginBottom: 0, color: "#334155", fontWeight: 800 }}>
             Encouragement first—wisdom from Proverbs for what you’re facing right now.
           </p>
         </header>
@@ -350,7 +497,7 @@ return list;
               position: "sticky",
               top: 10,
               zIndex: 10,
-              background: "rgba(248,250,252,0.85)",
+              background: "rgba(248,250,252,0.88)",
               backdropFilter: "blur(10px)",
               WebkitBackdropFilter: "blur(10px)",
               border: "1px solid rgba(0,0,0,0.06)",
@@ -360,101 +507,88 @@ return list;
               marginBottom: 14,
             }}
           >
-            {/* MODE BUTTONS */}
-           {MODES.map((m) => (
-  <button
-    key={m.key}
-    type="button"
-    onClick={() => {
-      setMode(m.key);
-      setSub("all");
-      setTodayFocusOn(false);
-      setTodayFocusKey("");
-      setUrl({ mode: m.key, sub: "all" });
-    }}
-    style={pillBtn(mode === m.key)}
-  >
-    {m.label}
-  </button>
-))}
+            {/* TOP ROW: MODE + FAVORITES + TODAY’S FOCUS (match screenshot) */}
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+              {MODES.map((m) => (
+                <button
+                  key={m.key}
+                  type="button"
+                  onClick={() => {
+                    setMode(m.key);
+                    setSub("all");
+                    setFavoritesOnly(false);
+                    setTodayFocusOn(false);
+                    setTodayFocusKey("");
+                    setUrl({ mode: m.key, sub: "all" });
+                  }}
+                  style={pillBtn(mode === m.key)}
+                >
+                  {m.label}
+                </button>
+              ))}
 
-<button
-  type="button"
-  onClick={() => setFavoritesOnly((v) => !v)}
-  style={{
-    ...pillBtn(favoritesOnly),
-    display: "flex",
-    gap: 8,
-    alignItems: "center",
-  }}
-  title="Show only saved favorites"
->
-  <span>☆</span>
-  <span>Favorites</span>
-</button>
+              <button
+                type="button"
+                onClick={() => {
+                  setFavoritesOnly((v) => !v);
+                  setTodayFocusOn(false);
+                  setTodayFocusKey("");
+                }}
+                style={{
+                  ...pillBtn(favoritesOnly),
+                  display: "flex",
+                  gap: 8,
+                  alignItems: "center",
+                }}
+                title="Show only saved favorites"
+              >
+                <span>⭐</span>
+                <span>Favorites</span>
+              </button>
 
-<button
-  type="button"
-  onClick={() => {
-    if (todayFocusOn) {
-      setTodayFocusOn(false);
-      setTodayFocusKey("");
-      return;
-    }
+              <button
+                type="button"
+                onClick={() => {
+                  if (todayFocusOn) {
+                    setTodayFocusOn(false);
+                    setTodayFocusKey("");
+                    return;
+                  }
 
-    // Build pool from current filters BEFORE focus is applied
-    const query = q.trim().toLowerCase();
+                  const pool = buildFilteredPool();
+                  if (pool.length === 0) {
+                    setTodayFocusOn(true);
+                    setTodayFocusKey("");
+                    return;
+                  }
 
-    let pool = DATA.filter((d) => d.mode === mode);
+                  const choice = pool[Math.floor(Math.random() * pool.length)];
+                  const key = `${choice.ref}-${choice.title}`;
+                  setTodayFocusKey(key);
+                  setTodayFocusOn(true);
+                }}
+                style={{
+                  ...pillBtn(todayFocusOn),
+                  display: "flex",
+                  gap: 8,
+                  alignItems: "center",
+                }}
+                title="Show one random verse from the current filter"
+              >
+                <span>✨</span>
+                <span>Today’s Focus</span>
+              </button>
+            </div>
 
-    if (mode === "encouragement" && sub !== "all") {
-      pool = pool.filter((d) => d.sub === sub);
-    }
-
-    if (query.length > 0) {
-      pool = pool.filter((d) => {
-        const hay = `${d.title} ${d.body} ${d.ref}`.toLowerCase();
-        return hay.includes(query);
-      });
-    }
-
-    if (favoritesOnly) {
-      pool = pool.filter((d) => {
-        const k = `${d.ref}-${d.title}`;
-        return !!favoriteKeys[k];
-      });
-    }
-
-    if (pool.length === 0) {
-      setTodayFocusOn(true);
-      setTodayFocusKey("");
-      return;
-    }
-
-    const choice = pool[Math.floor(Math.random() * pool.length)];
-    const key = `${choice.ref}-${choice.title}`;
-
-    setTodayFocusKey(key);
-    setTodayFocusOn(true);
-  }}
-  style={{
-    ...pillBtn(todayFocusOn),
-    display: "flex",
-    gap: 8,
-    alignItems: "center",
-  }}
-  title="Show one random verse from the current filter"
->
-  <span>✨</span>
-  <span>Today’s Focus</span>
-</button>
-            {/* SUB BUTTONS (Encouragement only) */}
+            {/* SUB ROW (Encouragement only) */}
             {mode === "encouragement" && (
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
                 <button
                   type="button"
                   onClick={() => {
                     setSub("all");
+                    setTodayFocusOn(false);
+                    setTodayFocusKey("");
                     setUrl({ sub: "all" });
                   }}
                   style={pillBtn(sub === "all")}
@@ -468,6 +602,8 @@ return list;
                     type="button"
                     onClick={() => {
                       setSub(s.key);
+                      setTodayFocusOn(false);
+                      setTodayFocusKey("");
                       setUrl({ sub: s.key });
                     }}
                     style={pillBtn(sub === s.key)}
@@ -478,24 +614,31 @@ return list;
               </div>
             )}
 
-            {/* SEARCH */}
-            <div style={{ display: "flex", gap: 10, marginTop: 10, flexWrap: "wrap" }}>
+            {/* SEARCH (with glow like screenshot) */}
+            <div style={{ display: "flex", gap: 10, marginTop: 10, flexWrap: "wrap", alignItems: "center" }}>
               <input
                 value={q}
                 onChange={(e) => {
                   const val = e.target.value;
                   setQ(val);
+                  setTodayFocusOn(false);
+                  setTodayFocusKey("");
                   setUrl({ q: val });
                 }}
-                placeholder="Search keyword (e.g., fear, counsel, diligence)…"
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setSearchFocused(false)}
+                placeholder="Search a keyword (e.g., fear, diligence, counsel)…"
                 style={{
                   flex: 1,
-                  minWidth: 240,
-                  border: "1px solid rgba(0,0,0,0.12)",
+                  minWidth: 260,
+                  border: searchFocused ? "1px solid rgba(99,102,241,0.55)" : "1px solid rgba(0,0,0,0.12)",
                   borderRadius: 14,
                   padding: "10px 12px",
-                  fontWeight: 700,
+                  fontWeight: 800,
                   outline: "none",
+                  background: "rgba(255,255,255,0.95)",
+                  boxShadow: searchFocused ? "0 0 0 5px rgba(99,102,241,0.18), 0 12px 28px rgba(0,0,0,0.08)" : "none",
+                  transition: "box-shadow 140ms ease, border 140ms ease",
                 }}
               />
 
@@ -503,6 +646,8 @@ return list;
                 type="button"
                 onClick={() => {
                   setQ("");
+                  setTodayFocusOn(false);
+                  setTodayFocusKey("");
                   setUrl({ q: "" });
                 }}
                 style={headerBtn}
@@ -524,12 +669,8 @@ return list;
                 background: "rgba(255,255,255,0.75)",
               }}
             >
-              <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 6 }}>
-                Solomon’s note
-              </div>
-              <div style={{ fontSize: 14, color: "#334155", lineHeight: 1.5 }}>
-                {subCommentary[sub as Sub]}
-              </div>
+              <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 6 }}>Solomon’s note</div>
+              <div style={{ fontSize: 14, color: "#334155", lineHeight: 1.5 }}>{subCommentary[sub as Sub]}</div>
             </div>
           )}
 
@@ -543,8 +684,10 @@ return list;
             {results.length === 0 ? (
               <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
                 {favoritesOnly && favoritesCount === 0
-                  ? "You haven’t saved any favorites yet. Tap ☆ on a verse to save it."
-                  : "No matches. Try a different keyword."}
+                  ? "You haven’t saved any favorites yet. Tap ⭐ on a verse to save it."
+                  : todayFocusOn && !todayFocusKey
+                    ? "No matches for Today’s Focus. Try turning off Favorites or clearing search."
+                    : "No matches. Try a different keyword."}
               </div>
             ) : (
               results.map((item) => {
@@ -559,20 +702,20 @@ return list;
                     style={{
                       ...softCardStyle,
                       transform: hovered ? "translateY(-2px)" : "translateY(0px)",
-                      boxShadow: hovered ? "0 18px 44px rgba(0,0,0,0.12)" : softCardStyle.boxShadow,
+                      boxShadow: hovered ? "0 18px 44px rgba(0,0,0,0.12)" : (softCardStyle.boxShadow as string),
                     }}
                     onMouseEnter={() => setHoverKey(key)}
                     onMouseLeave={() => setHoverKey("")}
                   >
                     <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 900, fontSize: 15, color: "#111" }}>{item.title}</div>
+                        <div style={{ fontWeight: 900, fontSize: 18, color: "#111" }}>{item.title}</div>
 
-                        <div style={{ marginTop: 6, fontSize: 16, lineHeight: 1.6, color: "#222" }}>
+                        <div style={{ marginTop: 8, fontSize: 15, lineHeight: 1.55, color: "#111", fontWeight: 650 }}>
                           {item.body}
                         </div>
 
-                        <div style={{ marginTop: 10, fontSize: 13, color: "#64748b", fontWeight: 700 }}>
+                        <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>
                           {item.ref}
                         </div>
                       </div>
@@ -582,14 +725,7 @@ return list;
                         <button
                           type="button"
                           onClick={() => toggleFavorite(key)}
-                          style={{
-                            border: "1px solid rgba(0,0,0,0.10)",
-                            background: "rgba(255,255,255,0.85)",
-                            borderRadius: 12,
-                            padding: "8px 10px",
-                            cursor: "pointer",
-                            fontWeight: 900,
-                          }}
+                          style={miniBtn}
                           title={isFav ? "Remove favorite" : "Save favorite"}
                         >
                           {isFav ? "★" : "☆"}
@@ -598,15 +734,7 @@ return list;
                         <button
                           type="button"
                           onClick={() => handleCopy(item, key)}
-                          style={{
-                            border: "1px solid rgba(0,0,0,0.10)",
-                            background: "rgba(255,255,255,0.85)",
-                            borderRadius: 12,
-                            padding: "8px 10px",
-                            cursor: "pointer",
-                            fontWeight: 900,
-                            fontSize: 12,
-                          }}
+                          style={{ ...miniBtn, fontSize: 12 }}
                         >
                           {isCopied ? "Copied" : "Copy"}
                         </button>
@@ -621,6 +749,10 @@ return list;
                 );
               })
             )}
+          </div>
+
+          <div style={{ marginTop: 14, fontSize: 12, color: "#64748b", fontWeight: 800 }}>
+            Tip: Star what you love, then tap Favorites to see only saved items.
           </div>
         </section>
       </main>
