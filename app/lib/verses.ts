@@ -219,3 +219,138 @@ export const DATA: VerseItem[] = [
     tags: ["work", "leadership", "success"],
   },
 ];
+// -------------------------
+// BOOK INDEX (Pro feature)
+// -------------------------
+export type BookMatch = {
+  topic: string;          // internal key
+  label: string;          // user-facing label
+  blurb: string;          // 1-line why this matters
+  pages: string;          // "pp. 12–15" style (you can refine later)
+  chapters: string[];     // chapter/section names
+  keywords: string[];     // words that should trigger this match
+};
+
+// ✅ Starter map (edit/expand anytime; no UI changes needed)
+export const BOOK_INDEX: BookMatch[] = [
+  {
+    topic: "faith",
+    label: "Faith",
+    blurb: "Trust beyond what you can see—how to keep moving when you can’t prove the outcome yet.",
+    pages: "pp. 12–15",
+    chapters: ["Trust That Moves", "Faith Under Pressure"],
+    keywords: ["faith", "trust", "believe", "belief", "doubt"],
+  },
+  {
+    topic: "fear",
+    label: "Fear",
+    blurb: "How to act with courage when your emotions are loud.",
+    pages: "pp. 16–19",
+    chapters: ["Courage is a Choice", "Winning the Inner Battle"],
+    keywords: ["fear", "afraid", "anxious", "anxiety", "panic", "worry"],
+  },
+  {
+    topic: "peace",
+    label: "Peace",
+    blurb: "How to quiet the mind and restore order inside.",
+    pages: "pp. 20–23",
+    chapters: ["Peace as a Practice", "The Discipline of Calm"],
+    keywords: ["peace", "calm", "rest", "still", "quiet", "anxious", "anxiety"],
+  },
+  {
+    topic: "direction",
+    label: "Direction",
+    blurb: "How to decide what to do next when you feel stuck.",
+    pages: "pp. 24–28",
+    chapters: ["Clarity Comes with Motion", "Counsel and Commitment"],
+    keywords: ["direction", "decide", "decision", "stuck", "uncertain", "confused", "guidance", "path"],
+  },
+  {
+    topic: "discipline",
+    label: "Discipline",
+    blurb: "Consistency that compounds—how small habits create big outcomes.",
+    pages: "pp. 29–33",
+    chapters: ["Diligence Wins", "The Power of Daily Obedience"],
+    keywords: ["discipline", "diligent", "diligence", "habit", "consistent", "consistency", "lazy", "sloth"],
+  },
+  {
+    topic: "leadership",
+    label: "Leadership",
+    blurb: "How to influence with wisdom, not pressure.",
+    pages: "pp. 34–38",
+    chapters: ["Counsel Creates Strength", "Integrity Builds Trust"],
+    keywords: ["leadership", "leader", "influence", "team", "people", "manager", "authority", "counsel"],
+  },
+  {
+    topic: "relationships",
+    label: "Relationships",
+    blurb: "How words and wisdom repair conflict and strengthen connection.",
+    pages: "pp. 39–42",
+    chapters: ["Words That Heal", "Conflict With Control"],
+    keywords: ["relationship", "relationships", "marriage", "friend", "friends", "conflict", "argument", "words", "tongue"],
+  },
+  {
+    topic: "money",
+    label: "Money & Stewardship",
+    blurb: "Wisdom that protects you from short-term thinking and financial chaos.",
+    pages: "pp. 43–47",
+    chapters: ["Stewardship Over Impulse", "Wealth With Wisdom"],
+    keywords: ["money", "wealth", "debt", "rich", "poor", "stewardship", "finance", "finances"],
+  },
+  {
+    topic: "integrity",
+    label: "Integrity",
+    blurb: "The clean conscience advantage—how character builds confidence.",
+    pages: "pp. 48–52",
+    chapters: ["Clean Hands, Strong Heart", "The Long Reward of Integrity"],
+    keywords: ["integrity", "honest", "honesty", "righteous", "character", "truth", "upright"],
+  },
+  {
+    topic: "work",
+    label: "Work & Excellence",
+    blurb: "How diligence and skill create opportunity.",
+    pages: "pp. 53–57",
+    chapters: ["Skill Opens Doors", "Excellence Over Excuses"],
+    keywords: ["work", "job", "career", "lazy", "slack", "excellence", "skill", "promotion"],
+  },
+  {
+    topic: "hope",
+    label: "Hope",
+    blurb: "How to keep your spirit up and stay steady in a long season.",
+    pages: "pp. 58–61",
+    chapters: ["Hope That Holds", "Light Rises"],
+    keywords: ["hope", "discouraged", "discouragement", "tired", "weary", "depressed", "down"],
+  },
+];
+
+const normalize = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+export function findBookMatches(query: string): BookMatch[] {
+  const q = normalize(query);
+  if (!q) return [];
+
+  // Token list helps catch short queries like "faith" or "fear"
+  const tokens = new Set(q.split(" ").filter(Boolean));
+
+  // Match if query contains keyword OR token equals keyword
+  const matches = BOOK_INDEX.filter((m) => {
+    const keys = m.keywords.map(normalize);
+    return keys.some((k) => q.includes(k) || tokens.has(k));
+  });
+
+  // Small “best first” ordering: more keyword hits = higher
+  const scored = matches
+    .map((m) => {
+      const keys = m.keywords.map(normalize);
+      const score = keys.reduce((acc, k) => (q.includes(k) || tokens.has(k) ? acc + 1 : acc), 0);
+      return { m, score };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  return scored.map((x) => x.m).slice(0, 4); // show top 4
+}
