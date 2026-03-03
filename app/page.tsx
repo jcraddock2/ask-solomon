@@ -364,7 +364,11 @@ function PageInner() {
                 title="Show only saved favorites"
               >
                 <span>⭐</span>
-                <span>Favorites ({favoritesCount})</span>
+               <span>
+  {favoritesOnly
+    ? `Showing Favorites (${favoritesCount})`
+    : `Favorites (${favoritesCount})`}
+</span>
               </button>
 
               <button
