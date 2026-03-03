@@ -3,229 +3,8 @@
 
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-
-// If your access file path differs, adjust this import.
-// Common alternatives:
-//   import { isProUser } from "../lib/access";
-//   import { isProUser } from "./lib/access";
 import { isProUser } from "./lib/access";
-
-type Mode = "encouragement" | "wisdom" | "success";
-type Sub = "peace" | "strength" | "direction" | "confidence" | "hope";
-
-type VerseItem = {
-  title: string;
-  body: string;
-  ref: string;
-  mode: Mode;
-  sub?: Sub; // only for encouragement
-};
-
-const MODES: { key: Mode; label: string }[] = [
-  { key: "encouragement", label: "Encourage Me" },
-  { key: "wisdom", label: "Wisdom" },
-  { key: "success", label: "Success" },
-];
-
-const SUBS: { key: Sub; label: string }[] = [
-  { key: "peace", label: "Peace" },
-  { key: "strength", label: "Strength" },
-  { key: "direction", label: "Direction" },
-  { key: "confidence", label: "Confidence" },
-  { key: "hope", label: "Hope" },
-];
-
-const subCommentary: Record<Sub, string> = {
-  peace:
-    "Peace isn’t the absence of trouble—it’s the presence of order in your mind. Slow down. Let wisdom settle your spirit before you act.",
-  strength:
-    "Strength isn’t hype. It’s quiet endurance. Take the next right step—God builds courage through consistency.",
-  direction:
-    "Direction often comes after alignment. Choose what’s wise, true, and clean—then move. God steers a moving ship.",
-  confidence:
-    "Confidence is obedience with your shoulders back. You don’t need permission to do what’s right—just courage to begin.",
-  hope:
-    "Hope is a decision to see beyond the moment. Today is not the whole story. Keep sowing—harvest comes.",
-};
-
-/**
- * ✅ Replace this DATA with your full list later if you already have one.
- * I made this intentionally “bigger” so your screen doesn’t look like it has fewer verses.
- */
-const DATA: VerseItem[] = [
-  // ENCOURAGEMENT — Peace
-  {
-    mode: "encouragement",
-    sub: "peace",
-    title: "Peace in anxious moments",
-    body: "When your mind is racing, choose the calm path—wisdom steadies the heart.",
-    ref: "Proverbs 12:25",
-  },
-  {
-    mode: "encouragement",
-    sub: "peace",
-    title: "Guard your heart",
-    body: "Protect what you allow into your mind. Peace is built by boundaries—what you focus on grows.",
-    ref: "Proverbs 4:23",
-  },
-  {
-    mode: "encouragement",
-    sub: "peace",
-    title: "Gentle words soften pressure",
-    body: "When tension rises, lower your voice—wisdom turns down the fire.",
-    ref: "Proverbs 15:1",
-  },
-
-  // ENCOURAGEMENT — Strength
-  {
-    mode: "encouragement",
-    sub: "strength",
-    title: "Strength for the day",
-    body: "Don’t quit in the pressure—steady courage grows quietly and wins later.",
-    ref: "Proverbs 24:10",
-  },
-  {
-    mode: "encouragement",
-    sub: "strength",
-    title: "Endurance over impulse",
-    body: "Strong people don’t react fast—they respond wisely and finish well.",
-    ref: "Proverbs 16:32",
-  },
-  {
-    mode: "encouragement",
-    sub: "strength",
-    title: "Keep your footing",
-    body: "Your steps are established when your decisions are clean and consistent.",
-    ref: "Proverbs 4:26",
-  },
-
-  // ENCOURAGEMENT — Direction
-  {
-    mode: "encouragement",
-    sub: "direction",
-    title: "Direction when unsure",
-    body: "Seek counsel and walk the next right step—clarity comes with motion.",
-    ref: "Proverbs 11:14",
-  },
-  {
-    mode: "encouragement",
-    sub: "direction",
-    title: "He will make your paths straight",
-    body: "Trust beyond your understanding. Guidance often comes one step at a time—move in faith.",
-    ref: "Proverbs 3:5–6",
-  },
-  {
-    mode: "encouragement",
-    sub: "direction",
-    title: "Commit your plans",
-    body: "Submit your work, then execute with discipline—momentum follows obedience.",
-    ref: "Proverbs 16:3",
-  },
-
-  // ENCOURAGEMENT — Confidence
-  {
-    mode: "encouragement",
-    sub: "confidence",
-    title: "Confidence without arrogance",
-    body: "Quiet confidence comes from integrity—stand firm without showing off.",
-    ref: "Proverbs 3:5–6",
-  },
-  {
-    mode: "encouragement",
-    sub: "confidence",
-    title: "Boldness follows righteousness",
-    body: "Fear shrinks when your conscience is clear—do what’s right and walk tall.",
-    ref: "Proverbs 28:1",
-  },
-  {
-    mode: "encouragement",
-    sub: "confidence",
-    title: "Speak with clarity",
-    body: "Let your words be clean and direct—confidence is felt in simplicity.",
-    ref: "Proverbs 10:19",
-  },
-
-  // ENCOURAGEMENT — Hope
-  {
-    mode: "encouragement",
-    sub: "hope",
-    title: "Your hope will not be cut off",
-    body: "Keep doing what’s wise and right. God protects the long-term outcome of faithful people.",
-    ref: "Proverbs 23:18",
-  },
-  {
-    mode: "encouragement",
-    sub: "hope",
-    title: "Light rises",
-    body: "Even if it’s dim right now—keep walking. Wisdom brings morning.",
-    ref: "Proverbs 4:18",
-  },
-  {
-    mode: "encouragement",
-    sub: "hope",
-    title: "Don’t envy evil",
-    body: "Stay your course. Shortcuts fade—wisdom outlasts the moment.",
-    ref: "Proverbs 24:1",
-  },
-
-  // WISDOM
-  {
-    mode: "wisdom",
-    title: "Wisdom is the main thing",
-    body: "If you’re unsure what to do next—choose wisdom first. It will shape every other decision.",
-    ref: "Proverbs 4:7",
-  },
-  {
-    mode: "wisdom",
-    title: "Get understanding",
-    body: "Don’t just collect information—seek understanding. It saves time, money, and pain.",
-    ref: "Proverbs 4:5",
-  },
-  {
-    mode: "wisdom",
-    title: "Counsel strengthens plans",
-    body: "Plans succeed with the right voices—wisdom loves feedback.",
-    ref: "Proverbs 15:22",
-  },
-  {
-    mode: "wisdom",
-    title: "Listen first",
-    body: "Quick answers create mistakes—wisdom listens before speaking.",
-    ref: "Proverbs 18:13",
-  },
-  {
-    mode: "wisdom",
-    title: "Choose your words",
-    body: "Words can build your life or burn it—wisdom uses restraint.",
-    ref: "Proverbs 12:18",
-  },
-
-  // SUCCESS
-  {
-    mode: "success",
-    title: "Diligence wins",
-    body: "Success is often the reward of consistency. Do the work you don’t feel like doing.",
-    ref: "Proverbs 10:4",
-  },
-  {
-    mode: "success",
-    title: "Prepare and execute",
-    body: "Order your steps—clear plans multiply your results.",
-    ref: "Proverbs 21:5",
-  },
-  {
-    mode: "success",
-    title: "Steady progress beats haste",
-    body: "Fast decisions can wreck outcomes—wisdom builds success one day at a time.",
-    ref: "Proverbs 19:2",
-  },
-  {
-    mode: "success",
-    title: "Skill creates opportunity",
-    body: "Excellence opens doors—become so prepared your work speaks for you.",
-    ref: "Proverbs 22:29",
-  },
-];
+import { DATA, MODES, SUBS, TOPICS, subCommentary, type Mode, type Sub, type VerseItem } from "./lib/verses";
 
 function safeParse<T>(raw: string | null, fallback: T): T {
   if (!raw) return fallback;
@@ -240,7 +19,6 @@ function PageInner() {
   const router = useRouter();
   const sp = useSearchParams();
 
-  // URL -> initial state
   const urlMode = (sp.get("mode") as Mode) || "encouragement";
   const urlSub = (sp.get("sub") as Sub) || "all";
   const urlQ = sp.get("q") || "";
@@ -261,7 +39,7 @@ function PageInner() {
   const [hoverKey, setHoverKey] = useState<string>("");
   const [searchFocused, setSearchFocused] = useState(false);
 
-  // ---- styles (matched to your “best screenshot” look)
+  // styles
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
     background:
@@ -337,6 +115,18 @@ function PageInner() {
     whiteSpace: "nowrap",
   });
 
+  const topicPill = (active: boolean): React.CSSProperties => ({
+    border: "1px solid rgba(0,0,0,0.10)",
+    background: active ? "rgba(99,102,241,0.14)" : "rgba(255,255,255,0.92)",
+    borderRadius: 999,
+    padding: "8px 10px",
+    cursor: "pointer",
+    fontWeight: 900,
+    fontSize: 12,
+    color: "#111",
+    whiteSpace: "nowrap",
+  });
+
   const miniBtn: React.CSSProperties = {
     border: "1px solid rgba(0,0,0,0.10)",
     background: "rgba(255,255,255,0.92)",
@@ -347,7 +137,7 @@ function PageInner() {
     fontSize: 12,
   };
 
-  // ---- PRO detection
+  // PRO detection
   useEffect(() => {
     try {
       setIsPro(isProUser());
@@ -356,7 +146,7 @@ function PageInner() {
     }
   }, []);
 
-  // ---- favorites load/save
+  // favorites load/save
   useEffect(() => {
     const saved = safeParse<Record<string, boolean>>(localStorage.getItem("asksolomon:favorites"), {});
     setFavoriteKeys(saved);
@@ -366,7 +156,7 @@ function PageInner() {
     localStorage.setItem("asksolomon:favorites", JSON.stringify(favoriteKeys));
   }, [favoriteKeys]);
 
-  // ---- url sync helper (shareable / refresh-safe)
+  // URL sync helper
   const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
     const nextMode = next.mode ?? mode;
     const nextSub = next.sub ?? sub;
@@ -381,7 +171,7 @@ function PageInner() {
     router.push(qs ? `/?${qs}` : "/");
   };
 
-  // keep state aligned when back/forward/refresh changes search params
+  // keep state aligned with URL changes
   useEffect(() => {
     setMode(urlMode);
     setSub(urlSub);
@@ -407,7 +197,7 @@ function PageInner() {
       setCopiedKey(key);
       window.setTimeout(() => setCopiedKey(""), 900);
     } catch {
-      // silent fail
+      // silent
     }
   };
 
@@ -423,7 +213,7 @@ function PageInner() {
 
     if (query.length > 0) {
       pool = pool.filter((d) => {
-        const hay = `${d.title} ${d.body} ${d.ref}`.toLowerCase();
+        const hay = `${d.title} ${d.body} ${d.ref} ${(d.tags || []).join(" ")}`.toLowerCase();
         return hay.includes(query);
       });
     }
@@ -438,11 +228,9 @@ function PageInner() {
     return pool;
   };
 
-  // ---- results pipeline (mode/sub/search/favorites + today focus)
   const results = useMemo(() => {
-    let list = buildFilteredPool();
+    const list = buildFilteredPool();
 
-    // ✅ Today’s Focus: show only the selected verse
     if (todayFocusOn) {
       if (!todayFocusKey) return [];
       return list.filter((d) => `${d.ref}-${d.title}` === todayFocusKey);
@@ -451,6 +239,23 @@ function PageInner() {
     return list;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, sub, q, favoritesOnly, favoriteKeys, todayFocusOn, todayFocusKey]);
+
+  const applyTopic = (topicQuery: string) => {
+    setQ(topicQuery);
+    setTodayFocusOn(false);
+    setTodayFocusKey("");
+    setUrl({ q: topicQuery });
+  };
+
+  const rerollTodaysFocus = () => {
+    const pool = buildFilteredPool();
+    if (pool.length === 0) {
+      setTodayFocusKey("");
+      return;
+    }
+    const choice = pool[Math.floor(Math.random() * pool.length)];
+    setTodayFocusKey(`${choice.ref}-${choice.title}`);
+  };
 
   return (
     <div style={outerStyle}>
@@ -466,6 +271,10 @@ function PageInner() {
             <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
               <button type="button" style={headerBtn} onClick={() => router.push("/book")}>
                 Book
+              </button>
+
+              <button type="button" style={headerBtn} onClick={() => router.push("/book-index")}>
+                Topics Index
               </button>
 
               {!isPro && (
@@ -490,7 +299,6 @@ function PageInner() {
           </p>
         </header>
 
-        {/* MAIN CARD */}
         <section style={cardStyle}>
           {/* STICKY CONTROLS */}
           <div
@@ -508,7 +316,7 @@ function PageInner() {
               marginBottom: 14,
             }}
           >
-            {/* TOP ROW: MODE + FAVORITES + TODAY’S FOCUS (match screenshot) */}
+            {/* TOP ROW */}
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
               {MODES.map((m) => (
                 <button
@@ -535,24 +343,19 @@ function PageInner() {
                   setTodayFocusOn(false);
                   setTodayFocusKey("");
                 }}
-                style={{
-                  ...pillBtn(favoritesOnly),
-                  display: "flex",
-                  gap: 8,
-                  alignItems: "center",
-                }}
+                style={{ ...pillBtn(favoritesOnly), display: "flex", gap: 8, alignItems: "center" }}
                 title="Show only saved favorites"
               >
                 <span>⭐</span>
-                <span>Favorites</span>
+                <span>Favorites ({favoritesCount})</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => {
+                  // If already ON, re-roll (premium feel)
                   if (todayFocusOn) {
-                    setTodayFocusOn(false);
-                    setTodayFocusKey("");
+                    rerollTodaysFocus();
                     return;
                   }
 
@@ -564,8 +367,7 @@ function PageInner() {
                   }
 
                   const choice = pool[Math.floor(Math.random() * pool.length)];
-                  const key = `${choice.ref}-${choice.title}`;
-                  setTodayFocusKey(key);
+                  setTodayFocusKey(`${choice.ref}-${choice.title}`);
                   setTodayFocusOn(true);
                 }}
                 style={{
@@ -573,6 +375,7 @@ function PageInner() {
                   display: "flex",
                   gap: 8,
                   alignItems: "center",
+                  animation: todayFocusOn ? "pulseGlow 1.8s ease-in-out infinite" : undefined,
                 }}
                 title="Show one random verse from the current filter"
               >
@@ -581,7 +384,7 @@ function PageInner() {
               </button>
             </div>
 
-            {/* SUB ROW (Encouragement only) */}
+            {/* SUB ROW */}
             {mode === "encouragement" && (
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
                 <button
@@ -615,7 +418,25 @@ function PageInner() {
               </div>
             )}
 
-            {/* SEARCH (with glow like screenshot) */}
+            {/* TOPICS ROW (C) */}
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
+              {TOPICS.map((t) => {
+                const active = q.trim().toLowerCase() === t.query.trim().toLowerCase();
+                return (
+                  <button
+                    key={t.key}
+                    type="button"
+                    onClick={() => applyTopic(t.query)}
+                    style={topicPill(active)}
+                    title={t.hint}
+                  >
+                    {t.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* SEARCH */}
             <div style={{ display: "flex", gap: 10, marginTop: 10, flexWrap: "wrap", alignItems: "center" }}>
               <input
                 value={q}
@@ -638,7 +459,9 @@ function PageInner() {
                   fontWeight: 800,
                   outline: "none",
                   background: "rgba(255,255,255,0.95)",
-                  boxShadow: searchFocused ? "0 0 0 5px rgba(99,102,241,0.18), 0 12px 28px rgba(0,0,0,0.08)" : "none",
+                  boxShadow: searchFocused
+                    ? "0 0 0 5px rgba(99,102,241,0.18), 0 12px 28px rgba(0,0,0,0.08)"
+                    : "none",
                   transition: "box-shadow 140ms ease, border 140ms ease",
                 }}
               />
@@ -700,6 +523,7 @@ function PageInner() {
                 return (
                   <div
                     key={key}
+                    className="verseCard"
                     style={{
                       ...softCardStyle,
                       transform: hovered ? "translateY(-2px)" : "translateY(0px)",
@@ -716,33 +540,20 @@ function PageInner() {
                           {item.body}
                         </div>
 
-                        <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>
-                          {item.ref}
-                        </div>
+                        <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>{item.ref}</div>
                       </div>
 
-                      {/* RIGHT ACTIONS */}
                       <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
-                        <button
-                          type="button"
-                          onClick={() => toggleFavorite(key)}
-                          style={miniBtn}
-                          title={isFav ? "Remove favorite" : "Save favorite"}
-                        >
+                        <button type="button" onClick={() => toggleFavorite(key)} style={miniBtn}>
                           {isFav ? "★" : "☆"}
                         </button>
 
-                        <button
-                          type="button"
-                          onClick={() => handleCopy(item, key)}
-                          style={{ ...miniBtn, fontSize: 12 }}
-                        >
+                        <button type="button" onClick={() => handleCopy(item, key)} style={{ ...miniBtn, fontSize: 12 }}>
                           {isCopied ? "Copied" : "Copy"}
                         </button>
                       </div>
                     </div>
 
-                    {/* MICRO PROMPT */}
                     <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 800 }}>
                       Save this. Sit with it. Apply it today.
                     </div>
@@ -753,8 +564,24 @@ function PageInner() {
           </div>
 
           <div style={{ marginTop: 14, fontSize: 12, color: "#64748b", fontWeight: 800 }}>
-            Tip: Star what you love, then tap Favorites to see only saved items.
+            Tip: Tap a Topic chip for instant search. Use Today’s Focus to get one “next step” verse.
           </div>
+
+          {/* Premium micro-animation (B) */}
+          <style jsx global>{`
+            @keyframes pulseGlow {
+              0% { box-shadow: 0 14px 30px rgba(0,0,0,0.16); }
+              50% { box-shadow: 0 18px 44px rgba(99,102,241,0.18); }
+              100% { box-shadow: 0 14px 30px rgba(0,0,0,0.16); }
+            }
+            .verseCard {
+              animation: fadeInUp 180ms ease both;
+            }
+            @keyframes fadeInUp {
+              from { opacity: 0; transform: translateY(6px); }
+              to { opacity: 1; transform: translateY(0px); }
+            }
+          `}</style>
         </section>
       </main>
     </div>
