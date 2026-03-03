@@ -4,7 +4,19 @@
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isProUser } from "./lib/access";
-import { DATA, MODES, SUBS, TOPICS, subCommentary, type Mode, type Sub, type VerseItem } from "./lib/verses";
+import {
+  DATA,
+  MODES,
+  SUBS,
+  TOPICS,
+  subCommentary,
+  BOOK_INDEX,
+  findBookMatches,
+  type BookMatch,
+  type Mode,
+  type Sub,
+  type VerseItem,
+} from "./lib/verses";
 
 function safeParse<T>(raw: string | null, fallback: T): T {
   if (!raw) return fallback;
