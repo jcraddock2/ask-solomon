@@ -198,12 +198,38 @@ const [savedKey, setSavedKey] = useState<string>("");
     () => Object.keys(favoriteKeys).filter((k) => favoriteKeys[k]).length,
     [favoriteKeys]
   );
+const favoritesCount = useMemo(
+  () => Object.keys(favoriteKeys).filter((k) => favoriteKeys[k]).length,
+  [favoriteKeys]
+);
+
 useEffect(() => {
   setFavPulse(true);
   const t = window.setTimeout(() => setFavPulse(false), 260);
   return () => window.clearTimeout(t);
 }, [favoritesCount]);
+
 const toggleFavorite = (key: string) => {
+  setFavoriteKeys((prev) => {
+    const next = { ...prev };
+    const wasSaved = !!next[key];
+
+    if (wasSaved) {
+      delete next[key];
+
+      const remaining = Object.keys(next).filter((k) => next[k]).length;
+      if (favoritesOnly && remaining === 0) {
+        setFavoritesOnly(false);
+      }
+    } else {
+      next[key] = true;
+      setSavedKey(key);
+      window.setTimeout(() => setSavedKey(""), 900);
+    }
+
+    return next;
+  });
+};
   setFavoriteKeys((prev) => {
     const next = { ...prev };
     const wasSaved = !!next[key];
