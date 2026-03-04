@@ -336,6 +336,42 @@ function PageInner() {
     setTodayFocusKey(`${choice.ref}-${choice.title}`);
   };
 
+  // ✅ FIX: reliable toggle + auto pick
+  const toggleTodaysFocus = () => {
+    const next = !todayFocusOn;
+    setTodayFocusOn(next);
+
+    if (!next) {
+      setTodayFocusKey("");
+      return;
+    }
+
+    // turning ON → pick immediately
+    setTimeout(() => rerollTodaysFocus(), 0);
+  };
+
+  // ✅ FIX: safety reroll when filters change (prevents blank focus)
+  useEffect(() => {
+    if (!todayFocusOn) return;
+
+    const pool = buildFilteredPool();
+
+    if (pool.length === 0) {
+      setTodayFocusKey("");
+      return;
+    }
+
+    if (!todayFocusKey) {
+      rerollTodaysFocus();
+      return;
+    }
+
+    const exists = pool.some((d) => `${d.ref}-${d.title}` === todayFocusKey);
+    if (!exists) rerollTodaysFocus();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [todayFocusOn, mode, sub, q, favoritesOnly, favoriteKeys]);
+
   const renderEmptyState = () => {
     if (favoritesOnly && favoritesCount === 0) {
       return (
@@ -480,24 +516,7 @@ function PageInner() {
               {/* TODAY'S FOCUS */}
               <button
                 type="button"
-                onClick={() => {
-                  // If already ON, re-roll
-                  if (todayFocusOn) {
-                    rerollTodaysFocus();
-                    return;
-                  }
-
-                  const pool = buildFilteredPool();
-                  if (pool.length === 0) {
-                    setTodayFocusOn(true);
-                    setTodayFocusKey("");
-                    return;
-                  }
-
-                  const choice = pool[Math.floor(Math.random() * pool.length)];
-                  setTodayFocusKey(`${choice.ref}-${choice.title}`);
-                  setTodayFocusOn(true);
-                }}
+                onClick={toggleTodaysFocus}
                 style={{
                   ...pillBtn(todayFocusOn),
                   display: "flex",
@@ -508,7 +527,7 @@ function PageInner() {
                 title="Show one random verse from the current filter"
               >
                 <span>✨</span>
-                <span>Today’s Focus</span>
+                <span>{todayFocusOn ? "Today’s Focus (On)" : "Today’s Focus"}</span>
               </button>
 
               {todayFocusOn && (
