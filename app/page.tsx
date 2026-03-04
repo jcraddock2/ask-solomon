@@ -422,6 +422,19 @@ function PageInner() {
                   <span>Clear Focus</span>
                 </button>
               )}
+              {todayFocusOn && (
+  <button
+    type="button"
+    onClick={() => {
+      rerollTodaysFocus();
+    }}
+    style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
+    title="Pick a different verse"
+  >
+    <span>🔄</span>
+    <span>Re-roll</span>
+  </button>
+)}
             </div>
 
             {/* SUB ROW */}
