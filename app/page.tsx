@@ -184,30 +184,6 @@ const [savedKey, setSavedKey] = useState<string>("");
 
     const qs = params.toString();
     router.push(qs ? `/?${qs}` : "/");
-  };
-
-  // keep state aligned with URL changes
-  useEffect(() => {
-    setMode(urlMode);
-    setSub(urlSub);
-    setQ(urlQ);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sp]);
-
-  const favoritesCount = useMemo(
-    () => Object.keys(favoriteKeys).filter((k) => favoriteKeys[k]).length,
-    [favoriteKeys]
-  );
-const favoritesCount = useMemo(
-  () => Object.keys(favoriteKeys).filter((k) => favoriteKeys[k]).length,
-  [favoriteKeys]
-);
-
-useEffect(() => {
-  setFavPulse(true);
-  const t = window.setTimeout(() => setFavPulse(false), 260);
-  return () => window.clearTimeout(t);
-}, [favoritesCount]);
 
 const toggleFavorite = (key: string) => {
   setFavoriteKeys((prev) => {
