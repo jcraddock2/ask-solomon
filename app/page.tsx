@@ -209,9 +209,26 @@ const buildShareText = (item: VerseItem) => {
   return `${item.title}\n\n${item.body}\n\n${item.ref}\n\n— Ask Solomon\n${link}`;
 };
 
+const handleCopy = async (item: VerseItem, key: string) => {
+  const text = `${item.title}\n\n${item.body}\n\n${item.ref}`;
+  try {
+    await navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    window.setTimeout(() => setCopiedKey(""), 900);
+  } catch {
+    // silent
+  }
+};
+
+const buildShareText = (item: VerseItem) => {
+  const link = typeof window !== "undefined" ? window.location.href : "";
+  return `${item.title}\n\n${item.body}\n\n${item.ref}\n\n— Ask Solomon\n${link}`;
+};
+
 const handleShare = async (item: VerseItem, keyForUi?: string) => {
   const text = buildShareText(item);
 
+  // Try native share first (best on mobile)
   try {
     if (typeof navigator !== "undefined" && "share" in navigator) {
       // @ts-ignore
@@ -219,12 +236,12 @@ const handleShare = async (item: VerseItem, keyForUi?: string) => {
       return;
     }
   } catch {
-    // ignore and fall back
+    // ignore
   }
 
+  // Fallback: copy
   try {
     await navigator.clipboard.writeText(text);
-
     if (keyForUi) {
       setCopiedKey(keyForUi);
       window.setTimeout(() => setCopiedKey(""), 900);
