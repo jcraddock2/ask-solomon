@@ -198,13 +198,19 @@ const [savedKey, setSavedKey] = useState<string>("");
     [favoriteKeys]
   );
 
-  const toggleFavorite = (key: string) => {
+const toggleFavorite = (key: string) => {
   setFavoriteKeys((prev) => {
     const next = { ...prev };
     const wasSaved = !!next[key];
 
     if (wasSaved) {
       delete next[key];
+
+      // ✅ If user is in Favorites-only view and this was the last favorite, auto-exit
+      const remaining = Object.keys(next).filter((k) => next[k]).length;
+      if (favoritesOnly && remaining === 0) {
+        setFavoritesOnly(false);
+      }
     } else {
       next[key] = true;
       setSavedKey(key);
@@ -214,7 +220,6 @@ const [savedKey, setSavedKey] = useState<string>("");
     return next;
   });
 };
-
   const handleCopy = async (item: VerseItem, key: string) => {
     const text = `${item.title}\n\n${item.body}\n\n${item.ref}`;
     try {
