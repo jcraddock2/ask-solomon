@@ -1,4 +1,4 @@
-// Stable UI restore – baseline confirmed working
+// app/page.tsx
 "use client";
 
 import React, { Suspense, useEffect, useMemo, useState } from "react";
@@ -42,9 +42,11 @@ function PageInner() {
 
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [favoriteKeys, setFavoriteKeys] = useState<Record<string, boolean>>({});
+
   const [copiedKey, setCopiedKey] = useState<string>("");
-const [savedKey, setSavedKey] = useState<string>("");
+  const [savedKey, setSavedKey] = useState<string>("");
   const [favPulse, setFavPulse] = useState(false);
+
   const [todayFocusOn, setTodayFocusOn] = useState(false);
   const [todayFocusKey, setTodayFocusKey] = useState<string>("");
 
@@ -92,6 +94,7 @@ const [savedKey, setSavedKey] = useState<string>("");
     fontWeight: 900,
     fontSize: 13,
     boxShadow: "0 10px 24px rgba(0,0,0,0.06)",
+    userSelect: "none",
   };
 
   const cardStyle: React.CSSProperties = {
@@ -184,49 +187,51 @@ const [savedKey, setSavedKey] = useState<string>("");
 
     const qs = params.toString();
     router.push(qs ? `/?${qs}` : "/");
+  };
 
-const toggleFavorite = (key: string) => {
-  setFavoriteKeys((prev) => {
-    const next = { ...prev };
-    const wasSaved = !!next[key];
+  // keep state aligned with URL changes
+  useEffect(() => {
+    setMode(urlMode);
+    setSub(urlSub);
+    setQ(urlQ);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sp]);
 
-    if (wasSaved) {
-      delete next[key];
+  const favoritesCount = useMemo(
+    () => Object.keys(favoriteKeys).filter((k) => favoriteKeys[k]).length,
+    [favoriteKeys]
+  );
 
-      const remaining = Object.keys(next).filter((k) => next[k]).length;
-      if (favoritesOnly && remaining === 0) {
-        setFavoritesOnly(false);
+  // Favorites count "pop"
+  useEffect(() => {
+    setFavPulse(true);
+    const t = window.setTimeout(() => setFavPulse(false), 260);
+    return () => window.clearTimeout(t);
+  }, [favoritesCount]);
+
+  const toggleFavorite = (key: string) => {
+    setFavoriteKeys((prev) => {
+      const next = { ...prev };
+      const wasSaved = !!next[key];
+
+      if (wasSaved) {
+        delete next[key];
+
+        // ✅ If user is in Favorites-only view and this was the last favorite, auto-exit
+        const remaining = Object.keys(next).filter((k) => next[k]).length;
+        if (favoritesOnly && remaining === 0) {
+          setFavoritesOnly(false);
+        }
+      } else {
+        next[key] = true;
+        setSavedKey(key);
+        window.setTimeout(() => setSavedKey(""), 900);
       }
-    } else {
-      next[key] = true;
-      setSavedKey(key);
-      window.setTimeout(() => setSavedKey(""), 900);
-    }
 
-    return next;
-  });
-};
-  setFavoriteKeys((prev) => {
-    const next = { ...prev };
-    const wasSaved = !!next[key];
+      return next;
+    });
+  };
 
-    if (wasSaved) {
-      delete next[key];
-
-      // ✅ If user is in Favorites-only view and this was the last favorite, auto-exit
-      const remaining = Object.keys(next).filter((k) => next[k]).length;
-      if (favoritesOnly && remaining === 0) {
-        setFavoritesOnly(false);
-      }
-    } else {
-      next[key] = true;
-      setSavedKey(key);
-      window.setTimeout(() => setSavedKey(""), 900);
-    }
-
-    return next;
-  });
-};
   const handleCopy = async (item: VerseItem, key: string) => {
     const text = `${item.title}\n\n${item.body}\n\n${item.ref}`;
     try {
@@ -246,6 +251,7 @@ const toggleFavorite = (key: string) => {
   const handleShare = async (item: VerseItem, keyForUi?: string) => {
     const text = buildShareText(item);
 
+    // Try native share first (mobile)
     try {
       if (typeof navigator !== "undefined" && "share" in navigator) {
         // @ts-ignore
@@ -256,6 +262,7 @@ const toggleFavorite = (key: string) => {
       // ignore
     }
 
+    // Fallback: copy
     try {
       await navigator.clipboard.writeText(text);
       if (keyForUi) {
@@ -329,9 +336,50 @@ const toggleFavorite = (key: string) => {
     setTodayFocusKey(`${choice.ref}-${choice.title}`);
   };
 
+  const renderEmptyState = () => {
+    if (favoritesOnly && favoritesCount === 0) {
+      return (
+        <div
+          style={{
+            background: "rgba(255,255,255,0.85)",
+            border: "1px solid rgba(0,0,0,0.08)",
+            borderRadius: 16,
+            padding: 14,
+            boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
+          }}
+        >
+          <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>⭐ Build your Favorites Library</div>
+
+          <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
+            Tap ☆ on any verse to save it. Then you can switch to Favorites anytime.
+          </div>
+
+          <div style={{ marginTop: 10, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
+            Tip: Save the verses you want to read again tomorrow.
+          </div>
+        </div>
+      );
+    }
+
+    if (todayFocusOn && !todayFocusKey) {
+      return (
+        <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
+          No matches for Today’s Focus. Try turning off Favorites or clearing search.
+        </div>
+      );
+    }
+
+    return (
+      <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
+        No matches. Try a different keyword.
+      </div>
+    );
+  };
+
   return (
     <div style={outerStyle}>
       <main style={pageStyle}>
+        {/* HEADER */}
         <header style={{ marginBottom: 16 }}>
           <div style={headerRow}>
             <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
@@ -371,6 +419,7 @@ const toggleFavorite = (key: string) => {
         </header>
 
         <section style={cardStyle}>
+          {/* STICKY CONTROLS */}
           <div
             style={{
               position: "sticky",
@@ -386,6 +435,7 @@ const toggleFavorite = (key: string) => {
               marginBottom: 14,
             }}
           >
+            {/* TOP ROW */}
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
               {MODES.map((m) => (
                 <button
@@ -405,6 +455,7 @@ const toggleFavorite = (key: string) => {
                 </button>
               ))}
 
+              {/* FAVORITES */}
               <button
                 type="button"
                 onClick={() => {
@@ -412,12 +463,50 @@ const toggleFavorite = (key: string) => {
                   setTodayFocusOn(false);
                   setTodayFocusKey("");
                 }}
-                style={{ ...pillBtn(favoritesOnly), display: "flex", gap: 8, alignItems: "center" }}
+                style={{
+                  ...pillBtn(favoritesOnly),
+                  display: "flex",
+                  gap: 8,
+                  alignItems: "center",
+                  transform: favPulse ? "scale(1.05)" : "scale(1)",
+                  transition: "transform 160ms ease",
+                }}
                 title="Show only saved favorites"
               >
                 <span>⭐</span>
-                <span>
-          Favorites (
+                <span>{favoritesOnly ? `Showing Favorites (${favoritesCount})` : `Favorites (${favoritesCount})`}</span>
+              </button>
+
+              {/* TODAY'S FOCUS */}
+              <button
+                type="button"
+                onClick={() => {
+                  // If already ON, re-roll
+                  if (todayFocusOn) {
+                    rerollTodaysFocus();
+                    return;
+                  }
+
+                  const pool = buildFilteredPool();
+                  if (pool.length === 0) {
+                    setTodayFocusOn(true);
+                    setTodayFocusKey("");
+                    return;
+                  }
+
+                  const choice = pool[Math.floor(Math.random() * pool.length)];
+                  setTodayFocusKey(`${choice.ref}-${choice.title}`);
+                  setTodayFocusOn(true);
+                }}
+                style={{
+                  ...pillBtn(todayFocusOn),
+                  display: "flex",
+                  gap: 8,
+                  alignItems: "center",
+                  animation: todayFocusOn ? "pulseGlow 1.8s ease-in-out infinite" : undefined,
+                }}
+                title="Show one random verse from the current filter"
+              >
                 <span>✨</span>
                 <span>Today’s Focus</span>
               </button>
@@ -429,14 +518,7 @@ const toggleFavorite = (key: string) => {
                     setTodayFocusOn(false);
                     setTodayFocusKey("");
                   }}
-                style={{
-  ...pillBtn(favoritesOnly),
-  display: "flex",
-  gap: 8,
-  alignItems: "center",
-  transform: favPulse ? "scale(1.05)" : "scale(1)",
-  transition: "transform 160ms ease",
-}}
+                  style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
                   title="Return to normal results"
                 >
                   <span>↩️</span>
@@ -457,6 +539,7 @@ const toggleFavorite = (key: string) => {
               )}
             </div>
 
+            {/* SUB ROW */}
             {mode === "encouragement" && (
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
                 <button
@@ -490,6 +573,7 @@ const toggleFavorite = (key: string) => {
               </div>
             )}
 
+            {/* TOPICS ROW */}
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
               {TOPICS.map((t) => {
                 const active = q.trim().toLowerCase() === t.query.trim().toLowerCase();
@@ -507,6 +591,7 @@ const toggleFavorite = (key: string) => {
               })}
             </div>
 
+            {/* SEARCH */}
             <div style={{ display: "flex", gap: 10, marginTop: 10, flexWrap: "wrap", alignItems: "center" }}>
               <input
                 value={q}
@@ -551,6 +636,7 @@ const toggleFavorite = (key: string) => {
             </div>
           </div>
 
+          {/* SOLOMON'S NOTE */}
           {mode === "encouragement" && sub !== "all" && subCommentary[sub as Sub] && (
             <div
               style={{
@@ -567,10 +653,12 @@ const toggleFavorite = (key: string) => {
             </div>
           )}
 
+          {/* RESULTS COUNT */}
           <div style={{ marginBottom: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>
             Showing {results.length} result{results.length === 1 ? "" : "s"}
           </div>
 
+          {/* BOOK MATCHES (Pro-only) */}
           {q.trim().length > 0 && (
             <div style={{ marginBottom: 12 }}>
               <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>Book Matches</div>
@@ -633,9 +721,7 @@ const toggleFavorite = (key: string) => {
                     boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
                   }}
                 >
-                  <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>
-                    🔒 Book Matches are a Lifetime feature
-                  </div>
+                  <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>🔒 Book Matches are a Lifetime feature</div>
 
                   <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
                     Upgrade to see exactly where to read this in the book.
@@ -663,45 +749,17 @@ const toggleFavorite = (key: string) => {
               )}
             </div>
           )}
-<div style={{ display: "grid", gap: 12 }}>
-  {results.length === 0 ? (
-    favoritesOnly && favoritesCount === 0 ? (
-      <div
-        style={{
-          background: "rgba(255,255,255,0.85)",
-          border: "1px solid rgba(0,0,0,0.08)",
-          borderRadius: 16,
-          padding: 14,
-          boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
-        }}
-      >
-        <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>
-          ⭐ Build your Favorites Library
-        </div>
 
-        <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
-          Tap ☆ on any verse to save it. Then you can switch to Favorites anytime.
-        </div>
-
-        <div style={{ marginTop: 10, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
-          Tip: Save the verses you want to read again tomorrow.
-        </div>
-      </div>
-    ) : todayFocusOn && !todayFocusKey ? (
-      <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
-        No matches for Today’s Focus. Try turning off Favorites or clearing search.
-      </div>
-    ) : (
-      <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
-        No matches. Try a different keyword.
-      </div>
-    )
-  ) : (
+          {/* RESULTS GRID */}
+          <div style={{ display: "grid", gap: 12 }}>
+            {results.length === 0 ? (
+              renderEmptyState()
+            ) : (
               results.map((item) => {
                 const key = `${item.ref}-${item.title}`;
                 const isFav = !!favoriteKeys[key];
                 const isCopied = copiedKey === key;
-               const isSavedFlash = savedKey === key; 
+                const isSavedFlash = savedKey === key;
                 const hovered = hoverKey === key;
 
                 return (
@@ -711,7 +769,7 @@ const toggleFavorite = (key: string) => {
                     style={{
                       ...softCardStyle,
                       transform: hovered ? "translateY(-2px)" : "translateY(0px)",
-                      boxShadow: hovered ? "0 22px 60px rgba(15,23,42,0.18)" : (softCardStyle.boxShadow as string),
+                      boxShadow: hovered ? "0 18px 44px rgba(0,0,0,0.12)" : (softCardStyle.boxShadow as string),
                     }}
                     onMouseEnter={() => setHoverKey(key)}
                     onMouseLeave={() => setHoverKey("")}
@@ -738,21 +796,11 @@ const toggleFavorite = (key: string) => {
                           {isFav ? "★" : "☆"}
                         </button>
 
-                        <button
-                          type="button"
-                          onClick={() => handleCopy(item, key)}
-                          style={{ ...miniBtn, fontSize: 12 }}
-                          title="Copy verse"
-                        >
+                        <button type="button" onClick={() => handleCopy(item, key)} style={{ ...miniBtn, fontSize: 12 }} title="Copy verse">
                           {isCopied ? "Copied" : "Copy"}
                         </button>
 
-                        <button
-                          type="button"
-                          onClick={() => handleShare(item, key)}
-                          style={{ ...miniBtn, fontSize: 12 }}
-                          title="Share this verse"
-                        >
+                        <button type="button" onClick={() => handleShare(item, key)} style={{ ...miniBtn, fontSize: 12 }} title="Share this verse">
                           Share
                         </button>
                       </div>
@@ -760,42 +808,32 @@ const toggleFavorite = (key: string) => {
 
                     <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 800 }}>
                       Save this. Sit with it. Apply it today.
-                    </div> 
+                    </div>
+
                     {isSavedFlash && (
-  <div style={{ marginTop: 6, fontSize: 12, fontWeight: 900, color: "#111" }}>
-    ✅ Saved to Favorites
-  </div>
-)}
+                      <div style={{ marginTop: 6, fontSize: 12, fontWeight: 900, color: "#111" }}>
+                        ✅ Saved to Favorites
+                      </div>
+                    )}
                   </div>
                 );
               })
             )}
           </div>
 
+          {/* Premium micro-animation */}
           <style jsx global>{`
             @keyframes pulseGlow {
-              0% {
-                box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
-              }
-              50% {
-                box-shadow: 0 18px 44px rgba(99, 102, 241, 0.18);
-              }
-              100% {
-                box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
-              }
+              0% { box-shadow: 0 14px 30px rgba(0,0,0,0.16); }
+              50% { box-shadow: 0 18px 44px rgba(99,102,241,0.18); }
+              100% { box-shadow: 0 14px 30px rgba(0,0,0,0.16); }
             }
             .verseCard {
               animation: fadeInUp 180ms ease both;
             }
             @keyframes fadeInUp {
-              from {
-                opacity: 0;
-                transform: translateY(6px);
-              }
-              to {
-                opacity: 1;
-                transform: translateY(0px);
-              }
+              from { opacity: 0; transform: translateY(6px); }
+              to { opacity: 1; transform: translateY(0px); }
             }
           `}</style>
         </section>
