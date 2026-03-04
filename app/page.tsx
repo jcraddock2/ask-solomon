@@ -667,17 +667,40 @@ function PageInner() {
               )}
             </div>
           )}
+<div style={{ display: "grid", gap: 12 }}>
+  {results.length === 0 ? (
+    favoritesOnly && favoritesCount === 0 ? (
+      <div
+        style={{
+          background: "rgba(255,255,255,0.85)",
+          border: "1px solid rgba(0,0,0,0.08)",
+          borderRadius: 16,
+          padding: 14,
+          boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
+        }}
+      >
+        <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>
+          ⭐ Build your Favorites Library
+        </div>
 
-          <div style={{ display: "grid", gap: 12 }}>
-            {results.length === 0 ? (
-              <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
-                {favoritesOnly && favoritesCount === 0
-                  ? "You haven’t saved any favorites yet. Tap ⭐ on a verse to save it."
-                  : todayFocusOn && !todayFocusKey
-                  ? "No matches for Today’s Focus. Try turning off Favorites or clearing search."
-                  : "No matches. Try a different keyword."}
-              </div>
-            ) : (
+        <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
+          Tap ☆ on any verse to save it. Then you can switch to Favorites anytime.
+        </div>
+
+        <div style={{ marginTop: 10, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
+          Tip: Save the verses you want to read again tomorrow.
+        </div>
+      </div>
+    ) : todayFocusOn && !todayFocusKey ? (
+      <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
+        No matches for Today’s Focus. Try turning off Favorites or clearing search.
+      </div>
+    ) : (
+      <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
+        No matches. Try a different keyword.
+      </div>
+    )
+  ) : (
               results.map((item) => {
                 const key = `${item.ref}-${item.title}`;
                 const isFav = !!favoriteKeys[key];
