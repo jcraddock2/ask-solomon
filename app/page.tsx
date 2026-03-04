@@ -204,30 +204,35 @@ function PageInner() {
     });
   };
 
-  const handleCopy = async (item: VerseItem, key: string) => {
-    const text = `${item.title}\n\n${item.body}\n\n${item.ref}`;
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedKey(key);
-      window.setTimeout(() => setCopiedKey(""), 900);
-    } catch {
-      // silent
-    }
-  };
-const handleShare = async (item: VerseItem) => {
-  const text = `${item.title}\n\n${item.body}\n\n${item.ref}\n\n— Ask Solomon`;
+const buildShareText = (item: VerseItem) => {
+  const link = typeof window !== "undefined" ? window.location.href : "";
+  return `${item.title}\n\n${item.body}\n\n${item.ref}\n\n— Ask Solomon\n${link}`;
+};
+
+const handleShare = async (item: VerseItem, keyForUi?: string) => {
+  const text = buildShareText(item);
 
   try {
-    // Best experience on phones
     if (typeof navigator !== "undefined" && "share" in navigator) {
       // @ts-ignore
       await navigator.share({ title: "Ask Solomon", text });
       return;
     }
   } catch {
-    // If share fails, fall back to copy
+    // ignore and fall back
   }
 
+  try {
+    await navigator.clipboard.writeText(text);
+
+    if (keyForUi) {
+      setCopiedKey(keyForUi);
+      window.setTimeout(() => setCopiedKey(""), 900);
+    }
+  } catch {
+    // silent
+  }
+};
   try {
     await navigator.clipboard.writeText(text);
     setCopiedKey(`${item.ref}-${item.title}`); // optional feedback
@@ -733,7 +738,7 @@ const handleShare = async (item: VerseItem) => {
                     </div>
 <button
   type="button"
-  onClick={() => handleShare(item)}
+  onClick={() => handleShare(item, key)
   style={{ ...miniBtn, fontSize: 12 }}
   title="Share this verse"
 >
