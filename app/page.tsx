@@ -43,7 +43,7 @@ function PageInner() {
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [favoriteKeys, setFavoriteKeys] = useState<Record<string, boolean>>({});
   const [copiedKey, setCopiedKey] = useState<string>("");
-
+const [savedKey, setSavedKey] = useState<string>("");
   const [todayFocusOn, setTodayFocusOn] = useState(false);
   const [todayFocusKey, setTodayFocusKey] = useState<string>("");
 
@@ -199,13 +199,21 @@ function PageInner() {
   );
 
   const toggleFavorite = (key: string) => {
-    setFavoriteKeys((prev) => {
-      const next = { ...prev };
-      if (next[key]) delete next[key];
-      else next[key] = true;
-      return next;
-    });
-  };
+  setFavoriteKeys((prev) => {
+    const next = { ...prev };
+    const wasSaved = !!next[key];
+
+    if (wasSaved) {
+      delete next[key];
+    } else {
+      next[key] = true;
+      setSavedKey(key);
+      window.setTimeout(() => setSavedKey(""), 900);
+    }
+
+    return next;
+  });
+};
 
   const handleCopy = async (item: VerseItem, key: string) => {
     const text = `${item.title}\n\n${item.body}\n\n${item.ref}`;
@@ -705,6 +713,7 @@ function PageInner() {
                 const key = `${item.ref}-${item.title}`;
                 const isFav = !!favoriteKeys[key];
                 const isCopied = copiedKey === key;
+               const isSavedFlash = savedKey === key; 
                 const hovered = hoverKey === key;
 
                 return (
@@ -763,7 +772,12 @@ function PageInner() {
 
                     <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 800 }}>
                       Save this. Sit with it. Apply it today.
-                    </div>
+                    </div> 
+                    {isSavedFlash && (
+  <div style={{ marginTop: 6, fontSize: 12, fontWeight: 900, color: "#111" }}>
+    ✅ Saved to Favorites
+  </div>
+)}
                   </div>
                 );
               })
