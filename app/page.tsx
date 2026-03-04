@@ -372,7 +372,7 @@ function PageInner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [todayFocusOn, mode, sub, q, favoritesOnly, favoriteKeys]);
 
-  const renderEmptyState = () => {
+   const renderEmptyState = () => {
     if (favoritesOnly && favoritesCount === 0) {
       return (
         <div
@@ -384,7 +384,9 @@ function PageInner() {
             boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
           }}
         >
-          <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>⭐ Build your Favorites Library</div>
+          <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>
+            ⭐ Build your Favorites Library
+          </div>
 
           <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
             Tap ☆ on any verse to save it. Then you can switch to Favorites anytime.
@@ -410,7 +412,8 @@ function PageInner() {
         No matches. Try a different keyword.
       </div>
     );
-   };
+  };
+
   return (
     <div style={outerStyle}>
       <main style={pageStyle}>
