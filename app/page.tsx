@@ -52,7 +52,7 @@ function PageInner() {
 
   const [hoverKey, setHoverKey] = useState<string>("");
   const [searchFocused, setSearchFocused] = useState(false);
-
+  const favoritesCount = useMemo(() => Object.keys(favoriteKeys).length, [favoriteKeys]);
   // styles
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
@@ -472,47 +472,50 @@ function PageInner() {
             }}
           >
             {/* TOP ROW */}
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-              {MODES.map((m) => (
-                <button
-                  key={m.key}
-                  type="button"
-                  onClick={() => {
-                    setMode(m.key);
-                    setSub("all");
-                    setFavoritesOnly(false);
-                    setTodayFocusOn(false);
-                    setTodayFocusKey("");
-                    setUrl({ mode: m.key, sub: "all" });
-                  }}
-                  style={pillBtn(mode === m.key)}
-                >
-                  {m.label}
-                </button>
-              ))}
+         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+  {MODES.map((m) => (
+    <button
+      key={m.key}
+      type="button"
+      onClick={() => {
+        setMode(m.key);
+        setSub("all");
+        setFavoritesOnly(false);
+        setTodayFocusOn(false);
+        setTodayFocusKey("");
+        setUrl({ mode: m.key, sub: "all" });
+      }}
+      style={pillBtn(mode === m.key)}
+    >
+      {m.label}
+    </button>
+  ))}
 
-              {/* FAVORITES */}
-              <button
-                type="button"
-                onClick={() => {
-                  setFavoritesOnly((v) => !v);
-                  setTodayFocusOn(false);
-                  setTodayFocusKey("");
-                }}
-                style={{
-                  ...pillBtn(favoritesOnly),
-                  display: "flex",
-                  gap: 8,
-                  alignItems: "center",
-                  transform: favPulse ? "scale(1.05)" : "scale(1)",
-                  transition: "transform 160ms ease",
-                }}
-                title="Show only saved favorites"
-              >
-                <span>⭐</span>
-                <span>{favoritesOnly ? `Showing Favorites (${favoritesCount})` : `Favorites (${favoritesCount})`}</span>
-              </button>
-
+  <button
+    type="button"
+    onClick={() => {
+      setFavoritesOnly((v) => !v);
+      setTodayFocusOn(false);
+      setTodayFocusKey("");
+    }}
+    style={{
+      ...pillBtn(favoritesOnly),
+      display: "flex",
+      gap: 8,
+      alignItems: "center",
+      transform: favPulse ? "scale(1.05)" : "scale(1)",
+      transition: "transform 160ms ease",
+    }}
+    title="Show only saved favorites"
+  >
+    <span>⭐</span>
+    <span>
+      {favoritesOnly
+        ? `Showing Favorites (${favoritesCount})`
+        : `Favorites (${favoritesCount})`}
+    </span>
+  </button>
+</div> 
               {/* TODAY'S FOCUS */}
               <button
                 type="button"
@@ -768,7 +771,20 @@ function PageInner() {
               )}
             </div>
           )}
-
+{/* TODAY'S FOCUS HEADLINE */}
+{todayFocusOn && (
+  <div
+    style={{
+      fontSize: 14,
+      fontWeight: 900,
+      marginBottom: 8,
+      color: "#6366f1",
+      letterSpacing: ".02em",
+    }}
+  >
+    ✨ Today’s Focus
+  </div>
+)}
           {/* RESULTS GRID */}
           <div style={{ display: "grid", gap: 12 }}>
             {results.length === 0 ? (
@@ -800,7 +816,16 @@ function PageInner() {
                         <div style={{ marginTop: 8, fontSize: 15, lineHeight: 1.55, color: "#111", fontWeight: 650 }}>
                           {item.body}
                         </div>
-
+  <div
+      style={{
+        marginTop: 10,
+        fontSize: 12,
+        color: "#64748b",
+        fontWeight: 700,
+      }}
+    >
+      Save this. Sit with it. Apply it today.
+    </div>
                         <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>{item.ref}</div>
                       </div>
 
