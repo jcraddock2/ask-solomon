@@ -240,16 +240,7 @@ const handleShare = async (item: VerseItem, keyForUi?: string) => {
   }
 
   // Fallback: copy
-  try {
-    await navigator.clipboard.writeText(text);
-    if (keyForUi) {
-      setCopiedKey(keyForUi);
-      window.setTimeout(() => setCopiedKey(""), 900);
-    }
-  } catch {
-    // silent
-  }
-};
+ 
   try {
     await navigator.clipboard.writeText(text);
     setCopiedKey(`${item.ref}-${item.title}`); // optional feedback
