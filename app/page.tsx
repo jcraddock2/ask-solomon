@@ -44,6 +44,7 @@ function PageInner() {
   const [favoriteKeys, setFavoriteKeys] = useState<Record<string, boolean>>({});
   const [copiedKey, setCopiedKey] = useState<string>("");
 const [savedKey, setSavedKey] = useState<string>("");
+  const [favPulse, setFavPulse] = useState(false);
   const [todayFocusOn, setTodayFocusOn] = useState(false);
   const [todayFocusKey, setTodayFocusKey] = useState<string>("");
 
@@ -197,7 +198,11 @@ const [savedKey, setSavedKey] = useState<string>("");
     () => Object.keys(favoriteKeys).filter((k) => favoriteKeys[k]).length,
     [favoriteKeys]
   );
-
+useEffect(() => {
+  setFavPulse(true);
+  const t = window.setTimeout(() => setFavPulse(false), 260);
+  return () => window.clearTimeout(t);
+}, [favoritesCount]);
 const toggleFavorite = (key: string) => {
   setFavoriteKeys((prev) => {
     const next = { ...prev };
@@ -410,38 +415,7 @@ const toggleFavorite = (key: string) => {
               >
                 <span>⭐</span>
                 <span>
-                  {favoritesOnly ? `Showing Favorites (${favoritesCount})` : `Favorites (${favoritesCount})`}
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  if (todayFocusOn) {
-                    rerollTodaysFocus();
-                    return;
-                  }
-
-                  const pool = buildFilteredPool();
-                  if (pool.length === 0) {
-                    setTodayFocusOn(true);
-                    setTodayFocusKey("");
-                    return;
-                  }
-
-                  const choice = pool[Math.floor(Math.random() * pool.length)];
-                  setTodayFocusKey(`${choice.ref}-${choice.title}`);
-                  setTodayFocusOn(true);
-                }}
-                style={{
-                  ...pillBtn(todayFocusOn),
-                  display: "flex",
-                  gap: 8,
-                  alignItems: "center",
-                  animation: todayFocusOn ? "pulseGlow 1.8s ease-in-out infinite" : undefined,
-                }}
-                title="Show one random verse from the current filter"
-              >
+          Favorites (
                 <span>✨</span>
                 <span>Today’s Focus</span>
               </button>
@@ -453,7 +427,14 @@ const toggleFavorite = (key: string) => {
                     setTodayFocusOn(false);
                     setTodayFocusKey("");
                   }}
-                  style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
+                style={{
+  ...pillBtn(favoritesOnly),
+  display: "flex",
+  gap: 8,
+  alignItems: "center",
+  transform: favPulse ? "scale(1.05)" : "scale(1)",
+  transition: "transform 160ms ease",
+}}
                   title="Return to normal results"
                 >
                   <span>↩️</span>
