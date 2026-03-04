@@ -147,6 +147,7 @@ function PageInner() {
     cursor: "pointer",
     fontWeight: 900,
     fontSize: 12,
+   userSelect: "none", 
   };
 
   // PRO detection
@@ -213,7 +214,28 @@ function PageInner() {
       // silent
     }
   };
+const handleShare = async (item: VerseItem) => {
+  const text = `${item.title}\n\n${item.body}\n\n${item.ref}\n\n— Ask Solomon`;
 
+  try {
+    // Best experience on phones
+    if (typeof navigator !== "undefined" && "share" in navigator) {
+      // @ts-ignore
+      await navigator.share({ title: "Ask Solomon", text });
+      return;
+    }
+  } catch {
+    // If share fails, fall back to copy
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+    setCopiedKey(`${item.ref}-${item.title}`); // optional feedback
+    window.setTimeout(() => setCopiedKey(""), 900);
+  } catch {
+    // silent
+  }
+};
   // Build pool from current filters (no Today’s Focus applied)
   const buildFilteredPool = () => {
     const query = q.trim().toLowerCase();
@@ -689,9 +711,15 @@ function PageInner() {
                       </div>
 
                       <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
-                        <button type="button" onClick={() => toggleFavorite(key)} style={miniBtn} title="Save favorite">
-                          {isFav ? "★" : "☆"}
-                        </button>
+                       <button
+  type="button"
+  onClick={() => toggleFavorite(key)}
+  style={miniBtn}
+  title={isFav ? "Saved" : "Save this verse"}
+  aria-label={isFav ? "Saved" : "Save this verse"}
+>
+  {isFav ? "★" : "☆"}
+</button>
 
                         <button
                           type="button"
@@ -703,7 +731,14 @@ function PageInner() {
                         </button>
                       </div>
                     </div>
-
+<button
+  type="button"
+  onClick={() => handleShare(item)}
+  style={{ ...miniBtn, fontSize: 12 }}
+  title="Share this verse"
+>
+  Share
+</button>
                     {/* Micro-prompt */}
                     <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 800 }}>
                       Save this. Sit with it. Apply it today.
