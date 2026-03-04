@@ -10,7 +10,6 @@ import {
   SUBS,
   TOPICS,
   subCommentary,
-  BOOK_INDEX,
   findBookMatches,
   type BookMatch,
   type Mode,
@@ -125,6 +124,7 @@ function PageInner() {
     fontSize: 13,
     boxShadow: active ? "0 14px 30px rgba(0,0,0,0.16)" : "0 10px 24px rgba(0,0,0,0.06)",
     whiteSpace: "nowrap",
+    userSelect: "none",
   });
 
   const topicPill = (active: boolean): React.CSSProperties => ({
@@ -137,6 +137,7 @@ function PageInner() {
     fontSize: 12,
     color: "#111",
     whiteSpace: "nowrap",
+    userSelect: "none",
   });
 
   const miniBtn: React.CSSProperties = {
@@ -147,7 +148,7 @@ function PageInner() {
     cursor: "pointer",
     fontWeight: 900,
     fontSize: 12,
-   userSelect: "none", 
+    userSelect: "none",
   };
 
   // PRO detection
@@ -192,8 +193,10 @@ function PageInner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sp]);
 
-  // ✅ count only saved keys
-  const favoritesCount = useMemo(() => Object.keys(favoriteKeys).length, [favoriteKeys]);
+  const favoritesCount = useMemo(
+    () => Object.keys(favoriteKeys).filter((k) => favoriteKeys[k]).length,
+    [favoriteKeys]
+  );
 
   const toggleFavorite = (key: string) => {
     setFavoriteKeys((prev) => {
@@ -204,51 +207,46 @@ function PageInner() {
     });
   };
 
-const buildShareText = (item: VerseItem) => {
-  const link = typeof window !== "undefined" ? window.location.href : "";
-  return `${item.title}\n\n${item.body}\n\n${item.ref}\n\n— Ask Solomon\n${link}`;
-};
-
-const handleCopy = async (item: VerseItem, key: string) => {
-  const text = `${item.title}\n\n${item.body}\n\n${item.ref}`;
-  try {
-    await navigator.clipboard.writeText(text);
-    setCopiedKey(key);
-    window.setTimeout(() => setCopiedKey(""), 900);
-  } catch {
-    // silent
-  }
-};
-
-const buildShareText = (item: VerseItem) => {
-  const link = typeof window !== "undefined" ? window.location.href : "";
-  return `${item.title}\n\n${item.body}\n\n${item.ref}\n\n— Ask Solomon\n${link}`;
-};
-
-const handleShare = async (item: VerseItem, keyForUi?: string) => {
-  const text = buildShareText(item);
-
-  // Try native share first (best on mobile)
-  try {
-    if (typeof navigator !== "undefined" && "share" in navigator) {
-      // @ts-ignore
-      await navigator.share({ title: "Ask Solomon", text });
-      return;
+  const handleCopy = async (item: VerseItem, key: string) => {
+    const text = `${item.title}\n\n${item.body}\n\n${item.ref}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedKey(key);
+      window.setTimeout(() => setCopiedKey(""), 900);
+    } catch {
+      // silent
     }
-  } catch {
-    // ignore
-  }
+  };
 
-  // Fallback: copy
- 
-  try {
-    await navigator.clipboard.writeText(text);
-    setCopiedKey(`${item.ref}-${item.title}`); // optional feedback
-    window.setTimeout(() => setCopiedKey(""), 900);
-  } catch {
-    // silent
-  }
-};
+  const buildShareText = (item: VerseItem) => {
+    const link = typeof window !== "undefined" ? window.location.href : "";
+    return `${item.title}\n\n${item.body}\n\n${item.ref}\n\n— Ask Solomon\n${link}`;
+  };
+
+  const handleShare = async (item: VerseItem, keyForUi?: string) => {
+    const text = buildShareText(item);
+
+    try {
+      if (typeof navigator !== "undefined" && "share" in navigator) {
+        // @ts-ignore
+        await navigator.share({ title: "Ask Solomon", text });
+        return;
+      }
+    } catch {
+      // ignore
+    }
+
+    try {
+      await navigator.clipboard.writeText(text);
+      if (keyForUi) {
+        setCopiedKey(keyForUi);
+        window.setTimeout(() => setCopiedKey(""), 900);
+      }
+    } catch {
+      // silent
+    }
+  };
+
   // Build pool from current filters (no Today’s Focus applied)
   const buildFilteredPool = () => {
     const query = q.trim().toLowerCase();
@@ -307,16 +305,13 @@ const handleShare = async (item: VerseItem, keyForUi?: string) => {
       setTodayFocusKey("");
       return;
     }
-
     const choice = pool[Math.floor(Math.random() * pool.length)];
     setTodayFocusKey(`${choice.ref}-${choice.title}`);
   };
 
-  // ✅ THE REAL JSX RETURN (this was broken in your pasted file)
   return (
     <div style={outerStyle}>
       <main style={pageStyle}>
-        {/* HEADER */}
         <header style={{ marginBottom: 16 }}>
           <div style={headerRow}>
             <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
@@ -356,7 +351,6 @@ const handleShare = async (item: VerseItem, keyForUi?: string) => {
         </header>
 
         <section style={cardStyle}>
-          {/* STICKY CONTROLS */}
           <div
             style={{
               position: "sticky",
@@ -372,7 +366,6 @@ const handleShare = async (item: VerseItem, keyForUi?: string) => {
               marginBottom: 14,
             }}
           >
-            {/* TOP ROW */}
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
               {MODES.map((m) => (
                 <button
@@ -404,16 +397,13 @@ const handleShare = async (item: VerseItem, keyForUi?: string) => {
               >
                 <span>⭐</span>
                 <span>
-                  {favoritesOnly
-                    ? `Showing Favorites (${favoritesCount})`
-                    : `Favorites (${favoritesCount})`}
+                  {favoritesOnly ? `Showing Favorites (${favoritesCount})` : `Favorites (${favoritesCount})`}
                 </span>
               </button>
 
               <button
                 type="button"
                 onClick={() => {
-                  // If already ON, re-roll (premium feel)
                   if (todayFocusOn) {
                     rerollTodaysFocus();
                     return;
@@ -457,22 +447,20 @@ const handleShare = async (item: VerseItem, keyForUi?: string) => {
                   <span>Clear Focus</span>
                 </button>
               )}
+
               {todayFocusOn && (
-  <button
-    type="button"
-    onClick={() => {
-      rerollTodaysFocus();
-    }}
-    style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
-    title="Pick a different verse"
-  >
-    <span>🔄</span>
-    <span>Re-roll</span>
-  </button>
-)}
+                <button
+                  type="button"
+                  onClick={() => rerollTodaysFocus()}
+                  style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
+                  title="Pick a different verse"
+                >
+                  <span>🔄</span>
+                  <span>Re-roll</span>
+                </button>
+              )}
             </div>
 
-            {/* SUB ROW */}
             {mode === "encouragement" && (
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
                 <button
@@ -506,7 +494,6 @@ const handleShare = async (item: VerseItem, keyForUi?: string) => {
               </div>
             )}
 
-            {/* TOPICS ROW */}
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
               {TOPICS.map((t) => {
                 const active = q.trim().toLowerCase() === t.query.trim().toLowerCase();
@@ -524,7 +511,6 @@ const handleShare = async (item: VerseItem, keyForUi?: string) => {
               })}
             </div>
 
-            {/* SEARCH */}
             <div style={{ display: "flex", gap: 10, marginTop: 10, flexWrap: "wrap", alignItems: "center" }}>
               <input
                 value={q}
@@ -569,7 +555,6 @@ const handleShare = async (item: VerseItem, keyForUi?: string) => {
             </div>
           </div>
 
-          {/* SOLOMON’S NOTE */}
           {mode === "encouragement" && sub !== "all" && subCommentary[sub as Sub] && (
             <div
               style={{
@@ -586,12 +571,10 @@ const handleShare = async (item: VerseItem, keyForUi?: string) => {
             </div>
           )}
 
-          {/* RESULTS COUNT */}
           <div style={{ marginBottom: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>
             Showing {results.length} result{results.length === 1 ? "" : "s"}
           </div>
 
-          {/* BOOK MATCHES (Pro-only) */}
           {q.trim().length > 0 && (
             <div style={{ marginBottom: 12 }}>
               <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>Book Matches</div>
@@ -654,7 +637,9 @@ const handleShare = async (item: VerseItem, keyForUi?: string) => {
                     boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
                   }}
                 >
-                  <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>🔒 Book Matches are a Lifetime feature</div>
+                  <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>
+                    🔒 Book Matches are a Lifetime feature
+                  </div>
 
                   <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
                     Upgrade to see exactly where to read this in the book.
@@ -683,7 +668,6 @@ const handleShare = async (item: VerseItem, keyForUi?: string) => {
             </div>
           )}
 
-          {/* RESULTS GRID */}
           <div style={{ display: "grid", gap: 12 }}>
             {results.length === 0 ? (
               <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
@@ -707,7 +691,7 @@ const handleShare = async (item: VerseItem, keyForUi?: string) => {
                     style={{
                       ...softCardStyle,
                       transform: hovered ? "translateY(-2px)" : "translateY(0px)",
-                      boxShadow: hovered ? "0 18px 44px rgba(0,0,0,0.12)" : (softCardStyle.boxShadow as string),
+                      boxShadow: hovered ? "0 22px 60px rgba(15,23,42,0.18)" : (softCardStyle.boxShadow as string),
                     }}
                     onMouseEnter={() => setHoverKey(key)}
                     onMouseLeave={() => setHoverKey("")}
@@ -724,35 +708,36 @@ const handleShare = async (item: VerseItem, keyForUi?: string) => {
                       </div>
 
                       <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
-                       <button
-  type="button"
-  onClick={() => toggleFavorite(key)}
-  style={miniBtn}
-  title={isFav ? "Saved" : "Save this verse"}
-  aria-label={isFav ? "Saved" : "Save this verse"}
->
-  {isFav ? "★" : "☆"}
-</button>
+                        <button
+                          type="button"
+                          onClick={() => toggleFavorite(key)}
+                          style={miniBtn}
+                          title={isFav ? "Saved" : "Save this verse"}
+                          aria-label={isFav ? "Saved" : "Save this verse"}
+                        >
+                          {isFav ? "★" : "☆"}
+                        </button>
 
                         <button
                           type="button"
-                          onClick={() => handleCopy(item as VerseItem, key)}
+                          onClick={() => handleCopy(item, key)}
                           style={{ ...miniBtn, fontSize: 12 }}
                           title="Copy verse"
                         >
                           {isCopied ? "Copied" : "Copy"}
                         </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleShare(item, key)}
+                          style={{ ...miniBtn, fontSize: 12 }}
+                          title="Share this verse"
+                        >
+                          Share
+                        </button>
                       </div>
                     </div>
-<button
-  type="button"
-  onClick={() => handleShare(item, key)
-  style={{ ...miniBtn, fontSize: 12 }}
-  title="Share this verse"
->
-  Share
-</button>
-                    {/* Micro-prompt */}
+
                     <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 800 }}>
                       Save this. Sit with it. Apply it today.
                     </div>
@@ -762,7 +747,6 @@ const handleShare = async (item: VerseItem, keyForUi?: string) => {
             )}
           </div>
 
-          {/* Premium micro-animation */}
           <style jsx global>{`
             @keyframes pulseGlow {
               0% {
