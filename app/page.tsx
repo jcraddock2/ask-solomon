@@ -355,11 +355,12 @@ ctx.fillRect(0, 0, W, H);
       ctx.fillText("Ask Solomon", pad, 150);
 ctx.fillStyle = "#64748b";
 ctx.font = "800 28px system-ui";
+ctx.letterSpacing = "1px";
 ctx.fillText("Wisdom for the Moment", pad, 195);
       ctx.fillStyle = "rgba(0,0,0,0.10)";
      ctx.fillRect(pad, 225, maxWidth, 2);
-      ctx.fillStyle = "#111";
-      ctx.font = "650 44px system-ui";
+   ctx.fillStyle = "#0f172a";
+ctx.font = "700 46px system-ui";
 
       const verse = item.body.trim();
 
