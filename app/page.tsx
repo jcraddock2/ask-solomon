@@ -332,8 +332,20 @@ function PageInner() {
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, W, H);
+    // --- Background (rich gradient) ---
+const grad = ctx.createLinearGradient(0, 0, W, H);
+grad.addColorStop(0, "#ffffff");
+grad.addColorStop(0.45, "rgba(99,102,241,0.08)");
+grad.addColorStop(1, "rgba(16,185,129,0.07)");
+ctx.fillStyle = grad;
+ctx.fillRect(0, 0, W, H);
+
+// Soft vignette glow (subtle)
+const glow = ctx.createRadialGradient(W * 0.25, H * 0.2, 40, W * 0.25, H * 0.2, 900);
+glow.addColorStop(0, "rgba(99,102,241,0.10)");
+glow.addColorStop(1, "rgba(99,102,241,0)");
+ctx.fillStyle = glow;
+ctx.fillRect(0, 0, W, H); 
 
       const pad = 90;
       const maxWidth = W - pad * 2;
