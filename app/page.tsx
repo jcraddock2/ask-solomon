@@ -30,8 +30,9 @@ function PageInner() {
   const router = useRouter();
   const sp = useSearchParams();
 
+  // URL → initial state
   const urlMode = (sp.get("mode") as Mode) || "encouragement";
-  const urlSub = (sp.get("sub") as Sub) || "all";
+  const urlSub = ((sp.get("sub") as Sub) || "all") as Sub | "all";
   const urlQ = sp.get("q") || "";
 
   const [mode, setMode] = useState<Mode>(urlMode);
@@ -52,26 +53,26 @@ function PageInner() {
 
   const [hoverKey, setHoverKey] = useState<string>("");
   const [searchFocused, setSearchFocused] = useState(false);
-  const favoritesCount = useMemo(() => Object.keys(favoriteKeys).length, [favoriteKeys]);
-  // styles
+
+  // ----- STYLES -----
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
     background:
-      "radial-gradient(1200px 680px at 22% 8%, rgba(99,102,241,0.20), transparent 58%), radial-gradient(1000px 560px at 82% 22%, rgba(16,185,129,0.15), transparent 60%), linear-gradient(180deg, #f8fafc, #ffffff)",
+      "radial-gradient(1200px 600px at 20% 10%, rgba(99,102,241,0.20), transparent 60%), radial-gradient(900px 500px at 80% 0%, rgba(16,185,129,0.12), transparent 55%), #f8fafc",
+    padding: 18,
   };
 
   const pageStyle: React.CSSProperties = {
     maxWidth: 980,
     margin: "0 auto",
-    padding: 20,
     fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
   };
 
   const headerRow: React.CSSProperties = {
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "center",
     gap: 12,
+    alignItems: "center",
     flexWrap: "wrap",
   };
 
@@ -155,7 +156,7 @@ function PageInner() {
     userSelect: "none",
   };
 
-  // PRO detection
+  // ----- PRO detection -----
   useEffect(() => {
     try {
       setIsPro(isProUser());
@@ -191,9 +192,13 @@ function PageInner() {
 
   // keep state aligned with URL changes
   useEffect(() => {
-    setMode(urlMode);
-    setSub(urlSub);
-    setQ(urlQ);
+    const m = (sp.get("mode") as Mode) || "encouragement";
+    const s = ((sp.get("sub") as Sub) || "all") as Sub | "all";
+    const qq = sp.get("q") || "";
+
+    setMode(m);
+    setSub(s);
+    setQ(qq);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sp]);
 
@@ -372,7 +377,7 @@ function PageInner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [todayFocusOn, mode, sub, q, favoritesOnly, favoriteKeys]);
 
-   const renderEmptyState = () => {
+  const renderEmptyState = () => {
     if (favoritesOnly && favoritesCount === 0) {
       return (
         <div
@@ -384,9 +389,7 @@ function PageInner() {
             boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
           }}
         >
-          <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>
-            ⭐ Build your Favorites Library
-          </div>
+          <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>⭐ Build your Favorites Library</div>
 
           <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
             Tap ☆ on any verse to save it. Then you can switch to Favorites anytime.
@@ -474,50 +477,48 @@ function PageInner() {
             }}
           >
             {/* TOP ROW */}
-         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-  {MODES.map((m) => (
-    <button
-      key={m.key}
-      type="button"
-      onClick={() => {
-        setMode(m.key);
-        setSub("all");
-        setFavoritesOnly(false);
-        setTodayFocusOn(false);
-        setTodayFocusKey("");
-        setUrl({ mode: m.key, sub: "all" });
-      }}
-      style={pillBtn(mode === m.key)}
-    >
-      {m.label}
-    </button>
-  ))}
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+              {MODES.map((m) => (
+                <button
+                  key={m.key}
+                  type="button"
+                  onClick={() => {
+                    setMode(m.key);
+                    setSub("all");
+                    setFavoritesOnly(false);
+                    setTodayFocusOn(false);
+                    setTodayFocusKey("");
+                    setUrl({ mode: m.key, sub: "all" });
+                  }}
+                  style={pillBtn(mode === m.key)}
+                >
+                  {m.label}
+                </button>
+              ))}
 
-  <button
-    type="button"
-    onClick={() => {
-      setFavoritesOnly((v) => !v);
-      setTodayFocusOn(false);
-      setTodayFocusKey("");
-    }}
-    style={{
-      ...pillBtn(favoritesOnly),
-      display: "flex",
-      gap: 8,
-      alignItems: "center",
-      transform: favPulse ? "scale(1.05)" : "scale(1)",
-      transition: "transform 160ms ease",
-    }}
-    title="Show only saved favorites"
-  >
-    <span>⭐</span>
-    <span>
-      {favoritesOnly
-        ? `Showing Favorites (${favoritesCount})`
-        : `Favorites (${favoritesCount})`}
-    </span>
-  </button>
-</div> 
+              <button
+                type="button"
+                onClick={() => {
+                  setFavoritesOnly((v) => !v);
+                  setTodayFocusOn(false);
+                  setTodayFocusKey("");
+                }}
+                style={{
+                  ...pillBtn(favoritesOnly),
+                  display: "flex",
+                  gap: 8,
+                  alignItems: "center",
+                  transform: favPulse ? "scale(1.05)" : "scale(1)",
+                  transition: "transform 160ms ease",
+                }}
+                title="Show only saved favorites"
+              >
+                <span>⭐</span>
+                <span>
+                  {favoritesOnly ? `Showing Favorites (${favoritesCount})` : `Favorites (${favoritesCount})`}
+                </span>
+              </button>
+
               {/* TODAY'S FOCUS */}
               <button
                 type="button"
@@ -773,20 +774,22 @@ function PageInner() {
               )}
             </div>
           )}
-{/* TODAY'S FOCUS HEADLINE */}
-{todayFocusOn && (
-  <div
-    style={{
-      fontSize: 14,
-      fontWeight: 900,
-      marginBottom: 8,
-      color: "#6366f1",
-      letterSpacing: ".02em",
-    }}
-  >
-    ✨ Today’s Focus
-  </div>
-)}
+
+          {/* TODAY'S FOCUS HEADLINE */}
+          {todayFocusOn && (
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 900,
+                marginBottom: 8,
+                color: "#6366f1",
+                letterSpacing: ".02em",
+              }}
+            >
+              ✨ Today’s Focus
+            </div>
+          )}
+
           {/* RESULTS GRID */}
           <div style={{ display: "grid", gap: 12 }}>
             {results.length === 0 ? (
@@ -818,16 +821,18 @@ function PageInner() {
                         <div style={{ marginTop: 8, fontSize: 15, lineHeight: 1.55, color: "#111", fontWeight: 650 }}>
                           {item.body}
                         </div>
-  <div
-      style={{
-        marginTop: 10,
-        fontSize: 12,
-        color: "#64748b",
-        fontWeight: 700,
-      }}
-    >
-      Save this. Sit with it. Apply it today.
-    </div>
+
+                        <div
+                          style={{
+                            marginTop: 10,
+                            fontSize: 12,
+                            color: "#64748b",
+                            fontWeight: 700,
+                          }}
+                        >
+                          Save this. Sit with it. Apply it today.
+                        </div>
+
                         <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>{item.ref}</div>
                       </div>
 
@@ -842,22 +847,28 @@ function PageInner() {
                           {isFav ? "★" : "☆"}
                         </button>
 
-                        <button type="button" onClick={() => handleCopy(item, key)} style={{ ...miniBtn, fontSize: 12 }} title="Copy verse">
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(item, key)}
+                          style={{ ...miniBtn, fontSize: 12 }}
+                          title="Copy verse"
+                        >
                           {isCopied ? "Copied" : "Copy"}
                         </button>
 
-                        <button type="button" onClick={() => handleShare(item, key)} style={{ ...miniBtn, fontSize: 12 }} title="Share this verse">
+                        <button
+                          type="button"
+                          onClick={() => handleShare(item, key)}
+                          style={{ ...miniBtn, fontSize: 12 }}
+                          title="Share this verse"
+                        >
                           Share
                         </button>
                       </div>
                     </div>
 
-                    <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 800 }}>
-                      Save this. Sit with it. Apply it today.
-                    </div>
-
                     {isSavedFlash && (
-                      <div style={{ marginTop: 6, fontSize: 12, fontWeight: 900, color: "#111" }}>
+                      <div style={{ marginTop: 8, fontSize: 12, fontWeight: 900, color: "#111" }}>
                         ✅ Saved to Favorites
                       </div>
                     )}
