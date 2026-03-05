@@ -350,20 +350,22 @@ function PageInner() {
 
       const verse = item.body.trim();
 
-      let y = 310;
+ let y = 420; // ✅ moved down for better balance
 
-      const linesUsed = wrapText(ctx, verse, pad, y, maxWidth, 60);
+const linesUsed = wrapText(ctx, verse, pad, y, maxWidth, 60);
+y += linesUsed * 60 + 50;
 
-      y += linesUsed * 60 + 40;
+// Reference
+ctx.fillStyle = "#334155";
+ctx.font = "900 38px system-ui";
+ctx.fillText(item.ref, pad, y);
 
-      ctx.fillStyle = "#334155";
-      ctx.font = "900 38px system-ui";
-      ctx.fillText(item.ref, pad, y);
+// Footer branding placed dynamically, but never too high
+const footerY = Math.max(H - 140, y + 200);
 
-      ctx.fillStyle = "#111";
-      ctx.font = "900 32px system-ui";
-      ctx.fillText("Success Secrets of Solomon", pad, H - 120);
-
+ctx.fillStyle = "#111";
+ctx.font = "900 32px system-ui";
+ctx.fillText("Success Secrets of Solomon", pad, footerY);
       const dataUrl = canvas.toDataURL("image/png");
 
       downloadDataUrl(dataUrl, "ask-solomon.png");
