@@ -277,8 +277,100 @@ function PageInner() {
     } catch {
       // silent
     }
+  }; 
+  
+  const wrapText = (
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    x: number,
+    y: number,
+    maxWidth: number,
+    lineHeight: number
+  ) => {
+    const words = text.split(/\s+/);
+    let line = "";
+    const lines: string[] = [];
+
+    for (let n = 0; n < words.length; n++) {
+      const testLine = line ? `${line} ${words[n]}` : words[n];
+      const metrics = ctx.measureText(testLine);
+      if (metrics.width > maxWidth && n > 0) {
+        lines.push(line);
+        line = words[n];
+      } else {
+        line = testLine;
+      }
+    }
+
+    if (line) lines.push(line);
+
+    for (let i = 0; i < lines.length; i++) {
+      ctx.fillText(lines[i], x, y + i * lineHeight);
+    }
+
+    return lines.length;
   };
 
+  const downloadDataUrl = (dataUrl: string, filename: string) => {
+    const a = document.createElement("a");
+    a.href = dataUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
+  const handleImage = async (item: VerseItem) => {
+    try {
+      const W = 1080;
+      const H = 1350;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = W;
+      canvas.height = H;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, W, H);
+
+      const pad = 90;
+      const maxWidth = W - pad * 2;
+
+      ctx.fillStyle = "#111";
+      ctx.font = "900 54px system-ui";
+      ctx.fillText("Ask Solomon", pad, 150);
+
+      ctx.fillStyle = "rgba(0,0,0,0.10)";
+      ctx.fillRect(pad, 190, maxWidth, 2);
+
+      ctx.fillStyle = "#111";
+      ctx.font = "650 44px system-ui";
+
+      const verse = item.body.trim();
+
+      let y = 310;
+
+      const linesUsed = wrapText(ctx, verse, pad, y, maxWidth, 60);
+
+      y += linesUsed * 60 + 40;
+
+      ctx.fillStyle = "#334155";
+      ctx.font = "900 38px system-ui";
+      ctx.fillText(item.ref, pad, y);
+
+      ctx.fillStyle = "#111";
+      ctx.font = "900 32px system-ui";
+      ctx.fillText("Success Secrets of Solomon", pad, H - 120);
+
+      const dataUrl = canvas.toDataURL("image/png");
+
+      downloadDataUrl(dataUrl, "ask-solomon.png");
+    } catch {
+      // silent
+    }
+  };
   // Build pool from current filters (no Today’s Focus applied)
   const buildFilteredPool = () => {
     const query = q.trim().toLowerCase();
@@ -864,6 +956,14 @@ function PageInner() {
                         >
                           Share
                         </button>
+                        <button
+  type="button"
+  onClick={() => handleImage(item)}
+  style={{ ...miniBtn, fontSize: 12 }}
+  title="Create share image"
+>
+  Image
+</button>
                       </div>
                     </div>
 
