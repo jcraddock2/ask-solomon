@@ -223,6 +223,7 @@ function PageInner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sp]);
 
+  // ✅ SINGLE SOURCE OF TRUTH: favoritesCount (defined ONCE)
   const favoritesCount = useMemo(
     () => Object.keys(favoriteKeys).filter((k) => favoriteKeys[k]).length,
     [favoriteKeys]
@@ -346,18 +347,10 @@ function PageInner() {
         line = test;
       }
     }
-
     return lines;
   };
 
-  const roundRectPath = (
-    ctx: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-    r: number
-  ) => {
+  const roundRectPath = (ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) => {
     const radius = Math.min(r, w / 2, h / 2);
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
@@ -537,6 +530,7 @@ function PageInner() {
 
       // Compute dynamic panel height
       ctx.font = verseFont;
+
       // ✅ CRITICAL: set verse style RIGHT BEFORE measuring/wrapping
       ctx.fillStyle = style.verseText;
 
@@ -551,9 +545,9 @@ function PageInner() {
 
       const panelH = innerPad + verseBlockH + gapAfterVerse + refLineH + innerPad;
 
-      // True-ish centering: between header block and footer block
-      const headerBottom = topPad + 150; // includes title/subtitle/accent
-      const footerTop = H - bottomPad - 60; // reserve footer area
+      // Center between header and footer reserved area
+      const headerBottom = topPad + 150;
+      const footerTop = H - bottomPad - 90; // reserve footer space
       const available = footerTop - headerBottom;
       const panelY = headerBottom + Math.max(24, Math.floor((available - panelH) / 2));
       const panelX = padX;
@@ -567,6 +561,7 @@ function PageInner() {
       // ✅ CRITICAL: set verse style RIGHT BEFORE wrapText
       ctx.fillStyle = style.verseText;
       ctx.font = verseFont;
+
       const used = wrapText(ctx, verse, panelX + innerPad, y, maxTextWidth, lineHeight);
       y += used * lineHeight + gapAfterVerse;
 
@@ -579,7 +574,7 @@ function PageInner() {
       const footerY = H - bottomPad;
       ctx.fillStyle = style.footerText;
       ctx.font = "900 30px system-ui";
-      ctx.fillText("Success Secrets of Solomon", padX, footerY - 40);
+      ctx.fillText("Success Secrets of Solomon", padX, footerY - 44);
 
       ctx.font = "800 24px system-ui";
       ctx.globalAlpha = 0.95;
@@ -689,11 +684,6 @@ function PageInner() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [todayFocusOn, mode, sub, q, favoritesOnly, favoriteKeys]);
 
-  const favoritesCount = useMemo(
-    () => Object.keys(favoriteKeys).filter((k) => favoriteKeys[k]).length,
-    [favoriteKeys]
-  );
-
   const renderEmptyState = () => {
     if (favoritesOnly && favoritesCount === 0) {
       return (
@@ -725,11 +715,7 @@ function PageInner() {
       );
     }
 
-    return (
-      <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
-        No matches. Try a different keyword.
-      </div>
-    );
+    return <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>No matches. Try a different keyword.</div>;
   };
 
   return (
