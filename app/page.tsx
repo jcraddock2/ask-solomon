@@ -280,28 +280,37 @@ function PageInner() {
   }; 
   
   const wrapText = (
-    ctx: CanvasRenderingContext2D,
-    text: string,
-    x: number,
-    y: number,
-    maxWidth: number,
-    lineHeight: number
-  ) => {
-    const words = text.split(/\s+/);
-    let line = "";
-    const lines: string[] = [];
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  lineHeight: number
+) => {
+  const words = text.split(/\s+/);
+  let line = "";
+  const lines: string[] = [];
 
-    for (let n = 0; n < words.length; n++) {
-      const testLine = line ? `${line} ${words[n]}` : words[n];
-      const metrics = ctx.measureText(testLine);
-      if (metrics.width > maxWidth && n > 0) {
-        lines.push(line);
-        line = words[n];
-      } else {
-        line = testLine;
-      }
+  for (let n = 0; n < words.length; n++) {
+    const testLine = line ? `${line} ${words[n]}` : words[n];
+    const metrics = ctx.measureText(testLine);
+
+    if (metrics.width > maxWidth && n > 0) {
+      lines.push(line);
+      line = words[n];
+    } else {
+      line = testLine;
     }
+  }
 
+  if (line) lines.push(line);
+
+  for (let i = 0; i < lines.length; i++) {
+    ctx.fillText(lines[i], x, y + i * lineHeight);
+  }
+
+  return lines.length;
+};
    const handleImage = async (item: VerseItem) => {
   try {
     const W = 1080;
