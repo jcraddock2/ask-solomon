@@ -365,7 +365,9 @@ ctx.font = "700 46px system-ui";
       const verse = item.body.trim();
 
  let y = 420; // ✅ moved down for better balance
-
+// Soft readability panel behind verse
+ctx.fillStyle = "rgba(255,255,255,0.82)";
+ctx.fillRect(pad - 20, y - 70, maxWidth + 40, 360);
 const linesUsed = wrapText(ctx, verse, pad, y, maxWidth, 60);
 y += linesUsed * 60 + 50;
 
