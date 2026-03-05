@@ -30,11 +30,12 @@ function PageInner() {
   const router = useRouter();
   const sp = useSearchParams();
 
-  // URL → initial state
+  // URL params
   const urlMode = (sp.get("mode") as Mode) || "encouragement";
-  const urlSub = ((sp.get("sub") as Sub) || "all") as Sub | "all";
+  const urlSub = (sp.get("sub") as Sub) || "all";
   const urlQ = sp.get("q") || "";
 
+  // State
   const [mode, setMode] = useState<Mode>(urlMode);
   const [sub, setSub] = useState<Sub | "all">(urlSub);
   const [q, setQ] = useState<string>(urlQ);
@@ -54,16 +55,16 @@ function PageInner() {
   const [hoverKey, setHoverKey] = useState<string>("");
   const [searchFocused, setSearchFocused] = useState(false);
 
-  // ----- STYLES -----
+  // ---- Styles (LANDMARK: STYLES) ----
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
     background:
-      "radial-gradient(1200px 600px at 20% 10%, rgba(99,102,241,0.20), transparent 60%), radial-gradient(900px 500px at 80% 0%, rgba(16,185,129,0.12), transparent 55%), #f8fafc",
+      "radial-gradient(1200px 600px at 20% 10%, rgba(99,102,241,0.14), rgba(255,255,255,0)), radial-gradient(900px 500px at 80% 0%, rgba(16,185,129,0.12), rgba(255,255,255,0)), #f8fafc",
     padding: 18,
   };
 
   const pageStyle: React.CSSProperties = {
-    maxWidth: 980,
+    maxWidth: 920,
     margin: "0 auto",
     fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
   };
@@ -71,8 +72,8 @@ function PageInner() {
   const headerRow: React.CSSProperties = {
     display: "flex",
     justifyContent: "space-between",
-    gap: 12,
     alignItems: "center",
+    gap: 12,
     flexWrap: "wrap",
   };
 
@@ -156,7 +157,7 @@ function PageInner() {
     userSelect: "none",
   };
 
-  // ----- PRO detection -----
+  // ---- Pro detection ----
   useEffect(() => {
     try {
       setIsPro(isProUser());
@@ -165,7 +166,7 @@ function PageInner() {
     }
   }, []);
 
-  // favorites load/save
+  // ---- Favorites load/save ----
   useEffect(() => {
     const saved = safeParse<Record<string, boolean>>(localStorage.getItem("asksolomon:favorites"), {});
     setFavoriteKeys(saved);
@@ -175,7 +176,7 @@ function PageInner() {
     localStorage.setItem("asksolomon:favorites", JSON.stringify(favoriteKeys));
   }, [favoriteKeys]);
 
-  // URL sync helper
+  // ---- URL sync helper ----
   const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
     const nextMode = next.mode ?? mode;
     const nextSub = next.sub ?? sub;
@@ -192,13 +193,9 @@ function PageInner() {
 
   // keep state aligned with URL changes
   useEffect(() => {
-    const m = (sp.get("mode") as Mode) || "encouragement";
-    const s = ((sp.get("sub") as Sub) || "all") as Sub | "all";
-    const qq = sp.get("q") || "";
-
-    setMode(m);
-    setSub(s);
-    setQ(qq);
+    setMode(urlMode);
+    setSub(urlSub);
+    setQ(urlQ);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sp]);
 
@@ -207,7 +204,7 @@ function PageInner() {
     [favoriteKeys]
   );
 
-  // Favorites count "pop"
+  // Favorites badge "pop"
   useEffect(() => {
     setFavPulse(true);
     const t = window.setTimeout(() => setFavPulse(false), 260);
@@ -222,7 +219,6 @@ function PageInner() {
       if (wasSaved) {
         delete next[key];
 
-        // ✅ If user is in Favorites-only view and this was the last favorite, auto-exit
         const remaining = Object.keys(next).filter((k) => next[k]).length;
         if (favoritesOnly && remaining === 0) {
           setFavoritesOnly(false);
@@ -256,7 +252,6 @@ function PageInner() {
   const handleShare = async (item: VerseItem, keyForUi?: string) => {
     const text = buildShareText(item);
 
-    // Try native share first (mobile)
     try {
       if (typeof navigator !== "undefined" && "share" in navigator) {
         // @ts-ignore
@@ -267,7 +262,6 @@ function PageInner() {
       // ignore
     }
 
-    // Fallback: copy
     try {
       await navigator.clipboard.writeText(text);
       if (keyForUi) {
@@ -277,120 +271,187 @@ function PageInner() {
     } catch {
       // silent
     }
-  }; 
-  
+  };
+
+  // --- SHARE IMAGE HELPERS (LANDMARK: IMAGE HELPERS) ---
   const wrapText = (
-  ctx: CanvasRenderingContext2D,
-  text: string,
-  x: number,
-  y: number,
-  maxWidth: number,
-  lineHeight: number
-) => {
-  const words = text.split(/\s+/);
-  let line = "";
-  const lines: string[] = [];
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    x: number,
+    y: number,
+    maxWidth: number,
+    lineHeight: number
+  ) => {
+    const words = text.split(/\s+/);
+    let line = "";
+    const lines: string[] = [];
 
-  for (let n = 0; n < words.length; n++) {
-    const testLine = line ? `${line} ${words[n]}` : words[n];
-    const metrics = ctx.measureText(testLine);
+    for (let n = 0; n < words.length; n++) {
+      const testLine = line ? `${line} ${words[n]}` : words[n];
+      const metrics = ctx.measureText(testLine);
 
-    if (metrics.width > maxWidth && n > 0) {
-      lines.push(line);
-      line = words[n];
-    } else {
-      line = testLine;
+      if (metrics.width > maxWidth && n > 0) {
+        lines.push(line);
+        line = words[n];
+      } else {
+        line = testLine;
+      }
     }
-  }
 
-  if (line) lines.push(line);
+    if (line) lines.push(line);
 
-  for (let i = 0; i < lines.length; i++) {
-    ctx.fillText(lines[i], x, y + i * lineHeight);
-  }
+    for (let i = 0; i < lines.length; i++) {
+      ctx.fillText(lines[i], x, y + i * lineHeight);
+    }
 
-  return lines.length;
-};
-   const handleImage = async (item: VerseItem) => {
-  try {
-    const W = 1080;
-    const H = 1350;
+    return lines.length;
+  };
 
-    const canvas = document.createElement("canvas");
-    canvas.width = W;
-    canvas.height = H;
+  const downloadDataUrl = (dataUrl: string, filename: string) => {
+    const a = document.createElement("a");
+    a.href = dataUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  const handleImage = async (item: VerseItem) => {
+    try {
+      const W = 1080;
+      const H = 1350;
 
-    // --- Background (rich gradient) ---
-    const grad = ctx.createLinearGradient(0, 0, W, H);
-    grad.addColorStop(0, "#ffffff");
-    grad.addColorStop(0.45, "rgba(99,102,241,0.08)");
-    grad.addColorStop(1, "rgba(16,185,129,0.07)");
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, H);
+      const canvas = document.createElement("canvas");
+      canvas.width = W;
+      canvas.height = H;
 
-    // Soft vignette glow
-    const glow = ctx.createRadialGradient(W * 0.25, H * 0.2, 40, W * 0.25, H * 0.2, 900);
-    glow.addColorStop(0, "rgba(99,102,241,0.10)");
-    glow.addColorStop(1, "rgba(99,102,241,0)");
-    ctx.fillStyle = glow;
-    ctx.fillRect(0, 0, W, H);
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
 
-    const pad = 90;
-    const maxWidth = W - pad * 2;
+      // Background (subtle premium)
+      const grad = ctx.createLinearGradient(0, 0, W, H);
+      grad.addColorStop(0, "#ffffff");
+      grad.addColorStop(0.5, "rgba(99,102,241,0.05)");
+      grad.addColorStop(1, "rgba(16,185,129,0.04)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
 
-    // Title
-    ctx.fillStyle = "#111";
-    ctx.font = "900 54px system-ui";
-    ctx.fillText("Ask Solomon", pad, 150);
+      const pad = 90;
+      const maxWidth = W - pad * 2;
 
-    ctx.fillStyle = "#64748b";
-    ctx.font = "800 28px system-ui";
-    ctx.fillText("Wisdom for the Moment", pad, 195);
+      // Title
+      ctx.fillStyle = "#111";
+      ctx.font = "900 54px system-ui";
+      ctx.fillText("Ask Solomon", pad, 150);
 
-    ctx.fillStyle = "rgba(0,0,0,0.10)";
-    ctx.fillRect(pad, 225, maxWidth, 2);
+      // Subtitle
+      ctx.fillStyle = "#64748b";
+      ctx.font = "800 28px system-ui";
+      ctx.fillText("Wisdom for the Moment", pad, 195);
 
-    ctx.fillStyle = "#0f172a";
-    ctx.font = "700 46px system-ui";
+      // Divider
+      ctx.fillStyle = "rgba(0,0,0,0.10)";
+      ctx.fillRect(pad, 225, maxWidth, 2);
 
-    const verse = item.body.trim();
+      // Verse
+      ctx.fillStyle = "#0f172a";
+      ctx.font = "700 46px system-ui";
 
-    let y = 420;
+      const verse = item.body.trim();
+      let y = 420;
 
-    // --- Verse panel ---
-    ctx.fillStyle = "rgba(255,255,255,0.86)";
-    ctx.fillRect(pad - 20, y - 80, maxWidth + 40, 360);
+      // Readability panel (simple + reliable)
+      ctx.fillStyle = "rgba(255,255,255,0.86)";
+      ctx.fillRect(pad - 20, y - 80, maxWidth + 40, 360);
 
-    const linesUsed = wrapText(ctx, verse, pad, y, maxWidth, 60);
-    y += linesUsed * 60 + 50;
+      const linesUsed = wrapText(ctx, verse, pad, y, maxWidth, 60);
+      y += linesUsed * 60 + 50;
 
-    // Reference
-    ctx.fillStyle = "#334155";
-    ctx.font = "900 38px system-ui";
-    ctx.fillText(item.ref, pad, y);
+      // Reference
+      ctx.fillStyle = "#334155";
+      ctx.font = "900 38px system-ui";
+      ctx.fillText(item.ref, pad, y);
 
-    // Footer
-    const footerY = Math.max(H - 140, y + 200);
+      // Footer
+      const footerY = Math.max(H - 140, y + 200);
 
-    ctx.fillStyle = "#111";
-    ctx.font = "900 32px system-ui";
-    ctx.fillText("Success Secrets of Solomon", pad, footerY);
+      ctx.fillStyle = "#111";
+      ctx.font = "900 32px system-ui";
+      ctx.fillText("Success Secrets of Solomon", pad, footerY);
 
-    ctx.fillStyle = "#64748b";
-    ctx.font = "700 24px system-ui";
-    ctx.fillText("AskSolomon.app", pad, footerY + 40);
+      ctx.fillStyle = "#64748b";
+      ctx.font = "700 24px system-ui";
+      ctx.fillText("AskSolomon.app", pad, footerY + 40);
 
-    const dataUrl = canvas.toDataURL("image/png");
-    downloadDataUrl(dataUrl, "ask-solomon.png");
+      const dataUrl = canvas.toDataURL("image/png");
+      downloadDataUrl(dataUrl, "ask-solomon.png");
+    } catch {
+      // silent
+    }
+  };
 
-  } catch {
-    // silent
-  }
-};
-  // ✅ FIX: reliable toggle + auto pick
+  // --- Pool + results (LANDMARK: RESULTS) ---
+  const buildFilteredPool = () => {
+    const query = q.trim().toLowerCase();
+
+    let pool = DATA.filter((d) => d.mode === mode);
+
+    if (mode === "encouragement" && sub !== "all") {
+      pool = pool.filter((d) => d.sub === sub);
+    }
+
+    if (query.length > 0) {
+      pool = pool.filter((d) => {
+        const hay = `${d.title} ${d.body} ${d.ref} ${(d.tags || []).join(" ")}`.toLowerCase();
+        return hay.includes(query);
+      });
+    }
+
+    if (favoritesOnly) {
+      pool = pool.filter((d) => {
+        const k = `${d.ref}-${d.title}`;
+        return !!favoriteKeys[k];
+      });
+    }
+
+    return pool;
+  };
+
+  const results = useMemo(() => {
+    const list = buildFilteredPool();
+
+    if (todayFocusOn) {
+      if (!todayFocusKey) return [];
+      return list.filter((d) => `${d.ref}-${d.title}` === todayFocusKey);
+    }
+
+    return list;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, sub, q, favoritesOnly, favoriteKeys, todayFocusOn, todayFocusKey]);
+
+  // Pro-only: book matches
+  const bookMatches = useMemo<BookMatch[]>(() => {
+    if (q.trim().length === 0) return [];
+    return findBookMatches(q);
+  }, [q]);
+
+  const applyTopic = (topicQuery: string) => {
+    setQ(topicQuery);
+    setTodayFocusOn(false);
+    setTodayFocusKey("");
+    setUrl({ q: topicQuery });
+  };
+
+  const rerollTodaysFocus = () => {
+    const pool = buildFilteredPool();
+    if (pool.length === 0) {
+      setTodayFocusKey("");
+      return;
+    }
+    const choice = pool[Math.floor(Math.random() * pool.length)];
+    setTodayFocusKey(`${choice.ref}-${choice.title}`);
+  };
+
   const toggleTodaysFocus = () => {
     const next = !todayFocusOn;
     setTodayFocusOn(next);
@@ -400,16 +461,14 @@ function PageInner() {
       return;
     }
 
-    // turning ON → pick immediately
     setTimeout(() => rerollTodaysFocus(), 0);
   };
 
-  // ✅ FIX: safety reroll when filters change (prevents blank focus)
+  // safety reroll on filter changes
   useEffect(() => {
     if (!todayFocusOn) return;
 
     const pool = buildFilteredPool();
-
     if (pool.length === 0) {
       setTodayFocusKey("");
       return;
@@ -439,11 +498,9 @@ function PageInner() {
           }}
         >
           <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>⭐ Build your Favorites Library</div>
-
           <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
             Tap ☆ on any verse to save it. Then you can switch to Favorites anytime.
           </div>
-
           <div style={{ marginTop: 10, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
             Tip: Save the verses you want to read again tomorrow.
           </div>
@@ -563,9 +620,7 @@ function PageInner() {
                 title="Show only saved favorites"
               >
                 <span>⭐</span>
-                <span>
-                  {favoritesOnly ? `Showing Favorites (${favoritesCount})` : `Favorites (${favoritesCount})`}
-                </span>
+                <span>{favoritesOnly ? `Showing Favorites (${favoritesCount})` : `Favorites (${favoritesCount})`}</span>
               </button>
 
               {/* TODAY'S FOCUS */}
@@ -756,13 +811,10 @@ function PageInner() {
                         }}
                       >
                         <div style={{ fontWeight: 900, fontSize: 15, color: "#111" }}>{m.label}</div>
-
                         <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>{m.blurb}</div>
-
                         <div style={{ marginTop: 8, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
                           Recommended: {m.pages} • {m.chapters.join(" • ")}
                         </div>
-
                         <div style={{ marginTop: 10 }}>
                           <button
                             type="button"
@@ -796,11 +848,9 @@ function PageInner() {
                   }}
                 >
                   <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>🔒 Book Matches are a Lifetime feature</div>
-
                   <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
                     Upgrade to see exactly where to read this in the book.
                   </div>
-
                   <div style={{ marginTop: 10 }}>
                     <button
                       type="button"
@@ -871,18 +921,17 @@ function PageInner() {
                           {item.body}
                         </div>
 
-                        <div
-                          style={{
-                            marginTop: 10,
-                            fontSize: 12,
-                            color: "#64748b",
-                            fontWeight: 700,
-                          }}
-                        >
+                        <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 700 }}>
                           Save this. Sit with it. Apply it today.
                         </div>
 
                         <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>{item.ref}</div>
+
+                        {isSavedFlash && (
+                          <div style={{ marginTop: 6, fontSize: 12, fontWeight: 900, color: "#111" }}>
+                            ✅ Saved to Favorites
+                          </div>
+                        )}
                       </div>
 
                       <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
@@ -913,29 +962,29 @@ function PageInner() {
                         >
                           Share
                         </button>
+
                         <button
-  type="button"
-  onClick={() => handleImage(item)}
-  style={{ ...miniBtn, fontSize: 12 }}
-  title="Create share image"
->
-  Image
-</button>
+                          type="button"
+                          onClick={() => handleImage(item)}
+                          style={{
+                            ...miniBtn,
+                            fontSize: 12,
+                            background: "rgba(99,102,241,0.10)",
+                            border: "1px solid rgba(99,102,241,0.18)",
+                          }}
+                          title="Create a share image"
+                        >
+                          Image
+                        </button>
                       </div>
                     </div>
-
-                    {isSavedFlash && (
-                      <div style={{ marginTop: 8, fontSize: 12, fontWeight: 900, color: "#111" }}>
-                        ✅ Saved to Favorites
-                      </div>
-                    )}
                   </div>
                 );
               })
             )}
           </div>
 
-               {/* Premium micro-animation */}
+          {/* Premium micro-animation */}
           <style jsx global>{`
             @keyframes pulseGlow {
               0% { box-shadow: 0 14px 30px rgba(0,0,0,0.16); }
@@ -954,7 +1003,7 @@ function PageInner() {
       </main>
     </div>
   );
-} // ✅ CLOSES PageInner
+}
 
 export default function Page() {
   return (
@@ -962,4 +1011,4 @@ export default function Page() {
       <PageInner />
     </Suspense>
   );
-} 
+}
