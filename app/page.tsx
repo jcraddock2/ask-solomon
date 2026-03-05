@@ -367,9 +367,14 @@ const footerY = Math.max(H - 140, y + 200);
 ctx.fillStyle = "#111";
 ctx.font = "900 32px system-ui";
 ctx.fillText("Success Secrets of Solomon", pad, footerY);
-      const dataUrl = canvas.toDataURL("image/png");
 
-      downloadDataUrl(dataUrl, "ask-solomon.png");
+ctx.fillStyle = "#64748b";
+ctx.font = "700 24px system-ui";
+ctx.fillText("AskSolomon.app", pad, footerY + 40);
+
+const dataUrl = canvas.toDataURL("image/png");
+
+downloadDataUrl(dataUrl, "ask-solomon.png");
     } catch {
       // silent
     }
