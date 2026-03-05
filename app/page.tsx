@@ -302,160 +302,85 @@ function PageInner() {
       }
     }
 
-    if (line) lines.push(line);
+   const handleImage = async (item: VerseItem) => {
+  try {
+    const W = 1080;
+    const H = 1350;
 
-    for (let i = 0; i < lines.length; i++) {
-      ctx.fillText(lines[i], x, y + i * lineHeight);
-    }
+    const canvas = document.createElement("canvas");
+    canvas.width = W;
+    canvas.height = H;
 
-    return lines.length;
-  };
-
-  const downloadDataUrl = (dataUrl: string, filename: string) => {
-    const a = document.createElement("a");
-    a.href = dataUrl;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  };
-
-  const handleImage = async (item: VerseItem) => {
-    try {
-      const W = 1080;
-      const H = 1350;
-
-      const canvas = document.createElement("canvas");
-      canvas.width = W;
-      canvas.height = H;
-
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
     // --- Background (rich gradient) ---
-const grad = ctx.createLinearGradient(0, 0, W, H);
-grad.addColorStop(0, "#ffffff");
-grad.addColorStop(0.45, "rgba(99,102,241,0.08)");
-grad.addColorStop(1, "rgba(16,185,129,0.07)");
-ctx.fillStyle = grad;
-ctx.fillRect(0, 0, W, H);
+    const grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, "#ffffff");
+    grad.addColorStop(0.45, "rgba(99,102,241,0.08)");
+    grad.addColorStop(1, "rgba(16,185,129,0.07)");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
 
-// Soft vignette glow (subtle)
-const glow = ctx.createRadialGradient(W * 0.25, H * 0.2, 40, W * 0.25, H * 0.2, 900);
-glow.addColorStop(0, "rgba(99,102,241,0.10)");
-glow.addColorStop(1, "rgba(99,102,241,0)");
-ctx.fillStyle = glow;
-ctx.fillRect(0, 0, W, H); 
+    // Soft vignette glow
+    const glow = ctx.createRadialGradient(W * 0.25, H * 0.2, 40, W * 0.25, H * 0.2, 900);
+    glow.addColorStop(0, "rgba(99,102,241,0.10)");
+    glow.addColorStop(1, "rgba(99,102,241,0)");
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, W, H);
 
-      const pad = 90;
-      const maxWidth = W - pad * 2;
+    const pad = 90;
+    const maxWidth = W - pad * 2;
 
-      ctx.fillStyle = "#111";
-      ctx.font = "900 54px system-ui";
-      ctx.fillText("Ask Solomon", pad, 150);
-ctx.fillStyle = "#64748b";
-ctx.font = "800 28px system-ui";
-ctx.letterSpacing = "1px";
-ctx.fillText("Wisdom for the Moment", pad, 195);
-      ctx.fillStyle = "rgba(0,0,0,0.10)";
-     ctx.fillRect(pad, 225, maxWidth, 2);
-   ctx.fillStyle = "#0f172a";
-ctx.font = "700 46px system-ui";
+    // Title
+    ctx.fillStyle = "#111";
+    ctx.font = "900 54px system-ui";
+    ctx.fillText("Ask Solomon", pad, 150);
 
-      const verse = item.body.trim();
+    ctx.fillStyle = "#64748b";
+    ctx.font = "800 28px system-ui";
+    ctx.fillText("Wisdom for the Moment", pad, 195);
 
- let y = 420; // ✅ moved down for better balance
-// Soft readability panel behind verse
-ctx.fillStyle = "rgba(255,255,255,0.82)";
-ctx.fillRect(pad - 20, y - 70, maxWidth + 40, 360);
-const linesUsed = wrapText(ctx, verse, pad, y, maxWidth, 60);
-y += linesUsed * 60 + 50;
+    ctx.fillStyle = "rgba(0,0,0,0.10)";
+    ctx.fillRect(pad, 225, maxWidth, 2);
 
-// Reference
-ctx.fillStyle = "#334155";
-ctx.font = "900 38px system-ui";
-ctx.fillText(item.ref, pad, y);
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "700 46px system-ui";
 
-// Footer branding placed dynamically, but never too high
-const footerY = Math.max(H - 140, y + 200);
+    const verse = item.body.trim();
 
-ctx.fillStyle = "#111";
-ctx.font = "900 32px system-ui";
-ctx.fillText("Success Secrets of Solomon", pad, footerY);
+    let y = 420;
 
-ctx.fillStyle = "#64748b";
-ctx.font = "700 24px system-ui";
-ctx.fillText("AskSolomon.app", pad, footerY + 40);
+    // --- Verse panel ---
+    ctx.fillStyle = "rgba(255,255,255,0.86)";
+    ctx.fillRect(pad - 20, y - 80, maxWidth + 40, 360);
 
-const dataUrl = canvas.toDataURL("image/png");
+    const linesUsed = wrapText(ctx, verse, pad, y, maxWidth, 60);
+    y += linesUsed * 60 + 50;
 
-downloadDataUrl(dataUrl, "ask-solomon.png");
-    } catch {
-      // silent
-    }
-  };
-  // Build pool from current filters (no Today’s Focus applied)
-  const buildFilteredPool = () => {
-    const query = q.trim().toLowerCase();
+    // Reference
+    ctx.fillStyle = "#334155";
+    ctx.font = "900 38px system-ui";
+    ctx.fillText(item.ref, pad, y);
 
-    let pool = DATA.filter((d) => d.mode === mode);
+    // Footer
+    const footerY = Math.max(H - 140, y + 200);
 
-    if (mode === "encouragement" && sub !== "all") {
-      pool = pool.filter((d) => d.sub === sub);
-    }
+    ctx.fillStyle = "#111";
+    ctx.font = "900 32px system-ui";
+    ctx.fillText("Success Secrets of Solomon", pad, footerY);
 
-    if (query.length > 0) {
-      pool = pool.filter((d) => {
-        const hay = `${d.title} ${d.body} ${d.ref} ${(d.tags || []).join(" ")}`.toLowerCase();
-        return hay.includes(query);
-      });
-    }
+    ctx.fillStyle = "#64748b";
+    ctx.font = "700 24px system-ui";
+    ctx.fillText("AskSolomon.app", pad, footerY + 40);
 
-    if (favoritesOnly) {
-      pool = pool.filter((d) => {
-        const k = `${d.ref}-${d.title}`;
-        return !!favoriteKeys[k];
-      });
-    }
+    const dataUrl = canvas.toDataURL("image/png");
+    downloadDataUrl(dataUrl, "ask-solomon.png");
 
-    return pool;
-  };
-
-  const results = useMemo(() => {
-    const list = buildFilteredPool();
-
-    if (todayFocusOn) {
-      if (!todayFocusKey) return [];
-      return list.filter((d) => `${d.ref}-${d.title}` === todayFocusKey);
-    }
-
-    return list;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, sub, q, favoritesOnly, favoriteKeys, todayFocusOn, todayFocusKey]);
-
-  // ✅ Pro-only: book matches for current search
-  const bookMatches = useMemo<BookMatch[]>(() => {
-    if (q.trim().length === 0) return [];
-    return findBookMatches(q);
-  }, [q]);
-
-  const applyTopic = (topicQuery: string) => {
-    setQ(topicQuery);
-    setTodayFocusOn(false);
-    setTodayFocusKey("");
-    setUrl({ q: topicQuery });
-  };
-
-  const rerollTodaysFocus = () => {
-    const pool = buildFilteredPool();
-    if (pool.length === 0) {
-      setTodayFocusKey("");
-      return;
-    }
-    const choice = pool[Math.floor(Math.random() * pool.length)];
-    setTodayFocusKey(`${choice.ref}-${choice.title}`);
-  };
-
+  } catch {
+    // silent
+  }
+};
   // ✅ FIX: reliable toggle + auto pick
   const toggleTodaysFocus = () => {
     const next = !todayFocusOn;
