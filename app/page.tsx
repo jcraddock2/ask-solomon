@@ -26,6 +26,8 @@ function safeParse<T>(raw: string | null, fallback: T): T {
   }
 }
 
+type ShareTemplate = "classic" | "dark" | "gold" | "daily" | "gradientModern";
+
 function PageInner() {
   const router = useRouter();
   const sp = useSearchParams();
@@ -54,6 +56,9 @@ function PageInner() {
 
   const [hoverKey, setHoverKey] = useState<string>("");
   const [searchFocused, setSearchFocused] = useState(false);
+
+  // Share image template selector (persisted)
+  const [shareTemplate, setShareTemplate] = useState<ShareTemplate>("gradientModern");
 
   // ---- Styles (LANDMARK: STYLES) ----
   const outerStyle: React.CSSProperties = {
@@ -157,6 +162,15 @@ function PageInner() {
     userSelect: "none",
   };
 
+  const selectStyle: React.CSSProperties = {
+    ...miniBtn,
+    padding: "8px 10px",
+    fontSize: 12,
+    fontWeight: 900,
+    outline: "none",
+    maxWidth: 230,
+  };
+
   // ---- Pro detection ----
   useEffect(() => {
     try {
@@ -175,6 +189,16 @@ function PageInner() {
   useEffect(() => {
     localStorage.setItem("asksolomon:favorites", JSON.stringify(favoriteKeys));
   }, [favoriteKeys]);
+
+  // ---- Share template load/save ----
+  useEffect(() => {
+    const t = safeParse<ShareTemplate>(localStorage.getItem("asksolomon:shareTemplate"), "gradientModern");
+    setShareTemplate(t);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("asksolomon:shareTemplate", JSON.stringify(shareTemplate));
+  }, [shareTemplate]);
 
   // ---- URL sync helper ----
   const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
@@ -254,8 +278,7 @@ function PageInner() {
 
     try {
       if (typeof navigator !== "undefined" && "share" in navigator) {
-        // @ts-ignore
-        await navigator.share({ title: "Ask Solomon", text });
+        await (navigator as any).share({ title: "Ask Solomon", text });
         return;
       }
     } catch {
@@ -282,7 +305,7 @@ function PageInner() {
     maxWidth: number,
     lineHeight: number
   ) => {
-    const words = text.split(/\s+/);
+    const words = text.split(/\s+/).filter(Boolean);
     let line = "";
     const lines: string[] = [];
 
@@ -307,6 +330,66 @@ function PageInner() {
     return lines.length;
   };
 
+  const measureWrappedLines = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number) => {
+    const words = text.split(/\s+/).filter(Boolean);
+    if (words.length === 0) return 0;
+
+    let lines = 1;
+    let line = words[0];
+
+    for (let i = 1; i < words.length; i++) {
+      const test = `${line} ${words[i]}`;
+      if (ctx.measureText(test).width > maxWidth) {
+        lines++;
+        line = words[i];
+      } else {
+        line = test;
+      }
+    }
+
+    return lines;
+  };
+
+  const roundRectPath = (
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ) => {
+    const radius = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.arcTo(x + w, y, x + w, y + h, radius);
+    ctx.arcTo(x + w, y + h, x, y + h, radius);
+    ctx.arcTo(x, y + h, x, y, radius);
+    ctx.arcTo(x, y, x + w, y, radius);
+    ctx.closePath();
+  };
+
+  const drawRoundedPanel = (
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number,
+    fill: string,
+    shadow = true
+  ) => {
+    ctx.save();
+    if (shadow) {
+      ctx.shadowColor = "rgba(0,0,0,0.22)";
+      ctx.shadowBlur = 26;
+      ctx.shadowOffsetY = 14;
+    }
+    ctx.fillStyle = fill;
+    roundRectPath(ctx, x, y, w, h, r);
+    ctx.fill();
+    ctx.restore();
+  };
+
   const downloadDataUrl = (dataUrl: string, filename: string) => {
     const a = document.createElement("a");
     a.href = dataUrl;
@@ -314,6 +397,88 @@ function PageInner() {
     document.body.appendChild(a);
     a.click();
     a.remove();
+  };
+
+  const getTemplateStyle = (t: ShareTemplate) => {
+    switch (t) {
+      case "classic":
+        return {
+          bgA: "#f8fafc",
+          bgB: "#e2e8f0",
+          panelFill: "rgba(255,255,255,0.92)",
+          headerText: "#0f172a",
+          subHeaderText: "rgba(15,23,42,0.65)",
+          verseText: "#0f172a",
+          refText: "#0f172a",
+          footerText: "rgba(15,23,42,0.75)",
+          accent: "#0f172a",
+        };
+      case "dark":
+        return {
+          bgA: "#0b1220",
+          bgB: "#111827",
+          panelFill: "rgba(255,255,255,0.10)",
+          headerText: "rgba(255,255,255,0.92)",
+          subHeaderText: "rgba(255,255,255,0.72)",
+          verseText: "rgba(255,255,255,0.94)",
+          refText: "rgba(255,255,255,0.86)",
+          footerText: "rgba(255,255,255,0.78)",
+          accent: "rgba(255,255,255,0.90)",
+        };
+      case "gold":
+        return {
+          bgA: "#0b1020",
+          bgB: "#1f2937",
+          panelFill: "rgba(17,24,39,0.76)",
+          headerText: "rgba(255,255,255,0.92)",
+          subHeaderText: "rgba(255,255,255,0.72)",
+          verseText: "rgba(255,255,255,0.95)",
+          refText: "rgba(255,255,255,0.86)",
+          footerText: "rgba(255,255,255,0.78)",
+          accent: "#fbbf24",
+        };
+      case "daily":
+        return {
+          bgA: "#fff7ed",
+          bgB: "#ffedd5",
+          panelFill: "rgba(255,255,255,0.94)",
+          headerText: "#7c2d12",
+          subHeaderText: "rgba(124,45,18,0.70)",
+          verseText: "#0f172a",
+          refText: "#7c2d12",
+          footerText: "rgba(124,45,18,0.85)",
+          accent: "#ea580c",
+        };
+      case "gradientModern":
+      default:
+        return {
+          bgA: "#0f172a",
+          bgB: "#1d4ed8",
+          panelFill: "rgba(255,255,255,0.92)",
+          headerText: "rgba(255,255,255,0.92)",
+          subHeaderText: "rgba(255,255,255,0.76)",
+          verseText: "#0f172a",
+          refText: "#0f172a",
+          footerText: "rgba(255,255,255,0.88)",
+          accent: "rgba(255,255,255,0.90)",
+        };
+    }
+  };
+
+  const formatTemplateLabel = (t: ShareTemplate) => {
+    switch (t) {
+      case "classic":
+        return "Classic";
+      case "dark":
+        return "Dark Mode";
+      case "gold":
+        return "Gold Wisdom";
+      case "daily":
+        return "Daily Verse";
+      case "gradientModern":
+      default:
+        return "Gradient Modern";
+    }
   };
 
   const handleImage = async (item: VerseItem) => {
@@ -328,40 +493,102 @@ function PageInner() {
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
-      // Background (subtle premium)
+      const style = getTemplateStyle(shareTemplate);
+
+      // Background gradient
       const grad = ctx.createLinearGradient(0, 0, W, H);
-      grad.addColorStop(0, "#ffffff");
-      grad.addColorStop(0.5, "rgba(99,102,241,0.05)");
-      grad.addColorStop(1, "rgba(16,185,129,0.04)");
+      grad.addColorStop(0, style.bgA);
+      grad.addColorStop(1, style.bgB);
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, W, H);
 
-      const pad = 90;
-      const maxWidth = W - pad * 2;
+      // Layout
+      const padX = 96;
+      const topPad = 86;
+      const bottomPad = 80;
+      const cardW = W - padX * 2;
 
-      // Title
-      ctx.fillStyle = "#111";
-      ctx.font = "900 54px system-ui";
-      ctx.fillText("Ask Solomon", pad, 150);
+      // Header
+      ctx.textBaseline = "top";
+      ctx.fillStyle = style.headerText;
+      ctx.font = "900 60px system-ui";
+      ctx.fillText("Ask Solomon", padX, topPad);
 
-      // Subtitle
-      ctx.fillStyle = "#64748b";
-      ctx.font = "800 28px system-ui";
-      ctx.fillText("Wisdom for the Moment", pad, 195);
+      ctx.fillStyle = style.subHeaderText;
+      ctx.font = "800 30px system-ui";
+      ctx.fillText("Wisdom for the moment", padX, topPad + 74);
 
-// ✅ CRITICAL: set verse style RIGHT BEFORE wrapText
-ctx.fillStyle = "#0f172a";
-ctx.font = "700 46px system-ui";
-      ctx.fillStyle = "#111";
-      ctx.font = "900 32px system-ui";
-      ctx.fillText("Success Secrets of Solomon", pad, footerY);
+      // Accent line
+      ctx.save();
+      ctx.globalAlpha = shareTemplate === "gold" ? 1 : 0.85;
+      ctx.fillStyle = style.accent;
+      ctx.fillRect(padX, topPad + 122, 240, 6);
+      ctx.restore();
 
-      ctx.fillStyle = "#64748b";
-      ctx.font = "700 24px system-ui";
-      ctx.fillText("AskSolomon.app", pad, footerY + 40);
+      // Verse + ref
+      const verse = (item.body || "").trim();
+      const ref = `${item.ref}${item.title ? ` — ${item.title}` : ""}`.trim();
 
+      // Typography + panel geometry
+      const verseFont = "700 46px system-ui";
+      const lineHeight = 60;
+      const innerPad = 56;
+      const radius = 34;
+
+      // Compute dynamic panel height
+      ctx.font = verseFont;
+      // ✅ CRITICAL: set verse style RIGHT BEFORE measuring/wrapping
+      ctx.fillStyle = style.verseText;
+
+      const maxTextWidth = cardW - innerPad * 2;
+      const lines = Math.max(1, measureWrappedLines(ctx, verse, maxTextWidth));
+      const verseBlockH = lines * lineHeight;
+      const gapAfterVerse = 26;
+
+      // Ref line height allowance
+      const refFont = "900 34px system-ui";
+      const refLineH = 44;
+
+      const panelH = innerPad + verseBlockH + gapAfterVerse + refLineH + innerPad;
+
+      // True-ish centering: between header block and footer block
+      const headerBottom = topPad + 150; // includes title/subtitle/accent
+      const footerTop = H - bottomPad - 60; // reserve footer area
+      const available = footerTop - headerBottom;
+      const panelY = headerBottom + Math.max(24, Math.floor((available - panelH) / 2));
+      const panelX = padX;
+
+      // Panel
+      drawRoundedPanel(ctx, panelX, panelY, cardW, panelH, radius, style.panelFill, true);
+
+      // Verse text
+      let y = panelY + innerPad;
+
+      // ✅ CRITICAL: set verse style RIGHT BEFORE wrapText
+      ctx.fillStyle = style.verseText;
+      ctx.font = verseFont;
+      const used = wrapText(ctx, verse, panelX + innerPad, y, maxTextWidth, lineHeight);
+      y += used * lineHeight + gapAfterVerse;
+
+      // Reference
+      ctx.fillStyle = style.refText;
+      ctx.font = refFont;
+      ctx.fillText(ref, panelX + innerPad, y);
+
+      // Footer branding
+      const footerY = H - bottomPad;
+      ctx.fillStyle = style.footerText;
+      ctx.font = "900 30px system-ui";
+      ctx.fillText("Success Secrets of Solomon", padX, footerY - 40);
+
+      ctx.font = "800 24px system-ui";
+      ctx.globalAlpha = 0.95;
+      ctx.fillText("successsecretsbook.com  •  AskSolomon.app", padX, footerY);
+      ctx.globalAlpha = 1;
+
+      const safeRef = (item.ref || "verse").replace(/[^\w\-]+/g, "_");
       const dataUrl = canvas.toDataURL("image/png");
-      downloadDataUrl(dataUrl, "ask-solomon.png");
+      downloadDataUrl(dataUrl, `ask-solomon-${safeRef}.png`);
     } catch {
       // silent
     }
@@ -461,6 +688,11 @@ ctx.font = "700 46px system-ui";
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [todayFocusOn, mode, sub, q, favoritesOnly, favoriteKeys]);
+
+  const favoritesCount = useMemo(
+    () => Object.keys(favoriteKeys).filter((k) => favoriteKeys[k]).length,
+    [favoriteKeys]
+  );
 
   const renderEmptyState = () => {
     if (favoritesOnly && favoritesCount === 0) {
@@ -643,6 +875,24 @@ ctx.font = "700 46px system-ui";
                   <span>Re-roll</span>
                 </button>
               )}
+
+              {/* TEMPLATE SELECTOR */}
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto", flexWrap: "wrap" }}>
+                <span style={{ fontSize: 12, fontWeight: 900, color: "#334155" }}>Image Template</span>
+                <select
+                  value={shareTemplate}
+                  onChange={(e) => setShareTemplate(e.target.value as ShareTemplate)}
+                  style={selectStyle}
+                  aria-label="Select share image template"
+                  title="Choose the style for Image share cards"
+                >
+                  <option value="gradientModern">{formatTemplateLabel("gradientModern")}</option>
+                  <option value="classic">{formatTemplateLabel("classic")}</option>
+                  <option value="dark">{formatTemplateLabel("dark")}</option>
+                  <option value="gold">{formatTemplateLabel("gold")}</option>
+                  <option value="daily">{formatTemplateLabel("daily")}</option>
+                </select>
+              </div>
             </div>
 
             {/* SUB ROW */}
@@ -964,16 +1214,28 @@ ctx.font = "700 46px system-ui";
           {/* Premium micro-animation */}
           <style jsx global>{`
             @keyframes pulseGlow {
-              0% { box-shadow: 0 14px 30px rgba(0,0,0,0.16); }
-              50% { box-shadow: 0 18px 44px rgba(99,102,241,0.18); }
-              100% { box-shadow: 0 14px 30px rgba(0,0,0,0.16); }
+              0% {
+                box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
+              }
+              50% {
+                box-shadow: 0 18px 44px rgba(99, 102, 241, 0.18);
+              }
+              100% {
+                box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
+              }
             }
             .verseCard {
               animation: fadeInUp 180ms ease both;
             }
             @keyframes fadeInUp {
-              from { opacity: 0; transform: translateY(6px); }
-              to { opacity: 1; transform: translateY(0px); }
+              from {
+                opacity: 0;
+                transform: translateY(6px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0px);
+              }
             }
           `}</style>
         </section>
