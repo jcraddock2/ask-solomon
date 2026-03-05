@@ -341,10 +341,11 @@ function PageInner() {
       ctx.fillStyle = "#111";
       ctx.font = "900 54px system-ui";
       ctx.fillText("Ask Solomon", pad, 150);
-
+ctx.fillStyle = "#64748b";
+ctx.font = "800 28px system-ui";
+ctx.fillText("Wisdom for the Moment", pad, 195);
       ctx.fillStyle = "rgba(0,0,0,0.10)";
-      ctx.fillRect(pad, 190, maxWidth, 2);
-
+     ctx.fillRect(pad, 225, maxWidth, 2);
       ctx.fillStyle = "#111";
       ctx.font = "650 44px system-ui";
 
