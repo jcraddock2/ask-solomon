@@ -926,7 +926,7 @@ function PageInner() {
             )}
           </div>
 
-          {/* Premium micro-animation */}
+               {/* Premium micro-animation */}
           <style jsx global>{`
             @keyframes pulseGlow {
               0% { box-shadow: 0 14px 30px rgba(0,0,0,0.16); }
@@ -945,7 +945,7 @@ function PageInner() {
       </main>
     </div>
   );
-}
+} // ✅ CLOSES PageInner
 
 export default function Page() {
   return (
@@ -953,4 +953,4 @@ export default function Page() {
       <PageInner />
     </Suspense>
   );
-}
+} 
