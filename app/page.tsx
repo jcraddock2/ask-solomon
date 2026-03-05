@@ -349,32 +349,9 @@ function PageInner() {
       ctx.font = "800 28px system-ui";
       ctx.fillText("Wisdom for the Moment", pad, 195);
 
-      // Divider
-      ctx.fillStyle = "rgba(0,0,0,0.10)";
-      ctx.fillRect(pad, 225, maxWidth, 2);
-
-      // Verse
-      ctx.fillStyle = "#0f172a";
-      ctx.font = "700 46px system-ui";
-
-      const verse = item.body.trim();
-      let y = 420;
-
-      // Readability panel (simple + reliable)
-      ctx.fillStyle = "rgba(255,255,255,0.86)";
-      ctx.fillRect(pad - 20, y - 80, maxWidth + 40, 360);
-
-      const linesUsed = wrapText(ctx, verse, pad, y, maxWidth, 60);
-      y += linesUsed * 60 + 50;
-
-      // Reference
-      ctx.fillStyle = "#334155";
-      ctx.font = "900 38px system-ui";
-      ctx.fillText(item.ref, pad, y);
-
-      // Footer
-      const footerY = Math.max(H - 140, y + 200);
-
+// ✅ CRITICAL: set verse style RIGHT BEFORE wrapText
+ctx.fillStyle = "#0f172a";
+ctx.font = "700 46px system-ui";
       ctx.fillStyle = "#111";
       ctx.font = "900 32px system-ui";
       ctx.fillText("Success Secrets of Solomon", pad, footerY);
