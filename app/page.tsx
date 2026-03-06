@@ -4,6 +4,7 @@
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isProUser } from "./lib/access";
+import { searchProverbs } from "./lib/proverbs";
 import {
   DATA,
   MODES,
@@ -643,7 +644,11 @@ ${link}`;
   }, [mode, sub, q, favoritesOnly, favoriteKeys, todayFocusOn, todayFocusKey]);
 
   // Pro-only: book matches
-  const bookMatches = useMemo<BookMatch[]>(() => {
+  const bookMatches = useMemo<BookMatch[]>(() => { 
+     const proverbMatches = useMemo(() => {
+    if (q.trim().length === 0) return [];
+    return searchProverbs(q);
+  }, [q]); 
     if (q.trim().length === 0) return [];
     return findBookMatches(q);
   }, [q]);
@@ -1100,7 +1105,37 @@ ${link}`;
               )}
             </div>
           )}
+          {/* MORE PROVERBS */}
+          {q.trim().length > 0 && proverbMatches.length > 0 && (
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>
+                More Proverbs
+              </div>
 
+              <div style={{ display: "grid", gap: 10 }}>
+                {proverbMatches.map((p) => (
+                  <div
+                    key={p.ref}
+                    style={{
+                      background: "rgba(255,255,255,0.85)",
+                      border: "1px solid rgba(0,0,0,0.08)",
+                      borderRadius: 16,
+                      padding: 14,
+                      boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
+                    }}
+                  >
+                    <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>{p.ref}</div>
+                    <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13, lineHeight: 1.5 }}>
+                      {p.text}
+                    </div>
+                    <div style={{ marginTop: 8, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
+                      Topics: {p.topics.join(" • ")}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           {/* TODAY'S FOCUS HEADLINE */}
           {todayFocusOn && (
             <div
