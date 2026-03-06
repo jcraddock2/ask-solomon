@@ -591,10 +591,10 @@ ${link}`;
       ctx.font = "900 30px system-ui";
       ctx.fillText("Success Secrets of Solomon", padX, footerY - 44);
 
-      ctx.font = "800 24px system-ui";
-      ctx.globalAlpha = 0.95;
-      ctx.fillText("successsecretsbook.com  •  AskSolomon.app", padX, footerY);
-      ctx.globalAlpha = 1;
+    ctx.font = "800 24px system-ui";
+ctx.globalAlpha = 0.95;
+ctx.fillText("AskSolomon.app", padX, footerY);
+ctx.globalAlpha = 1; 
 
       const safeRef = (item.ref || "verse").replace(/[^\w\-]+/g, "_");
       const dataUrl = canvas.toDataURL("image/png");
