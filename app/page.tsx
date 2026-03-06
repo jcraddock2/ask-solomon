@@ -644,21 +644,22 @@ ${link}`;
   }, [mode, sub, q, favoritesOnly, favoriteKeys, todayFocusOn, todayFocusKey]);
 
   // Pro-only: book matches
-  const bookMatches = useMemo<BookMatch[]>(() => { 
-     const proverbMatches = useMemo(() => {
-    if (q.trim().length === 0) return [];
-    return searchProverbs(q);
-  }, [q]); 
-    if (q.trim().length === 0) return [];
-    return findBookMatches(q);
-  }, [q]);
+const bookMatches = useMemo<BookMatch[]>(() => {
+  if (q.trim().length === 0) return [];
+  return findBookMatches(q);
+}, [q]);
 
-  const applyTopic = (topicQuery: string) => {
-    setQ(topicQuery);
-    setTodayFocusOn(false);
-    setTodayFocusKey("");
-    setUrl({ q: topicQuery });
-  };
+const proverbMatches = useMemo(() => {
+  if (q.trim().length === 0) return [];
+  return searchProverbs(q);
+}, [q]);
+
+const applyTopic = (topicQuery: string) => {
+  setQ(topicQuery);
+  setTodayFocusOn(false);
+  setTodayFocusKey("");
+  setUrl({ q: topicQuery });
+};
 
   const rerollTodaysFocus = () => {
     const pool = buildFilteredPool();
