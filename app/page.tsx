@@ -269,11 +269,25 @@ function PageInner() {
     }
   };
 
-  const buildShareText = (item: VerseItem) => {
-    const link = typeof window !== "undefined" ? window.location.href : "";
-    return `${item.title}\n\n${item.body}\n\n${item.ref}\n\n— Ask Solomon\n${link}`;
-  };
+const buildShareText = (item: VerseItem) => {
+  const link =
+    typeof window !== "undefined"
+      ? "https://ask-solomon.app"
+      : "https://ask-solomon.app";
 
+  return `Ask Solomon
+
+${item.title}
+
+${item.body}
+
+${item.ref}
+
+Save this. Sit with it. Apply it today.
+
+Get daily wisdom:
+${link}`;
+};
   const handleShare = async (item: VerseItem, keyForUi?: string) => {
     const text = buildShareText(item);
 
