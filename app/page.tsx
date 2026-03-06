@@ -569,7 +569,12 @@ ${link}`;
 
       // Panel
       drawRoundedPanel(ctx, panelX, panelY, cardW, panelH, radius, style.panelFill, true);
-
+ctx.save();
+ctx.strokeStyle = "rgba(255,255,255,0.45)";
+ctx.lineWidth = 2;
+roundRectPath(ctx, panelX, panelY, cardW, panelH, radius);
+ctx.stroke();
+ctx.restore();
       // Verse text
       let y = panelY + innerPad;
 
@@ -577,34 +582,6 @@ ${link}`;
       ctx.fillStyle = style.verseText;
       ctx.font = verseFont;
 
-      const used = wrapText(ctx, verse, panelX + innerPad, y, maxTextWidth, lineHeight);
-      y += used * lineHeight + gapAfterVerse;
-
-      // Reference
-      ctx.fillStyle = style.refText;
-      ctx.font = refFont;
-      ctx.fillText(ref, panelX + innerPad, y);
-
-      // Footer branding
-      const footerY = H - bottomPad;
-      ctx.fillStyle = style.footerText;
-      ctx.font = "900 30px system-ui";
-      ctx.fillText("Success Secrets of Solomon", padX, footerY - 44);
-
-    ctx.font = "800 24px system-ui";
-ctx.globalAlpha = 0.95;
-ctx.fillText("AskSolomon.app", padX, footerY);
-ctx.globalAlpha = 1; 
-
-      const safeRef = (item.ref || "verse").replace(/[^\w\-]+/g, "_");
-      const dataUrl = canvas.toDataURL("image/png");
-      downloadDataUrl(dataUrl, `ask-solomon-${safeRef}.png`);
-    } catch {
-      // silent
-    }
-  };
-
-  // --- Pool + results (LANDMARK: RESULTS) ---
   const buildFilteredPool = () => {
     const query = q.trim().toLowerCase();
 
