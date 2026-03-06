@@ -330,27 +330,82 @@ const normalize = (s: string) =>
     .replace(/\s+/g, " ")
     .trim();
 
-export function findBookMatches(query: string): BookMatch[] {
-  const q = normalize(query);
-  if (!q) return [];
+export function findBookMatches(q: string): BookMatch[] {
+  const query = q.toLowerCase().trim();
 
-  // Token list helps catch short queries like "faith" or "fear"
-  const tokens = new Set(q.split(" ").filter(Boolean));
+  const matches: BookMatch[] = [];
 
-  // Match if query contains keyword OR token equals keyword
-  const matches = BOOK_INDEX.filter((m) => {
-    const keys = m.keywords.map(normalize);
-    return keys.some((k) => q.includes(k) || tokens.has(k));
+  const TOPIC_MAP: Record<string, BookMatch> = {
+    counsel: {
+      topic: "counsel",
+      label: "Seeking Counsel",
+      pages: "42–46",
+      chapters: ["The Power of Counsel"],
+      blurb: "Wise leaders seek many counselors before major decisions.",
+    },
+
+    leadership: {
+      topic: "leadership",
+      label: "Leadership",
+      pages: "42–46",
+      chapters: ["The Power of Counsel", "Leading with Wisdom"],
+      blurb: "Leadership grows from humility, wisdom, and guidance.",
+    },
+
+    discipline: {
+      topic: "discipline",
+      label: "Discipline",
+      pages: "54–58",
+      chapters: ["The Path of Discipline"],
+      blurb: "Discipline builds the structure that produces success.",
+    },
+
+    fear: {
+      topic: "fear",
+      label: "Overcoming Fear",
+      pages: "77–80",
+      chapters: ["Courage Over Fear"],
+      blurb: "Fear loses power when wisdom and faith guide decisions.",
+    },
+
+    speech: {
+      topic: "speech",
+      label: "The Power of Words",
+      pages: "120–124",
+      chapters: ["The Power of Words"],
+      blurb: "Words can build life or destroy it.",
+    },
+
+    wealth: {
+      topic: "wealth",
+      label: "Money & Wealth",
+      pages: "88–92",
+      chapters: ["Wealth and Stewardship"],
+      blurb: "Wealth grows through diligence, stewardship, and wisdom.",
+    },
+
+    integrity: {
+      topic: "integrity",
+      label: "Integrity",
+      pages: "66–70",
+      chapters: ["The Integrity Advantage"],
+      blurb: "Integrity protects reputation and long-term success.",
+    },
+
+    diligence: {
+      topic: "diligence",
+      label: "Diligence",
+      pages: "72–76",
+      chapters: ["The Diligent Path"],
+      blurb: "Consistent effort produces lasting success.",
+    },
+  };
+
+  Object.keys(TOPIC_MAP).forEach((topic) => {
+    if (query.includes(topic)) {
+      matches.push(TOPIC_MAP[topic]);
+    }
   });
 
-  // Small “best first” ordering: more keyword hits = higher
-  const scored = matches
-    .map((m) => {
-      const keys = m.keywords.map(normalize);
-      const score = keys.reduce((acc, k) => (q.includes(k) || tokens.has(k) ? acc + 1 : acc), 0);
-      return { m, score };
-    })
-    .sort((a, b) => b.score - a.score);
-
-  return scored.map((x) => x.m).slice(0, 4); // show top 4
+  return matches;
 }
