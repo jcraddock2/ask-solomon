@@ -232,104 +232,6 @@ export type BookMatch = {
 };
 
 // ✅ Starter map (edit/expand anytime; no UI changes needed)
-export const BOOK_INDEX: BookMatch[] = [
-  {
-    topic: "faith",
-    label: "Faith",
-    blurb: "Trust beyond what you can see—how to keep moving when you can’t prove the outcome yet.",
-    pages: "pp. 12–15",
-    chapters: ["Trust That Moves", "Faith Under Pressure"],
-    keywords: ["faith", "trust", "believe", "belief", "doubt"],
-  },
-  {
-    topic: "fear",
-    label: "Fear",
-    blurb: "How to act with courage when your emotions are loud.",
-    pages: "pp. 16–19",
-    chapters: ["Courage is a Choice", "Winning the Inner Battle"],
-    keywords: ["fear", "afraid", "anxious", "anxiety", "panic", "worry"],
-  },
-  {
-    topic: "peace",
-    label: "Peace",
-    blurb: "How to quiet the mind and restore order inside.",
-    pages: "pp. 20–23",
-    chapters: ["Peace as a Practice", "The Discipline of Calm"],
-    keywords: ["peace", "calm", "rest", "still", "quiet", "anxious", "anxiety"],
-  },
-  {
-    topic: "direction",
-    label: "Direction",
-    blurb: "How to decide what to do next when you feel stuck.",
-    pages: "pp. 24–28",
-    chapters: ["Clarity Comes with Motion", "Counsel and Commitment"],
-    keywords: ["direction", "decide", "decision", "stuck", "uncertain", "confused", "guidance", "path"],
-  },
-  {
-    topic: "discipline",
-    label: "Discipline",
-    blurb: "Consistency that compounds—how small habits create big outcomes.",
-    pages: "pp. 29–33",
-    chapters: ["Diligence Wins", "The Power of Daily Obedience"],
-    keywords: ["discipline", "diligent", "diligence", "habit", "consistent", "consistency", "lazy", "sloth"],
-  },
-  {
-    topic: "leadership",
-    label: "Leadership",
-    blurb: "How to influence with wisdom, not pressure.",
-    pages: "pp. 34–38",
-    chapters: ["Counsel Creates Strength", "Integrity Builds Trust"],
-    keywords: ["leadership", "leader", "influence", "team", "people", "manager", "authority", "counsel"],
-  },
-  {
-    topic: "relationships",
-    label: "Relationships",
-    blurb: "How words and wisdom repair conflict and strengthen connection.",
-    pages: "pp. 39–42",
-    chapters: ["Words That Heal", "Conflict With Control"],
-    keywords: ["relationship", "relationships", "marriage", "friend", "friends", "conflict", "argument", "words", "tongue"],
-  },
-  {
-    topic: "money",
-    label: "Money & Stewardship",
-    blurb: "Wisdom that protects you from short-term thinking and financial chaos.",
-    pages: "pp. 43–47",
-    chapters: ["Stewardship Over Impulse", "Wealth With Wisdom"],
-    keywords: ["money", "wealth", "debt", "rich", "poor", "stewardship", "finance", "finances"],
-  },
-  {
-    topic: "integrity",
-    label: "Integrity",
-    blurb: "The clean conscience advantage—how character builds confidence.",
-    pages: "pp. 48–52",
-    chapters: ["Clean Hands, Strong Heart", "The Long Reward of Integrity"],
-    keywords: ["integrity", "honest", "honesty", "righteous", "character", "truth", "upright"],
-  },
-  {
-    topic: "work",
-    label: "Work & Excellence",
-    blurb: "How diligence and skill create opportunity.",
-    pages: "pp. 53–57",
-    chapters: ["Skill Opens Doors", "Excellence Over Excuses"],
-    keywords: ["work", "job", "career", "lazy", "slack", "excellence", "skill", "promotion"],
-  },
-  {
-    topic: "hope",
-    label: "Hope",
-    blurb: "How to keep your spirit up and stay steady in a long season.",
-    pages: "pp. 58–61",
-    chapters: ["Hope That Holds", "Light Rises"],
-    keywords: ["hope", "discouraged", "discouragement", "tired", "weary", "depressed", "down"],
-  },
-];
-
-const normalize = (s: string) =>
-  s
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
 export function findBookMatches(q: string): BookMatch[] {
   const query = q.toLowerCase().trim();
 
@@ -342,6 +244,7 @@ export function findBookMatches(q: string): BookMatch[] {
       pages: "42–46",
       chapters: ["The Power of Counsel"],
       blurb: "Wise leaders seek many counselors before major decisions.",
+      keywords: ["counsel", "advice", "guidance", "wisdom"],
     },
 
     leadership: {
@@ -350,6 +253,7 @@ export function findBookMatches(q: string): BookMatch[] {
       pages: "42–46",
       chapters: ["The Power of Counsel", "Leading with Wisdom"],
       blurb: "Leadership grows from humility, wisdom, and guidance.",
+      keywords: ["leadership", "leader", "influence", "authority"],
     },
 
     discipline: {
@@ -358,6 +262,7 @@ export function findBookMatches(q: string): BookMatch[] {
       pages: "54–58",
       chapters: ["The Path of Discipline"],
       blurb: "Discipline builds the structure that produces success.",
+      keywords: ["discipline", "self-control", "consistency", "training"],
     },
 
     fear: {
@@ -366,6 +271,7 @@ export function findBookMatches(q: string): BookMatch[] {
       pages: "77–80",
       chapters: ["Courage Over Fear"],
       blurb: "Fear loses power when wisdom and faith guide decisions.",
+      keywords: ["fear", "afraid", "anxiety", "courage"],
     },
 
     speech: {
@@ -374,6 +280,7 @@ export function findBookMatches(q: string): BookMatch[] {
       pages: "120–124",
       chapters: ["The Power of Words"],
       blurb: "Words can build life or destroy it.",
+      keywords: ["speech", "words", "tongue", "communication"],
     },
 
     wealth: {
@@ -382,6 +289,7 @@ export function findBookMatches(q: string): BookMatch[] {
       pages: "88–92",
       chapters: ["Wealth and Stewardship"],
       blurb: "Wealth grows through diligence, stewardship, and wisdom.",
+      keywords: ["wealth", "money", "riches", "prosperity", "finances"],
     },
 
     integrity: {
@@ -390,6 +298,7 @@ export function findBookMatches(q: string): BookMatch[] {
       pages: "66–70",
       chapters: ["The Integrity Advantage"],
       blurb: "Integrity protects reputation and long-term success.",
+      keywords: ["integrity", "character", "honesty", "truth"],
     },
 
     diligence: {
@@ -398,14 +307,21 @@ export function findBookMatches(q: string): BookMatch[] {
       pages: "72–76",
       chapters: ["The Diligent Path"],
       blurb: "Consistent effort produces lasting success.",
+      keywords: ["diligence", "hard work", "effort", "work ethic"],
     },
   };
 
-  Object.keys(TOPIC_MAP).forEach((topic) => {
-    if (query.includes(topic)) {
-      matches.push(TOPIC_MAP[topic]);
+  for (const topic of Object.keys(TOPIC_MAP)) {
+    const match = TOPIC_MAP[topic];
+    if (query.includes(topic) && match) {
+      matches.push(match);
+      continue;
     }
-  });
 
-  return matches;
+    if (match.keywords.some((k) => query.includes(k.toLowerCase()))) {
+      matches.push(match);
+    }
+  }
+
+  return matches.slice(0, 4);
 }
