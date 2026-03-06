@@ -96,8 +96,32 @@ export function searchProverbs(query: string): ProverbEntry[] {
   const q = query.toLowerCase().trim();
   if (!q) return [];
 
+  const TOPIC_ALIASES: Record<string, string[]> = {
+    integrity: ["integrity", "honesty", "truth", "character", "upright", "honorable"],
+    peace: ["peace", "calm", "rest", "stillness", "stress", "anxiety", "worried"],
+    fear: ["fear", "afraid", "worry", "worried", "anxious", "anxiety", "courage"],
+    counsel: ["counsel", "guidance", "direction", "advice", "wisdom", "decision"],
+    discipline: ["discipline", "self-control", "consistency", "habit", "lazy", "sloth"],
+    leadership: ["leadership", "leader", "influence", "authority", "management"],
+    speech: ["speech", "words", "tongue", "communication", "talk", "speaking"],
+    work: ["work", "job", "career", "effort", "diligence", "skill", "excellence"],
+    relationships: ["relationships", "friendship", "friends", "conflict", "marriage", "people"],
+    money: ["money", "wealth", "finances", "riches", "stewardship", "prosperity"],
+    anger: ["anger", "angry", "wrath", "temper", "offense", "patience"],
+    planning: ["planning", "plans", "purpose", "direction", "goals", "vision"],
+  };
+
+  const expandedTerms = new Set<string>([q]);
+
+  Object.entries(TOPIC_ALIASES).forEach(([topic, aliases]) => {
+    if (topic === q || aliases.some((a) => q.includes(a) || a.includes(q))) {
+      expandedTerms.add(topic);
+      aliases.forEach((a) => expandedTerms.add(a));
+    }
+  });
+
   return PROVERBS.filter((p) => {
     const haystack = `${p.ref} ${p.text} ${p.topics.join(" ")}`.toLowerCase();
-    return haystack.includes(q);
+    return Array.from(expandedTerms).some((term) => haystack.includes(term));
   }).slice(0, 12);
 }
