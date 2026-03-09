@@ -29,18 +29,127 @@ function safeParse<T>(raw: string | null, fallback: T): T {
 
 type ShareTemplate = "classic" | "dark" | "gold" | "daily" | "gradientModern";
 
+type ProverbMatch = {
+  ref: string;
+  text: string;
+  topics: string[];
+};
+
+function asArray<T = any>(value: unknown): T[] {
+  return Array.isArray(value) ? (value as T[]) : [];
+}
+
+function getModeKey(m: any): Mode {
+  return (m?.key ?? m?.value ?? "encouragement") as Mode;
+}
+
+function getModeLabel(m: any): string {
+  return String(m?.label ?? m?.name ?? m?.key ?? m?.value ?? "Mode");
+}
+
+function getSubKey(s: any): Sub {
+  return (s?.key ?? s?.value ?? "all") as Sub;
+}
+
+function getSubLabel(s: any): string {
+  return String(s?.label ?? s?.name ?? s?.key ?? s?.value ?? "Sub");
+}
+
+function getTopicKey(t: any): string {
+  return String(t?.key ?? t?.query ?? t?.label ?? "");
+}
+
+function getTopicLabel(t: any): string {
+  return String(t?.label ?? t?.query ?? t?.key ?? "Topic");
+}
+
+function getTopicQuery(t: any): string {
+  return String(t?.query ?? t?.label ?? t?.key ?? "");
+}
+
+function getTopicHint(t: any): string {
+  return String(t?.hint ?? t?.query ?? t?.label ?? "");
+}
+
+function normalizeText(value: unknown): string {
+  return String(value ?? "").trim().toLowerCase();
+}
+
+function itemMode(item: any): string {
+  return String(item?.mode ?? "encouragement");
+}
+
+function itemSubs(item: any): string[] {
+  const subs: string[] = [];
+
+  if (typeof item?.sub === "string" && item.sub.trim()) subs.push(item.sub);
+  if (Array.isArray(item?.subs)) {
+    for (const s of item.subs) {
+      if (typeof s === "string" && s.trim()) subs.push(s);
+    }
+  }
+
+  return subs;
+}
+
+function itemMatchesQuery(item: any, q: string) {
+  const needle = normalizeText(q);
+  if (!needle) return true;
+
+  const haystack = [
+    item?.title,
+    item?.body,
+    item?.ref,
+    item?.mode,
+    item?.sub,
+    ...(Array.isArray(item?.subs) ? item.subs : []),
+    ...(Array.isArray(item?.topics) ? item.topics : []),
+    ...(Array.isArray(item?.tags) ? item.tags : []),
+  ]
+    .map((v) => String(v ?? ""))
+    .join(" ")
+    .toLowerCase();
+
+  return haystack.includes(needle);
+}
+
+function renderBookMatchLine(match: any): string {
+  if (typeof match?.blurb === "string" && match.blurb.trim()) return match.blurb;
+  if (typeof match?.body === "string" && match.body.trim()) return match.body;
+  if (typeof match?.description === "string" && match.description.trim()) return match.description;
+  return "";
+}
+
+function renderBookMatchTitle(match: any): string {
+  if (typeof match?.label === "string" && match.label.trim()) return match.label;
+  if (typeof match?.title === "string" && match.title.trim()) return match.title;
+  if (typeof match?.topic === "string" && match.topic.trim()) return match.topic;
+  return "Book Match";
+}
+
+function renderBookMatchMeta(match: any): string {
+  const parts: string[] = [];
+
+  if (match?.pages) parts.push(String(match.pages));
+  if (Array.isArray(match?.chapters) && match.chapters.length > 0) {
+    parts.push(match.chapters.join(" • "));
+  } else if (match?.chapter) {
+    parts.push(String(match.chapter));
+  }
+
+  return parts.join(" • ");
+}
+
 function PageInner() {
   const router = useRouter();
   const sp = useSearchParams();
 
-  // URL params
-  const urlMode = (sp.get("mode") as Mode) || "encouragement";
-  const urlSub = (sp.get("sub") as Sub) || "all";
+  const rawUrlMode = (sp.get("mode") as Mode) || "encouragement";
+  const rawUrlSub = (sp.get("sub") as Sub | "all") || "all";
   const urlQ = sp.get("q") || "";
 
-  // State
-  const [mode, setMode] = useState<Mode>(urlMode);
-  const [sub, setSub] = useState<Sub | "all">(urlSub);
+  const [mode, setMode] = useState<Mode>(rawUrlMode);
+  const [sub, setSub] = useState<Sub | "all">(rawUrlSub);
   const [q, setQ] = useState<string>(urlQ);
 
   const [isPro, setIsPro] = useState(false);
@@ -57,19 +166,12 @@ function PageInner() {
 
   const [hoverKey, setHoverKey] = useState<string>("");
   const [searchFocused, setSearchFocused] = useState(false);
-const [promotedProverbRef, setPromotedProverbRef] = useState<string>("");
-useEffect(() => {
-  setPromotedProverbRef("");
-}, [q]);
 
-useEffect(() => {
-  setPromotedProverbRef("");
-}, [mode]);
-  
-  // Share image template selector (persisted)
+  const [promotedProverbRef, setPromotedProverbRef] = useState<string>("");
+
   const [shareTemplate, setShareTemplate] = useState<ShareTemplate>("gradientModern");
 
-  // ---- Styles (LANDMARK: STYLES) ----
+  // ---- Styles ----
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
     background:
@@ -180,7 +282,7 @@ useEffect(() => {
     maxWidth: 230,
   };
 
-  // ---- Pro detection ----
+  // ---- Init / persistence ----
   useEffect(() => {
     try {
       setIsPro(isProUser());
@@ -189,27 +291,39 @@ useEffect(() => {
     }
   }, []);
 
-  // ---- Favorites load/save ----
   useEffect(() => {
-    const saved = safeParse<Record<string, boolean>>(localStorage.getItem("asksolomon:favorites"), {});
+    if (typeof window === "undefined") return;
+    const saved = safeParse<Record<string, boolean>>(
+      localStorage.getItem("asksolomon:favorites"),
+      {}
+    );
     setFavoriteKeys(saved);
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     localStorage.setItem("asksolomon:favorites", JSON.stringify(favoriteKeys));
   }, [favoriteKeys]);
 
-  // ---- Share template load/save ----
   useEffect(() => {
-    const t = safeParse<ShareTemplate>(localStorage.getItem("asksolomon:shareTemplate"), "gradientModern");
-    setShareTemplate(t);
+    if (typeof window === "undefined") return;
+    const savedTemplate = safeParse<ShareTemplate>(
+      localStorage.getItem("asksolomon:shareTemplate"),
+      "gradientModern"
+    );
+    setShareTemplate(savedTemplate);
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     localStorage.setItem("asksolomon:shareTemplate", JSON.stringify(shareTemplate));
   }, [shareTemplate]);
 
-  // ---- URL sync helper ----
+  useEffect(() => {
+    setPromotedProverbRef("");
+  }, [q, mode, sub]);
+
+  // ---- URL sync ----
   const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
     const nextMode = next.mode ?? mode;
     const nextSub = next.sub ?? sub;
@@ -221,24 +335,20 @@ useEffect(() => {
     if (nextQ.trim().length > 0) params.set("q", nextQ.trim());
 
     const qs = params.toString();
-    router.push(qs ? `/?${qs}` : "/");
+    router.replace(qs ? `/?${qs}` : "/");
   };
 
-  // keep state aligned with URL changes
   useEffect(() => {
-    setMode(urlMode);
-    setSub(urlSub);
+    setMode(rawUrlMode);
+    setSub(rawUrlSub);
     setQ(urlQ);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sp]);
+  }, [rawUrlMode, rawUrlSub, urlQ]);
 
-  // ✅ SINGLE SOURCE OF TRUTH: favoritesCount (defined ONCE)
   const favoritesCount = useMemo(
     () => Object.keys(favoriteKeys).filter((k) => favoriteKeys[k]).length,
     [favoriteKeys]
   );
 
-  // Favorites badge "pop"
   useEffect(() => {
     setFavPulse(true);
     const t = window.setTimeout(() => setFavPulse(false), 260);
@@ -248,15 +358,10 @@ useEffect(() => {
   const toggleFavorite = (key: string) => {
     setFavoriteKeys((prev) => {
       const next = { ...prev };
-      const wasSaved = !!next[key];
+      const alreadySaved = !!next[key];
 
-      if (wasSaved) {
+      if (alreadySaved) {
         delete next[key];
-
-        const remaining = Object.keys(next).filter((k) => next[k]).length;
-        if (favoritesOnly && remaining === 0) {
-          setFavoritesOnly(false);
-        }
       } else {
         next[key] = true;
         setSavedKey(key);
@@ -266,6 +371,12 @@ useEffect(() => {
       return next;
     });
   };
+
+  useEffect(() => {
+    if (favoritesOnly && favoritesCount === 0) {
+      setFavoritesOnly(false);
+    }
+  }, [favoritesOnly, favoritesCount]);
 
   const handleCopy = async (item: VerseItem, key: string) => {
     const text = `${item.title}\n\n${item.body}\n\n${item.ref}`;
@@ -278,13 +389,10 @@ useEffect(() => {
     }
   };
 
-const buildShareText = (item: VerseItem) => {
-  const link =
-    typeof window !== "undefined"
-      ? "https://ask-solomon.app"
-      : "https://ask-solomon.app";
+  const buildShareText = (item: VerseItem) => {
+    const link = "https://ask-solomon.app";
 
-  return `Ask Solomon
+    return `Ask Solomon
 
 ${item.title}
 
@@ -296,17 +404,21 @@ Save this. Sit with it. Apply it today.
 
 Get daily wisdom:
 ${link}`;
-};
+  };
+
   const handleShare = async (item: VerseItem, keyForUi?: string) => {
     const text = buildShareText(item);
 
     try {
       if (typeof navigator !== "undefined" && "share" in navigator) {
-        await (navigator as any).share({ title: "Ask Solomon", text });
+        await (navigator as Navigator & { share: (data: ShareData) => Promise<void> }).share({
+          title: "Ask Solomon",
+          text,
+        });
         return;
       }
     } catch {
-      // ignore
+      // ignore and fall back
     }
 
     try {
@@ -320,7 +432,7 @@ ${link}`;
     }
   };
 
-  // --- SHARE IMAGE HELPERS (LANDMARK: IMAGE HELPERS) ---
+  // --- IMAGE HELPERS ---
   const wrapText = (
     ctx: CanvasRenderingContext2D,
     text: string,
@@ -333,13 +445,13 @@ ${link}`;
     let line = "";
     const lines: string[] = [];
 
-    for (let n = 0; n < words.length; n++) {
-      const testLine = line ? `${line} ${words[n]}` : words[n];
+    for (let i = 0; i < words.length; i++) {
+      const testLine = line ? `${line} ${words[i]}` : words[i];
       const metrics = ctx.measureText(testLine);
 
-      if (metrics.width > maxWidth && n > 0) {
+      if (metrics.width > maxWidth && i > 0) {
         lines.push(line);
-        line = words[n];
+        line = words[i];
       } else {
         line = testLine;
       }
@@ -354,7 +466,11 @@ ${link}`;
     return lines.length;
   };
 
-  const measureWrappedLines = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number) => {
+  const measureWrappedLines = (
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    maxWidth: number
+  ) => {
     const words = text.split(/\s+/).filter(Boolean);
     if (words.length === 0) return 0;
 
@@ -370,10 +486,18 @@ ${link}`;
         line = test;
       }
     }
+
     return lines;
   };
 
-  const roundRectPath = (ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) => {
+  const roundRectPath = (
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ) => {
     const radius = Math.min(r, w / 2, h / 2);
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
@@ -497,159 +621,235 @@ ${link}`;
     }
   };
 
-const handleImage = async (item: VerseItem) => {
-  try {
-    const W = 1080;
-    const H = 1350;
+  const handleImage = async (item: VerseItem) => {
+    try {
+      const W = 1080;
+      const H = 1350;
 
-    const canvas = document.createElement("canvas");
-    canvas.width = W;
-    canvas.height = H;
+      const canvas = document.createElement("canvas");
+      canvas.width = W;
+      canvas.height = H;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
 
-    const style = getTemplateStyle(shareTemplate);
+      const style = getTemplateStyle(shareTemplate);
 
-    // Background gradient
-    const grad = ctx.createLinearGradient(0, 0, W, H);
-    grad.addColorStop(0, style.bgA);
-    grad.addColorStop(1, style.bgB);
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, H);
+      const grad = ctx.createLinearGradient(0, 0, W, H);
+      grad.addColorStop(0, style.bgA);
+      grad.addColorStop(1, style.bgB);
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
 
-    // Layout
-    const padX = 96;
-    const topPad = 86;
-    const bottomPad = 80;
-    const cardW = W - padX * 2;
+      const padX = 96;
+      const topPad = 86;
+      const bottomPad = 80;
+      const cardW = W - padX * 2;
 
-    // Header
-    ctx.textBaseline = "top";
-    ctx.fillStyle = style.headerText;
-    ctx.font = "900 60px system-ui";
-    ctx.fillText("Ask Solomon", padX, topPad);
+      ctx.textBaseline = "top";
+      ctx.fillStyle = style.headerText;
+      ctx.font = "900 60px system-ui";
+      ctx.fillText("Ask Solomon", padX, topPad);
 
-    ctx.fillStyle = style.subHeaderText;
-    ctx.font = "800 30px system-ui";
-    ctx.fillText("Wisdom for the moment", padX, topPad + 74);
+      ctx.fillStyle = style.subHeaderText;
+      ctx.font = "800 30px system-ui";
+      ctx.fillText("Wisdom for the moment", padX, topPad + 74);
 
-    // Accent line
-    ctx.save();
-    ctx.globalAlpha = shareTemplate === "gold" ? 1 : 0.85;
-    ctx.fillStyle = style.accent;
-    ctx.fillRect(padX, topPad + 122, 240, 6);
-    ctx.restore();
+      ctx.save();
+      ctx.globalAlpha = shareTemplate === "gold" ? 1 : 0.85;
+      ctx.fillStyle = style.accent;
+      ctx.fillRect(padX, topPad + 122, 240, 6);
+      ctx.restore();
 
-    // Verse + ref
-    const verse = (item.body || "").trim();
-    const ref = `${item.ref}${item.title ? ` — ${item.title}` : ""}`.trim();
+      const verse = (item.body || "").trim();
+      const ref = `${item.ref}${item.title ? ` — ${item.title}` : ""}`.trim();
 
-    // Typography + panel geometry
-    const verseFont = "700 46px system-ui";
-    const lineHeight = 60;
-    const innerPad = 56;
-    const radius = 34;
+      const verseFont = "700 46px system-ui";
+      const lineHeight = 60;
+      const innerPad = 56;
+      const radius = 34;
 
-    // Compute dynamic panel height
-    ctx.font = verseFont;
-    ctx.fillStyle = style.verseText;
+      ctx.font = verseFont;
+      ctx.fillStyle = style.verseText;
 
-    const maxTextWidth = cardW - innerPad * 2;
-    const lines = Math.max(1, measureWrappedLines(ctx, verse, maxTextWidth));
-    const verseBlockH = lines * lineHeight;
-    const gapAfterVerse = 26;
+      const maxTextWidth = cardW - innerPad * 2;
+      const lines = Math.max(1, measureWrappedLines(ctx, verse, maxTextWidth));
+      const verseBlockH = lines * lineHeight;
+      const gapAfterVerse = 26;
 
-    // Ref line height allowance
-    const refFont = "900 34px system-ui";
-    const refLineH = 44;
+      const refFont = "900 34px system-ui";
+      const refLineH = 44;
 
-    const panelH = innerPad + verseBlockH + gapAfterVerse + refLineH + innerPad;
+      const panelH = innerPad + verseBlockH + gapAfterVerse + refLineH + innerPad;
 
-    // Center between header and footer reserved area
-    const headerBottom = topPad + 150;
-    const footerTop = H - bottomPad - 90;
-    const available = footerTop - headerBottom;
-    const panelY = headerBottom + Math.max(24, Math.floor((available - panelH) / 2));
-    const panelX = padX;
+      const headerBottom = topPad + 150;
+      const footerTop = H - bottomPad - 90;
+      const available = footerTop - headerBottom;
+      const panelY = headerBottom + Math.max(24, Math.floor((available - panelH) / 2));
+      const panelX = padX;
 
-    // Panel
-    drawRoundedPanel(ctx, panelX, panelY, cardW, panelH, radius, style.panelFill, true);
+      drawRoundedPanel(ctx, panelX, panelY, cardW, panelH, radius, style.panelFill, true);
 
-    // Highlight border
-    ctx.save();
-    ctx.strokeStyle = "rgba(255,255,255,0.45)";
-    ctx.lineWidth = 2;
-    roundRectPath(ctx, panelX, panelY, cardW, panelH, radius);
-    ctx.stroke();
-    ctx.restore();
+      ctx.save();
+      ctx.strokeStyle = "rgba(255,255,255,0.45)";
+      ctx.lineWidth = 2;
+      roundRectPath(ctx, panelX, panelY, cardW, panelH, radius);
+      ctx.stroke();
+      ctx.restore();
 
-    // Verse text
-    let y = panelY + innerPad;
+      let y = panelY + innerPad;
 
-    ctx.fillStyle = style.verseText;
-    ctx.font = verseFont;
+      ctx.fillStyle = style.verseText;
+      ctx.font = verseFont;
 
-    const used = wrapText(ctx, verse, panelX + innerPad, y, maxTextWidth, lineHeight);
-    y += used * lineHeight + gapAfterVerse;
+      const used = wrapText(ctx, verse, panelX + innerPad, y, maxTextWidth, lineHeight);
+      y += used * lineHeight + gapAfterVerse;
 
-    // Reference
-    ctx.fillStyle = style.refText;
-    ctx.font = refFont;
-    ctx.fillText(ref, panelX + innerPad, y);
+      ctx.fillStyle = style.refText;
+      ctx.font = refFont;
+      ctx.fillText(ref, panelX + innerPad, y);
 
-    // Footer branding
-    const footerY = H - bottomPad;
-    ctx.fillStyle = style.footerText;
-    ctx.font = "900 30px system-ui";
-    ctx.fillText("Success Secrets of Solomon", padX, footerY - 44);
+      const footerY = H - bottomPad;
+      ctx.fillStyle = style.footerText;
+      ctx.font = "900 30px system-ui";
+      ctx.fillText("Success Secrets of Solomon", padX, footerY - 44);
 
-    ctx.font = "800 24px system-ui";
-    ctx.globalAlpha = 0.95;
-    ctx.fillText("AskSolomon.app", padX, footerY);
-    ctx.globalAlpha = 1;
+      ctx.font = "800 24px system-ui";
+      ctx.globalAlpha = 0.95;
+      ctx.fillText("AskSolomon.app", padX, footerY);
+      ctx.globalAlpha = 1;
 
-    const safeRef = (item.ref || "verse").replace(/[^\w\-]+/g, "_");
-    const filename = `ask-solomon-${safeRef}.png`;
+      const safeRef = (item.ref || "verse").replace(/[^\w\-]+/g, "_");
+      const filename = `ask-solomon-${safeRef}.png`;
 
-    // First try: share the actual image file
-    if (typeof navigator !== "undefined" && "share" in navigator && canvas.toBlob) {
-      const blob: Blob | null = await new Promise((resolve) =>
-        canvas.toBlob((b) => resolve(b), "image/png")
-      );
+      if (typeof navigator !== "undefined" && "share" in navigator && canvas.toBlob) {
+        const blob: Blob | null = await new Promise((resolve) =>
+          canvas.toBlob((b) => resolve(b), "image/png")
+        );
 
-      if (blob) {
-        const file = new File([blob], filename, { type: "image/png" });
-        const nav = navigator as Navigator & {
-          canShare?: (data?: ShareData) => boolean;
-        };
+        if (blob) {
+          const file = new File([blob], filename, { type: "image/png" });
+          const nav = navigator as Navigator & {
+            canShare?: (data?: ShareData) => boolean;
+            share: (data: ShareData) => Promise<void>;
+          };
 
-        const shareData: ShareData = {
-          title: "Ask Solomon",
-          text: `${item.title}\n\n${item.ref}\n\nAskSolomon.app`,
-          files: [file],
-        };
+          const shareData: ShareData = {
+            title: "Ask Solomon",
+            text: `${item.title}\n\n${item.ref}\n\nAskSolomon.app`,
+            files: [file],
+          };
 
-        try {
-          if (!nav.canShare || nav.canShare(shareData)) {
-            await nav.share(shareData);
-            return;
+          try {
+            if (!nav.canShare || nav.canShare(shareData)) {
+              await nav.share(shareData);
+              return;
+            }
+          } catch {
+            // fall through
           }
-        } catch {
-          // fall through to download
         }
       }
+
+      const dataUrl = canvas.toDataURL("image/png");
+      downloadDataUrl(dataUrl, filename);
+    } catch {
+      // silent
+    }
+  };
+
+  // ---- Filtering / results ----
+  const buildFilteredPool = () => {
+    let list = [...DATA] as VerseItem[];
+
+    list = list.filter((item: any) => itemMode(item) === mode);
+
+    if (mode === "encouragement" && sub !== "all") {
+      list = list.filter((item: any) => itemSubs(item).includes(sub));
     }
 
-    // Fallback: download image
-    const dataUrl = canvas.toDataURL("image/png");
-    downloadDataUrl(dataUrl, filename);
-  } catch {
-    // silent
-  }
-};
+    if (q.trim()) {
+      list = list.filter((item: any) => itemMatchesQuery(item, q));
+    }
 
-const buildFilteredPool = () => {
+    if (favoritesOnly) {
+      list = list.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
+    }
+
+    return list;
+  };
+
+  const baseResults = useMemo(() => buildFilteredPool(), [mode, sub, q, favoritesOnly, favoriteKeys]);
+
+  const results = useMemo(() => {
+    if (!todayFocusOn) return baseResults;
+    if (!todayFocusKey) return [];
+    return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
+  }, [baseResults, todayFocusOn, todayFocusKey]);
+
+  const proverbMatches = useMemo<ProverbMatch[]>(() => {
+    if (q.trim().length === 0) return [];
+    try {
+      const found = searchProverbs(q) as any[];
+      return asArray(found)
+        .map((p) => ({
+          ref: String(p?.ref ?? ""),
+          text: String(p?.text ?? p?.body ?? ""),
+          topics: Array.isArray(p?.topics) ? p.topics.map((t: any) => String(t)) : [],
+        }))
+        .filter((p) => p.ref && p.text)
+        .slice(0, 8);
+    } catch {
+      return [];
+    }
+  }, [q]);
+
+  const bookMatches = useMemo<BookMatch[]>(() => {
+    if (q.trim().length === 0) return [];
+    try {
+      return asArray<BookMatch>(findBookMatches(q));
+    } catch {
+      return [];
+    }
+  }, [q]);
+
+  const rerollTodaysFocus = () => {
+    if (baseResults.length === 0) {
+      setTodayFocusKey("");
+      return;
+    }
+    const choice = baseResults[Math.floor(Math.random() * baseResults.length)];
+    setTodayFocusKey(`${choice.ref}-${choice.title}`);
+  };
+
+  const toggleTodaysFocus = () => {
+    setTodayFocusOn((prev) => {
+      const next = !prev;
+
+      if (next) {
+        if (baseResults.length === 0) {
+          setTodayFocusKey("");
+        } else {
+          const choice = baseResults[Math.floor(Math.random() * baseResults.length)];
+          setTodayFocusKey(`${choice.ref}-${choice.title}`);
+        }
+      } else {
+        setTodayFocusKey("");
+      }
+
+      return next;
+    });
+  };
+
+  const applyTopic = (topicQuery: string) => {
+    setQ(topicQuery);
+    setFavoritesOnly(false);
+    setTodayFocusOn(false);
+    setTodayFocusKey("");
+    setUrl({ q: topicQuery });
+  };
+
+  const renderEmptyState = () => {
     if (favoritesOnly && favoritesCount === 0) {
       return (
         <div
@@ -661,7 +861,9 @@ const buildFilteredPool = () => {
             boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
           }}
         >
-          <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>⭐ Build your Favorites Library</div>
+          <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>
+            ⭐ Build your Favorites Library
+          </div>
           <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
             Tap ☆ on any verse to save it. Then you can switch to Favorites anytime.
           </div>
@@ -680,13 +882,16 @@ const buildFilteredPool = () => {
       );
     }
 
-    return <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>No matches. Try a different keyword.</div>;
+    return (
+      <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
+        No matches. Try a different keyword.
+      </div>
+    );
   };
 
   return (
     <div style={outerStyle}>
       <main style={pageStyle}>
-        {/* HEADER */}
         <header style={{ marginBottom: 16 }}>
           <div style={headerRow}>
             <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
@@ -726,7 +931,6 @@ const buildFilteredPool = () => {
         </header>
 
         <section style={cardStyle}>
-          {/* STICKY CONTROLS */}
           <div
             style={{
               position: "sticky",
@@ -742,25 +946,27 @@ const buildFilteredPool = () => {
               marginBottom: 14,
             }}
           >
-            {/* TOP ROW */}
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-              {MODES.map((m) => (
-                <button
-                  key={m.key}
-                  type="button"
-                  onClick={() => {
-                    setMode(m.key);
-                    setSub("all");
-                    setFavoritesOnly(false);
-                    setTodayFocusOn(false);
-                    setTodayFocusKey("");
-                    setUrl({ mode: m.key, sub: "all" });
-                  }}
-                  style={pillBtn(mode === m.key)}
-                >
-                  {m.label}
-                </button>
-              ))}
+              {asArray(MODES).map((m: any) => {
+                const modeKey = getModeKey(m);
+                return (
+                  <button
+                    key={modeKey}
+                    type="button"
+                    onClick={() => {
+                      setMode(modeKey);
+                      setSub("all");
+                      setFavoritesOnly(false);
+                      setTodayFocusOn(false);
+                      setTodayFocusKey("");
+                      setUrl({ mode: modeKey, sub: "all" });
+                    }}
+                    style={pillBtn(mode === modeKey)}
+                  >
+                    {getModeLabel(m)}
+                  </button>
+                );
+              })}
 
               <button
                 type="button"
@@ -780,10 +986,13 @@ const buildFilteredPool = () => {
                 title="Show only saved favorites"
               >
                 <span>⭐</span>
-                <span>{favoritesOnly ? `Showing Favorites (${favoritesCount})` : `Favorites (${favoritesCount})`}</span>
+                <span>
+                  {favoritesOnly
+                    ? `Showing Favorites (${favoritesCount})`
+                    : `Favorites (${favoritesCount})`}
+                </span>
               </button>
 
-              {/* TODAY'S FOCUS */}
               <button
                 type="button"
                 onClick={toggleTodaysFocus}
@@ -818,7 +1027,7 @@ const buildFilteredPool = () => {
               {todayFocusOn && (
                 <button
                   type="button"
-                  onClick={() => rerollTodaysFocus()}
+                  onClick={rerollTodaysFocus}
                   style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
                   title="Pick a different verse"
                 >
@@ -827,9 +1036,18 @@ const buildFilteredPool = () => {
                 </button>
               )}
 
-              {/* TEMPLATE SELECTOR */}
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto", flexWrap: "wrap" }}>
-                <span style={{ fontSize: 12, fontWeight: 900, color: "#334155" }}>Image Template</span>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  marginLeft: "auto",
+                  flexWrap: "wrap",
+                }}
+              >
+                <span style={{ fontSize: 12, fontWeight: 900, color: "#334155" }}>
+                  Image Template
+                </span>
                 <select
                   value={shareTemplate}
                   onChange={(e) => setShareTemplate(e.target.value as ShareTemplate)}
@@ -837,7 +1055,9 @@ const buildFilteredPool = () => {
                   aria-label="Select share image template"
                   title="Choose the style for Image share cards"
                 >
-                  <option value="gradientModern">{formatTemplateLabel("gradientModern")}</option>
+                  <option value="gradientModern">
+                    {formatTemplateLabel("gradientModern")}
+                  </option>
                   <option value="classic">{formatTemplateLabel("classic")}</option>
                   <option value="dark">{formatTemplateLabel("dark")}</option>
                   <option value="gold">{formatTemplateLabel("gold")}</option>
@@ -846,7 +1066,6 @@ const buildFilteredPool = () => {
               </div>
             </div>
 
-            {/* SUB ROW */}
             {mode === "encouragement" && (
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
                 <button
@@ -862,44 +1081,54 @@ const buildFilteredPool = () => {
                   All
                 </button>
 
-                {SUBS.map((s) => (
-                  <button
-                    key={s.key}
-                    type="button"
-                    onClick={() => {
-                      setSub(s.key);
-                      setTodayFocusOn(false);
-                      setTodayFocusKey("");
-                      setUrl({ sub: s.key });
-                    }}
-                    style={pillBtn(sub === s.key)}
-                  >
-                    {s.label}
-                  </button>
-                ))}
+                {asArray(SUBS).map((s: any) => {
+                  const subKey = getSubKey(s);
+                  return (
+                    <button
+                      key={subKey}
+                      type="button"
+                      onClick={() => {
+                        setSub(subKey);
+                        setTodayFocusOn(false);
+                        setTodayFocusKey("");
+                        setUrl({ sub: subKey });
+                      }}
+                      style={pillBtn(sub === subKey)}
+                    >
+                      {getSubLabel(s)}
+                    </button>
+                  );
+                })}
               </div>
             )}
 
-            {/* TOPICS ROW */}
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
-              {TOPICS.map((t) => {
-                const active = q.trim().toLowerCase() === t.query.trim().toLowerCase();
+              {asArray(TOPICS).map((t: any) => {
+                const topicQuery = getTopicQuery(t);
+                const active = normalizeText(q) === normalizeText(topicQuery);
                 return (
                   <button
-                    key={t.key}
+                    key={getTopicKey(t)}
                     type="button"
-                    onClick={() => applyTopic(t.query)}
+                    onClick={() => applyTopic(topicQuery)}
                     style={topicPill(active)}
-                    title={t.hint}
+                    title={getTopicHint(t)}
                   >
-                    {t.label}
+                    {getTopicLabel(t)}
                   </button>
                 );
               })}
             </div>
 
-            {/* SEARCH */}
-            <div style={{ display: "flex", gap: 10, marginTop: 10, flexWrap: "wrap", alignItems: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                marginTop: 10,
+                flexWrap: "wrap",
+                alignItems: "center",
+              }}
+            >
               <input
                 value={q}
                 onChange={(e) => {
@@ -915,7 +1144,9 @@ const buildFilteredPool = () => {
                 style={{
                   flex: 1,
                   minWidth: 260,
-                  border: searchFocused ? "1px solid rgba(99,102,241,0.55)" : "1px solid rgba(0,0,0,0.12)",
+                  border: searchFocused
+                    ? "1px solid rgba(99,102,241,0.55)"
+                    : "1px solid rgba(0,0,0,0.12)",
                   borderRadius: 14,
                   padding: "10px 12px",
                   fontWeight: 800,
@@ -934,6 +1165,7 @@ const buildFilteredPool = () => {
                   setQ("");
                   setTodayFocusOn(false);
                   setTodayFocusKey("");
+                  setPromotedProverbRef("");
                   setUrl({ q: "" });
                 }}
                 style={headerBtn}
@@ -943,7 +1175,6 @@ const buildFilteredPool = () => {
             </div>
           </div>
 
-          {/* SOLOMON'S NOTE */}
           {mode === "encouragement" && sub !== "all" && subCommentary[sub as Sub] && (
             <div
               style={{
@@ -955,20 +1186,24 @@ const buildFilteredPool = () => {
                 background: "rgba(255,255,255,0.75)",
               }}
             >
-              <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 6 }}>Solomon’s note</div>
-              <div style={{ fontSize: 14, color: "#334155", lineHeight: 1.5 }}>{subCommentary[sub as Sub]}</div>
+              <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 6 }}>
+                Solomon’s note
+              </div>
+              <div style={{ fontSize: 14, color: "#334155", lineHeight: 1.5 }}>
+                {subCommentary[sub as Sub]}
+              </div>
             </div>
           )}
 
-          {/* RESULTS COUNT */}
           <div style={{ marginBottom: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>
             Showing {results.length} result{results.length === 1 ? "" : "s"}
           </div>
 
-          {/* BOOK MATCHES (Pro-only) */}
           {q.trim().length > 0 && (
             <div style={{ marginBottom: 12 }}>
-              <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>Book Matches</div>
+              <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>
+                Book Matches
+              </div>
 
               {isPro ? (
                 bookMatches.length === 0 ? (
@@ -977,9 +1212,9 @@ const buildFilteredPool = () => {
                   </div>
                 ) : (
                   <div style={{ display: "grid", gap: 10 }}>
-                    {bookMatches.map((m) => (
+                    {bookMatches.map((m: any, idx: number) => (
                       <div
-                        key={m.topic}
+                        key={`${renderBookMatchTitle(m)}-${idx}`}
                         style={{
                           background: "rgba(255,255,255,0.85)",
                           border: "1px solid rgba(0,0,0,0.08)",
@@ -988,11 +1223,36 @@ const buildFilteredPool = () => {
                           boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
                         }}
                       >
-                        <div style={{ fontWeight: 900, fontSize: 15, color: "#111" }}>{m.label}</div>
-                        <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>{m.blurb}</div>
-                        <div style={{ marginTop: 8, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
-                          Recommended: {m.pages} • {m.chapters.join(" • ")}
+                        <div style={{ fontWeight: 900, fontSize: 15, color: "#111" }}>
+                          {renderBookMatchTitle(m)}
                         </div>
+
+                        {renderBookMatchLine(m) ? (
+                          <div
+                            style={{
+                              marginTop: 6,
+                              color: "#334155",
+                              fontWeight: 800,
+                              fontSize: 13,
+                            }}
+                          >
+                            {renderBookMatchLine(m)}
+                          </div>
+                        ) : null}
+
+                        {renderBookMatchMeta(m) ? (
+                          <div
+                            style={{
+                              marginTop: 8,
+                              color: "#64748b",
+                              fontWeight: 900,
+                              fontSize: 12,
+                            }}
+                          >
+                            {renderBookMatchMeta(m)}
+                          </div>
+                        ) : null}
+
                         <div style={{ marginTop: 10 }}>
                           <button
                             type="button"
@@ -1025,7 +1285,9 @@ const buildFilteredPool = () => {
                     boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
                   }}
                 >
-                  <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>🔒 Book Matches are a Lifetime feature</div>
+                  <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>
+                    🔒 Book Matches are a Lifetime feature
+                  </div>
                   <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
                     Upgrade to see exactly where to read this in the book.
                   </div>
@@ -1051,207 +1313,153 @@ const buildFilteredPool = () => {
               )}
             </div>
           )}
-          {/* MORE PROVERBS */}
-                            {q.trim().length > 0 && proverbMatches.length > 0 && (
+
+          {q.trim().length > 0 && proverbMatches.length > 0 && (
             <div style={{ marginBottom: 12 }}>
               <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>
                 More Proverbs
               </div>
 
               <div style={{ display: "grid", gap: 10 }}>
-           {proverbMatches.map((p) => {
-  const proverbKey = `proverb-${p.ref}`;
-  const isFav = !!favoriteKeys[proverbKey];
-  const isCopied = copiedKey === proverbKey;
-  const isSavedFlash = savedKey === proverbKey;
-  const isPromoted = promotedProverbRef === p.ref;
+                {proverbMatches.map((p) => {
+                  const proverbKey = `proverb-${p.ref}`;
+                  const isFav = !!favoriteKeys[proverbKey];
+                  const isCopied = copiedKey === proverbKey;
+                  const isSavedFlash = savedKey === proverbKey;
+                  const isPromoted = promotedProverbRef === p.ref;
 
-  const proverbTitle =
-    p.topics && p.topics.length > 0
-      ? p.topics[0].charAt(0).toUpperCase() + p.topics[0].slice(1)
-      : "More Proverbs";
+                  const proverbTitle =
+                    p.topics && p.topics.length > 0
+                      ? p.topics[0].charAt(0).toUpperCase() + p.topics[0].slice(1)
+                      : "More Proverbs";
 
-  const proverbItem = {
-    title: proverbTitle,
-    body: p.text,
-    ref: p.ref,
-  } as VerseItem;
+                  const proverbItem = {
+                    title: proverbTitle,
+                    body: p.text,
+                    ref: p.ref,
+                  } as VerseItem;
 
-  if (isPromoted) {
-    return (
-      <div
-        key={p.ref}
-        style={{
-          ...softCardStyle,
-          border: "1px solid rgba(99,102,241,0.18)",
-          boxShadow: "0 18px 44px rgba(0,0,0,0.10)",
-        }}
-      >
-        <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 900, fontSize: 18, color: "#111" }}>
-              {proverbTitle}
-            </div>
+                  if (isPromoted) {
+                    return (
+                      <div
+                        key={p.ref}
+                        style={{
+                          ...softCardStyle,
+                          border: "1px solid rgba(99,102,241,0.18)",
+                          boxShadow: "0 18px 44px rgba(0,0,0,0.10)",
+                        }}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontWeight: 900, fontSize: 18, color: "#111" }}>
+                              {proverbTitle}
+                            </div>
 
-            <div
-              style={{
-                marginTop: 8,
-                fontSize: 15,
-                lineHeight: 1.55,
-                color: "#111",
-                fontWeight: 650,
-              }}
-            >
-              {p.text}
-            </div>
+                            <div
+                              style={{
+                                marginTop: 8,
+                                fontSize: 15,
+                                lineHeight: 1.55,
+                                color: "#111",
+                                fontWeight: 650,
+                              }}
+                            >
+                              {p.text}
+                            </div>
 
-            <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 700 }}>
-              Save this. Sit with it. Apply it today.
-            </div>
+                            <div
+                              style={{
+                                marginTop: 10,
+                                fontSize: 12,
+                                color: "#64748b",
+                                fontWeight: 700,
+                              }}
+                            >
+                              Save this. Sit with it. Apply it today.
+                            </div>
 
-            <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>
-              {p.ref}
-            </div>
+                            <div
+                              style={{
+                                marginTop: 10,
+                                fontSize: 12,
+                                color: "#64748b",
+                                fontWeight: 900,
+                              }}
+                            >
+                              {p.ref}
+                            </div>
 
-            <div style={{ marginTop: 8, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
-              Topics: {p.topics.join(" • ")}
-            </div>
+                            <div
+                              style={{
+                                marginTop: 8,
+                                color: "#64748b",
+                                fontWeight: 900,
+                                fontSize: 12,
+                              }}
+                            >
+                              Topics: {p.topics.join(" • ")}
+                            </div>
 
-            <div style={{ marginTop: 10 }}>
-              <div style={{ fontSize: 12, fontWeight: 900, color: "#64748b", marginBottom: 6 }}>
-                More Wisdom On This
-              </div>
+                            {p.topics.length > 0 && (
+                              <div style={{ marginTop: 10 }}>
+                                <div
+                                  style={{
+                                    fontSize: 12,
+                                    fontWeight: 900,
+                                    color: "#64748b",
+                                    marginBottom: 6,
+                                  }}
+                                >
+                                  More Wisdom On This
+                                </div>
 
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {p.topics.slice(0, 3).map((topic) => (
-                  <button
-                    key={topic}
-                    type="button"
-                    onClick={() => applyTopic(topic)}
-                    style={{
-                      padding: "6px 10px",
-                      borderRadius: 999,
-                      border: "1px solid rgba(0,0,0,0.10)",
-                      background: "rgba(255,255,255,0.92)",
-                      fontWeight: 800,
-                      fontSize: 12,
-                      cursor: "pointer",
-                      color: "#111",
-                    }}
-                  >
-                    {topic}
-                  </button>
-                ))}
-              </div>
-            </div>
+                                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                                  {p.topics.slice(0, 3).map((topic) => (
+                                    <button
+                                      key={topic}
+                                      type="button"
+                                      onClick={() => applyTopic(topic)}
+                                      style={{
+                                        padding: "6px 10px",
+                                        borderRadius: 999,
+                                        border: "1px solid rgba(0,0,0,0.10)",
+                                        background: "rgba(255,255,255,0.92)",
+                                        fontWeight: 800,
+                                        fontSize: 12,
+                                        cursor: "pointer",
+                                        color: "#111",
+                                      }}
+                                    >
+                                      {topic}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
 
-            {isSavedFlash && (
-              <div style={{ marginTop: 6, fontSize: 12, fontWeight: 900, color: "#111" }}>
-                ✅ Saved to Favorites
-              </div>
-            )}
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
-            <button type="button" onClick={() => toggleFavorite(proverbKey)} style={miniBtn}>
-              {isFav ? "★" : "☆"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleCopy(proverbItem, proverbKey)}
-              style={{ ...miniBtn, fontSize: 12 }}
-            >
-              {isCopied ? "Copied" : "Copy"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleShare(proverbItem, proverbKey)}
-              style={{ ...miniBtn, fontSize: 12 }}
-            >
-              Share
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleImage(proverbItem)}
-              style={{
-                ...miniBtn,
-                fontSize: 12,
-                background: "rgba(99,102,241,0.10)",
-                border: "1px solid rgba(99,102,241,0.18)",
-              }}
-            >
-              Image
-            </button>
-
-            <button type="button" onClick={() => setPromotedProverbRef("")} style={miniBtn}>
-              Collapse
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <button
-      key={p.ref}
-      type="button"
-      onClick={() => setPromotedProverbRef(p.ref)}
-      style={{
-        background: "rgba(255,255,255,0.85)",
-        border: "1px solid rgba(0,0,0,0.08)",
-        borderRadius: 16,
-        padding: 14,
-        boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
-        textAlign: "left",
-        cursor: "pointer",
-      }}
-      title="Open as full interactive card"
-    >
-      <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>{p.ref}</div>
-
-      <div
-        style={{
-          marginTop: 6,
-          color: "#334155",
-          fontWeight: 800,
-          fontSize: 13,
-          lineHeight: 1.5,
-        }}
-      >
-        {p.text}
-      </div>
-
-      <div style={{ marginTop: 8, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
-        Topics: {p.topics.join(" • ")}
-      </div>
-
-      <div style={{ marginTop: 10, fontSize: 12, fontWeight: 900, color: "#6366f1" }}>
-        Open full card
-      </div>
-    </button>
-  );
-})}
-  </div>
-</div>
                             {isSavedFlash && (
-                              <div style={{ marginTop: 6, fontSize: 12, fontWeight: 900, color: "#111" }}>
+                              <div
+                                style={{
+                                  marginTop: 6,
+                                  fontSize: 12,
+                                  fontWeight: 900,
+                                  color: "#111",
+                                }}
+                              >
                                 ✅ Saved to Favorites
                               </div>
                             )}
                           </div>
 
-                          <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
-                            <button
-                              type="button"
-                              onClick={() => toggleFavorite(proverbKey)}
-                              style={miniBtn}
-                              title={isFav ? "Saved" : "Save this proverb"}
-                              aria-label={isFav ? "Saved" : "Save this proverb"}
-                            >
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: 8,
+                              alignItems: "flex-end",
+                            }}
+                          >
+                            <button type="button" onClick={() => toggleFavorite(proverbKey)} style={miniBtn}>
                               {isFav ? "★" : "☆"}
                             </button>
 
@@ -1259,7 +1467,6 @@ const buildFilteredPool = () => {
                               type="button"
                               onClick={() => handleCopy(proverbItem, proverbKey)}
                               style={{ ...miniBtn, fontSize: 12 }}
-                              title="Copy proverb"
                             >
                               {isCopied ? "Copied" : "Copy"}
                             </button>
@@ -1268,7 +1475,6 @@ const buildFilteredPool = () => {
                               type="button"
                               onClick={() => handleShare(proverbItem, proverbKey)}
                               style={{ ...miniBtn, fontSize: 12 }}
-                              title="Share this proverb"
                             >
                               Share
                             </button>
@@ -1282,7 +1488,6 @@ const buildFilteredPool = () => {
                                 background: "rgba(99,102,241,0.10)",
                                 border: "1px solid rgba(99,102,241,0.18)",
                               }}
-                              title="Create a share image"
                             >
                               Image
                             </button>
@@ -1291,7 +1496,6 @@ const buildFilteredPool = () => {
                               type="button"
                               onClick={() => setPromotedProverbRef("")}
                               style={miniBtn}
-                              title="Collapse this card"
                             >
                               Collapse
                             </button>
@@ -1313,13 +1517,52 @@ const buildFilteredPool = () => {
                         padding: 14,
                         boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
                         textAlign: "left",
-                 
+                        cursor: "pointer",
+                      }}
+                      title="Open as full interactive card"
+                    >
+                      <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>{p.ref}</div>
+
+                      <div
+                        style={{
+                          marginTop: 6,
+                          color: "#334155",
+                          fontWeight: 800,
+                          fontSize: 13,
+                          lineHeight: 1.5,
+                        }}
+                      >
+                        {p.text}
+                      </div>
+
+                      <div
+                        style={{
+                          marginTop: 8,
+                          color: "#64748b",
+                          fontWeight: 900,
+                          fontSize: 12,
+                        }}
+                      >
+                        Topics: {p.topics.join(" • ")}
+                      </div>
+
+                      <div
+                        style={{
+                          marginTop: 10,
+                          fontSize: 12,
+                          fontWeight: 900,
+                          color: "#6366f1",
+                        }}
+                      >
+                        Open full card
+                      </div>
+                    </button>
                   );
                 })}
               </div>
             </div>
           )}
-          {/* TODAY'S FOCUS HEADLINE */}
+
           {todayFocusOn && (
             <div
               style={{
@@ -1334,7 +1577,6 @@ const buildFilteredPool = () => {
             </div>
           )}
 
-          {/* RESULTS GRID */}
           <div style={{ display: "grid", gap: 12 }}>
             {results.length === 0 ? (
               renderEmptyState()
@@ -1353,33 +1595,75 @@ const buildFilteredPool = () => {
                     style={{
                       ...softCardStyle,
                       transform: hovered ? "translateY(-2px)" : "translateY(0px)",
-                      boxShadow: hovered ? "0 18px 44px rgba(0,0,0,0.12)" : (softCardStyle.boxShadow as string),
+                      boxShadow: hovered
+                        ? "0 18px 44px rgba(0,0,0,0.12)"
+                        : (softCardStyle.boxShadow as string),
                     }}
                     onMouseEnter={() => setHoverKey(key)}
                     onMouseLeave={() => setHoverKey("")}
                   >
                     <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 900, fontSize: 18, color: "#111" }}>{item.title}</div>
+                        <div style={{ fontWeight: 900, fontSize: 18, color: "#111" }}>
+                          {item.title}
+                        </div>
 
-                        <div style={{ marginTop: 8, fontSize: 15, lineHeight: 1.55, color: "#111", fontWeight: 650 }}>
+                        <div
+                          style={{
+                            marginTop: 8,
+                            fontSize: 15,
+                            lineHeight: 1.55,
+                            color: "#111",
+                            fontWeight: 650,
+                          }}
+                        >
                           {item.body}
                         </div>
 
-                        <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 700 }}>
+                        <div
+                          style={{
+                            marginTop: 10,
+                            fontSize: 12,
+                            color: "#64748b",
+                            fontWeight: 700,
+                          }}
+                        >
                           Save this. Sit with it. Apply it today.
                         </div>
 
-                        <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>{item.ref}</div>
+                        <div
+                          style={{
+                            marginTop: 10,
+                            fontSize: 12,
+                            color: "#64748b",
+                            fontWeight: 900,
+                          }}
+                        >
+                          {item.ref}
+                        </div>
 
                         {isSavedFlash && (
-                          <div style={{ marginTop: 6, fontSize: 12, fontWeight: 900, color: "#111" }}>
+                          <div
+                            style={{
+                              marginTop: 6,
+                              fontSize: 12,
+                              fontWeight: 900,
+                              color: "#111",
+                            }}
+                          >
                             ✅ Saved to Favorites
                           </div>
                         )}
                       </div>
 
-                      <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 8,
+                          alignItems: "flex-end",
+                        }}
+                      >
                         <button
                           type="button"
                           onClick={() => toggleFavorite(key)}
@@ -1429,7 +1713,6 @@ const buildFilteredPool = () => {
             )}
           </div>
 
-          {/* Premium micro-animation */}
           <style jsx global>{`
             @keyframes pulseGlow {
               0% {
