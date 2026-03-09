@@ -325,3 +325,14 @@ export function findBookMatches(q: string): BookMatch[] {
 
   return matches.slice(0, 4);
 }
+export const SMART_TOPIC_SUGGESTIONS: Record<string, string[]> = {
+  fear: ["peace", "direction", "faith", "courage"],
+  anxiety: ["peace", "trust", "direction"],
+  anger: ["self-control", "speech", "patience"],
+  speech: ["wisdom", "self-control", "relationships"],
+  leadership: ["counsel", "integrity", "discipline"],
+  money: ["stewardship", "discipline", "planning"],
+  relationships: ["speech", "forgiveness", "wisdom"],
+  discipline: ["diligence", "work", "success"],
+  success: ["discipline", "wisdom", "planning"],
+};
