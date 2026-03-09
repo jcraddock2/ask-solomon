@@ -1326,15 +1326,9 @@ const applyTopic = (topicQuery: string) => {
                           lineHeight: 1.5,
                         }}
                       >
-                        {p.text}
-                      </div>
-                      <div style={{ marginTop: 8, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
-                        Topics: {p.topics.join(" • ")}
-                      </div>
-                      <div style={{ marginTop: 10, fontSize: 12, fontWeight: 900, color: "#6366f1" }}>
-                        Tap to open full card
-                      </div>
-                    </button>
+             <div style={{ marginTop: 10, fontSize: 12, fontWeight: 900, color: "#6366f1" }}>
+  Open full card
+</div>
                   );
                 })}
               </div>
