@@ -58,6 +58,14 @@ function PageInner() {
   const [hoverKey, setHoverKey] = useState<string>("");
   const [searchFocused, setSearchFocused] = useState(false);
 const [promotedProverbRef, setPromotedProverbRef] = useState<string>("");
+useEffect(() => {
+  setPromotedProverbRef("");
+}, [q]);
+
+useEffect(() => {
+  setPromotedProverbRef("");
+}, [mode]);
+  
   // Share image template selector (persisted)
   const [shareTemplate, setShareTemplate] = useState<ShareTemplate>("gradientModern");
 
