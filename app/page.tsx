@@ -33,6 +33,8 @@ type ProverbMatch = {
   ref: string;
   text: string;
   topics: string[];
+  score: number;
+  why: string[];
 };
 
 function asArray<T = any>(value: unknown): T[] {
@@ -140,6 +142,117 @@ function renderBookMatchMeta(match: any): string {
   return parts.join(" • ");
 }
 
+// ---- SMART TOPIC MAPPING ----
+const SMART_TOPIC_MAP: Record<string, string[]> = {
+  fear: ["fear", "afraid", "anxiety", "anxious", "worry", "worried", "courage", "confidence", "trust"],
+  anxiety: ["anxiety", "anxious", "fear", "worry", "peace", "trust", "rest"],
+  peace: ["peace", "calm", "rest", "quiet", "stillness", "trust"],
+  stress: ["stress", "pressure", "burden", "anxiety", "peace", "rest", "strength"],
+  direction: ["direction", "guidance", "counsel", "planning", "understanding", "wisdom", "discernment"],
+  wisdom: ["wisdom", "understanding", "discernment", "knowledge", "instruction", "insight"],
+  discipline: ["discipline", "self-control", "instruction", "correction", "training", "diligence"],
+  diligence: ["diligence", "hard work", "work", "lazy", "sluggard", "effort", "discipline"],
+  laziness: ["lazy", "sluggard", "diligence", "work", "effort"],
+  money: ["money", "wealth", "riches", "poverty", "stewardship", "generosity", "gain", "finance"],
+  finances: ["money", "wealth", "riches", "poverty", "stewardship", "generosity", "gain", "finance"],
+  anger: ["anger", "wrath", "temper", "self-control", "gentle", "patience"],
+  relationships: ["friend", "friends", "relationships", "love", "kindness", "speech", "conflict"],
+  speech: ["speech", "words", "tongue", "mouth", "gentle", "truth", "answer"],
+  leadership: ["leadership", "king", "ruler", "justice", "wisdom", "counsel", "integrity"],
+  integrity: ["integrity", "upright", "righteous", "honesty", "truth", "character"],
+  temptation: ["temptation", "lust", "adultery", "folly", "wisdom", "purity"],
+  success: ["success", "prosper", "wisdom", "diligence", "planning", "favor"],
+  confidence: ["confidence", "boldness", "fear", "trust", "strength", "courage"],
+  hope: ["hope", "future", "waiting", "trust", "joy", "faithfulness"],
+  strength: ["strength", "courage", "endurance", "perseverance", "trust"],
+  patience: ["patience", "waiting", "slow to anger", "endurance", "self-control"],
+};
+
+function tokenizeQuery(q: string): string[] {
+  return q
+    .toLowerCase()
+    .split(/[^a-z0-9]+/i)
+    .map((t) => t.trim())
+    .filter(Boolean);
+}
+
+function expandSmartTerms(q: string): string[] {
+  const tokens = tokenizeQuery(q);
+  const expanded = new Set<string>();
+
+  for (const token of tokens) {
+    expanded.add(token);
+
+    for (const [root, related] of Object.entries(SMART_TOPIC_MAP)) {
+      if (token === root || related.includes(token)) {
+        expanded.add(root);
+        for (const r of related) expanded.add(r);
+      }
+    }
+  }
+
+  if (tokens.length === 1 && SMART_TOPIC_MAP[tokens[0]]) {
+    for (const r of SMART_TOPIC_MAP[tokens[0]]) expanded.add(r);
+  }
+
+  return Array.from(expanded);
+}
+
+function scoreProverbMatch(
+  proverb: { ref: string; text: string; topics: string[] },
+  q: string,
+  expandedTerms: string[]
+): ProverbMatch {
+  const query = normalizeText(q);
+  const text = normalizeText(proverb.text);
+  const ref = normalizeText(proverb.ref);
+  const topics = proverb.topics.map((t) => normalizeText(t));
+
+  let score = 0;
+  const why: string[] = [];
+
+  if (query && text.includes(query)) {
+    score += 10;
+    why.push("Direct phrase match");
+  }
+
+  if (query && topics.some((t) => t.includes(query))) {
+    score += 12;
+    why.push("Topic match");
+  }
+
+  if (query && ref.includes(query)) {
+    score += 4;
+    why.push("Reference match");
+  }
+
+  for (const term of expandedTerms) {
+    if (!term) continue;
+
+    if (topics.some((t) => t.includes(term))) {
+      score += 6;
+      if (!why.includes("Related topic")) why.push("Related topic");
+    }
+
+    if (text.includes(term)) {
+      score += 3;
+      if (!why.includes("Related keyword")) why.push("Related keyword");
+    }
+  }
+
+  if (topics.length > 0) {
+    score += Math.min(3, topics.length);
+  }
+
+  return {
+    ref: proverb.ref,
+    text: proverb.text,
+    topics: proverb.topics,
+    score,
+    why,
+  };
+}
+
 function PageInner() {
   const router = useRouter();
   const sp = useSearchParams();
@@ -171,7 +284,6 @@ function PageInner() {
 
   const [shareTemplate, setShareTemplate] = useState<ShareTemplate>("gradientModern");
 
-  // ---- Styles ----
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
     background:
@@ -282,7 +394,6 @@ function PageInner() {
     maxWidth: 230,
   };
 
-  // ---- Init / persistence ----
   useEffect(() => {
     try {
       setIsPro(isProUser());
@@ -323,7 +434,6 @@ function PageInner() {
     setPromotedProverbRef("");
   }, [q, mode, sub]);
 
-  // ---- URL sync ----
   const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
     const nextMode = next.mode ?? mode;
     const nextSub = next.sub ?? sub;
@@ -432,7 +542,6 @@ ${link}`;
     }
   };
 
-  // --- IMAGE HELPERS ---
   const wrapText = (
     ctx: CanvasRenderingContext2D,
     text: string,
@@ -758,7 +867,6 @@ ${link}`;
     }
   };
 
-  // ---- Filtering / results ----
   const buildFilteredPool = () => {
     let list = [...DATA] as VerseItem[];
 
@@ -779,7 +887,10 @@ ${link}`;
     return list;
   };
 
-  const baseResults = useMemo(() => buildFilteredPool(), [mode, sub, q, favoritesOnly, favoriteKeys]);
+  const baseResults = useMemo(
+    () => buildFilteredPool(),
+    [mode, sub, q, favoritesOnly, favoriteKeys]
+  );
 
   const results = useMemo(() => {
     if (!todayFocusOn) return baseResults;
@@ -787,10 +898,13 @@ ${link}`;
     return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
   }, [baseResults, todayFocusOn, todayFocusKey]);
 
+  const smartExpandedTerms = useMemo(() => expandSmartTerms(q), [q]);
+
   const proverbMatches = useMemo<ProverbMatch[]>(() => {
     if (q.trim().length === 0) return [];
     try {
       const found = searchProverbs(q) as any[];
+
       return asArray(found)
         .map((p) => ({
           ref: String(p?.ref ?? ""),
@@ -798,11 +912,28 @@ ${link}`;
           topics: Array.isArray(p?.topics) ? p.topics.map((t: any) => String(t)) : [],
         }))
         .filter((p) => p.ref && p.text)
+        .map((p) => scoreProverbMatch(p, q, smartExpandedTerms))
+        .sort((a, b) => b.score - a.score || a.ref.localeCompare(b.ref))
         .slice(0, 8);
     } catch {
       return [];
     }
-  }, [q]);
+  }, [q, smartExpandedTerms]);
+
+  const promotedProverb = useMemo(
+    () => proverbMatches.find((p) => p.ref === promotedProverbRef) || null,
+    [proverbMatches, promotedProverbRef]
+  );
+
+  const relatedPromotedProverbs = useMemo(() => {
+    if (!promotedProverb) return [];
+    const promotedTopics = new Set(promotedProverb.topics.map((t) => normalizeText(t)));
+
+    return proverbMatches
+      .filter((p) => p.ref !== promotedProverb.ref)
+      .filter((p) => p.topics.some((t) => promotedTopics.has(normalizeText(t))))
+      .slice(0, 3);
+  }, [promotedProverb, proverbMatches]);
 
   const bookMatches = useMemo<BookMatch[]>(() => {
     if (q.trim().length === 0) return [];
@@ -1173,6 +1304,35 @@ ${link}`;
                 Clear
               </button>
             </div>
+
+            {q.trim().length > 0 && smartExpandedTerms.length > 1 && (
+              <div style={{ marginTop: 10 }}>
+                <div style={{ fontSize: 11, fontWeight: 900, color: "#64748b", marginBottom: 6 }}>
+                  Smart Topic Mapping
+                </div>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  {smartExpandedTerms.slice(0, 8).map((term) => (
+                    <button
+                      key={term}
+                      type="button"
+                      onClick={() => applyTopic(term)}
+                      style={{
+                        padding: "6px 10px",
+                        borderRadius: 999,
+                        border: "1px solid rgba(99,102,241,0.14)",
+                        background: "rgba(99,102,241,0.08)",
+                        fontWeight: 800,
+                        fontSize: 11,
+                        cursor: "pointer",
+                        color: "#312e81",
+                      }}
+                    >
+                      {term}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {mode === "encouragement" && sub !== "all" && subCommentary[sub as Sub] && (
@@ -1320,6 +1480,17 @@ ${link}`;
                 More Proverbs
               </div>
 
+              <div
+                style={{
+                  marginBottom: 10,
+                  fontSize: 12,
+                  color: "#64748b",
+                  fontWeight: 800,
+                }}
+              >
+                Smarter related Proverbs based on your search and connected themes.
+              </div>
+
               <div style={{ display: "grid", gap: 10 }}>
                 {proverbMatches.map((p) => {
                   const proverbKey = `proverb-${p.ref}`;
@@ -1347,10 +1518,29 @@ ${link}`;
                           ...softCardStyle,
                           border: "1px solid rgba(99,102,241,0.18)",
                           boxShadow: "0 18px 44px rgba(0,0,0,0.10)",
+                          background:
+                            "linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,0.96))",
                         }}
                       >
                         <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
                           <div style={{ flex: 1 }}>
+                            <div
+                              style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 8,
+                                padding: "6px 10px",
+                                borderRadius: 999,
+                                background: "rgba(99,102,241,0.08)",
+                                color: "#4338ca",
+                                fontWeight: 900,
+                                fontSize: 11,
+                                marginBottom: 10,
+                              }}
+                            >
+                              From Proverbs Search
+                            </div>
+
                             <div style={{ fontWeight: 900, fontSize: 18, color: "#111" }}>
                               {proverbTitle}
                             </div>
@@ -1359,7 +1549,7 @@ ${link}`;
                               style={{
                                 marginTop: 8,
                                 fontSize: 15,
-                                lineHeight: 1.55,
+                                lineHeight: 1.6,
                                 color: "#111",
                                 fontWeight: 650,
                               }}
@@ -1389,16 +1579,38 @@ ${link}`;
                               {p.ref}
                             </div>
 
-                            <div
-                              style={{
-                                marginTop: 8,
-                                color: "#64748b",
-                                fontWeight: 900,
-                                fontSize: 12,
-                              }}
-                            >
-                              Topics: {p.topics.join(" • ")}
-                            </div>
+                            {p.why.length > 0 && (
+                              <div style={{ marginTop: 10 }}>
+                                <div
+                                  style={{
+                                    fontSize: 12,
+                                    fontWeight: 900,
+                                    color: "#64748b",
+                                    marginBottom: 6,
+                                  }}
+                                >
+                                  Why this matched
+                                </div>
+                                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                                  {p.why.map((reason) => (
+                                    <span
+                                      key={reason}
+                                      style={{
+                                        padding: "6px 10px",
+                                        borderRadius: 999,
+                                        border: "1px solid rgba(0,0,0,0.08)",
+                                        background: "rgba(255,255,255,0.92)",
+                                        fontWeight: 800,
+                                        fontSize: 11,
+                                        color: "#334155",
+                                      }}
+                                    >
+                                      {reason}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
 
                             {p.topics.length > 0 && (
                               <div style={{ marginTop: 10 }}>
@@ -1410,11 +1622,11 @@ ${link}`;
                                     marginBottom: 6,
                                   }}
                                 >
-                                  More Wisdom On This
+                                  Topic Paths
                                 </div>
 
                                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                                  {p.topics.slice(0, 3).map((topic) => (
+                                  {p.topics.slice(0, 5).map((topic) => (
                                     <button
                                       key={topic}
                                       type="button"
@@ -1422,15 +1634,69 @@ ${link}`;
                                       style={{
                                         padding: "6px 10px",
                                         borderRadius: 999,
-                                        border: "1px solid rgba(0,0,0,0.10)",
-                                        background: "rgba(255,255,255,0.92)",
+                                        border: "1px solid rgba(99,102,241,0.14)",
+                                        background: "rgba(99,102,241,0.08)",
                                         fontWeight: 800,
                                         fontSize: 12,
                                         cursor: "pointer",
-                                        color: "#111",
+                                        color: "#312e81",
                                       }}
                                     >
                                       {topic}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {relatedPromotedProverbs.length > 0 && promotedProverb?.ref === p.ref && (
+                              <div style={{ marginTop: 12 }}>
+                                <div
+                                  style={{
+                                    fontSize: 12,
+                                    fontWeight: 900,
+                                    color: "#64748b",
+                                    marginBottom: 6,
+                                  }}
+                                >
+                                  Related Proverbs
+                                </div>
+
+                                <div style={{ display: "grid", gap: 8 }}>
+                                  {relatedPromotedProverbs.map((related) => (
+                                    <button
+                                      key={related.ref}
+                                      type="button"
+                                      onClick={() => setPromotedProverbRef(related.ref)}
+                                      style={{
+                                        textAlign: "left",
+                                        padding: 12,
+                                        borderRadius: 14,
+                                        border: "1px solid rgba(0,0,0,0.08)",
+                                        background: "#fff",
+                                        cursor: "pointer",
+                                      }}
+                                    >
+                                      <div
+                                        style={{
+                                          fontSize: 12,
+                                          color: "#6366f1",
+                                          fontWeight: 900,
+                                          marginBottom: 4,
+                                        }}
+                                      >
+                                        {related.ref}
+                                      </div>
+                                      <div
+                                        style={{
+                                          color: "#334155",
+                                          fontWeight: 800,
+                                          fontSize: 13,
+                                          lineHeight: 1.5,
+                                        }}
+                                      >
+                                        {related.text}
+                                      </div>
                                     </button>
                                   ))}
                                 </div>
@@ -1521,7 +1787,29 @@ ${link}`;
                       }}
                       title="Open as full interactive card"
                     >
-                      <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>{p.ref}</div>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          gap: 12,
+                          alignItems: "flex-start",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>{p.ref}</div>
+                        <div
+                          style={{
+                            fontSize: 11,
+                            fontWeight: 900,
+                            color: "#6366f1",
+                            background: "rgba(99,102,241,0.08)",
+                            padding: "4px 8px",
+                            borderRadius: 999,
+                          }}
+                        >
+                          Score {p.score}
+                        </div>
+                      </div>
 
                       <div
                         style={{
@@ -1535,16 +1823,31 @@ ${link}`;
                         {p.text}
                       </div>
 
-                      <div
-                        style={{
-                          marginTop: 8,
-                          color: "#64748b",
-                          fontWeight: 900,
-                          fontSize: 12,
-                        }}
-                      >
-                        Topics: {p.topics.join(" • ")}
-                      </div>
+                      {p.topics.length > 0 && (
+                        <div
+                          style={{
+                            marginTop: 8,
+                            color: "#64748b",
+                            fontWeight: 900,
+                            fontSize: 12,
+                          }}
+                        >
+                          Topics: {p.topics.join(" • ")}
+                        </div>
+                      )}
+
+                      {p.why.length > 0 && (
+                        <div
+                          style={{
+                            marginTop: 8,
+                            fontSize: 12,
+                            fontWeight: 800,
+                            color: "#475569",
+                          }}
+                        >
+                          {p.why.join(" • ")}
+                        </div>
+                      )}
 
                       <div
                         style={{
