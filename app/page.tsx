@@ -1312,23 +1312,7 @@ const applyTopic = (topicQuery: string) => {
                         padding: 14,
                         boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
                         textAlign: "left",
-                        cursor: "pointer",
-                      }}
-                      title="Open as full interactive card"
-                    >
-                      <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>{p.ref}</div>
-                      <div
-                        style={{
-                          marginTop: 6,
-                          color: "#334155",
-                          fontWeight: 800,
-                          fontSize: 13,
-                          lineHeight: 1.5,
-                        }}
-                      >
-             <div style={{ marginTop: 10, fontSize: 12, fontWeight: 900, color: "#6366f1" }}>
-  Open full card
-</div>
+                 
                   );
                 })}
               </div>
