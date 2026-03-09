@@ -57,7 +57,7 @@ function PageInner() {
 
   const [hoverKey, setHoverKey] = useState<string>("");
   const [searchFocused, setSearchFocused] = useState(false);
-
+const [promotedProverbRef, setPromotedProverbRef] = useState<string>("");
   // Share image template selector (persisted)
   const [shareTemplate, setShareTemplate] = useState<ShareTemplate>("gradientModern");
 
@@ -1136,33 +1136,172 @@ const applyTopic = (topicQuery: string) => {
             </div>
           )}
           {/* MORE PROVERBS */}
-          {q.trim().length > 0 && proverbMatches.length > 0 && (
+                            {q.trim().length > 0 && proverbMatches.length > 0 && (
             <div style={{ marginBottom: 12 }}>
               <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>
                 More Proverbs
               </div>
 
               <div style={{ display: "grid", gap: 10 }}>
-                {proverbMatches.map((p) => (
-                  <div
-                    key={p.ref}
-                    style={{
-                      background: "rgba(255,255,255,0.85)",
-                      border: "1px solid rgba(0,0,0,0.08)",
-                      borderRadius: 16,
-                      padding: 14,
-                      boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
-                    }}
-                  >
-                    <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>{p.ref}</div>
-                    <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13, lineHeight: 1.5 }}>
-                      {p.text}
-                    </div>
-                    <div style={{ marginTop: 8, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
-                      Topics: {p.topics.join(" • ")}
-                    </div>
-                  </div>
-                ))}
+                {proverbMatches.map((p) => {
+                  const proverbKey = `proverb-${p.ref}`;
+                  const isFav = !!favoriteKeys[proverbKey];
+                  const isCopied = copiedKey === proverbKey;
+                  const isSavedFlash = savedKey === proverbKey;
+                  const isPromoted = promotedProverbRef === p.ref;
+
+                  const proverbTitle =
+                    p.topics && p.topics.length > 0
+                      ? p.topics[0].charAt(0).toUpperCase() + p.topics[0].slice(1)
+                      : "More Proverbs";
+
+                  const proverbItem = {
+                    title: proverbTitle,
+                    body: p.text,
+                    ref: p.ref,
+                  } as VerseItem;
+
+                  if (isPromoted) {
+                    return (
+                      <div
+                        key={p.ref}
+                        style={{
+                          ...softCardStyle,
+                          border: "1px solid rgba(99,102,241,0.18)",
+                          boxShadow: "0 18px 44px rgba(0,0,0,0.10)",
+                        }}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontWeight: 900, fontSize: 18, color: "#111" }}>
+                              {proverbTitle}
+                            </div>
+
+                            <div
+                              style={{
+                                marginTop: 8,
+                                fontSize: 15,
+                                lineHeight: 1.55,
+                                color: "#111",
+                                fontWeight: 650,
+                              }}
+                            >
+                              {p.text}
+                            </div>
+
+                            <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 700 }}>
+                              Save this. Sit with it. Apply it today.
+                            </div>
+
+                            <div style={{ marginTop: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>
+                              {p.ref}
+                            </div>
+
+                            <div style={{ marginTop: 8, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
+                              Topics: {p.topics.join(" • ")}
+                            </div>
+
+                            {isSavedFlash && (
+                              <div style={{ marginTop: 6, fontSize: 12, fontWeight: 900, color: "#111" }}>
+                                ✅ Saved to Favorites
+                              </div>
+                            )}
+                          </div>
+
+                          <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
+                            <button
+                              type="button"
+                              onClick={() => toggleFavorite(proverbKey)}
+                              style={miniBtn}
+                              title={isFav ? "Saved" : "Save this proverb"}
+                              aria-label={isFav ? "Saved" : "Save this proverb"}
+                            >
+                              {isFav ? "★" : "☆"}
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleCopy(proverbItem, proverbKey)}
+                              style={{ ...miniBtn, fontSize: 12 }}
+                              title="Copy proverb"
+                            >
+                              {isCopied ? "Copied" : "Copy"}
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleShare(proverbItem, proverbKey)}
+                              style={{ ...miniBtn, fontSize: 12 }}
+                              title="Share this proverb"
+                            >
+                              Share
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleImage(proverbItem)}
+                              style={{
+                                ...miniBtn,
+                                fontSize: 12,
+                                background: "rgba(99,102,241,0.10)",
+                                border: "1px solid rgba(99,102,241,0.18)",
+                              }}
+                              title="Create a share image"
+                            >
+                              Image
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => setPromotedProverbRef("")}
+                              style={miniBtn}
+                              title="Collapse this card"
+                            >
+                              Collapse
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <button
+                      key={p.ref}
+                      type="button"
+                      onClick={() => setPromotedProverbRef(p.ref)}
+                      style={{
+                        background: "rgba(255,255,255,0.85)",
+                        border: "1px solid rgba(0,0,0,0.08)",
+                        borderRadius: 16,
+                        padding: 14,
+                        boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
+                        textAlign: "left",
+                        cursor: "pointer",
+                      }}
+                      title="Open as full interactive card"
+                    >
+                      <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>{p.ref}</div>
+                      <div
+                        style={{
+                          marginTop: 6,
+                          color: "#334155",
+                          fontWeight: 800,
+                          fontSize: 13,
+                          lineHeight: 1.5,
+                        }}
+                      >
+                        {p.text}
+                      </div>
+                      <div style={{ marginTop: 8, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
+                        Topics: {p.topics.join(" • ")}
+                      </div>
+                      <div style={{ marginTop: 10, fontSize: 12, fontWeight: 900, color: "#6366f1" }}>
+                        Tap to open full card
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
