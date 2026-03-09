@@ -489,128 +489,158 @@ ${link}`;
     }
   };
 
-  const handleImage = async (item: VerseItem) => {
-    try {
-      const W = 1080;
-      const H = 1350;
+const handleImage = async (item: VerseItem) => {
+  try {
+    const W = 1080;
+    const H = 1350;
 
-      const canvas = document.createElement("canvas");
-      canvas.width = W;
-      canvas.height = H;
+    const canvas = document.createElement("canvas");
+    canvas.width = W;
+    canvas.height = H;
 
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-      const style = getTemplateStyle(shareTemplate);
+    const style = getTemplateStyle(shareTemplate);
 
-      // Background gradient
-      const grad = ctx.createLinearGradient(0, 0, W, H);
-      grad.addColorStop(0, style.bgA);
-      grad.addColorStop(1, style.bgB);
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, W, H);
+    // Background gradient
+    const grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, style.bgA);
+    grad.addColorStop(1, style.bgB);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
 
-      // Layout
-      const padX = 96;
-      const topPad = 86;
-      const bottomPad = 80;
-      const cardW = W - padX * 2;
+    // Layout
+    const padX = 96;
+    const topPad = 86;
+    const bottomPad = 80;
+    const cardW = W - padX * 2;
 
-      // Header
-      ctx.textBaseline = "top";
-      ctx.fillStyle = style.headerText;
-      ctx.font = "900 60px system-ui";
-      ctx.fillText("Ask Solomon", padX, topPad);
+    // Header
+    ctx.textBaseline = "top";
+    ctx.fillStyle = style.headerText;
+    ctx.font = "900 60px system-ui";
+    ctx.fillText("Ask Solomon", padX, topPad);
 
-      ctx.fillStyle = style.subHeaderText;
-      ctx.font = "800 30px system-ui";
-      ctx.fillText("Wisdom for the moment", padX, topPad + 74);
+    ctx.fillStyle = style.subHeaderText;
+    ctx.font = "800 30px system-ui";
+    ctx.fillText("Wisdom for the moment", padX, topPad + 74);
 
-      // Accent line
-      ctx.save();
-      ctx.globalAlpha = shareTemplate === "gold" ? 1 : 0.85;
-      ctx.fillStyle = style.accent;
-      ctx.fillRect(padX, topPad + 122, 240, 6);
-      ctx.restore();
+    // Accent line
+    ctx.save();
+    ctx.globalAlpha = shareTemplate === "gold" ? 1 : 0.85;
+    ctx.fillStyle = style.accent;
+    ctx.fillRect(padX, topPad + 122, 240, 6);
+    ctx.restore();
 
-      // Verse + ref
-      const verse = (item.body || "").trim();
-      const ref = `${item.ref}${item.title ? ` — ${item.title}` : ""}`.trim();
+    // Verse + ref
+    const verse = (item.body || "").trim();
+    const ref = `${item.ref}${item.title ? ` — ${item.title}` : ""}`.trim();
 
-      // Typography + panel geometry
-      const verseFont = "700 46px system-ui";
-      const lineHeight = 60;
-      const innerPad = 56;
-      const radius = 34;
+    // Typography + panel geometry
+    const verseFont = "700 46px system-ui";
+    const lineHeight = 60;
+    const innerPad = 56;
+    const radius = 34;
 
-      // Compute dynamic panel height
-      ctx.font = verseFont;
+    // Compute dynamic panel height
+    ctx.font = verseFont;
+    ctx.fillStyle = style.verseText;
 
-      // ✅ CRITICAL: set verse style RIGHT BEFORE measuring/wrapping
-      ctx.fillStyle = style.verseText;
+    const maxTextWidth = cardW - innerPad * 2;
+    const lines = Math.max(1, measureWrappedLines(ctx, verse, maxTextWidth));
+    const verseBlockH = lines * lineHeight;
+    const gapAfterVerse = 26;
 
-      const maxTextWidth = cardW - innerPad * 2;
-      const lines = Math.max(1, measureWrappedLines(ctx, verse, maxTextWidth));
-      const verseBlockH = lines * lineHeight;
-      const gapAfterVerse = 26;
+    // Ref line height allowance
+    const refFont = "900 34px system-ui";
+    const refLineH = 44;
 
-      // Ref line height allowance
-      const refFont = "900 34px system-ui";
-      const refLineH = 44;
+    const panelH = innerPad + verseBlockH + gapAfterVerse + refLineH + innerPad;
 
-      const panelH = innerPad + verseBlockH + gapAfterVerse + refLineH + innerPad;
+    // Center between header and footer reserved area
+    const headerBottom = topPad + 150;
+    const footerTop = H - bottomPad - 90;
+    const available = footerTop - headerBottom;
+    const panelY = headerBottom + Math.max(24, Math.floor((available - panelH) / 2));
+    const panelX = padX;
 
-      // Center between header and footer reserved area
-      const headerBottom = topPad + 150;
-      const footerTop = H - bottomPad - 90; // reserve footer space
-      const available = footerTop - headerBottom;
-      const panelY = headerBottom + Math.max(24, Math.floor((available - panelH) / 2));
-      const panelX = padX;
+    // Panel
+    drawRoundedPanel(ctx, panelX, panelY, cardW, panelH, radius, style.panelFill, true);
 
-      // Panel
-      drawRoundedPanel(ctx, panelX, panelY, cardW, panelH, radius, style.panelFill, true); 
-      
-ctx.save();
-ctx.strokeStyle = "rgba(255,255,255,0.45)";
-ctx.lineWidth = 2;
-roundRectPath(ctx, panelX, panelY, cardW, panelH, radius);
-ctx.stroke();
-ctx.restore(); 
-      
-      // Verse text
-      let y = panelY + innerPad;
+    // Highlight border
+    ctx.save();
+    ctx.strokeStyle = "rgba(255,255,255,0.45)";
+    ctx.lineWidth = 2;
+    roundRectPath(ctx, panelX, panelY, cardW, panelH, radius);
+    ctx.stroke();
+    ctx.restore();
 
-      // ✅ CRITICAL: set verse style RIGHT BEFORE wrapText
-      ctx.fillStyle = style.verseText;
-      ctx.font = verseFont;
+    // Verse text
+    let y = panelY + innerPad;
 
-      const used = wrapText(ctx, verse, panelX + innerPad, y, maxTextWidth, lineHeight);
-      y += used * lineHeight + gapAfterVerse;
+    // ✅ CRITICAL: set verse style RIGHT BEFORE wrapText
+    ctx.fillStyle = style.verseText;
+    ctx.font = verseFont;
 
-      // Reference
-      ctx.fillStyle = style.refText;
-      ctx.font = refFont;
-      ctx.fillText(ref, panelX + innerPad, y);
+    const used = wrapText(ctx, verse, panelX + innerPad, y, maxTextWidth, lineHeight);
+    y += used * lineHeight + gapAfterVerse;
 
-      // Footer branding
-      const footerY = H - bottomPad;
-      ctx.fillStyle = style.footerText;
-      ctx.font = "900 30px system-ui";
-      ctx.fillText("Success Secrets of Solomon", padX, footerY - 44);
+    // Reference
+    ctx.fillStyle = style.refText;
+    ctx.font = refFont;
+    ctx.fillText(ref, panelX + innerPad, y);
 
-      ctx.font = "800 24px system-ui";
-      ctx.globalAlpha = 0.95;
-      ctx.fillText("AskSolomon.app", padX, footerY);
-      ctx.globalAlpha = 1;
+    // Footer branding
+    const footerY = H - bottomPad;
+    ctx.fillStyle = style.footerText;
+    ctx.font = "900 30px system-ui";
+    ctx.fillText("Success Secrets of Solomon", padX, footerY - 44);
 
-      const safeRef = (item.ref || "verse").replace(/[^\w\-]+/g, "_");
-      const dataUrl = canvas.toDataURL("image/png");
-      downloadDataUrl(dataUrl, `ask-solomon-${safeRef}.png`);
-    } catch {
-      // silent
+    ctx.font = "800 24px system-ui";
+    ctx.globalAlpha = 0.95;
+    ctx.fillText("AskSolomon.app", padX, footerY);
+    ctx.globalAlpha = 1;
+
+    const safeRef = (item.ref || "verse").replace(/[^\w\-]+/g, "_");
+    const filename = `ask-solomon-${safeRef}.png`;
+
+    // First try: share the actual image file
+    if (typeof navigator !== "undefined" && "share" in navigator && canvas.toBlob) {
+      const blob: Blob | null = await new Promise((resolve) =>
+        canvas.toBlob((b) => resolve(b), "image/png")
+      );
+
+      if (blob) {
+        const file = new File([blob], filename, { type: "image/png" });
+        const nav = navigator as Navigator & {
+          canShare?: (data?: ShareData) => boolean;
+        };
+
+        const shareData: ShareData = {
+          title: "Ask Solomon",
+          text: `${item.title}\n\n${item.ref}\n\nAskSolomon.app`,
+          files: [file],
+        };
+
+        try {
+          if (!nav.canShare || nav.canShare(shareData)) {
+            await nav.share(shareData);
+            return;
+          }
+        } catch {
+          // If share sheet is canceled or fails, fall through to download
+        }
+      }
     }
-  };
 
+    // Fallback: download image
+    const dataUrl = canvas.toDataURL("image/png");
+    downloadDataUrl(dataUrl, filename);
+  } catch {
+    // silent
+  }
+}; 
   const buildFilteredPool = () => {
     const query = q.trim().toLowerCase();
 
