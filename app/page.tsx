@@ -1208,7 +1208,34 @@ const applyTopic = (topicQuery: string) => {
                             <div style={{ marginTop: 8, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
                               Topics: {p.topics.join(" • ")}
                             </div>
+<div style={{ marginTop: 10 }}>
+  <div style={{ fontSize: 12, fontWeight: 900, color: "#64748b", marginBottom: 6 }}>
+    More Wisdom On This
+  </div>
 
+  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+    {p.topics.slice(0, 3).map((topic) => (
+      <button
+        key={topic}
+        type="button"
+        onClick={() => applyTopic(topic)}
+        style={{
+          padding: "6px 10px",
+          borderRadius: 999,
+          border: "1px solid rgba(0,0,0,0.10)",
+          background: "rgba(255,255,255,0.92)",
+          fontWeight: 800,
+          fontSize: 12,
+          cursor: "pointer",
+          color: "#111",
+        }}
+        title={`Explore more wisdom on ${topic}`}
+      >
+        {topic}
+      </button>
+    ))}
+  </div>
+</div>
                             {isSavedFlash && (
                               <div style={{ marginTop: 6, fontSize: 12, fontWeight: 900, color: "#111" }}>
                                 ✅ Saved to Favorites
