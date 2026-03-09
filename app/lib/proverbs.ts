@@ -1,127 +1,177 @@
+// app/lib/proverbs.ts
+
 export type ProverbEntry = {
-  ref: string;
-  text: string;
-  topics: string[];
-};
+  ref: string
+  text: string
+  topics: string[]
+  keywords?: string[]
+}
 
 export const PROVERBS: ProverbEntry[] = [
-  {
-    ref: "Proverbs 11:14",
-    text: "Where there is no guidance, a people falls, but in an abundance of counselors there is safety.",
-    topics: ["counsel", "guidance", "leadership", "decision"],
-  },
-  {
-    ref: "Proverbs 12:25",
-    text: "Anxiety in a man's heart weighs him down, but a good word makes him glad.",
-    topics: ["anxiety", "peace", "encouragement", "fear"],
-  },
-  {
-    ref: "Proverbs 13:20",
-    text: "Whoever walks with the wise becomes wise, but the companion of fools will suffer harm.",
-    topics: ["wisdom", "relationships", "friendship", "mentorship"],
-  },
-  {
-    ref: "Proverbs 14:29",
-    text: "Whoever is slow to anger has great understanding, but he who has a hasty temper exalts folly.",
-    topics: ["anger", "patience", "self-control", "wisdom"],
-  },
-  {
-    ref: "Proverbs 15:1",
-    text: "A soft answer turns away wrath, but a harsh word stirs up anger.",
-    topics: ["speech", "anger", "relationships", "conflict"],
-  },
-  {
-    ref: "Proverbs 15:22",
-    text: "Without counsel plans fail, but with many advisers they succeed.",
-    topics: ["counsel", "planning", "leadership", "decision"],
-  },
-  {
-    ref: "Proverbs 16:3",
-    text: "Commit your work to the Lord, and your plans will be established.",
-    topics: ["work", "planning", "purpose", "faith"],
-  },
-  {
-    ref: "Proverbs 16:18",
-    text: "Pride goes before destruction, and a haughty spirit before a fall.",
-    topics: ["pride", "humility", "character", "wisdom"],
-  },
-  {
-    ref: "Proverbs 16:32",
-    text: "Whoever is slow to anger is better than the mighty, and he who rules his spirit than he who takes a city.",
-    topics: ["anger", "discipline", "self-control", "leadership"],
-  },
-  {
-    ref: "Proverbs 18:13",
-    text: "If one gives an answer before he hears, it is his folly and shame.",
-    topics: ["listening", "wisdom", "speech", "leadership"],
-  },
-  {
-    ref: "Proverbs 18:21",
-    text: "Death and life are in the power of the tongue, and those who love it will eat its fruits.",
-    topics: ["speech", "words", "communication", "relationships"],
-  },
-  {
-    ref: "Proverbs 19:11",
-    text: "Good sense makes one slow to anger, and it is his glory to overlook an offense.",
-    topics: ["anger", "patience", "conflict", "wisdom"],
-  },
-  {
-    ref: "Proverbs 21:5",
-    text: "The plans of the diligent lead surely to abundance, but everyone who is hasty comes only to poverty.",
-    topics: ["diligence", "planning", "money", "work"],
-  },
-  {
-    ref: "Proverbs 22:1",
-    text: "A good name is to be chosen rather than great riches, and favor is better than silver or gold.",
-    topics: ["integrity", "reputation", "character", "wealth"],
-  },
-  {
-    ref: "Proverbs 22:29",
-    text: "Do you see a man skillful in his work? He will stand before kings; he will not stand before obscure men.",
-    topics: ["work", "excellence", "skill", "success"],
-  },
-  {
-    ref: "Proverbs 27:17",
-    text: "Iron sharpens iron, and one man sharpens another.",
-    topics: ["relationships", "friendship", "mentorship", "growth"],
-  },
-  {
-    ref: "Proverbs 27:23",
-    text: "Know well the condition of your flocks, and give attention to your herds.",
-    topics: ["stewardship", "leadership", "management", "responsibility"],
-  },
-];
 
-export function searchProverbs(query: string): ProverbEntry[] {
-  const q = query.toLowerCase().trim();
-  if (!q) return [];
+{
+ref: "Proverbs 1:7",
+text: "The fear of the Lord is the beginning of knowledge, but fools despise wisdom and instruction.",
+topics: ["wisdom","knowledge","instruction","fear"],
+keywords: ["learning","understanding"]
+},
 
-  const TOPIC_ALIASES: Record<string, string[]> = {
-    integrity: ["integrity", "honesty", "truth", "character", "upright", "honorable"],
-    peace: ["peace", "calm", "rest", "stillness", "stress", "anxiety", "worried"],
-    fear: ["fear", "afraid", "worry", "worried", "anxious", "anxiety", "courage"],
-    counsel: ["counsel", "guidance", "direction", "advice", "wisdom", "decision"],
-    discipline: ["discipline", "self-control", "consistency", "habit", "lazy", "sloth"],
-    leadership: ["leadership", "leader", "influence", "authority", "management"],
-    speech: ["speech", "words", "tongue", "communication", "talk", "speaking"],
-    work: ["work", "job", "career", "effort", "diligence", "skill", "excellence"],
-    relationships: ["relationships", "friendship", "friends", "conflict", "marriage", "people"],
-    money: ["money", "wealth", "finances", "riches", "stewardship", "prosperity"],
-    anger: ["anger", "angry", "wrath", "temper", "offense", "patience"],
-    planning: ["planning", "plans", "purpose", "direction", "goals", "vision"],
-  };
+{
+ref: "Proverbs 3:5-6",
+text: "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.",
+topics: ["trust","direction","guidance","wisdom"],
+keywords: ["path","decision","guidance"]
+},
 
-  const expandedTerms = new Set<string>([q]);
+{
+ref: "Proverbs 10:4",
+text: "Lazy hands make for poverty, but diligent hands bring wealth.",
+topics: ["diligence","work","wealth","discipline"],
+keywords: ["effort","success","prosperity"]
+},
 
-  Object.entries(TOPIC_ALIASES).forEach(([topic, aliases]) => {
-    if (topic === q || aliases.some((a) => q.includes(a) || a.includes(q))) {
-      expandedTerms.add(topic);
-      aliases.forEach((a) => expandedTerms.add(a));
-    }
-  });
+{
+ref: "Proverbs 11:25",
+text: "A generous person will prosper; whoever refreshes others will be refreshed.",
+topics: ["generosity","wealth","prosperity"],
+keywords: ["giving","stewardship"]
+},
 
-  return PROVERBS.filter((p) => {
-    const haystack = `${p.ref} ${p.text} ${p.topics.join(" ")}`.toLowerCase();
-    return Array.from(expandedTerms).some((term) => haystack.includes(term));
-  }).slice(0, 12);
+{
+ref: "Proverbs 12:15",
+text: "The way of fools seems right to them, but the wise listen to advice.",
+topics: ["wisdom","counsel","direction"],
+keywords: ["advice","guidance"]
+},
+
+{
+ref: "Proverbs 13:20",
+text: "Walk with the wise and become wise, for a companion of fools suffers harm.",
+topics: ["wisdom","relationships","influence"],
+keywords: ["friends","association"]
+},
+
+{
+ref: "Proverbs 15:1",
+text: "A gentle answer turns away wrath, but a harsh word stirs up anger.",
+topics: ["speech","anger","relationships"],
+keywords: ["communication","temper"]
+},
+
+{
+ref: "Proverbs 16:3",
+text: "Commit to the Lord whatever you do, and he will establish your plans.",
+topics: ["planning","success","direction"],
+keywords: ["purpose","goals"]
+},
+
+{
+ref: "Proverbs 16:9",
+text: "In their hearts humans plan their course, but the Lord establishes their steps.",
+topics: ["direction","guidance","planning"],
+keywords: ["purpose","path"]
+},
+
+{
+ref: "Proverbs 18:10",
+text: "The name of the Lord is a fortified tower; the righteous run to it and are safe.",
+topics: ["trust","confidence","protection"],
+keywords: ["refuge","strength"]
+},
+
+{
+ref: "Proverbs 19:20",
+text: "Listen to advice and accept discipline, and at the end you will be counted among the wise.",
+topics: ["wisdom","discipline","instruction"],
+keywords: ["learning","correction"]
+},
+
+{
+ref: "Proverbs 21:5",
+text: "The plans of the diligent lead to profit as surely as haste leads to poverty.",
+topics: ["planning","diligence","wealth"],
+keywords: ["strategy","effort"]
+},
+
+{
+ref: "Proverbs 22:6",
+text: "Start children off on the way they should go, and even when they are old they will not turn from it.",
+topics: ["leadership","training","instruction"],
+keywords: ["guidance","discipline"]
+},
+
+{
+ref: "Proverbs 22:29",
+text: "Do you see someone skilled in their work? They will serve before kings.",
+topics: ["diligence","excellence","success"],
+keywords: ["skill","mastery"]
+},
+
+{
+ref: "Proverbs 24:16",
+text: "For though the righteous fall seven times, they rise again.",
+topics: ["perseverance","strength","resilience"],
+keywords: ["endurance","persistence"]
+}
+
+]
+
+
+/* ------------------------------
+   SEARCH SYNONYM INTELLIGENCE
+--------------------------------*/
+
+const SEARCH_SYNONYMS: Record<string,string[]> = {
+
+fear:["fear","anxiety","worry","confidence","courage","trust"],
+
+money:["money","wealth","riches","poverty","prosperity","generosity"],
+
+direction:["direction","guidance","counsel","planning","wisdom"],
+
+discipline:["discipline","instruction","training","correction"],
+
+anger:["anger","wrath","temper","patience","gentle"],
+
+speech:["speech","words","tongue","communication"],
+
+leadership:["leadership","king","justice","counsel","integrity"],
+
+wisdom:["wisdom","knowledge","understanding","instruction"],
+
+success:["success","prosperity","wealth","diligence","planning"],
+
+confidence:["confidence","courage","strength","trust"]
+
+}
+
+
+/* ------------------------------
+   SEARCH ENGINE
+--------------------------------*/
+
+export function searchProverbs(query: string) {
+
+const q = query.toLowerCase().trim()
+
+if(!q) return []
+
+const related = SEARCH_SYNONYMS[q] || []
+
+const terms = [q, ...related]
+
+return PROVERBS.filter(p=>{
+
+const text = p.text.toLowerCase()
+
+const topicMatch = p.topics.some(t=>terms.includes(t))
+
+const keywordMatch = (p.keywords||[]).some(k=>terms.includes(k))
+
+const textMatch = terms.some(t=>text.includes(t))
+
+return topicMatch || keywordMatch || textMatch
+
+})
+
 }
