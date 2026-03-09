@@ -587,7 +587,6 @@ const handleImage = async (item: VerseItem) => {
     // Verse text
     let y = panelY + innerPad;
 
-    // ✅ CRITICAL: set verse style RIGHT BEFORE wrapText
     ctx.fillStyle = style.verseText;
     ctx.font = verseFont;
 
@@ -637,7 +636,7 @@ const handleImage = async (item: VerseItem) => {
             return;
           }
         } catch {
-          // If share sheet is canceled or fails, fall through to download
+          // fall through to download
         }
       }
     }
@@ -648,8 +647,9 @@ const handleImage = async (item: VerseItem) => {
   } catch {
     // silent
   }
-}; 
-  const buildFilteredPool = () => {
+};
+
+const buildFilteredPool = () => {
     const query = q.trim().toLowerCase();
 
     let pool = DATA.filter((d) => d.mode === mode);
