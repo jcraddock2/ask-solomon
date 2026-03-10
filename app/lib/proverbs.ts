@@ -856,9 +856,10 @@ function countTokenHits(item: ProverbEntry, tokens: string[]): number {
 function scoreItem(item: ProverbEntry, query: string): number {
   const q = normalizeText(query);
   const tokens = unique(tokenize(query));
-  const matchedIntents = detectIntentGroups(query);
-  const phraseMappings = detectPhraseMapping(query);
-
+  const matchedIntents = detectIntentGroups(query); 
+    const phraseMappings = detectPhraseMapping(query);
+  const clusterRefs = getClusterRefs(query);
+  
   const titleN = normalizeText(item.title);
   const bodyN = normalizeText(item.body);
   const textN = normalizeText(item.text);
@@ -1003,11 +1004,6 @@ function scoreItem(item: ProverbEntry, query: string): number {
   if (phraseMappings.length > 0 || matchedIntents.length > 0) {
     if (tokenHits <= 1) score -= 6;
   }
-
-  return score;
-}
-function normalizeUserQuery(q: string): string {
-  const query = normalizeText(q);
 
   if (
     query.includes("i am angry") ||
