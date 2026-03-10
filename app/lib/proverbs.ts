@@ -312,12 +312,11 @@ export const PROVERBS: ProverbEntry[] = [
     "Proverbs 3:7-8",
     "Humility Brings Health",
     "Do not be wise in your own eyes; fear the Lord and shun evil. This will bring health to your body and nourishment to your bones.",
-    ["humility",     ["humility", "wisdom", "health"],
-    ["humble", "correction", "healing", "instruction"],
-    ["guidance"],
-    ["uncertain"]
-  ),
-  createProverb(
+  ["humble", "correction", "healing", "instruction"],
+["guidance"],
+["uncertain"]
+),
+    createProverb(
     "Proverbs 3:9-10",
     "Honor God First",
     "Honor the Lord with your wealth, with the firstfruits of all your crops; then your barns will be filled to overflowing, and your vats will brim over with new wine.",
