@@ -744,19 +744,65 @@ function tokenize(text: string): string[] {
     .filter((word) => word.length > 0 && !STOP_WORDS.has(word));
 }
 
+function unique<T>(items: T[]): T[] {
+  return Array.from(new Set(items));
+}
+
 function scorePhraseMatch(query: string, candidate: string): number {
   if (!query || !candidate) return 0;
 
   const q = normalizeText(query);
   const c = normalizeText(candidate);
 
-  if (c.includes(q)) return 12;
+  if (!q || !c) return 0;
+  if (c.includes(q)) return 14;
+
   return 0;
 }
 
-function unique<T>(items: T[]): T[] {
-  return Array.from(new Set(items));
-}
+const PHRASE_INTENT_MAP: Array<{
+  phrases: string[];
+  topics: string[];
+  keywords: string[];
+  moods: string[];
+  intents: string[];
+}> = [
+  {
+    phrases: ["i am angry", "im angry", "i'm angry", "mad", "furious", "offended", "irritated"],
+    topics: ["speech", "relationships", "patience", "self-control"],
+    keywords: ["anger", "wrath", "gentle", "harsh", "patience", "offense", "calm", "tongue"],
+    moods: ["angry", "tense", "hurt", "pressured"],
+    intents: ["relationships"],
+  },
+  {
+    phrases: ["i feel overwhelmed", "overwhelmed", "stressed", "anxious", "i cant keep up", "i can't keep up"],
+    topics: ["anxiety", "heart", "trust", "encouragement"],
+    keywords: ["anxiety", "heart", "peace", "trust", "strength", "kind word"],
+    moods: ["anxious", "heavy", "drained", "weary"],
+    intents: ["overwhelmed", "fear"],
+  },
+  {
+    phrases: ["i need guidance", "direction", "what should i do", "what do i do", "next step", "confused"],
+    topics: ["guidance", "planning", "wisdom"],
+    keywords: ["wisdom", "path", "steps", "counsel", "understanding", "instruction"],
+    moods: ["uncertain", "confused"],
+    intents: ["guidance"],
+  },
+  {
+    phrases: ["worried about money", "money problems", "bills", "debt", "broke", "financial stress"],
+    topics: ["money", "planning", "diligence"],
+    keywords: ["wealth", "profit", "poverty", "planning", "diligence", "provision"],
+    moods: ["worried", "stuck"],
+    intents: ["money"],
+  },
+  {
+    phrases: ["i feel like giving up", "discouraged", "hopeless", "want to quit"],
+    topics: ["resilience", "hope", "encouragement"],
+    keywords: ["rise again", "hope", "strength", "perseverance", "heart"],
+    moods: ["discouraged", "weary"],
+    intents: ["overwhelmed", "motivation"],
+  },
+];
 
 function detectIntentGroups(query: string) {
   const q = normalizeText(query);
@@ -766,58 +812,196 @@ function detectIntentGroups(query: string) {
   );
 }
 
+function detectPhraseMapping(query: string) {
+  const q = normalizeText(query);
+
+  return PHRASE_INTENT_MAP.filter((entry) =>
+    entry.phrases.some((phrase) => q.includes(normalizeText(phrase)))
+  );
+}
+
+function includesNormalized(list: string[] | undefined, value: string): boolean {
+  if (!list || list.length === 0) return false;
+  const v = normalizeText(value);
+  return list.map(normalizeText).includes(v);
+}
+
+function countTokenHits(item: ProverbEntry, tokens: string[]): number {
+  const fields = [
+    item.title,
+    item.body,
+    item.text,
+    item.ref,
+    ...item.topics,
+    ...(item.keywords ?? []),
+    ...(item.intentTags ?? []),
+    ...(item.moodTags ?? []),
+  ].map(normalizeText);
+
+  let hits = 0;
+
+  for (const token of tokens) {
+    for (const field of fields) {
+      if (field === token) {
+        hits += 2;
+      } else if (field.includes(token)) {
+        hits += 1;
+      }
+    }
+  }
+
+  return hits;
+}
+
 function scoreItem(item: ProverbEntry, query: string): number {
+  const q = normalizeText(query);
   const tokens = unique(tokenize(query));
   const matchedIntents = detectIntentGroups(query);
+  const phraseMappings = detectPhraseMapping(query);
 
-  const haystacks = [
-    normalizeText(item.title),
-    normalizeText(item.body),
-    normalizeText(item.text),
-    normalizeText(item.ref),
-    ...item.topics.map(normalizeText),
-    ...(item.keywords ?? []).map(normalizeText),
-    ...(item.intentTags ?? []).map(normalizeText),
-    ...(item.moodTags ?? []).map(normalizeText),
-  ];
+  const titleN = normalizeText(item.title);
+  const bodyN = normalizeText(item.body);
+  const textN = normalizeText(item.text);
+  const topicsN = item.topics.map(normalizeText);
+  const keywordsN = (item.keywords ?? []).map(normalizeText);
+  const intentsN = (item.intentTags ?? []).map(normalizeText);
+  const moodsN = (item.moodTags ?? []).map(normalizeText);
 
   let score = 0;
 
-  // Strong phrase matches
+  // Strong direct phrase matching
   score += scorePhraseMatch(query, item.title);
   score += scorePhraseMatch(query, item.body);
 
-  // Token matches
+  // Basic token matching
   for (const token of tokens) {
-    for (const field of haystacks) {
-      if (field === token) score += 8;
-      else if (field.includes(token)) score += 3;
-    }
+    if (titleN.includes(token)) score += 5;
+    if (bodyN.includes(token)) score += 3;
+    if (textN.includes(token)) score += 2;
+    if (topicsN.includes(token)) score += 8;
+    if (keywordsN.includes(token)) score += 10;
+    if (intentsN.includes(token)) score += 11;
+    if (moodsN.includes(token)) score += 9;
   }
 
-  // Topic emphasis
-  for (const token of tokens) {
-    if (item.topics.includes(token)) score += 6;
-    if ((item.keywords ?? []).includes(token)) score += 7;
-    if ((item.intentTags ?? []).includes(token)) score += 7;
-    if ((item.moodTags ?? []).includes(token)) score += 6;
-  }
-
-  // Intent boosts
+  // Intent-group boosts
   for (const intent of matchedIntents) {
-    if ((item.intentTags ?? []).includes(intent.name)) {
-      score += 18;
-    }
+    const intentName = normalizeText(intent.name);
+
+    if (intentsN.includes(intentName)) score += 24;
 
     for (const boost of intent.boosts) {
       const b = normalizeText(boost);
 
-      if (normalizeText(item.title).includes(b)) score += 5;
-      if (normalizeText(item.body).includes(b)) score += 5;
-      if (item.topics.map(normalizeText).includes(b)) score += 6;
-      if ((item.keywords ?? []).map(normalizeText).includes(b)) score += 7;
-      if ((item.moodTags ?? []).map(normalizeText).includes(b)) score += 5;
+      if (titleN.includes(b)) score += 7;
+      if (bodyN.includes(b)) score += 6;
+      if (topicsN.includes(b)) score += 10;
+      if (keywordsN.includes(b)) score += 11;
+      if (moodsN.includes(b)) score += 8;
     }
+  }
+
+  // Phrase interpreter boosts
+  for (const mapping of phraseMappings) {
+    for (const topic of mapping.topics) {
+      if (includesNormalized(item.topics, topic)) score += 18;
+    }
+
+    for (const keyword of mapping.keywords) {
+      if (includesNormalized(item.keywords, keyword)) score += 20;
+      if (titleN.includes(normalizeText(keyword))) score += 8;
+      if (bodyN.includes(normalizeText(keyword))) score += 7;
+    }
+
+    for (const mood of mapping.moods) {
+      if (includesNormalized(item.moodTags, mood)) score += 16;
+    }
+
+    for (const intent of mapping.intents) {
+      if (includesNormalized(item.intentTags, intent)) score += 18;
+    }
+  }
+
+  // Specific anger prioritization
+  if (
+    q.includes("angry") ||
+    q.includes("mad") ||
+    q.includes("offended") ||
+    q.includes("furious") ||
+    q.includes("wrath")
+  ) {
+    if (topicsN.includes("self control")) score += 22;
+    if (topicsN.includes("speech")) score += 18;
+    if (topicsN.includes("patience")) score += 18;
+    if (keywordsN.includes("anger")) score += 20;
+    if (keywordsN.includes("wrath")) score += 20;
+    if (keywordsN.includes("gentle")) score += 16;
+    if (keywordsN.includes("harsh")) score += 14;
+    if (keywordsN.includes("offense")) score += 15;
+    if (moodsN.includes("angry")) score += 18;
+    if (moodsN.includes("tense")) score += 10;
+
+    if (item.ref === "Proverbs 15:1") score += 40;
+    if (item.ref === "Proverbs 14:29") score += 36;
+    if (item.ref === "Proverbs 19:11") score += 34;
+    if (item.ref === "Proverbs 29:11") score += 32;
+    if (item.ref === "Proverbs 12:18") score += 28;
+    if (item.ref === "Proverbs 21:23") score += 24;
+    if (item.ref === "Proverbs 10:19") score += 22;
+  }
+
+  // Specific overwhelm prioritization
+  if (
+    q.includes("overwhelmed") ||
+    q.includes("stressed") ||
+    q.includes("anxious") ||
+    q.includes("heavy") ||
+    q.includes("drained")
+  ) {
+    if (item.ref === "Proverbs 12:25") score += 42;
+    if (item.ref === "Proverbs 3:5-6") score += 30;
+    if (item.ref === "Proverbs 4:23") score += 24;
+    if (item.ref === "Proverbs 24:10") score += 20;
+    if (item.ref === "Proverbs 31:25") score += 16;
+  }
+
+  // Specific guidance prioritization
+  if (
+    q.includes("guidance") ||
+    q.includes("direction") ||
+    q.includes("what should i do") ||
+    q.includes("next step") ||
+    q.includes("confused")
+  ) {
+    if (item.ref === "Proverbs 3:5-6") score += 42;
+    if (item.ref === "Proverbs 16:3") score += 28;
+    if (item.ref === "Proverbs 16:9") score += 26;
+    if (item.ref === "Proverbs 11:14") score += 24;
+    if (item.ref === "Proverbs 15:22") score += 22;
+    if (item.ref === "Proverbs 20:18") score += 22;
+    if (item.ref === "Proverbs 4:7") score += 18;
+  }
+
+  // Specific money prioritization
+  if (
+    q.includes("money") ||
+    q.includes("debt") ||
+    q.includes("bills") ||
+    q.includes("financial") ||
+    q.includes("broke")
+  ) {
+    if (item.ref === "Proverbs 21:5") score += 38;
+    if (item.ref === "Proverbs 10:4") score += 30;
+    if (item.ref === "Proverbs 14:23") score += 28;
+    if (item.ref === "Proverbs 3:9-10") score += 22;
+    if (item.ref === "Proverbs 28:20") score += 20;
+    if (item.ref === "Proverbs 22:1") score += 16;
+  }
+
+  // Small penalty so vague matches do not outrank true intent matches
+  const tokenHits = countTokenHits(item, tokens);
+  if (phraseMappings.length > 0 || matchedIntents.length > 0) {
+    if (tokenHits <= 1) score -= 6;
   }
 
   return score;
@@ -841,7 +1025,6 @@ export function searchProverbs(q: string): ProverbEntry[] {
     })
     .map((entry) => entry.item);
 
-  // Fallback safety: if nothing matches, return a few strong general anchors
   if (ranked.length === 0) {
     return PROVERBS.filter((p) =>
       [
