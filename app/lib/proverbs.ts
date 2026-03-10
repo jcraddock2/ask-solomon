@@ -1009,20 +1009,125 @@ function scoreItem(item: ProverbEntry, query: string): number {
 function normalizeUserQuery(q: string): string {
   const query = normalizeText(q);
 
-  if (query.includes("i am angry") || query.includes("im angry") || query.includes("i'm angry")) {
-    return "anger";
+  if (
+    query.includes("i am angry") ||
+    query.includes("im angry") ||
+    query.includes("i m angry") ||
+    query.includes("i'm angry") ||
+    query.includes("mad at someone") ||
+    query.includes("i am mad") ||
+    query.includes("im mad")
+  ) {
+    return "anger patience gentle answer self-control offense";
   }
 
-  if (query.includes("i feel overwhelmed") || query.includes("overwhelmed") || query.includes("stressed")) {
-    return "overwhelmed";
+  if (
+    query.includes("i feel overwhelmed") ||
+    query.includes("overwhelmed") ||
+    query.includes("stressed") ||
+    query.includes("anxious") ||
+    query.includes("too much") ||
+    query.includes("cant keep up") ||
+    query.includes("can't keep up") ||
+    query.includes("drained")
+  ) {
+    return "overwhelmed anxiety heart trust peace strength";
   }
 
-  if (query.includes("i need guidance") || query.includes("what should i do")) {
-    return "guidance";
+  if (
+    query.includes("i need guidance") ||
+    query.includes("what should i do") ||
+    query.includes("what do i do") ||
+    query.includes("next step") ||
+    query.includes("direction") ||
+    query.includes("confused") ||
+    query.includes("unsure")
+  ) {
+    return "guidance wisdom path steps counsel understanding";
   }
 
-  if (query.includes("money problems") || query.includes("bills") || query.includes("debt")) {
-    return "money";
+  if (
+    query.includes("money problems") ||
+    query.includes("worried about money") ||
+    query.includes("financial stress") ||
+    query.includes("debt") ||
+    query.includes("bills") ||
+    query.includes("broke")
+  ) {
+    return "money diligence planning wealth provision profit poverty";
+  }
+
+  if (
+    query.includes("i feel like giving up") ||
+    query.includes("discouraged") ||
+    query.includes("hopeless") ||
+    query.includes("want to quit") ||
+    query.includes("feel defeated")
+  ) {
+    return "discouraged hope resilience rise again perseverance strength";
+  }
+
+  return q;
+}
+function normalizeUserQuery(q: string): string {
+  const query = normalizeText(q);
+
+  if (
+    query.includes("i am angry") ||
+    query.includes("im angry") ||
+    query.includes("i m angry") ||
+    query.includes("i'm angry") ||
+    query.includes("mad at someone") ||
+    query.includes("i am mad") ||
+    query.includes("im mad")
+  ) {
+    return "anger patience gentle answer self-control offense";
+  }
+
+  if (
+    query.includes("i feel overwhelmed") ||
+    query.includes("overwhelmed") ||
+    query.includes("stressed") ||
+    query.includes("anxious") ||
+    query.includes("too much") ||
+    query.includes("cant keep up") ||
+    query.includes("can't keep up") ||
+    query.includes("drained")
+  ) {
+    return "overwhelmed anxiety heart trust peace strength";
+  }
+
+  if (
+    query.includes("i need guidance") ||
+    query.includes("what should i do") ||
+    query.includes("what do i do") ||
+    query.includes("next step") ||
+    query.includes("direction") ||
+    query.includes("confused") ||
+    query.includes("unsure")
+  ) {
+    return "guidance wisdom path steps counsel understanding";
+  }
+
+  if (
+    query.includes("money problems") ||
+    query.includes("worried about money") ||
+    query.includes("financial stress") ||
+    query.includes("debt") ||
+    query.includes("bills") ||
+    query.includes("broke")
+  ) {
+    return "money diligence planning wealth provision profit poverty";
+  }
+
+  if (
+    query.includes("i feel like giving up") ||
+    query.includes("discouraged") ||
+    query.includes("hopeless") ||
+    query.includes("want to quit") ||
+    query.includes("feel defeated")
+  ) {
+    return "discouraged hope resilience rise again perseverance strength";
   }
 
   return q;
