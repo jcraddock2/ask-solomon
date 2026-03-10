@@ -267,7 +267,7 @@ export const PROVERBS: ProverbEntry[] = [
   createProverb(
     "Proverbs 3:7-8",
     "Humility Brings Health",
-    "Do not be wise in your own eyes; fear the Lord and shun evil. This will bring health to your body and nourishment to your bones 
+    "Do not be wise in your own eyes; fear the Lord and shun evil. This will bring health to your body and nourishment to your bones.", 
         ["humility", "wisdom", "health"],
     ["humble", "correction", "healing", "instruction"],
     ["guidance"],
