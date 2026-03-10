@@ -1006,10 +1006,29 @@ function scoreItem(item: ProverbEntry, query: string): number {
 
   return score;
 }
+function normalizeUserQuery(q: string): string {
+  const query = normalizeText(q);
 
+  if (query.includes("i am angry") || query.includes("im angry") || query.includes("i'm angry")) {
+    return "anger";
+  }
+
+  if (query.includes("i feel overwhelmed") || query.includes("overwhelmed") || query.includes("stressed")) {
+    return "overwhelmed";
+  }
+
+  if (query.includes("i need guidance") || query.includes("what should i do")) {
+    return "guidance";
+  }
+
+  if (query.includes("money problems") || query.includes("bills") || query.includes("debt")) {
+    return "money";
+  }
+
+  return q;
+}
 export function searchProverbs(q: string): ProverbEntry[] {
-  const query = q.trim();
-
+const query = normalizeUserQuery(q.trim());
   if (!query) return PROVERBS;
 
   const scored: ScoredResult[] = PROVERBS.map((item) => ({
