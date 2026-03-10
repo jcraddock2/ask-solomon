@@ -26,7 +26,14 @@ function safeParse<T>(raw: string | null, fallback: T): T {
     return fallback;
   }
 }
-
+const SITUATION_PRESETS = [
+  { label: "⚡ I’m Angry", value: "anger" },
+  { label: "😟 I’m Overwhelmed", value: "overwhelmed" },
+  { label: "🧭 Need Direction", value: "guidance" },
+  { label: "💰 Money Stress", value: "money" },
+  { label: "💔 Relationship Conflict", value: "relationship conflict" },
+  { label: "🌧 Feeling Discouraged", value: "discouraged" },
+];
 type ShareTemplate = "classic" | "dark" | "gold" | "daily" | "gradientModern";
 
 type ProverbMatch = {
@@ -979,7 +986,13 @@ ${link}`;
     setTodayFocusKey("");
     setUrl({ q: topicQuery });
   };
-
+const applySituation = (value: string) => {
+  setQ(value);
+  setTodayFocusOn(false); 
+  setFavoritesOnly(false);
+  setTodayFocusKey("");
+  setUrl({ q: value });
+};
   const renderEmptyState = () => {
     if (favoritesOnly && favoritesCount === 0) {
       return (
@@ -1259,7 +1272,43 @@ ${link}`;
                 flexWrap: "wrap",
                 alignItems: "center",
               }}
-            >
+            > 
+              <div style={{ marginBottom: 10 }}>
+  <div
+    style={{
+      fontSize: 11,
+      fontWeight: 900,
+      letterSpacing: 0.4,
+      color: "#64748b",
+      marginBottom: 6,
+      textTransform: "uppercase",
+    }}
+  >
+    Situation Mode
+  </div>
+
+  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+    {SITUATION_PRESETS.map((preset) => (
+      <button
+        key={preset.label}
+        onClick={() => applySituation(preset.value)}
+        style={{
+          border: "1px solid rgba(0,0,0,0.08)",
+          background: "#ffffff",
+          color: "#0f172a",
+          borderRadius: 999,
+          padding: "6px 10px",
+          fontSize: 12,
+          fontWeight: 800,
+          cursor: "pointer",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+        }}
+      >
+        {preset.label}
+      </button>
+    ))}
+  </div>
+</div>
               <input
                 value={q}
                 onChange={(e) => {
