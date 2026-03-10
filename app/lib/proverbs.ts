@@ -224,6 +224,50 @@ const INTENT_GROUPS: Array<{
   },
 ];
 
+const PHRASE_INTENT_MAP: Array<{
+  phrases: string[];
+  topics: string[];
+  keywords: string[];
+  moods: string[];
+  intents: string[];
+}> = [
+  {
+    phrases: ["i am angry", "im angry", "i'm angry", "mad", "furious", "offended", "irritated"],
+    topics: ["speech", "relationships", "patience", "self-control"],
+    keywords: ["anger", "wrath", "gentle", "harsh", "patience", "offense", "calm", "tongue"],
+    moods: ["angry", "tense", "hurt", "pressured"],
+    intents: ["relationships"],
+  },
+  {
+    phrases: ["i feel overwhelmed", "overwhelmed", "stressed", "anxious", "i cant keep up", "i can't keep up"],
+    topics: ["anxiety", "heart", "trust", "encouragement"],
+    keywords: ["anxiety", "heart", "peace", "trust", "strength", "kind word"],
+    moods: ["anxious", "heavy", "drained", "weary"],
+    intents: ["overwhelmed", "fear"],
+  },
+  {
+    phrases: ["i need guidance", "direction", "what should i do", "what do i do", "next step", "confused"],
+    topics: ["guidance", "planning", "wisdom"],
+    keywords: ["wisdom", "path", "steps", "counsel", "understanding", "instruction"],
+    moods: ["uncertain", "confused"],
+    intents: ["guidance"],
+  },
+  {
+    phrases: ["worried about money", "money problems", "bills", "debt", "broke", "financial stress"],
+    topics: ["money", "planning", "diligence"],
+    keywords: ["wealth", "profit", "poverty", "planning", "diligence", "provision"],
+    moods: ["worried", "stuck"],
+    intents: ["money"],
+  },
+  {
+    phrases: ["i feel like giving up", "discouraged", "hopeless", "want to quit"],
+    topics: ["resilience", "hope", "encouragement"],
+    keywords: ["rise again", "hope", "strength", "perseverance", "heart"],
+    moods: ["discouraged", "weary"],
+    intents: ["overwhelmed", "motivation"],
+  },
+];
+
 function createProverb(
   ref: string,
   title: string,
@@ -267,8 +311,8 @@ export const PROVERBS: ProverbEntry[] = [
   createProverb(
     "Proverbs 3:7-8",
     "Humility Brings Health",
-    "Do not be wise in your own eyes; fear the Lord and shun evil. This will bring health to your body and nourishment to your bones.", 
-        ["humility", "wisdom", "health"],
+    "Do not be wise in your own eyes; fear the Lord and shun evil. This will bring health to your body and nourishment to your bones.",
+    ["humility",     ["humility", "wisdom", "health"],
     ["humble", "correction", "healing", "instruction"],
     ["guidance"],
     ["uncertain"]
@@ -760,50 +804,6 @@ function scorePhraseMatch(query: string, candidate: string): number {
   return 0;
 }
 
-const PHRASE_INTENT_MAP: Array<{
-  phrases: string[];
-  topics: string[];
-  keywords: string[];
-  moods: string[];
-  intents: string[];
-}> = [
-  {
-    phrases: ["i am angry", "im angry", "i'm angry", "mad", "furious", "offended", "irritated"],
-    topics: ["speech", "relationships", "patience", "self-control"],
-    keywords: ["anger", "wrath", "gentle", "harsh", "patience", "offense", "calm", "tongue"],
-    moods: ["angry", "tense", "hurt", "pressured"],
-    intents: ["relationships"],
-  },
-  {
-    phrases: ["i feel overwhelmed", "overwhelmed", "stressed", "anxious", "i cant keep up", "i can't keep up"],
-    topics: ["anxiety", "heart", "trust", "encouragement"],
-    keywords: ["anxiety", "heart", "peace", "trust", "strength", "kind word"],
-    moods: ["anxious", "heavy", "drained", "weary"],
-    intents: ["overwhelmed", "fear"],
-  },
-  {
-    phrases: ["i need guidance", "direction", "what should i do", "what do i do", "next step", "confused"],
-    topics: ["guidance", "planning", "wisdom"],
-    keywords: ["wisdom", "path", "steps", "counsel", "understanding", "instruction"],
-    moods: ["uncertain", "confused"],
-    intents: ["guidance"],
-  },
-  {
-    phrases: ["worried about money", "money problems", "bills", "debt", "broke", "financial stress"],
-    topics: ["money", "planning", "diligence"],
-    keywords: ["wealth", "profit", "poverty", "planning", "diligence", "provision"],
-    moods: ["worried", "stuck"],
-    intents: ["money"],
-  },
-  {
-    phrases: ["i feel like giving up", "discouraged", "hopeless", "want to quit"],
-    topics: ["resilience", "hope", "encouragement"],
-    keywords: ["rise again", "hope", "strength", "perseverance", "heart"],
-    moods: ["discouraged", "weary"],
-    intents: ["overwhelmed", "motivation"],
-  },
-];
-
 function detectIntentGroups(query: string) {
   const q = normalizeText(query);
 
@@ -853,13 +853,88 @@ function countTokenHits(item: ProverbEntry, tokens: string[]): number {
   return hits;
 }
 
+const WISDOM_CLUSTERS: Array<{
+  triggers: string[];
+  refs: string[];
+}> = [
+  {
+    triggers: ["anger", "angry", "mad", "offended", "wrath"],
+    refs: [
+      "Proverbs 15:1",
+      "Proverbs 14:29",
+      "Proverbs 19:11",
+      "Proverbs 29:11",
+      "Proverbs 12:18",
+      "Proverbs 21:23",
+      "Proverbs 10:19",
+    ],
+  },
+  {
+    triggers: ["overwhelmed", "anxiety", "anxious", "stressed", "heavy", "drained"],
+    refs: [
+      "Proverbs 12:25",
+      "Proverbs 3:5-6",
+      "Proverbs 4:23",
+      "Proverbs 24:10",
+      "Proverbs 31:25",
+      "Proverbs 13:12",
+    ],
+  },
+  {
+    triggers: ["guidance", "direction", "wisdom", "next step", "confused", "counsel"],
+    refs: [
+      "Proverbs 3:5-6",
+      "Proverbs 16:3",
+      "Proverbs 16:9",
+      "Proverbs 11:14",
+      "Proverbs 15:22",
+      "Proverbs 20:18",
+      "Proverbs 4:7",
+    ],
+  },
+  {
+    triggers: ["money", "debt", "bills", "financial", "broke", "poverty", "wealth"],
+    refs: [
+      "Proverbs 21:5",
+      "Proverbs 10:4",
+      "Proverbs 14:23",
+      "Proverbs 3:9-10",
+      "Proverbs 28:20",
+      "Proverbs 22:1",
+      "Proverbs 6:6-8",
+    ],
+  },
+  {
+    triggers: ["discouraged", "giving up", "hopeless", "quit", "defeated", "weary"],
+    refs: [
+      "Proverbs 24:16",
+      "Proverbs 13:12",
+      "Proverbs 31:25",
+      "Proverbs 3:5-6",
+      "Proverbs 12:25",
+    ],
+  },
+];
+
+function getClusterRefs(query: string): string[] {
+  const q = normalizeText(query);
+
+  for (const cluster of WISDOM_CLUSTERS) {
+    if (cluster.triggers.some((trigger) => q.includes(normalizeText(trigger)))) {
+      return cluster.refs;
+    }
+  }
+
+  return [];
+}
+
 function scoreItem(item: ProverbEntry, query: string): number {
   const q = normalizeText(query);
   const tokens = unique(tokenize(query));
-  const matchedIntents = detectIntentGroups(query); 
-    const phraseMappings = detectPhraseMapping(query);
+  const matchedIntents = detectIntentGroups(query);
+  const phraseMappings = detectPhraseMapping(query);
   const clusterRefs = getClusterRefs(query);
-  
+
   const titleN = normalizeText(item.title);
   const bodyN = normalizeText(item.body);
   const textN = normalizeText(item.text);
@@ -870,11 +945,9 @@ function scoreItem(item: ProverbEntry, query: string): number {
 
   let score = 0;
 
-  // Strong direct phrase matching
   score += scorePhraseMatch(query, item.title);
   score += scorePhraseMatch(query, item.body);
 
-  // Basic token matching
   for (const token of tokens) {
     if (titleN.includes(token)) score += 5;
     if (bodyN.includes(token)) score += 3;
@@ -885,7 +958,6 @@ function scoreItem(item: ProverbEntry, query: string): number {
     if (moodsN.includes(token)) score += 9;
   }
 
-  // Intent-group boosts
   for (const intent of matchedIntents) {
     const intentName = normalizeText(intent.name);
 
@@ -902,7 +974,6 @@ function scoreItem(item: ProverbEntry, query: string): number {
     }
   }
 
-  // Phrase interpreter boosts
   for (const mapping of phraseMappings) {
     for (const topic of mapping.topics) {
       if (includesNormalized(item.topics, topic)) score += 18;
@@ -923,7 +994,6 @@ function scoreItem(item: ProverbEntry, query: string): number {
     }
   }
 
-  // Specific anger prioritization
   if (
     q.includes("angry") ||
     q.includes("mad") ||
@@ -951,7 +1021,6 @@ function scoreItem(item: ProverbEntry, query: string): number {
     if (item.ref === "Proverbs 10:19") score += 22;
   }
 
-  // Specific overwhelm prioritization
   if (
     q.includes("overwhelmed") ||
     q.includes("stressed") ||
@@ -966,7 +1035,6 @@ function scoreItem(item: ProverbEntry, query: string): number {
     if (item.ref === "Proverbs 31:25") score += 16;
   }
 
-  // Specific guidance prioritization
   if (
     q.includes("guidance") ||
     q.includes("direction") ||
@@ -983,7 +1051,6 @@ function scoreItem(item: ProverbEntry, query: string): number {
     if (item.ref === "Proverbs 4:7") score += 18;
   }
 
-  // Specific money prioritization
   if (
     q.includes("money") ||
     q.includes("debt") ||
@@ -999,11 +1066,20 @@ function scoreItem(item: ProverbEntry, query: string): number {
     if (item.ref === "Proverbs 22:1") score += 16;
   }
 
-  // Small penalty so vague matches do not outrank true intent matches
   const tokenHits = countTokenHits(item, tokens);
   if (phraseMappings.length > 0 || matchedIntents.length > 0) {
     if (tokenHits <= 1) score -= 6;
   }
+
+  if (clusterRefs.includes(item.ref)) {
+    score += 45;
+  }
+
+  return score;
+}
+
+function normalizeUserQuery(q: string): string {
+  const query = normalizeText(q);
 
   if (
     query.includes("i am angry") ||
@@ -1067,7 +1143,8 @@ function scoreItem(item: ProverbEntry, query: string): number {
 }
 
 export function searchProverbs(q: string): ProverbEntry[] {
-const query = normalizeUserQuery(q.trim());
+  const query = normalizeUserQuery(q.trim());
+
   if (!query) return PROVERBS;
 
   const scored: ScoredResult[] = PROVERBS.map((item) => ({
