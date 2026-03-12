@@ -1,3 +1,4 @@
+
 // app/lib/proverbs.ts
 
 export type ProverbEntry = {
@@ -15,258 +16,6 @@ type ScoredResult = {
   item: ProverbEntry;
   score: number;
 };
-
-const STOP_WORDS = new Set([
-  "a",
-  "an",
-  "and",
-  "are",
-  "as",
-  "at",
-  "be",
-  "been",
-  "but",
-  "by",
-  "can",
-  "could",
-  "do",
-  "for",
-  "from",
-  "get",
-  "had",
-  "has",
-  "have",
-  "he",
-  "her",
-  "him",
-  "his",
-  "i",
-  "if",
-  "im",
-  "i'm",
-  "in",
-  "into",
-  "is",
-  "it",
-  "its",
-  "just",
-  "me",
-  "my",
-  "of",
-  "on",
-  "or",
-  "our",
-  "she",
-  "so",
-  "that",
-  "the",
-  "their",
-  "them",
-  "they",
-  "this",
-  "to",
-  "up",
-  "was",
-  "we",
-  "what",
-  "when",
-  "with",
-  "you",
-  "your",
-]);
-
-const INTENT_GROUPS: Array<{
-  name: string;
-  triggers: string[];
-  boosts: string[];
-}> = [
-  {
-    name: "overwhelmed",
-    triggers: [
-      "overwhelmed",
-      "stressed",
-      "stress",
-      "anxious",
-      "anxiety",
-      "heavy",
-      "too much",
-      "burned out",
-      "burnout",
-      "exhausted",
-      "tired",
-      "pressure",
-      "pressured",
-      "cant keep up",
-      "can't keep up",
-      "falling apart",
-      "mentally drained",
-      "drained",
-    ],
-    boosts: ["peace", "calm", "trust", "patience", "heart", "fear", "rest", "gentle"],
-  },
-  {
-    name: "guidance",
-    triggers: [
-      "guidance",
-      "direction",
-      "what should i do",
-      "what do i do",
-      "next step",
-      "decision",
-      "choices",
-      "confused",
-      "uncertain",
-      "unsure",
-      "dont know",
-      "don't know",
-      "wisdom",
-      "discernment",
-      "clarity",
-      "show me",
-      "lead me",
-    ],
-    boosts: ["wisdom", "understanding", "instruction", "path", "way", "counsel", "discernment"],
-  },
-  {
-    name: "money",
-    triggers: [
-      "money",
-      "finances",
-      "financial",
-      "bills",
-      "debt",
-      "income",
-      "provision",
-      "poverty",
-      "wealth",
-      "rich",
-      "business",
-      "success",
-      "prosperity",
-      "paycheck",
-      "paycheck to paycheck",
-      "broke",
-      "struggling financially",
-    ],
-    boosts: ["money", "wealth", "diligence", "planning", "provision", "work", "stewardship"],
-  },
-  {
-    name: "fear",
-    triggers: [
-      "afraid",
-      "fear",
-      "scared",
-      "worried",
-      "worry",
-      "nervous",
-      "panic",
-      "troubled",
-      "trouble",
-      "uneasy",
-    ],
-    boosts: ["trust", "peace", "heart", "fear", "security", "refuge"],
-  },
-  {
-    name: "motivation",
-    triggers: [
-      "lazy",
-      "discipline",
-      "motivation",
-      "motivated",
-      "productive",
-      "focus",
-      "work ethic",
-      "consistency",
-      "stuck",
-      "procrastinating",
-      "procrastination",
-      "need discipline",
-      "need focus",
-    ],
-    boosts: ["diligence", "discipline", "work", "effort", "planning", "correction"],
-  },
-  {
-    name: "relationships",
-    triggers: [
-      "relationship",
-      "marriage",
-      "friend",
-      "friends",
-      "people",
-      "conflict",
-      "argument",
-      "offended",
-      "offense",
-      "anger",
-      "communication",
-      "gossip",
-      "harsh words",
-      "drama",
-    ],
-    boosts: ["speech", "kindness", "peace", "anger", "friendship", "love", "correction"],
-  },
-  {
-    name: "leadership",
-    triggers: [
-      "leader",
-      "leadership",
-      "influence",
-      "team",
-      "staff",
-      "manager",
-      "supervisor",
-      "authority",
-      "example",
-      "responsibility",
-      "employees",
-    ],
-    boosts: ["wisdom", "integrity", "correction", "speech", "planning", "justice", "counsel"],
-  },
-];
-
-const PHRASE_INTENT_MAP: Array<{
-  phrases: string[];
-  topics: string[];
-  keywords: string[];
-  moods: string[];
-  intents: string[];
-}> = [
-  {
-    phrases: ["i am angry", "im angry", "i'm angry", "mad", "furious", "offended", "irritated"],
-    topics: ["speech", "relationships", "patience", "self-control"],
-    keywords: ["anger", "wrath", "gentle", "harsh", "patience", "offense", "calm", "tongue"],
-    moods: ["angry", "tense", "hurt", "pressured"],
-    intents: ["relationships"],
-  },
-  {
-    phrases: ["i feel overwhelmed", "overwhelmed", "stressed", "anxious", "i cant keep up", "i can't keep up"],
-    topics: ["anxiety", "heart", "trust", "encouragement"],
-    keywords: ["anxiety", "heart", "peace", "trust", "strength", "kind word"],
-    moods: ["anxious", "heavy", "drained", "weary"],
-    intents: ["overwhelmed", "fear"],
-  },
-  {
-    phrases: ["i need guidance", "direction", "what should i do", "what do i do", "next step", "confused"],
-    topics: ["guidance", "planning", "wisdom"],
-    keywords: ["wisdom", "path", "steps", "counsel", "understanding", "instruction"],
-    moods: ["uncertain", "confused"],
-    intents: ["guidance"],
-  },
-  {
-    phrases: ["worried about money", "money problems", "bills", "debt", "broke", "financial stress"],
-    topics: ["money", "planning", "diligence"],
-    keywords: ["wealth", "profit", "poverty", "planning", "diligence", "provision"],
-    moods: ["worried", "stuck"],
-    intents: ["money"],
-  },
-  {
-    phrases: ["i feel like giving up", "discouraged", "hopeless", "want to quit"],
-    topics: ["resilience", "hope", "encouragement"],
-    keywords: ["rise again", "hope", "strength", "perseverance", "heart"],
-    moods: ["discouraged", "weary"],
-    intents: ["overwhelmed", "motivation"],
-  },
-];
 
 function createProverb(
   ref: string,
@@ -289,33 +38,213 @@ function createProverb(
   };
 }
 
+function normalize(text: string): string {
+  return text.toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function tokenize(text: string): string[] {
+  return normalize(text).split(" ").filter(Boolean);
+}
+
+const INTENT_MAP: Record<string, string[]> = {
+  overwhelmed: ["overwhelmed", "stressed", "pressure", "anxious", "burdened", "heavy"],
+  guidance: ["guidance", "direction", "clarity", "decision", "next step", "lead me", "discernment"],
+  money: ["money", "finances", "debt", "bills", "wealth", "provision", "lack"],
+  fear: ["fear", "afraid", "anxious", "panic", "worried", "scared"],
+  wisdom: ["wisdom", "understanding", "insight", "knowledge", "discernment"],
+  discipline: ["discipline", "lazy", "focus", "self control", "consistency", "work ethic"],
+  relationships: ["relationship", "friend", "strife", "conflict", "marriage", "peace", "people"],
+  pride: ["pride", "ego", "humility", "arrogance", "teachable", "correction"],
+  anger: ["anger", "angry", "offended", "temper", "rage", "frustrated"],
+  health: ["health", "healing", "body", "bones", "strength", "life"],
+  success: ["success", "prosper", "prosperity", "favor", "promotion", "victory"],
+  protection: ["protection", "safety", "secure", "guard", "shield", "refuge"],
+};
+
+function expandQuery(query: string): string[] {
+  const q = normalize(query);
+  const tokens = new Set(tokenize(q));
+
+  for (const [intent, synonyms] of Object.entries(INTENT_MAP)) {
+    if (synonyms.some((word) => q.includes(word))) {
+      tokens.add(intent);
+      synonyms.forEach((word) => tokens.add(word));
+    }
+  }
+
+  return Array.from(tokens);
+}
+
+function scoreItem(item: ProverbEntry, query: string): number {
+  const q = expandQuery(query);
+  if (q.length === 0) return 0;
+
+  let score = 0;
+  const haystack = normalize(
+    [
+      item.ref,
+      item.title,
+      item.body,
+      ...(item.topics || []),
+      ...(item.keywords || []),
+      ...(item.intentTags || []),
+      ...(item.moodTags || []),
+    ].join(" ")
+  );
+
+  for (const token of q) {
+    if (!token) continue;
+
+    if (normalize(item.ref).includes(token)) score += 8;
+    if (normalize(item.title).includes(token)) score += 7;
+    if (normalize(item.body).includes(token)) score += 5;
+
+    if ((item.topics || []).some((t) => normalize(t).includes(token))) score += 6;
+    if ((item.keywords || []).some((k) => normalize(k).includes(token))) score += 5;
+    if ((item.intentTags || []).some((i) => normalize(i).includes(token))) score += 7;
+    if ((item.moodTags || []).some((m) => normalize(m).includes(token))) score += 4;
+
+    if (haystack.includes(token)) score += 1;
+  }
+
+  return score;
+}
+
+export function searchProverbs(query: string, limit = 12): ProverbEntry[] {
+  const cleaned = query.trim();
+  if (!cleaned) return PROVERBS.slice(0, limit);
+
+  const scored: ScoredResult[] = PROVERBS.map((item) => ({
+    item,
+    score: scoreItem(item, cleaned),
+  }))
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  return scored.slice(0, limit).map((x) => x.item);
+}
+
+export function getRelatedProverbs(
+  source: ProverbEntry,
+  limit = 4
+): ProverbEntry[] {
+  const related = PROVERBS.filter((item) => item.ref !== source.ref).map((item) => {
+    let score = 0;
+
+    for (const topic of source.topics || []) {
+      if ((item.topics || []).includes(topic)) score += 3;
+    }
+
+    for (const tag of source.intentTags || []) {
+      if ((item.intentTags || []).includes(tag)) score += 2;
+    }
+
+    for (const mood of source.moodTags || []) {
+      if ((item.moodTags || []).includes(mood)) score += 1;
+    }
+
+    return { item, score };
+  });
+
+  return related
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((x) => x.item);
+}
+
 export const PROVERBS: ProverbEntry[] = [
   createProverb(
     "Proverbs 1:7",
-    "Wisdom Starts Here",
+    "The Beginning of Knowledge",
     "The fear of the Lord is the beginning of knowledge, but fools despise wisdom and instruction.",
-    ["wisdom", "instruction", "foundation"],
-    ["knowledge", "instruction", "teachability", "learning", "reverence"],
-    ["guidance", "leadership"],
-    ["uncertain"]
+    ["wisdom", "knowledge", "instruction"],
+    ["fear of the Lord", "knowledge", "instruction", "foundation"],
+    ["wisdom", "guidance"],
+    ["uncertain", "teachable"]
   ),
+
+  createProverb(
+    "Proverbs 1:8-9",
+    "Receive Wise Instruction",
+    "Listen, my son, to your father’s instruction and do not forsake your mother’s teaching. They are a garland to grace your head and a chain to adorn your neck.",
+    ["instruction", "teachable", "family"],
+    ["listen", "teaching", "instruction", "honor"],
+    ["guidance", "wisdom"],
+    ["teachable", "humble"]
+  ),
+
+  createProverb(
+    "Proverbs 1:10",
+    "Do Not Give In",
+    "My son, if sinful men entice you, do not give in to them.",
+    ["temptation", "discipline", "integrity"],
+    ["temptation", "peer pressure", "integrity", "resist"],
+    ["discipline", "protection"],
+    ["pressured", "tempted"]
+  ),
+
+  createProverb(
+    "Proverbs 1:33",
+    "Live in Safety",
+    "Whoever listens to me will live in safety and be at ease, without fear of harm.",
+    ["safety", "peace", "protection"],
+    ["safety", "ease", "fear", "harm", "peace"],
+    ["protection", "fear", "guidance"],
+    ["afraid", "anxious", "overwhelmed"]
+  ),
+
+  createProverb(
+    "Proverbs 2:6",
+    "Wisdom Comes from God",
+    "For the Lord gives wisdom; from his mouth come knowledge and understanding.",
+    ["wisdom", "knowledge", "understanding"],
+    ["wisdom", "understanding", "knowledge", "God gives"],
+    ["wisdom", "guidance"],
+    ["uncertain", "seeking"]
+  ),
+
+  createProverb(
+    "Proverbs 2:7-8",
+    "He Guards the Upright",
+    "He holds success in store for the upright, he is a shield to those whose walk is blameless, for he guards the course of the just and protects the way of his faithful ones.",
+    ["success", "protection", "integrity"],
+    ["success", "shield", "protects", "faithful", "upright"],
+    ["success", "protection"],
+    ["uncertain", "afraid"]
+  ),
+
+  createProverb(
+    "Proverbs 2:10-11",
+    "Wisdom Will Watch Over You",
+    "For wisdom will enter your heart, and knowledge will be pleasant to your soul. Discretion will protect you, and understanding will guard you.",
+    ["wisdom", "protection", "discernment"],
+    ["discretion", "guard", "protect", "understanding"],
+    ["guidance", "protection", "wisdom"],
+    ["uncertain", "anxious"]
+  ),
+
   createProverb(
     "Proverbs 3:5-6",
-    "Trust Him With the Path",
+    "Trust and Direction",
     "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.",
-    ["guidance", "trust", "direction"],
-    ["path", "decision", "clarity", "understanding", "next step"],
-    ["guidance", "fear", "overwhelmed"],
-    ["confused", "uncertain", "anxious"]
+    ["trust", "guidance", "direction", "faith"],
+    ["trust", "direction", "clarity", "paths", "understanding"],
+    ["guidance", "wisdom"],
+    ["uncertain", "overwhelmed", "seeking"]
   ),
-  createProverb(
+
+  
+createProverb(
     "Proverbs 3:7-8",
     "Humility Brings Health",
     "Do not be wise in your own eyes; fear the Lord and shun evil. This will bring health to your body and nourishment to your bones.",
-  ["humble", "correction", "healing", "instruction"],
-["guidance"],
-["uncertain"]
-),
+       ["humility", "wisdom", "health"],
+    ["humble", "correction", "healing", "instruction"],
+    ["guidance", "wisdom"],
+    ["uncertain", "teachable"]
+  ),
+
     createProverb(
     "Proverbs 3:9-10",
     "Honor God First",
