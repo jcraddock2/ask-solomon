@@ -5,6 +5,7 @@ import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isProUser } from "./lib/access";
 import { searchProverbs } from "./lib/proverbs";
+import { smartSearch } from "./lib/intent";
 import {
   DATA,
   MODES,
@@ -883,9 +884,9 @@ ${link}`;
       list = list.filter((item: any) => itemSubs(item).includes(sub));
     }
 
-    if (q.trim()) {
-      list = list.filter((item: any) => itemMatchesQuery(item, q));
-    }
+ if (q.trim()) {
+  list = smartSearch(list, q);
+} 
 
     if (favoritesOnly) {
       list = list.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
