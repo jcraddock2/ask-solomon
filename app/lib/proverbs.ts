@@ -277,12 +277,12 @@ function scoreItem(item: ProverbEntry, query: string): number {
   return score;
 }
 
-type IntentResult = {
+type SearchIntent = {
   tags: string[];
   moods: string[];
 };
 
-export function detectIntent(query: string): IntentResult {
+export function detectIntent(query: string): SearchIntent {
   const q = query.toLowerCase().trim();
 
   const tags = new Set<string>();
@@ -397,8 +397,8 @@ export function detectIntent(query: string): IntentResult {
   }
 
   return {
-    tags: Array.from(tags),
-    moods: Array.from(moods),
+    tags: [...tags],
+    moods: [...moods],
   };
 }
 
@@ -410,10 +410,10 @@ export function searchProverbs(query: string, limit = 12): ProverbEntry[] {
   const intent = detectIntent(q);
   const words = q.split(/\s+/).filter(Boolean);
 
-  const scored = PROVERBS.map((item) => {
+  const scored: { item: ProverbEntry; score: number }[] = PROVERBS.map((item) => {
     let score = 0;
 
-    const text = (item.text || item.body || "").toLowerCase();
+    const text = (item.text || "").toLowerCase();
     const title = (item.title || "").toLowerCase();
     const keywords = (item.keywords || []).map((x) => x.toLowerCase());
     const topics = (item.topics || []).map((x) => x.toLowerCase());
@@ -450,6 +450,7 @@ export function searchProverbs(query: string, limit = 12): ProverbEntry[] {
 
     for (const tag of intent.tags) {
       const t = tag.toLowerCase();
+
       if (intentTags.includes(t)) score += 7;
       if (topics.includes(t)) score += 5;
       if (keywords.includes(t)) score += 5;
@@ -459,6 +460,7 @@ export function searchProverbs(query: string, limit = 12): ProverbEntry[] {
 
     for (const mood of intent.moods) {
       const m = mood.toLowerCase();
+
       if (moodTags.includes(m)) score += 6;
       if (keywords.includes(m)) score += 4;
       if (title.includes(m)) score += 2;
@@ -469,10 +471,10 @@ export function searchProverbs(query: string, limit = 12): ProverbEntry[] {
   });
 
   return scored
-    .filter((x) => x.score > 0)
+    .filter((entry) => entry.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, limit)
-    .map((x) => x.item);
+    .map((entry) => entry.item);
 }
 
 export function getRelatedProverbs(
@@ -504,7 +506,8 @@ export function getRelatedProverbs(
     .sort((a, b) => b.score - a.score)
     .slice(0, limit)
     .map((entry) => entry.item);
-}
+} 
+
 export const PROVERBS: ProverbEntry[] = [
   createProverb(
     "Proverbs 1:33",
