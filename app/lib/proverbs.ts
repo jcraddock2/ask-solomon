@@ -295,8 +295,9 @@ export function getRelatedProverbs(
   source: ProverbEntry,
   limit = 4
 ): ProverbEntry[] {
-  const related = PROVERBS.filter((item) => item.ref !== source.ref).map(
-    (item) => {
+  const related = PROVERBS
+    .filter((item) => item.ref !== source.ref)
+    .map((item) => {
       let score = 0;
 
       for (const topic of source.topics || []) {
@@ -312,8 +313,14 @@ export function getRelatedProverbs(
       }
 
       return { item, score };
-    }
-  );
+    });
+
+  return related
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((entry) => entry.item);
+}
 
 export const PROVERBS: ProverbEntry[] = [
   createProverb(
