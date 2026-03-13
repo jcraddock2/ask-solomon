@@ -234,6 +234,9 @@ function scoreItem(item: ProverbEntry, query: string): number {
 
   let score = 0;
 
+  const q = normalize(query);
+  const detectedTopics = detectIntent(query);
+
   const refText = normalize(item.ref);
   const titleText = normalize(item.title);
   const bodyText = normalize(item.body);
@@ -242,36 +245,66 @@ function scoreItem(item: ProverbEntry, query: string): number {
   const intentTagsText = (item.intentTags || []).map(normalize);
   const moodTagsText = (item.moodTags || []).map(normalize);
 
-  const haystack = [
-    refText,
-    titleText,
-    bodyText,
-    ...topicsText,
-    ...keywordsText,
-    ...intentTagsText,
-    ...moodTagsText,
-  ].join(" ");
+  // Strong direct phrase match
+  if (titleText.includes(q)) score += 20;
+  if (bodyText.includes(q)) score += 14;
+  if (topicsText.some((t) => t.includes(q))) score += 18;
+  if (keywordsText.some((k) => k.includes(q))) score += 18;
+  if (intentTagsText.some((i) => i.includes(q))) score += 24;
+  if (moodTagsText.some((m) => m.includes(q))) score += 22;
 
+  // Expanded token match
   for (const token of expanded) {
     if (!token) continue;
 
-    if (refText.includes(token)) score += 10;
-    if (titleText.includes(token)) score += 9;
-    if (bodyText.includes(token)) score += 6;
-    if (topicsText.some((t) => t.includes(token))) score += 8;
-    if (keywordsText.some((k) => k.includes(token))) score += 7;
-    if (intentTagsText.some((i) => i.includes(token))) score += 14;
-    if (moodTagsText.some((m) => m.includes(token))) score += 12;
-    if (haystack.includes(token)) score += 1;
+    if (refText.includes(token)) score += 4;
+    if (titleText.includes(token)) score += 8;
+    if (bodyText.includes(token)) score += 5;
+    if (topicsText.some((t) => t.includes(token))) score += 10;
+    if (keywordsText.some((k) => k.includes(token))) score += 11;
+    if (intentTagsText.some((i) => i.includes(token))) score += 16;
+    if (moodTagsText.some((m) => m.includes(token))) score += 15;
   }
 
-  const detectedTopics = detectIntent(query);
-
+  // Intent-specific boosts
   for (const topic of detectedTopics) {
-    if (topicsText.includes(topic)) score += 12;
-    if (intentTagsText.includes(topic)) score += 14;
-    if (keywordsText.includes(topic)) score += 8;
-    if (moodTagsText.includes(topic)) score += 7;
+    if (intentTagsText.includes(topic)) score += 24;
+    if (moodTagsText.includes(topic)) score += 20;
+    if (topicsText.includes(topic)) score += 14;
+    if (keywordsText.includes(topic)) score += 12;
+  }
+
+  // Special handling for overwhelmed-type searches
+  if (detectedTopics.includes("overwhelmed")) {
+    if (intentTagsText.includes("peace")) score += 18;
+    if (intentTagsText.includes("trust")) score += 18;
+    if (intentTagsText.includes("guidance")) score += 16;
+    if (intentTagsText.includes("protection")) score += 10;
+
+    if (moodTagsText.includes("overwhelmed")) score += 20;
+    if (moodTagsText.includes("anxious")) score += 18;
+    if (moodTagsText.includes("afraid")) score += 16;
+    if (moodTagsText.includes("uncertain")) score += 12;
+
+    if (keywordsText.includes("peace")) score += 10;
+    if (keywordsText.includes("rest")) score += 10;
+    if (keywordsText.includes("calm")) score += 10;
+    if (keywordsText.includes("trust")) score += 10;
+    if (keywordsText.includes("refuge")) score += 8;
+  }
+
+  // Slight penalty for weak generic matches
+  if (
+    detectedTopics.includes("overwhelmed") &&
+    !intentTagsText.includes("peace") &&
+    !intentTagsText.includes("trust") &&
+    !intentTagsText.includes("guidance") &&
+    !moodTagsText.includes("overwhelmed") &&
+    !moodTagsText.includes("anxious") &&
+    !moodTagsText.includes("afraid") &&
+    !moodTagsText.includes("uncertain")
+  ) {
+    score -= 8;
   }
 
   return score;
