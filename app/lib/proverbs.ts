@@ -276,19 +276,126 @@ function scoreItem(item: ProverbEntry, query: string): number {
 
   return score;
 }
+type IntentResult = {
+  tags: string[];
+  moods: string[];
+};
 
+export function detectIntent(query: string): IntentResult {
+  const q = query.toLowerCase();
+
+  const tags: string[] = [];
+  const moods: string[] = [];
+
+  if (
+    q.includes("overwhelmed") ||
+    q.includes("too much") ||
+    q.includes("stress") ||
+    q.includes("pressure") ||
+    q.includes("anxious")
+  ) {
+    tags.push("peace", "guidance", "trust");
+    moods.push("overwhelmed", "anxious", "afraid");
+  }
+
+  if (
+    q.includes("direction") ||
+    q.includes("what should i do") ||
+    q.includes("decision")
+  ) {
+    tags.push("guidance", "wisdom");
+    moods.push("seeking", "uncertain");
+  }
+
+  if (
+    q.includes("money") ||
+    q.includes("finances") ||
+    q.includes("debt")
+  ) {
+    tags.push("money", "wisdom", "discipline");
+    moods.push("worried", "uncertain");
+  }
+
+  if (
+    q.includes("relationship") ||
+    q.includes("marriage") ||
+    q.includes("conflict")
+  ) {
+    tags.push("relationships", "wisdom", "peace");
+    moods.push("hurt", "frustrated");
+  }
+
+  if (
+    q.includes("discouraged") ||
+    q.includes("tired") ||
+    q.includes("hopeless")
+  ) {
+    tags.push("hope", "strength");
+    moods.push("discouraged", "weary");
+  }
+
+  return { tags, moods };
+}
 export function searchProverbs(query: string, limit = 12): ProverbEntry[] {
-  const cleaned = query.trim();
-  if (!cleaned) return PROVERBS.slice(0, limit);
+  const q = query.toLowerCase().trim();
 
-  const scored: ScoredResult[] = PROVERBS.map((item) => ({
-    item,
-    score: scoreItem(item, cleaned),
-  }))
-    .filter((x) => x.score > 6)
-    .sort((a, b) => b.score - a.score);
+  if (!q) return PROVERBS.slice(0, limit);
 
-  return scored.slice(0, limit).map((x) => x.item);
+  const intent = detectIntent(q);
+
+  const scored = PROVERBS.map((item) => {
+    let score = 0;
+
+    const text = item.text.toLowerCase();
+    const title = item.title.toLowerCase();
+
+    // direct query match
+    if (text.includes(q)) score += 5;
+    if (title.includes(q)) score += 4;
+
+    // word-level matching
+    const words = q.split(/\s+/).filter(Boolean);
+    for (const word of words) {
+      if (text.includes(word)) score += 2;
+      if (title.includes(word)) score += 2;
+
+      for (const kw of item.keywords || []) {
+        if (kw.toLowerCase().includes(word) || word.includes(kw.toLowerCase())) {
+          score += 3;
+        }
+      }
+
+      for (const topic of item.topics || []) {
+        if (
+          topic.toLowerCase().includes(word) ||
+          word.includes(topic.toLowerCase())
+        ) {
+          score += 3;
+        }
+      }
+    }
+
+    // intent tag boosts
+    for (const tag of intent.tags) {
+      if ((item.intentTags || []).includes(tag)) score += 5;
+      if ((item.topics || []).includes(tag)) score += 4;
+      if ((item.keywords || []).includes(tag)) score += 4;
+    }
+
+    // mood boosts
+    for (const mood of intent.moods) {
+      if ((item.moodTags || []).includes(mood)) score += 4;
+      if ((item.keywords || []).includes(mood)) score += 3;
+    }
+
+    return { item, score };
+  });
+
+  return scored
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((x) => x.item);
 }
 
 export function getRelatedProverbs(
