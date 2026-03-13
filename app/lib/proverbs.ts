@@ -50,28 +50,178 @@ function tokenize(text: string): string[] {
 }
 
 const INTENT_MAP: Record<string, string[]> = {
-  overwhelmed: ["overwhelmed", "stressed", "pressure", "anxious", "burdened", "heavy"],
-  guidance: ["guidance", "direction", "clarity", "decision", "next step", "discernment"],
-  money: ["money", "finances", "debt", "bills", "wealth", "provision", "lack"],
-  fear: ["fear", "afraid", "panic", "worried", "scared", "anxious"],
-  wisdom: ["wisdom", "understanding", "insight", "knowledge", "discernment"],
-  discipline: ["discipline", "lazy", "focus", "self control", "consistency"],
-  relationships: ["relationship", "friend", "conflict", "marriage", "peace", "people"],
-  pride: ["pride", "ego", "humility", "arrogance", "teachable", "correction"],
-  anger: ["anger", "angry", "offended", "temper", "rage", "frustrated"],
-  health: ["health", "healing", "body", "bones", "strength", "life"],
-  success: ["success", "prosper", "prosperity", "favor", "promotion", "victory"],
-  protection: ["protection", "safety", "secure", "guard", "shield", "refuge"],
+  overwhelmed: [
+    "overwhelmed",
+    "stressed",
+    "pressure",
+    "burdened",
+    "heavy",
+    "too much",
+    "mental load",
+  ],
+  guidance: [
+    "guidance",
+    "direction",
+    "clarity",
+    "decision",
+    "next step",
+    "discernment",
+    "which way",
+    "what should i do",
+    "lost",
+    "confused",
+    "uncertain",
+  ],
+  money: [
+    "money",
+    "finances",
+    "debt",
+    "bills",
+    "wealth",
+    "provision",
+    "lack",
+    "income",
+    "prosperity",
+    "poor",
+  ],
+  fear: [
+    "fear",
+    "afraid",
+    "panic",
+    "worried",
+    "scared",
+    "anxious",
+    "anxiety",
+    "nervous",
+  ],
+  wisdom: [
+    "wisdom",
+    "understanding",
+    "insight",
+    "knowledge",
+    "discernment",
+    "wise",
+  ],
+  discipline: [
+    "discipline",
+    "lazy",
+    "focus",
+    "self control",
+    "consistency",
+    "diligence",
+    "motivation",
+  ],
+  relationships: [
+    "relationship",
+    "friend",
+    "conflict",
+    "marriage",
+    "peace",
+    "people",
+    "argument",
+    "strife",
+    "wife",
+    "husband",
+  ],
+  pride: [
+    "pride",
+    "ego",
+    "humility",
+    "arrogance",
+    "teachable",
+    "correction",
+    "wise in my own eyes",
+  ],
+  anger: [
+    "anger",
+    "angry",
+    "offended",
+    "temper",
+    "rage",
+    "frustrated",
+    "mad",
+  ],
+  health: [
+    "health",
+    "healing",
+    "body",
+    "bones",
+    "strength",
+    "life",
+    "energy",
+    "wellness",
+  ],
+  success: [
+    "success",
+    "prosper",
+    "prosperity",
+    "favor",
+    "promotion",
+    "victory",
+    "fruitful",
+    "increase",
+  ],
+  protection: [
+    "protection",
+    "safety",
+    "secure",
+    "guard",
+    "shield",
+    "refuge",
+    "deliverance",
+    "covering",
+  ],
+  trust: [
+    "trust",
+    "faith",
+    "depend on god",
+    "lean not",
+    "submit",
+    "surrender",
+  ],
+  peace: [
+    "peace",
+    "calm",
+    "rest",
+    "quiet",
+    "stillness",
+    "settled",
+  ],
+  encouragement: [
+    "encouragement",
+    "hope",
+    "strength",
+    "weary",
+    "tired",
+    "discouraged",
+    "giving up",
+  ],
 };
+
+function detectIntent(query: string): string[] {
+  const q = normalize(query);
+  const matched = new Set<string>();
+
+  for (const [intent, synonyms] of Object.entries(INTENT_MAP)) {
+    for (const synonym of synonyms) {
+      if (q.includes(normalize(synonym))) {
+        matched.add(intent);
+      }
+    }
+  }
+
+  return Array.from(matched);
+}
 
 function expandQuery(query: string): string[] {
   const q = normalize(query);
-  const tokens = new Set(tokenize(q));
+  const tokens = new Set<string>(tokenize(q));
 
-  for (const [intent, synonyms] of Object.entries(INTENT_MAP)) {
-    if (synonyms.some((word) => q.includes(word))) {
-      tokens.add(intent);
-      synonyms.forEach((word) => tokens.add(word));
+  for (const detected of detectIntent(q)) {
+    tokens.add(detected);
+
+    for (const synonym of INTENT_MAP[detected] || []) {
+      tokens.add(normalize(synonym));
     }
   }
 
@@ -79,10 +229,11 @@ function expandQuery(query: string): string[] {
 }
 
 function scoreItem(item: ProverbEntry, query: string): number {
-  const q = expandQuery(query);
-  if (q.length === 0) return 0;
+  const expanded = expandQuery(query);
+  if (expanded.length === 0) return 0;
 
   let score = 0;
+
   const refText = normalize(item.ref);
   const titleText = normalize(item.title);
   const bodyText = normalize(item.body);
@@ -101,17 +252,26 @@ function scoreItem(item: ProverbEntry, query: string): number {
     ...moodTagsText,
   ].join(" ");
 
-  for (const token of q) {
+  for (const token of expanded) {
     if (!token) continue;
 
-    if (refText.includes(token)) score += 8;
-    if (titleText.includes(token)) score += 7;
-    if (bodyText.includes(token)) score += 5;
-    if (topicsText.some((t) => t.includes(token))) score += 6;
-    if (keywordsText.some((k) => k.includes(token))) score += 5;
-    if (intentTagsText.some((i) => i.includes(token))) score += 7;
-    if (moodTagsText.some((m) => m.includes(token))) score += 4;
+    if (refText.includes(token)) score += 10;
+    if (titleText.includes(token)) score += 9;
+    if (bodyText.includes(token)) score += 6;
+    if (topicsText.some((t) => t.includes(token))) score += 8;
+    if (keywordsText.some((k) => k.includes(token))) score += 7;
+    if (intentTagsText.some((i) => i.includes(token))) score += 10;
+    if (moodTagsText.some((m) => m.includes(token))) score += 6;
     if (haystack.includes(token)) score += 1;
+  }
+
+  const detectedTopics = detectIntent(query);
+
+  for (const topic of detectedTopics) {
+    if (topicsText.includes(topic)) score += 12;
+    if (intentTagsText.includes(topic)) score += 14;
+    if (keywordsText.includes(topic)) score += 8;
+    if (moodTagsText.includes(topic)) score += 7;
   }
 
   return score;
@@ -135,9 +295,8 @@ export function getRelatedProverbs(
   source: ProverbEntry,
   limit = 4
 ): ProverbEntry[] {
-  const related = PROVERBS
-    .filter((item) => item.ref !== source.ref)
-    .map((item) => {
+  const related = PROVERBS.filter((item) => item.ref !== source.ref).map(
+    (item) => {
       let score = 0;
 
       for (const topic of source.topics || []) {
@@ -153,14 +312,15 @@ export function getRelatedProverbs(
       }
 
       return { item, score };
-    });
+    }
+  );
 
   return related
     .filter((x) => x.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, limit)
     .map((x) => x.item);
-}
+} 
 
 export const PROVERBS: ProverbEntry[] = [
   createProverb(
@@ -201,18 +361,8 @@ export const PROVERBS: ProverbEntry[] = [
     ["trust", "direction", "clarity", "paths", "understanding"],
     ["guidance", "wisdom"],
     ["uncertain", "overwhelmed", "seeking"]
-  ),
+  ), 
 
-  createProverb(
-    "Proverbs 3:7-8",
-    "Humility Brings Health",
-    "Be not wise in thine own eyes: fear the Lord, and depart from evil. It shall be health to thy navel, and marrow to thy bones.",
-    ["humility", "wisdom", "health"],
-    ["humble", "correction", "healing", "instruction"],
-    ["guidance", "wisdom"],
-    ["uncertain", "restless"]
-  ),
-  
 createProverb(
     "Proverbs 3:7-8",
     "Humility Brings Health",
@@ -7508,3 +7658,43 @@ createProverb(
   )
 ];
   
+export function detectIntent(query: string): string[] {
+  const q = query.toLowerCase();
+
+  const intents: { trigger: string[]; topics: string[] }[] = [
+    {
+      trigger: ["overwhelmed", "stress", "anxious", "anxiety"],
+      topics: ["peace", "trust", "guidance"]
+    },
+    {
+      trigger: ["money", "broke", "debt", "finances"],
+      topics: ["wealth", "stewardship", "discipline"]
+    },
+    {
+      trigger: ["direction", "what should i do", "decision"],
+      topics: ["guidance", "wisdom"]
+    },
+    {
+      trigger: ["angry", "anger", "mad"],
+      topics: ["self-control", "speech", "wisdom"]
+    },
+    {
+      trigger: ["lonely", "alone"],
+      topics: ["encouragement", "faith"]
+    },
+    {
+      trigger: ["leadership", "manage", "lead"],
+      topics: ["leadership", "discipline", "wisdom"]
+    }
+  ];
+
+  for (const intent of intents) {
+    for (const trigger of intent.trigger) {
+      if (q.includes(trigger)) {
+        return intent.topics;
+      }
+    }
+  }
+
+  return [];
+}
