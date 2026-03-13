@@ -315,24 +315,7 @@ export function getRelatedProverbs(
     }
   );
 
-  return related
-    .filter((x) => x.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map((x) => x.item);
-} 
-
 export const PROVERBS: ProverbEntry[] = [
-  createProverb(
-    "Proverbs 1:7",
-    "The Beginning of Knowledge",
-    "The fear of the Lord is the beginning of knowledge, but fools despise wisdom and instruction.",
-    ["wisdom", "knowledge", "instruction"],
-    ["fear of the Lord", "knowledge", "instruction", "foundation"],
-    ["wisdom", "guidance"],
-    ["uncertain", "teachable"]
-  ),
-
   createProverb(
     "Proverbs 1:33",
     "Live in Safety",
@@ -7658,3 +7641,33 @@ createProverb(
   )
 ];
   
+export function getRelatedProverbs(
+  source: ProverbEntry,
+  limit = 4
+): ProverbEntry[] { 
+const related = PROVERBS
+    .filter((item) => item.ref !== source.ref)
+    .map((item) => {
+      let score = 0;
+
+      for (const topic of source.topics || []) {
+        if ((item.topics || []).includes(topic)) score += 3;
+      }
+
+      for (const tag of source.intentTags || []) {
+        if ((item.intentTags || []).includes(tag)) score += 2;
+      }
+
+      for (const mood of source.moodTags || []) {
+        if ((item.moodTags || []).includes(mood)) score += 1;
+      }
+
+      return { item, score };
+    });
+
+  return related
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((x) => x.item);
+}  
