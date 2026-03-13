@@ -276,6 +276,7 @@ function scoreItem(item: ProverbEntry, query: string): number {
 
   return score;
 }
+
 type IntentResult = {
   tags: string[];
   moods: string[];
