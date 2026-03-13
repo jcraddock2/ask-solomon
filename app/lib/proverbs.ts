@@ -6027,11 +6027,11 @@ createProverb(
     ["reflective", "convicted"]
   ),
 
-  createProverb(
+   createProverb(
     "Proverbs 26:13",
-    "Excuses of Laziness",
+    "Excuses Keep You Stuck",
     "The slothful man saith, There is a lion in the way; a lion is in the streets.",
-    ["discipline", "work", "motivation"],
+    ["discipline", "warning", "work"],
     ["laziness", "excuses", "fear"],
     ["motivation", "wisdom"],
     ["unmotivated", "reflective"]
@@ -6057,14 +6057,14 @@ createProverb(
     ["unmotivated", "reflective"]
   ),
 
-    createProverb(
+  createProverb(
     "Proverbs 26:16",
-    "The Arrogance of the Fool",
+    "Pride in Foolishness",
     "The sluggard is wiser in his own conceit than seven men that can render a reason.",
-    ["humility", "wisdom", "warning"],
+    ["humility", "warning", "wisdom"],
     ["pride", "self-deception", "foolishness"],
-    ["wisdom", "guidance"],
-    ["reflective", "convicted"]
+    ["correction", "wisdom"],
+    ["stubborn", "reflective"]
   ),
 
   createProverb(
