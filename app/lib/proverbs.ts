@@ -260,8 +260,8 @@ function scoreItem(item: ProverbEntry, query: string): number {
     if (bodyText.includes(token)) score += 6;
     if (topicsText.some((t) => t.includes(token))) score += 8;
     if (keywordsText.some((k) => k.includes(token))) score += 7;
-    if (intentTagsText.some((i) => i.includes(token))) score += 10;
-    if (moodTagsText.some((m) => m.includes(token))) score += 6;
+   if (intentTagsText.some((i) => i.includes(token))) score += 14;
+    if (moodTagsText.some((m) => m.includes(token))) score += 12;
     if (haystack.includes(token)) score += 1;
   }
 
@@ -285,7 +285,7 @@ export function searchProverbs(query: string, limit = 12): ProverbEntry[] {
     item,
     score: scoreItem(item, cleaned),
   }))
-    .filter((x) => x.score > 0)
+    .filter((x) => x.score > 6)
     .sort((a, b) => b.score - a.score);
 
   return scored.slice(0, limit).map((x) => x.item);
