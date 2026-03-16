@@ -37,27 +37,39 @@ function createProverb(
   };
 }
 
-function normalize(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+function normalize(input: string): string {
+  return input.toLowerCase().trim();
 }
 
-function tokenize(text: string): string[] {
-  return normalize(text).split(" ").filter(Boolean);
+function tokenize(input: string): string[] {
+  return normalize(input)
+    .split(/[^a-z0-9]+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
 
 const INTENT_MAP: Record<string, string[]> = {
   overwhelmed: [
     "overwhelmed",
     "stressed",
+    "stress",
     "pressure",
     "burdened",
     "heavy",
     "too much",
     "mental load",
+    "anxious",
+    "anxiety",
+    "afraid",
+    "fear",
+    "worried",
+    "worry",
+    "rest",
+    "calm",
+    "peace",
+    "trust",
+    "guidance",
+    "refuge",
   ],
   guidance: [
     "guidance",
@@ -245,7 +257,6 @@ function scoreItem(item: ProverbEntry, query: string): number {
   const intentTagsText = (item.intentTags || []).map(normalize);
   const moodTagsText = (item.moodTags || []).map(normalize);
 
-  // Strong direct phrase match
   if (titleText.includes(q)) score += 20;
   if (bodyText.includes(q)) score += 14;
   if (topicsText.some((t) => t.includes(q))) score += 18;
@@ -253,7 +264,6 @@ function scoreItem(item: ProverbEntry, query: string): number {
   if (intentTagsText.some((i) => i.includes(q))) score += 24;
   if (moodTagsText.some((m) => m.includes(q))) score += 22;
 
-  // Expanded token match
   for (const token of expanded) {
     if (!token) continue;
 
@@ -266,7 +276,6 @@ function scoreItem(item: ProverbEntry, query: string): number {
     if (moodTagsText.some((m) => m.includes(token))) score += 15;
   }
 
-  // Intent-specific boosts
   for (const topic of detectedTopics) {
     if (intentTagsText.includes(topic)) score += 24;
     if (moodTagsText.includes(topic)) score += 20;
@@ -274,7 +283,6 @@ function scoreItem(item: ProverbEntry, query: string): number {
     if (keywordsText.includes(topic)) score += 12;
   }
 
-  // Special handling for overwhelmed-type searches
   if (detectedTopics.includes("overwhelmed")) {
     if (intentTagsText.includes("peace")) score += 18;
     if (intentTagsText.includes("trust")) score += 18;
@@ -293,7 +301,6 @@ function scoreItem(item: ProverbEntry, query: string): number {
     if (keywordsText.includes("refuge")) score += 8;
   }
 
-  // Slight penalty for weak generic matches
   if (
     detectedTopics.includes("overwhelmed") &&
     !intentTagsText.includes("peace") &&
