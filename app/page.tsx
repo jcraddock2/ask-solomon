@@ -909,7 +909,7 @@ ${link}`;
   const smartExpandedTerms = useMemo(() => expandSmartTerms(q), [q]);
 
 const proverbMatches = useMemo<ProverbMatch[]>(() => {
-  if (q.trim().length === 0) return [];
+  if (!q.trim()) return [];
 
   try {
     const found = searchProverbsScored(q, 8);
@@ -918,18 +918,23 @@ const proverbMatches = useMemo<ProverbMatch[]>(() => {
       .map((entry: any) => {
         const p = entry?.item ?? {};
         const rawScore = Number(entry?.score ?? 0);
+        const topics = Array.isArray(p?.topics)
+          ? p.topics.map((t: any) => String(t))
+          : [];
 
         return {
           ref: String(p?.ref ?? ""),
           text: String(p?.text ?? p?.body ?? ""),
-          topics: Array.isArray(p?.topics)
-            ? p.topics.map((t: any) => String(t))
-            : [],
+          topics,
           score: rawScore,
+          why:
+            topics.length > 0
+              ? `Matched topics: ${topics.slice(0, 3).join(", ")}`
+              : "Matched by Ask Solomon search",
         };
       })
       .filter((p) => p.ref && p.text)
-      .sort((a, b) => b.score - a.score || a.ref.localeCompare(b.ref))
+      .sort((a, b) => b.score - a.score)
       .slice(0, 8);
   } catch {
     return [];
