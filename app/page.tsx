@@ -940,7 +940,32 @@ const proverbMatches = useMemo<ProverbMatch[]>(() => {
     return [];
   }
 }, [q]);
+const promotedProverb = useMemo(
+  () => proverbMatches.find((p) => p.ref === promotedProverbRef) || null,
+  [proverbMatches, promotedProverbRef]
+);
 
+const relatedPromotedProverbs = useMemo(() => {
+  if (!promotedProverb) return [];
+  const promotedTopics = new Set(promotedProverb.topics.map((t) => normalizeText(t)));
+
+  return proverbMatches
+    .filter((p) => p.ref !== promotedProverb.ref)
+    .filter((p) => p.topics.some((t) => promotedTopics.has(normalizeText(t))))
+    .slice(0, 3);
+}, [promotedProverb, proverbMatches]);
+
+const bookMatches = useMemo<BookMatch[]>(() => {
+  if (q.trim().length === 0) return [];
+
+  try {
+    return asArray<BookMatch>(findBookMatches(q));
+  } catch {
+    return [];
+  }
+}, [q]);
+
+const rerollTodaysFocus = () => {
   const rerollTodaysFocus = () => {
     if (baseResults.length === 0) {
       setTodayFocusKey("");
