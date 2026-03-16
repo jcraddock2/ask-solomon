@@ -187,7 +187,60 @@ function expandSmartTerms(q: string): string[] {
 
   return Array.from(expanded);
 }
+function scoreProverbMatch(
+  proverb: { ref: string; text: string; topics: string[] },
+  q: string,
+  expandedTerms: string[]
+): ProverbMatch {
+  const query = normalizeText(q);
+  const text = normalizeText(proverb.text);
+  const ref = normalizeText(proverb.ref);
+  const topics = proverb.topics.map((t) => normalizeText(t));
 
+  let score = 0;
+  const why: string[] = [];
+
+  if (query && text.includes(query)) {
+    score += 10;
+    why.push("Direct phrase match");
+  }
+
+  if (query && topics.some((t) => t.includes(query))) {
+    score += 12;
+    why.push("Topic match");
+  }
+
+  if (query && ref.includes(query)) {
+    score += 4;
+    why.push("Reference match");
+  }
+
+  for (const term of expandedTerms) {
+    if (!term) continue;
+
+    if (topics.some((t) => t.includes(term))) {
+      score += 6;
+      if (!why.includes("Related topic")) why.push("Related topic");
+    }
+
+    if (text.includes(term)) {
+      score += 3;
+      if (!why.includes("Related keyword")) why.push("Related keyword");
+    }
+  }
+
+  if (topics.length > 0) {
+    score += Math.min(3, topics.length);
+  }
+
+  return {
+    ref: proverb.ref,
+    text: proverb.text,
+    topics: proverb.topics,
+    score,
+    why,
+  };
+}
 function PageInner() {
   const router = useRouter();
   const sp = useSearchParams();
