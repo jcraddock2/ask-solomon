@@ -895,16 +895,16 @@ ${link}`;
     return list;
   };
 
-  const baseResults = useMemo(
-    () => buildFilteredPool(),
-    [mode, sub, q, favoritesOnly, favoriteKeys]
-  );
+const baseResults = useMemo(
+  () => buildFilteredPool(),
+  [mode, sub, q, favoritesOnly, favoriteKeys]
+);
 
-  const results = useMemo(() => {
-    if (!todayFocusOn) return baseResults;
-    if (!todayFocusKey) return [];
-    return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
-  }, [baseResults, todayFocusOn, todayFocusKey]);
+const results = useMemo(() => {
+  if (!todayFocusOn) return baseResults;
+  if (!todayFocusKey) return [];
+  return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
+}, [baseResults, todayFocusOn, todayFocusKey]);
 
 const proverbMatches = useMemo<ProverbMatch[]>(() => {
   if (!q.trim()) return [];
