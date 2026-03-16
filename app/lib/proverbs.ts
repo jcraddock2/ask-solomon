@@ -378,12 +378,6 @@ export function getRelatedProverbs(
     .map((entry) => entry.item);
 }
 
-  return related
-    .filter((entry) => entry.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map((entry) => entry.item);
-}
 export const PROVERBS: ProverbEntry[] = [
   createProverb(
     "Proverbs 1:33",
