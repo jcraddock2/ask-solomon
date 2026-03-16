@@ -4,7 +4,8 @@
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isProUser } from "./lib/access";
-import { searchProverbs } from "./lib/proverbs";
+import { searchProverbs } from "./lib/proverbs"; 
+import { searchProverbs, searchProverbsScored } from "./lib/proverbs";
 import { smartSearch } from "./lib/intent";
 import {
   DATA,
@@ -908,25 +909,33 @@ ${link}`;
 
   const smartExpandedTerms = useMemo(() => expandSmartTerms(q), [q]);
 
-  const proverbMatches = useMemo<ProverbMatch[]>(() => {
-    if (q.trim().length === 0) return [];
-    try {
-      const found = searchProverbs(q) as any[];
+const proverbMatches = useMemo<ProverbMatch[]>(() => {
+  if (q.trim().length === 0) return [];
 
-      return asArray(found)
-        .map((p) => ({
+  try {
+    const found = searchProverbsScored(q, 8);
+
+    return asArray(found)
+      .map((entry: any) => {
+        const p = entry?.item ?? {};
+        const rawScore = Number(entry?.score ?? 0);
+
+        return {
           ref: String(p?.ref ?? ""),
           text: String(p?.text ?? p?.body ?? ""),
-          topics: Array.isArray(p?.topics) ? p.topics.map((t: any) => String(t)) : [],
-        }))
-        .filter((p) => p.ref && p.text)
-        .map((p) => scoreProverbMatch(p, q, smartExpandedTerms))
-        .sort((a, b) => b.score - a.score || a.ref.localeCompare(b.ref))
-        .slice(0, 8);
-    } catch {
-      return [];
-    }
-  }, [q, smartExpandedTerms]);
+          topics: Array.isArray(p?.topics)
+            ? p.topics.map((t: any) => String(t))
+            : [],
+          score: rawScore,
+        };
+      })
+      .filter((p) => p.ref && p.text)
+      .sort((a, b) => b.score - a.score || a.ref.localeCompare(b.ref))
+      .slice(0, 8);
+  } catch {
+    return [];
+  }
+}, [q]);
 
   const promotedProverb = useMemo(
     () => proverbMatches.find((p) => p.ref === promotedProverbRef) || null,
