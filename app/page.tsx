@@ -5,7 +5,6 @@ import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isProUser } from "./lib/access";
 import { searchProverbs } from "./lib/proverbs"; 
-import { searchProverbs, searchProverbsScored } from "./lib/proverbs";
 import { smartSearch } from "./lib/intent";
 import {
   DATA,
