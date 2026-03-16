@@ -832,43 +832,54 @@ ${link}`;
     return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
   }, [baseResults, todayFocusOn, todayFocusKey]);
 
-  const smartExpandedTerms = useMemo(() => expandSmartTerms(q), [q]);
+const smartExpandedTerms = useMemo(() => expandSmartTerms(q), [q]);
 
-  const proverbMatches = useMemo<ProverbMatch[]>(() => {
-    if (!q.trim()) return [];
+const proverbMatches = useMemo<ProverbMatch[]>(() => {
+  if (!q.trim()) return [];
 
-    try {
-      const found = searchProverbsScored(q, 8);
+  try {
+    const found = searchProverbsScored(q, 8);
 
-      return asArray(found)
-        .map((entry: any) => {
-          const p = entry?.item ?? {};
-          const rawScore = Number(entry?.score ?? 0);
-          const topics = Array.isArray(p?.topics)
-            ? p.topics.map((t: any) => String(t))
-            : [];
+    return asArray(found)
+      .map((entry: any) => {
+        const p = entry?.item ?? {};
+        const ref = String(p?.ref ?? "");
+        const text = String(p?.text ?? p?.body ?? "");
+        const topics = Array.isArray(p?.topics)
+          ? p.topics.map((t: any) => String(t))
+          : [];
 
-          return {
-            ref: String(p?.ref ?? ""),
-            text: String(p?.text ?? p?.body ?? ""),
-            topics,
-            score: rawScore,
-            why:
-              Array.isArray(entry?.why) && entry.why.length > 0
-                ? entry.why.map((w: any) => String(w))
-                : topics.length > 0
-                ? [`Matched topics: ${topics.slice(0, 3).join(", ")}`]
-                : ["Matched by Ask Solomon search"],
-          };
-        })
-        .filter((p) => p.ref && p.text)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 8);
-    } catch {
-      return [];
-    }
-  }, [q]);
+        const fallback = scoreProverbMatch(
+          { ref, text, topics },
+          q,
+          smartExpandedTerms
+        );
 
+        const rawScore = Number(entry?.score ?? fallback.score ?? 0);
+
+        return {
+          ref,
+          text,
+          topics,
+          score: rawScore,
+          why:
+            Array.isArray(entry?.why) && entry.why.length > 0
+              ? entry.why.map((w: any) => String(w))
+              : fallback.why.length > 0
+              ? fallback.why
+              : topics.length > 0
+              ? [`Matched topics: ${topics.slice(0, 3).join(", ")}`]
+              : ["Matched by Ask Solomon search"],
+        };
+      })
+      .filter((p) => p.ref && p.text)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 8);
+  } catch {
+    return [];
+  }
+}, [q, smartExpandedTerms]); 
+  
   const promotedProverb = useMemo(
     () => proverbMatches.find((p) => p.ref === promotedProverbRef) || null,
     [proverbMatches, promotedProverbRef]
