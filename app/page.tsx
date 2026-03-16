@@ -927,8 +927,8 @@ const proverbMatches = useMemo<ProverbMatch[]>(() => {
           score: rawScore,
           why:
             topics.length > 0
-              ? `Matched topics: ${topics.slice(0, 3).join(", ")}`
-              : "Matched by Ask Solomon search",
+              ? [`Matched topics: ${topics.slice(0, 3).join(", ")}`]
+              : ["Matched by Ask Solomon search"],
         };
       })
       .filter((p) => p.ref && p.text)
@@ -938,7 +938,6 @@ const proverbMatches = useMemo<ProverbMatch[]>(() => {
     return [];
   }
 }, [q]);
-
   const promotedProverb = useMemo(
     () => proverbMatches.find((p) => p.ref === promotedProverbRef) || null,
     [proverbMatches, promotedProverbRef]
