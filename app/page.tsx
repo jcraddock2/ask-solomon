@@ -1001,13 +1001,15 @@ const rerollTodaysFocus = () => {
     setTodayFocusKey("");
     setUrl({ q: topicQuery });
   };
-const applySituation = (value: string) => {
-  setQ(value);
-  setTodayFocusOn(false); 
-  setFavoritesOnly(false);
-  setTodayFocusKey("");
-  setUrl({ q: value });
-};
+
+  const applySituation = (value: string) => {
+    setQ(value);
+    setTodayFocusOn(false);
+    setFavoritesOnly(false);
+    setTodayFocusKey("");
+    setUrl({ q: value });
+  };
+
   const renderEmptyState = () => {
     if (favoritesOnly && favoritesCount === 0) {
       return (
@@ -1051,39 +1053,7 @@ const applySituation = (value: string) => {
   return (
     <div style={outerStyle}>
       <main style={pageStyle}>
-        <header style={{ marginBottom: 16 }}>
-          <div style={headerRow}>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
-              <h1 style={{ margin: 0, fontSize: 40, letterSpacing: -0.8 }}>Ask Solomon</h1>
-              <span style={badgeStyle(isPro)}>{isPro ? "PRO" : "FREE"}</span>
-            </div>
-
-            <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
-              <button type="button" style={headerBtn} onClick={() => router.push("/book")}>
-                Book
-              </button>
-
-              <button type="button" style={headerBtn} onClick={() => router.push("/book-index")}>
-                Topics Index
-              </button>
-
-              {!isPro && (
-                <button
-                  type="button"
-                  style={{
-                    ...headerBtn,
-                    background: "rgba(17,24,39,0.92)",
-                    color: "#fff",
-                    border: "1px solid rgba(0,0,0,0.16)",
-                  }}
-                  onClick={() => router.push("/upgrade")}
-                >
-                  Upgrade (Lifetime)
-                </button>
-              )}
-            </div>
-          </div>
-
+        <header style={{ marginBottom: 18 }}>
           <p style={{ marginTop: 8, marginBottom: 0, color: "#334155", fontWeight: 800 }}>
             Encouragement first—wisdom from Proverbs for what you’re facing right now.
           </p>
@@ -1224,7 +1194,6 @@ const applySituation = (value: string) => {
                 </select>
               </div>
             </div>
-
             {mode === "encouragement" && (
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
                 <button
