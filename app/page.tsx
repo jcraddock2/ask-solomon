@@ -1855,266 +1855,159 @@ const renderEmptyState = () => {
                   >
                     {p.ref}
                   </div>
+{p.why.length > 0 && (
+  <div style={{ marginTop: 10 }}>
+    <div
+      style={{
+        fontSize: 12,
+        fontWeight: 900,
+        color: "#64748b",
+        marginBottom: 6,
+      }}
+    >
+      Why this matched
+    </div>
+    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      {p.why.map((reason) => (
+        <span
+          key={reason}
+          style={{
+            padding: "6px 10px",
+            borderRadius: 999,
+            border: "1px solid rgba(0,0,0,0.08)",
+            background: "rgba(255,255,255,0.92)",
+            fontWeight: 800,
+            fontSize: 11,
+            color: "#334155",
+          }}
+        >
+          {reason}
+        </span>
+      ))}
+    </div>
+  </div>
+)}
+                </div>
 
-                  {p.why.length > 0 && (
-                    <div style={{ marginTop: 10 }}>
-                      <div
-                        style={{
-                          fontSize: 12,
-                          fontWeight: 900,
-                          color: "#64748b",
-                          marginBottom: 6,
-                        }}
-                      >
-                        Why this matched
-                      </div>
-                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                        {p.why.map((reason) => (
-                          <span
-                            key={reason}
-                            style={{
-                              padding: "6px 10px",
-                              borderRadius: 999,
-                              border: "1px solid rgba(0,0,0,0.08)",
-                              background: "rgba(255,255,255,0.92)",
-                              fontWeight: 800,
-                              fontSize: 11,
-                              color: "#334155",
-                            }}
-                          >
-                            {reason}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                      >
-                        Why this matched
-                      </div>
-                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                        {p.why.map((reason) => (
-                          <span
-                            key={reason}
-                            style={{
-                              padding: "6px 10px",
-                              borderRadius: 999,
-                              border: "1px solid rgba(0,0,0,0.08)",
-                              background: "rgba(255,255,255,0.92)",
-                              fontWeight: 800,
-                              fontSize: 11,
-                              color: "#334155",
-                            }}
-                          >
-                            {reason}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                      <div
-                        style={{
-                          marginTop: 6,
-                          color: "#334155",
-                          fontWeight: 800,
-                          fontSize: 13,
-                          lineHeight: 1.5,
-                        }}
-                      >
-                        {p.text}
-                      </div>
-
-                      {p.topics.length > 0 && (
-                        <div
-                          style={{
-                            marginTop: 8,
-                            color: "#64748b",
-                            fontWeight: 900,
-                            fontSize: 12,
-                          }}
-                        >
-                          Topics: {p.topics.join(" • ")}
-                        </div>
-                      )}
-
-                      {p.why.length > 0 && (
-                        <div
-                          style={{
-                            marginTop: 8,
-                            fontSize: 12,
-                            fontWeight: 800,
-                            color: "#475569",
-                          }}
-                        >
-                          {p.why.join(" • ")}
-                        </div>
-                      )}
-
-                      <div
-                        style={{
-                          marginTop: 10,
-                          fontSize: 12,
-                          fontWeight: 900,
-                          color: "#6366f1",
-                        }}
-                      >
-                        Open full card
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {todayFocusOn && (
-            <div
-              style={{
-                fontSize: 14,
-                fontWeight: 900,
-                marginBottom: 8,
-                color: "#6366f1",
-                letterSpacing: ".02em",
-              }}
-            >
-              ✨ Today’s Focus
-            </div>
-          )}
-
-          <div style={{ display: "grid", gap: 12 }}>
-            {results.length === 0 ? (
-              renderEmptyState()
-            ) : (
-              results.map((item) => {
-                const key = `${item.ref}-${item.title}`;
-                const isFav = !!favoriteKeys[key];
-                const isCopied = copiedKey === key;
-                const isSavedFlash = savedKey === key;
-                const hovered = hoverKey === key;
-
-                return (
-                  <div
-                    key={key}
-                    className="verseCard"
-                    style={{
-                      ...softCardStyle,
-                      transform: hovered ? "translateY(-2px)" : "translateY(0px)",
-                      boxShadow: hovered
-                        ? "0 18px 44px rgba(0,0,0,0.12)"
-                        : (softCardStyle.boxShadow as string),
-                    }}
-                    onMouseEnter={() => setHoverKey(key)}
-                    onMouseLeave={() => setHoverKey("")}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 8,
+                    alignItems: "flex-end",
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => toggleFavorite(proverbKey)}
+                    style={miniBtn}
+                    title={isFav ? "Saved" : "Save this verse"}
+                    aria-label={isFav ? "Saved" : "Save this verse"}
                   >
-                    <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 900, fontSize: 18, color: "#111" }}>
-                          {item.title}
-                        </div>
+                    {isFav ? "★" : "☆"}
+                  </button>
 
-                        <div
-                          style={{
-                            marginTop: 8,
-                            fontSize: 15,
-                            lineHeight: 1.55,
-                            color: "#111",
-                            fontWeight: 650,
-                          }}
-                        >
-                          {item.body}
-                        </div>
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(proverbItem, proverbKey)}
+                    style={{ ...miniBtn, fontSize: 12 }}
+                    title="Copy verse"
+                  >
+                    {isCopied ? "Copied" : "Copy"}
+                  </button>
 
-                        <div
-                          style={{
-                            marginTop: 10,
-                            fontSize: 12,
-                            color: "#64748b",
-                            fontWeight: 700,
-                          }}
-                        >
-                          Save this. Sit with it. Apply it today.
-                        </div>
+                  <button
+                    type="button"
+                    onClick={() => handleShare(proverbItem, proverbKey)}
+                    style={{ ...miniBtn, fontSize: 12 }}
+                    title="Share this verse"
+                  >
+                    Share
+                  </button>
 
-                        <div
-                          style={{
-                            marginTop: 10,
-                            fontSize: 12,
-                            color: "#64748b",
-                            fontWeight: 900,
-                          }}
-                        >
-                          {item.ref}
-                        </div>
+                  <button
+                    type="button"
+                    onClick={() => handleImage(proverbItem)}
+                    style={{
+                      ...miniBtn,
+                      fontSize: 12,
+                      background: "rgba(99,102,241,0.10)",
+                      border: "1px solid rgba(99,102,241,0.18)",
+                    }}
+                    title="Create a share image"
+                  >
+                    Image
+                  </button>
 
-                        {isSavedFlash && (
-                          <div
-                            style={{
-                              marginTop: 6,
-                              fontSize: 12,
-                              fontWeight: 900,
-                              color: "#111",
-                            }}
-                          >
-                            ✅ Saved to Favorites
-                          </div>
-                        )}
-                      </div>
+                  <button
+                    type="button"
+                    onClick={() => setPromotedProverbRef("")}
+                    style={{
+                      ...miniBtn,
+                      fontSize: 12,
+                      background: "rgba(99,102,241,0.10)",
+                      border: "1px solid rgba(99,102,241,0.18)",
+                      color: "#4338ca",
+                    }}
+                    title="Collapse full card"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
 
-                      <div
+              {relatedPromotedProverbs.length > 0 && (
+                <div style={{ marginTop: 14 }}>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 900,
+                      color: "#64748b",
+                      marginBottom: 8,
+                    }}
+                  >
+                    Related Proverbs
+                  </div>
+
+                  <div style={{ display: "grid", gap: 8 }}>
+                    {relatedPromotedProverbs.map((related) => (
+                      <button
+                        key={related.ref}
+                        type="button"
+                        onClick={() => setPromotedProverbRef(related.ref)}
                         style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: 8,
-                          alignItems: "flex-end",
+                          textAlign: "left",
+                          border: "1px solid rgba(0,0,0,0.08)",
+                          background: "rgba(255,255,255,0.92)",
+                          borderRadius: 14,
+                          padding: 12,
+                          cursor: "pointer",
                         }}
                       >
-                        <button
-                          type="button"
-                          onClick={() => toggleFavorite(key)}
-                          style={miniBtn}
-                          title={isFav ? "Saved" : "Save this verse"}
-                          aria-label={isFav ? "Saved" : "Save this verse"}
-                        >
-                          {isFav ? "★" : "☆"}
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => handleCopy(item, key)}
-                          style={{ ...miniBtn, fontSize: 12 }}
-                          title="Copy verse"
-                        >
-                          {isCopied ? "Copied" : "Copy"}
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => handleShare(item, key)}
-                          style={{ ...miniBtn, fontSize: 12 }}
-                          title="Share this verse"
-                        >
-                          Share
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => handleImage(item)}
+                        <div style={{ fontWeight: 900, fontSize: 13, color: "#111" }}>
+                          {related.ref}
+                        </div>
+                        <div
                           style={{
-                            ...miniBtn,
-                            fontSize: 12,
-                            background: "rgba(99,102,241,0.10)",
-                            border: "1px solid rgba(99,102,241,0.18)",
+                            marginTop: 6,
+                            color: "#334155",
+                            fontWeight: 800,
+                            fontSize: 13,
+                            lineHeight: 1.5,
                           }}
-                          title="Create a share image"
                         >
-                          Image
-                        </button>
-                      </div>
-                    </div>
+                          {related.text}
+                        </div>
+                      </button>
+                    ))}
                   </div>
-                );
-              })
-            )}
-          </div>
+                </div>
+              )}
+            </div>
+          );
+        }
+
+        return (
 
           <style jsx global>{`
             @keyframes pulseGlow {
