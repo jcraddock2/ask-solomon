@@ -4,7 +4,7 @@
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isProUser } from "./lib/access";
-import { searchProverbs } from "./lib/proverbs"; 
+import { searchProverbsScored } from "./lib/proverbs";
 import { smartSearch } from "./lib/intent";
 import {
   DATA,
@@ -905,8 +905,6 @@ ${link}`;
     if (!todayFocusKey) return [];
     return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
   }, [baseResults, todayFocusOn, todayFocusKey]);
-
-  const smartExpandedTerms = useMemo(() => expandSmartTerms(q), [q]);
 
 const proverbMatches = useMemo<ProverbMatch[]>(() => {
   if (!q.trim()) return [];
