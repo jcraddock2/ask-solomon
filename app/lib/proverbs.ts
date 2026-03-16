@@ -324,6 +324,29 @@ export function searchProverbs(query: string, limit = 12): ProverbEntry[] {
   return scored.slice(0, limit).map((entry) => entry.item);
 }
 
+export function searchProverbsScored(
+  query: string,
+  limit = 12
+): ScoredResult[] {
+  const cleaned = query.trim();
+
+  if (!cleaned) {
+    return PROVERBS.slice(0, limit).map((item) => ({
+      item,
+      score: 0,
+    }));
+  }
+
+  const scored: ScoredResult[] = PROVERBS.map((item) => ({
+    item,
+    score: scoreItem(item, cleaned),
+  }))
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  return scored.slice(0, limit);
+}
+
 export function getRelatedProverbs(
   source: ProverbEntry,
   limit = 4
@@ -347,6 +370,13 @@ export function getRelatedProverbs(
 
       return { item, score };
     });
+
+  return related
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((entry) => entry.item);
+}
 
   return related
     .filter((entry) => entry.score > 0)
