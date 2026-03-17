@@ -60,40 +60,43 @@ export const TOPICS: Topic[] = [
 
 export const DATA: VerseItem[] = [
   // ENCOURAGEMENT — Peace
-  {
-    mode: "encouragement",
-    sub: "peace",
-    title: "Peace in anxious moments",
-    body: "When your mind is racing, choose the calm path—wisdom steadies the heart.",
-    ref: "Proverbs 12:25",
-    tags: ["anxiety", "peace", "fear"],
-  },
-  {
-    mode: "encouragement",
-    sub: "peace",
-    title: "Guard your heart",
-    body: "Protect what you allow into your mind. Peace is built by boundaries—what you focus on grows.",
-    ref: "Proverbs 4:23",
-    tags: ["peace", "discipline", "integrity"],
-  },
-  {
-    mode: "encouragement",
-    sub: "peace",
-    title: "Gentle words soften pressure",
-    body: "When tension rises, lower your voice—wisdom turns down the fire.",
-    ref: "Proverbs 15:1",
-    tags: ["anger", "relationships", "leadership"],
-  },
-
+ {
+  mode: "encouragement",
+  sub: "peace",
+  title: "Peace in anxious moments",
+  body: "When your mind is racing, choose the calm path—wisdom steadies the heart.",
+  ref: "Proverbs 12:25",
+  tags: ["anxiety", "peace", "fear", "comfort", "heart", "hurting", "encouragement"],
+  keywords: ["anxious", "hurting", "hurt", "heavy heart", "comfort", "peace", "calm"],
+},
+ {
+  mode: "encouragement",
+  sub: "peace",
+  title: "Guard your heart",
+  body: "Protect what you allow into your mind. Peace is built by boundaries—what you focus on grows.",
+  ref: "Proverbs 4:23",
+  tags: ["peace", "discipline", "integrity", "heart", "healing", "emotional pain"],
+  keywords: ["heart", "healing", "hurt", "inner life", "peace", "guard your heart"],
+},
+{
+  mode: "encouragement",
+  sub: "peace",
+  title: "Gentle words soften pressure",
+  body: "When tension rises, lower your voice—wisdom turns down the fire.",
+  ref: "Proverbs 15:1",
+  tags: ["anger", "relationships", "leadership", "gentle", "comfort", "hurt"],
+  keywords: ["hurt", "hurting", "gentle", "comfort", "relationship conflict", "healing words"],
+},
   // ENCOURAGEMENT — Strength
-  {
-    mode: "encouragement",
-    sub: "strength",
-    title: "Strength for the day",
-    body: "Don’t quit in the pressure—steady courage grows quietly and wins later.",
-    ref: "Proverbs 24:10",
-    tags: ["strength", "discipline", "work"],
-  },
+ {
+  mode: "encouragement",
+  sub: "strength",
+  title: "Strength for the day",
+  body: "Don’t quit in the pressure—steady courage grows quietly and wins later.",
+  ref: "Proverbs 24:10",
+  tags: ["strength", "discipline", "work", "weary", "adversity", "hurting"],
+  keywords: ["hurting", "weary", "pain", "adversity", "strength", "endure"],
+},
   {
     mode: "encouragement",
     sub: "strength",
