@@ -14,6 +14,7 @@ export type ProverbEntry = {
 type ScoredResult = {
   item: ProverbEntry;
   score: number;
+  why: string[];
 };
 
 function createProverb(
@@ -38,295 +39,459 @@ function createProverb(
 }
 
 function normalize(input: string): string {
-  return input.toLowerCase().trim();
+  return input
+    .toLowerCase()
+    .replace(/[^\w\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function singularize(word: string): string {
+  if (word.endsWith("ies") && word.length > 4) return `${word.slice(0, -3)}y`;
+  if (word.endsWith("es") && word.length > 4) return word.slice(0, -2);
+  if (word.endsWith("s") && word.length > 3) return word.slice(0, -1);
+  return word;
 }
 
 function tokenize(input: string): string[] {
   return normalize(input)
-    .split(/[^a-z0-9]+/)
-    .map((s) => s.trim())
+    .split(" ")
+    .map((s) => singularize(s.trim()))
     .filter(Boolean);
 }
 
-const INTENT_MAP: Record<string, string[]> = {
-  overwhelmed: [
-    "overwhelmed",
-    "stressed",
-    "stress",
-    "pressure",
-    "burdened",
-    "heavy",
-    "too much",
-    "mental load",
-    "anxious",
-    "anxiety",
-    "afraid",
-    "fear",
-    "worried",
-    "worry",
-    "rest",
-    "calm",
-    "peace",
-    "trust",
-    "guidance",
-    "refuge",
-  ],
-  guidance: [
-    "guidance",
-    "direction",
-    "clarity",
-    "decision",
-    "next step",
-    "discernment",
-    "which way",
-    "what should i do",
-    "lost",
-    "confused",
-    "uncertain",
-  ],
-  money: [
-    "money",
-    "finances",
-    "debt",
-    "bills",
-    "wealth",
-    "provision",
-    "lack",
-    "income",
-    "prosperity",
-    "poor",
-  ],
-  fear: [
-    "fear",
-    "afraid",
-    "panic",
-    "worried",
-    "scared",
-    "anxious",
-    "anxiety",
-    "nervous",
-  ],
-  wisdom: [
-    "wisdom",
-    "understanding",
-    "insight",
-    "knowledge",
-    "discernment",
-    "wise",
-  ],
-  discipline: [
-    "discipline",
-    "lazy",
-    "focus",
-    "self control",
-    "consistency",
-    "diligence",
-    "motivation",
-  ],
-  relationships: [
-    "relationship",
-    "friend",
-    "conflict",
-    "marriage",
-    "peace",
-    "people",
-    "argument",
-    "strife",
-    "wife",
-    "husband",
-  ],
-  pride: [
-    "pride",
-    "ego",
-    "humility",
-    "arrogance",
-    "teachable",
-    "correction",
-    "wise in my own eyes",
-  ],
-  anger: [
-    "anger",
-    "angry",
-    "offended",
-    "temper",
-    "rage",
-    "frustrated",
-    "mad",
-  ],
-  health: [
-    "health",
-    "healing",
-    "body",
-    "bones",
-    "strength",
-    "life",
-    "energy",
-    "wellness",
-  ],
-  success: [
-    "success",
-    "prosper",
-    "prosperity",
-    "favor",
-    "promotion",
-    "victory",
-    "fruitful",
-    "increase",
-  ],
-  protection: [
-    "protection",
-    "safety",
-    "secure",
-    "guard",
-    "shield",
-    "refuge",
-    "deliverance",
-    "covering",
-  ],
-  trust: [
-    "trust",
-    "faith",
-    "depend on god",
-    "lean not",
-    "submit",
-    "surrender",
-  ],
-  peace: [
-    "peace",
-    "calm",
-    "rest",
-    "quiet",
-    "stillness",
-    "settled",
-  ],
-  encouragement: [
-    "encouragement",
-    "hope",
-    "strength",
-    "weary",
-    "tired",
-    "discouraged",
-    "giving up",
-  ],
+type IntentProfile = {
+  name: string;
+  patterns: string[];
+  relatedIntents?: string[];
+  boostTopics: string[];
+  boostKeywords: string[];
+  boostMoodTags: string[];
+  boostIntentTags: string[];
+  avoidIfMissing?: string[];
 };
 
-function detectIntent(query: string): string[] {
+const INTENT_MAP: IntentProfile[] = [
+  {
+    name: "overwhelmed",
+    patterns: [
+      "i feel overwhelmed",
+      "overwhelmed",
+      "too much",
+      "stressed",
+      "stress",
+      "pressure",
+      "burned out",
+      "burnt out",
+      "exhausted",
+      "mentally drained",
+      "life feels heavy",
+      "heavy heart",
+      "i cant handle this",
+      "i can't handle this",
+    ],
+    relatedIntents: ["peace", "trust", "guidance", "encouragement"],
+    boostTopics: ["peace", "rest", "guidance", "trust", "strength", "wisdom"],
+    boostKeywords: ["peace", "rest", "calm", "trust", "refuge", "help", "direction"],
+    boostMoodTags: ["overwhelmed", "anxious", "afraid", "uncertain", "weary"],
+    boostIntentTags: ["peace", "trust", "guidance", "encouragement", "protection"],
+    avoidIfMissing: ["peace", "trust", "guidance", "encouragement"],
+  },
+  {
+    name: "fear",
+    patterns: [
+      "fear",
+      "afraid",
+      "scared",
+      "panic",
+      "anxious",
+      "anxiety",
+      "worried",
+      "worry",
+      "nervous",
+      "uncertain",
+    ],
+    relatedIntents: ["peace", "trust", "protection"],
+    boostTopics: ["peace", "trust", "protection", "confidence", "faith"],
+    boostKeywords: ["fear", "trust", "peace", "refuge", "confidence", "secure"],
+    boostMoodTags: ["afraid", "anxious", "worried", "uncertain"],
+    boostIntentTags: ["peace", "trust", "protection", "faith"],
+    avoidIfMissing: ["peace", "trust", "protection"],
+  },
+  {
+    name: "guidance",
+    patterns: [
+      "guidance",
+      "direction",
+      "need direction",
+      "need guidance",
+      "what should i do",
+      "next step",
+      "which way",
+      "decision",
+      "decide",
+      "clarity",
+      "confused",
+      "unclear",
+      "lost",
+    ],
+    relatedIntents: ["wisdom", "trust"],
+    boostTopics: ["guidance", "direction", "wisdom", "discernment", "instruction"],
+    boostKeywords: ["path", "steps", "instruction", "understanding", "wisdom", "counsel"],
+    boostMoodTags: ["uncertain", "seeking", "confused"],
+    boostIntentTags: ["guidance", "wisdom", "faith"],
+    avoidIfMissing: ["guidance", "wisdom", "direction"],
+  },
+  {
+    name: "money",
+    patterns: [
+      "money",
+      "finances",
+      "financial",
+      "bills",
+      "debt",
+      "broke",
+      "provision",
+      "income",
+      "wealth",
+      "prosperity",
+      "poor",
+      "poverty",
+      "money stress",
+      "worried about money",
+      "struggling financially",
+    ],
+    relatedIntents: ["discipline", "work", "stewardship"],
+    boostTopics: ["wealth", "stewardship", "provision", "diligence", "contentment"],
+    boostKeywords: ["debt", "wealth", "provision", "labor", "diligence", "increase", "poverty"],
+    boostMoodTags: ["worried", "uncertain", "reflective"],
+    boostIntentTags: ["finances", "wisdom", "motivation", "faith"],
+    avoidIfMissing: ["finances", "wealth", "provision", "stewardship", "diligence"],
+  },
+  {
+    name: "anger",
+    patterns: [
+      "anger",
+      "angry",
+      "mad",
+      "offended",
+      "temper",
+      "rage",
+      "furious",
+      "frustrated",
+    ],
+    relatedIntents: ["peace", "self-control"],
+    boostTopics: ["self-control", "peace", "patience", "speech", "relationships"],
+    boostKeywords: ["anger", "wrath", "gentle", "soft answer", "restraint", "patience"],
+    boostMoodTags: ["angry", "frustrated", "hurt"],
+    boostIntentTags: ["wisdom", "relationships", "guidance"],
+    avoidIfMissing: ["anger", "peace", "self-control", "patience"],
+  },
+  {
+    name: "discouraged",
+    patterns: [
+      "discouraged",
+      "down",
+      "sad",
+      "hopeless",
+      "defeated",
+      "giving up",
+      "want to give up",
+      "feel like quitting",
+      "weary",
+      "tired",
+      "low",
+    ],
+    relatedIntents: ["hope", "encouragement", "strength"],
+    boostTopics: ["hope", "encouragement", "strength", "joy", "peace"],
+    boostKeywords: ["hope", "strength", "joy", "glad", "rise", "life", "heart"],
+    boostMoodTags: ["weary", "sad", "hurt", "hopeful"],
+    boostIntentTags: ["encouragement", "faith", "wisdom"],
+    avoidIfMissing: ["hope", "encouragement", "strength"],
+  },
+  {
+    name: "relationships",
+    patterns: [
+      "relationship",
+      "marriage",
+      "friend",
+      "friendship",
+      "betrayed",
+      "forgiveness",
+      "offended",
+      "argument",
+      "conflict",
+      "trust issue",
+      "people problem",
+    ],
+    relatedIntents: ["speech", "peace"],
+    boostTopics: ["relationships", "speech", "peace", "love", "forgiveness"],
+    boostKeywords: ["gentle", "answer", "friend", "love", "peace", "kindness", "offense"],
+    boostMoodTags: ["hurt", "angry", "reflective"],
+    boostIntentTags: ["relationships", "wisdom", "guidance"],
+    avoidIfMissing: ["relationships", "speech", "peace", "love"],
+  },
+  {
+    name: "discipline",
+    patterns: [
+      "discipline",
+      "lazy",
+      "laziness",
+      "procrastinating",
+      "procrastination",
+      "stuck",
+      "unmotivated",
+      "motivation",
+      "consistency",
+      "focus",
+      "productive",
+    ],
+    relatedIntents: ["work", "diligence"],
+    boostTopics: ["discipline", "diligence", "work", "focus", "instruction"],
+    boostKeywords: ["discipline", "diligent", "labor", "work", "instruction", "effort"],
+    boostMoodTags: ["lazy", "unmotivated", "determined"],
+    boostIntentTags: ["motivation", "wisdom", "guidance"],
+    avoidIfMissing: ["discipline", "diligence", "work"],
+  },
+  {
+    name: "leadership",
+    patterns: [
+      "leadership",
+      "leader",
+      "lead people",
+      "team",
+      "staff",
+      "manager",
+      "supervisor",
+      "authority",
+      "influence",
+      "communication at work",
+      "conflict at work",
+    ],
+    relatedIntents: ["wisdom", "speech", "justice"],
+    boostTopics: ["leadership", "wisdom", "speech", "justice", "discernment"],
+    boostKeywords: ["counsel", "king", "ruler", "speech", "justice", "understanding"],
+    boostMoodTags: ["reflective", "seeking"],
+    boostIntentTags: ["leadership", "wisdom", "guidance"],
+    avoidIfMissing: ["leadership", "wisdom", "justice", "speech"],
+  },
+];
+
+function detectIntent(query: string): IntentProfile[] {
   const q = normalize(query);
-  const matched = new Set<string>();
+  if (!q) return [];
 
-  for (const [intent, synonyms] of Object.entries(INTENT_MAP)) {
-    for (const synonym of synonyms) {
-      if (q.includes(normalize(synonym))) {
-        matched.add(intent);
-      }
-    }
-  }
-
-  return Array.from(matched);
+  return INTENT_MAP.filter((intent) =>
+    intent.patterns.some((pattern) => q.includes(normalize(pattern)))
+  );
 }
 
 function expandQuery(query: string): string[] {
   const q = normalize(query);
   const tokens = new Set<string>(tokenize(q));
 
-  for (const detected of detectIntent(q)) {
-    tokens.add(detected);
+  for (const intent of detectIntent(q)) {
+    tokens.add(intent.name);
 
-    for (const synonym of INTENT_MAP[detected] || []) {
-      tokens.add(normalize(synonym));
-    }
+    for (const x of intent.relatedIntents || []) tokens.add(normalize(x));
+    for (const x of intent.boostTopics) tokens.add(normalize(x));
+    for (const x of intent.boostKeywords) tokens.add(normalize(x));
+    for (const x of intent.boostMoodTags) tokens.add(normalize(x));
+    for (const x of intent.boostIntentTags) tokens.add(normalize(x));
   }
 
   return Array.from(tokens);
 }
 
-function scoreItem(item: ProverbEntry, query: string): number {
-  const expanded = expandQuery(query);
-  if (expanded.length === 0) return 0;
+function fieldBlob(item: ProverbEntry) {
+  return {
+    ref: normalize(item.ref),
+    title: normalize(item.title),
+    body: normalize(item.body),
+    topics: (item.topics || []).map(normalize),
+    keywords: (item.keywords || []).map(normalize),
+    intentTags: (item.intentTags || []).map(normalize),
+    moodTags: (item.moodTags || []).map(normalize),
+  };
+}
 
+function addReason(why: string[], reason: string) {
+  if (!why.includes(reason)) why.push(reason);
+}
+
+function scoreEntry(item: ProverbEntry, query: string): ScoredResult {
+  const q = normalize(query);
+  const expanded = expandQuery(query);
+  const intents = detectIntent(query);
+
+  const fields = fieldBlob(item);
+  const why: string[] = [];
   let score = 0;
 
-  const q = normalize(query);
-  const detectedTopics = detectIntent(query);
+  if (!q) {
+    return { item, score: 0, why: [] };
+  }
 
-  const refText = normalize(item.ref);
-  const titleText = normalize(item.title);
-  const bodyText = normalize(item.body);
-  const topicsText = (item.topics || []).map(normalize);
-  const keywordsText = (item.keywords || []).map(normalize);
-  const intentTagsText = (item.intentTags || []).map(normalize);
-  const moodTagsText = (item.moodTags || []).map(normalize);
+  // strong full-query boosts
+  if (fields.title.includes(q)) {
+    score += 40;
+    addReason(why, "Title phrase match");
+  }
+  if (fields.body.includes(q)) {
+    score += 26;
+    addReason(why, "Verse phrase match");
+  }
+  if (fields.topics.some((t) => t.includes(q))) {
+    score += 44;
+    addReason(why, "Topic phrase match");
+  }
+  if (fields.keywords.some((k) => k.includes(q))) {
+    score += 42;
+    addReason(why, "Keyword phrase match");
+  }
+  if (fields.intentTags.some((t) => t.includes(q))) {
+    score += 48;
+    addReason(why, "Intent phrase match");
+  }
+  if (fields.moodTags.some((t) => t.includes(q))) {
+    score += 44;
+    addReason(why, "Mood phrase match");
+  }
 
-  if (titleText.includes(q)) score += 20;
-  if (bodyText.includes(q)) score += 14;
-  if (topicsText.some((t) => t.includes(q))) score += 18;
-  if (keywordsText.some((k) => k.includes(q))) score += 18;
-  if (intentTagsText.some((i) => i.includes(q))) score += 24;
-  if (moodTagsText.some((m) => m.includes(q))) score += 22;
-
+  // token and expanded semantic boosts
   for (const token of expanded) {
     if (!token) continue;
 
-    if (refText.includes(token)) score += 4;
-    if (titleText.includes(token)) score += 8;
-    if (bodyText.includes(token)) score += 5;
-    if (topicsText.some((t) => t.includes(token))) score += 10;
-    if (keywordsText.some((k) => k.includes(token))) score += 11;
-    if (intentTagsText.some((i) => i.includes(token))) score += 16;
-    if (moodTagsText.some((m) => m.includes(token))) score += 15;
+    if (fields.title.includes(token)) score += 10;
+    if (fields.body.includes(token)) score += 6;
+    if (fields.ref.includes(token)) score += 2;
+
+    if (fields.topics.some((t) => t.includes(token))) {
+      score += 16;
+      addReason(why, "Related topic");
+    }
+
+    if (fields.keywords.some((k) => k.includes(token))) {
+      score += 18;
+      addReason(why, "Related keyword");
+    }
+
+    if (fields.intentTags.some((t) => t.includes(token))) {
+      score += 24;
+      addReason(why, "Intent alignment");
+    }
+
+    if (fields.moodTags.some((t) => t.includes(token))) {
+      score += 22;
+      addReason(why, "Emotional state match");
+    }
   }
 
-  for (const topic of detectedTopics) {
-    if (intentTagsText.includes(topic)) score += 24;
-    if (moodTagsText.includes(topic)) score += 20;
-    if (topicsText.includes(topic)) score += 14;
-    if (keywordsText.includes(topic)) score += 12;
+  // intent-specific weighting
+  for (const intent of intents) {
+    const topicHits = intent.boostTopics.filter((x) =>
+      fields.topics.some((t) => t.includes(normalize(x)))
+    ).length;
+
+    const keywordHits = intent.boostKeywords.filter((x) =>
+      fields.keywords.some((k) => k.includes(normalize(x))) ||
+      fields.body.includes(normalize(x)) ||
+      fields.title.includes(normalize(x))
+    ).length;
+
+    const moodHits = intent.boostMoodTags.filter((x) =>
+      fields.moodTags.some((m) => m.includes(normalize(x)))
+    ).length;
+
+    const intentHits = intent.boostIntentTags.filter((x) =>
+      fields.intentTags.some((t) => t.includes(normalize(x)))
+    ).length;
+
+    if (topicHits > 0) {
+      score += topicHits * 18;
+      addReason(why, `${intent.name} topic fit`);
+    }
+
+    if (keywordHits > 0) {
+      score += keywordHits * 10;
+      addReason(why, `${intent.name} keyword fit`);
+    }
+
+    if (moodHits > 0) {
+      score += moodHits * 18;
+      addReason(why, `${intent.name} mood fit`);
+    }
+
+    if (intentHits > 0) {
+      score += intentHits * 22;
+      addReason(why, `${intent.name} intent fit`);
+    }
+
+    // penalize clearly off-theme verses for strong emotional searches
+    if (
+      intent.avoidIfMissing &&
+      !intent.avoidIfMissing.some(
+        (x) =>
+          fields.topics.includes(normalize(x)) ||
+          fields.keywords.includes(normalize(x)) ||
+          fields.intentTags.includes(normalize(x))
+      )
+    ) {
+      score -= 14;
+    }
   }
 
-  if (detectedTopics.includes("overwhelmed")) {
-    if (intentTagsText.includes("peace")) score += 18;
-    if (intentTagsText.includes("trust")) score += 18;
-    if (intentTagsText.includes("guidance")) score += 16;
-    if (intentTagsText.includes("protection")) score += 10;
+  // generic usefulness bonuses
+  if (fields.topics.length > 0) score += Math.min(6, fields.topics.length);
+  if (fields.intentTags.length > 0) score += Math.min(6, fields.intentTags.length);
 
-    if (moodTagsText.includes("overwhelmed")) score += 20;
-    if (moodTagsText.includes("anxious")) score += 18;
-    if (moodTagsText.includes("afraid")) score += 16;
-    if (moodTagsText.includes("uncertain")) score += 12;
+  // stronger penalty for weak accidental matches
+  const exactIntentFit =
+    intents.length === 0 ||
+    intents.some((intent) =>
+      [
+        ...intent.boostTopics.map(normalize),
+        ...intent.boostKeywords.map(normalize),
+        ...intent.boostIntentTags.map(normalize),
+        ...intent.boostMoodTags.map(normalize),
+      ].some(
+        (term) =>
+          fields.topics.includes(term) ||
+          fields.keywords.includes(term) ||
+          fields.intentTags.includes(term) ||
+          fields.moodTags.includes(term) ||
+          fields.body.includes(term)
+      )
+    );
 
-    if (keywordsText.includes("peace")) score += 10;
-    if (keywordsText.includes("rest")) score += 10;
-    if (keywordsText.includes("calm")) score += 10;
-    if (keywordsText.includes("trust")) score += 10;
-    if (keywordsText.includes("refuge")) score += 8;
+  if (!exactIntentFit) score -= 18;
+
+  return { item, score, why };
+}
+
+function uniqueScoredByRef(items: ScoredResult[]): ScoredResult[] {
+  const best = new Map<string, ScoredResult>();
+
+  for (const entry of items) {
+    const key = entry.item.ref;
+    const existing = best.get(key);
+    if (!existing || entry.score > existing.score) {
+      best.set(key, entry);
+    }
   }
 
-  if (
-    detectedTopics.includes("overwhelmed") &&
-    !intentTagsText.includes("peace") &&
-    !intentTagsText.includes("trust") &&
-    !intentTagsText.includes("guidance") &&
-    !moodTagsText.includes("overwhelmed") &&
-    !moodTagsText.includes("anxious") &&
-    !moodTagsText.includes("afraid") &&
-    !moodTagsText.includes("uncertain")
-  ) {
-    score -= 8;
-  }
-
-  return score;
+  return Array.from(best.values());
 }
 
 export function searchProverbs(query: string, limit = 12): ProverbEntry[] {
   const cleaned = query.trim();
   if (!cleaned) return PROVERBS.slice(0, limit);
 
-  const scored: ScoredResult[] = PROVERBS.map((item) => ({
-    item,
-    score: scoreItem(item, cleaned),
-  }))
-    .filter((entry) => entry.score > 0)
-    .sort((a, b) => b.score - a.score);
+  const scored = uniqueScoredByRef(
+    PROVERBS.map((item) => scoreEntry(item, cleaned))
+      .filter((entry) => entry.score > 12)
+      .sort((a, b) => b.score - a.score)
+  );
 
   return scored.slice(0, limit).map((entry) => entry.item);
 }
@@ -341,15 +506,15 @@ export function searchProverbsScored(
     return PROVERBS.slice(0, limit).map((item) => ({
       item,
       score: 0,
+      why: [],
     }));
   }
 
-  const scored: ScoredResult[] = PROVERBS.map((item) => ({
-    item,
-    score: scoreItem(item, cleaned),
-  }))
-    .filter((entry) => entry.score > 0)
-    .sort((a, b) => b.score - a.score);
+  const scored = uniqueScoredByRef(
+    PROVERBS.map((item) => scoreEntry(item, cleaned))
+      .filter((entry) => entry.score > 12)
+      .sort((a, b) => b.score - a.score)
+  );
 
   return scored.slice(0, limit);
 }
@@ -358,25 +523,23 @@ export function getRelatedProverbs(
   source: ProverbEntry,
   limit = 4
 ): ProverbEntry[] {
-  const related = PROVERBS
-    .filter((item) => item.ref !== source.ref)
-    .map((item) => {
-      let score = 0;
+  const related = PROVERBS.filter((item) => item.ref !== source.ref).map((item) => {
+    let score = 0;
 
-      for (const topic of source.topics || []) {
-        if ((item.topics || []).includes(topic)) score += 3;
-      }
+    for (const topic of source.topics || []) {
+      if ((item.topics || []).includes(topic)) score += 4;
+    }
 
-      for (const tag of source.intentTags || []) {
-        if ((item.intentTags || []).includes(tag)) score += 2;
-      }
+    for (const tag of source.intentTags || []) {
+      if ((item.intentTags || []).includes(tag)) score += 3;
+    }
 
-      for (const mood of source.moodTags || []) {
-        if ((item.moodTags || []).includes(mood)) score += 1;
-      }
+    for (const mood of source.moodTags || []) {
+      if ((item.moodTags || []).includes(mood)) score += 2;
+    }
 
-      return { item, score };
-    });
+    return { item, score };
+  });
 
   return related
     .filter((entry) => entry.score > 0)
