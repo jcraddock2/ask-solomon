@@ -559,42 +559,6 @@ function uniqueScoredByRef(items: ScoredResult[]): ScoredResult[] {
   return Array.from(best.values());
 }
 
-export function searchProverbsScored(
-  query: string,
-  limit = 12
-): ScoredResult[] {
-  const cleaned = query.trim();
-
-  if (!cleaned) {
-    return PROVERBS.slice(0, limit).map((item) => ({
-      item,
-      score: 0,
-      why: [],
-    }));
-  }
-
-  const scored = uniqueScoredByRef(
-    PROVERBS.map((item) => scoreEntry(item, cleaned))
-      .filter((entry) => entry.score > 0)
-      .sort((a, b) => b.score - a.score)
-  );
-
-  console.log(
-    "SEARCH DEBUG",
-    cleaned,
-    scored.slice(0, 5).map((x) => ({
-      ref: x.item.ref,
-      title: x.item.title,
-      score: x.score,
-      why: x.why,
-      topics: x.item.topics,
-      keywords: x.item.keywords,
-      intentTags: x.item.intentTags,
-      moodTags: x.item.moodTags,
-    }))
-  );
-
-  return scored.slice(0, limit);
 }
 export function searchProverbsScored(
   query: string,
