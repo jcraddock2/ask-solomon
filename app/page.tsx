@@ -1081,7 +1081,7 @@ const proverbMatches = useMemo<ProverbMatch[]>(() => {
               </button>
               {!isPro && (
                 <button type="button" onClick={() => router.push("/upgrade")} style={headerBtn}>
-                  Upgrade
+                  Upgrade (Lifetime)
                 </button>
               )}
             </div>
