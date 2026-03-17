@@ -472,7 +472,6 @@ function scoreEntry(item: ProverbEntry, query: string): ScoredResult {
 
   return { item, score, why };
 }
-
 function uniqueScoredByRef(items: ScoredResult[]): ScoredResult[] {
   const best = new Map<string, ScoredResult>();
 
