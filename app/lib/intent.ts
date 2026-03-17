@@ -98,7 +98,7 @@ const INTENT_MAP: IntentBucket[] = [
     boostKeywords: ["wealth", "provision", "diligence", "stewardship", "planning", "debt"],
     avoidIfMissing: ["finances", "stewardship", "wealth", "provision", "diligence"],
   },
-  {
+   {
     name: "discouraged",
     patterns: [
       "discouraged",
@@ -115,7 +115,11 @@ const INTENT_MAP: IntentBucket[] = [
       "heavy heart",
       "weary",
     ],
-      {
+    boostTopics: ["hope", "encouragement", "strength", "faith", "peace"],
+    boostKeywords: ["hope", "joy", "strength", "heart", "renew", "rise"],
+    avoidIfMissing: ["hope", "encouragement", "strength", "faith"],
+  },
+  {
     name: "hurting",
     patterns: [
       "i am hurting",
@@ -137,10 +141,6 @@ const INTENT_MAP: IntentBucket[] = [
     boostTopics: ["encouragement", "peace", "relationships", "hope", "healing"],
     boostKeywords: ["heart", "healing", "comfort", "peace", "hope", "gentle", "restore"],
     avoidIfMissing: ["encouragement", "peace", "hope", "healing", "relationships"],
-  },
-    boostTopics: ["hope", "encouragement", "strength", "faith", "peace"],
-    boostKeywords: ["hope", "joy", "strength", "heart", "renew", "rise"],
-    avoidIfMissing: ["hope", "encouragement", "strength", "faith"],
   },
   {
     name: "leadership",
