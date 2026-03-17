@@ -6,8 +6,9 @@ export type VerseItem = {
   body: string;
   ref: string;
   mode: Mode;
-  sub?: Sub; // only for encouragement
-  tags?: string[]; // used by Topic chips + Index
+  sub?: Sub;
+  tags?: string[];
+  keywords?: string[];
 };
 
 export const MODES: { key: Mode; label: string }[] = [
