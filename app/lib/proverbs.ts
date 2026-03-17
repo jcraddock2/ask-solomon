@@ -428,18 +428,22 @@ function scoreEntry(item: ProverbEntry, query: string): ScoredResult {
     }
 
     // penalize clearly off-theme verses for strong emotional searches
-    if (
-      intent.avoidIfMissing &&
-      !intent.avoidIfMissing.some(
-        (x) =>
-          fields.topics.includes(normalize(x)) ||
-          fields.keywords.includes(normalize(x)) ||
-          fields.intentTags.includes(normalize(x))
-      )
-    ) {
-      score -= 14;
-    }
-  }
+ if (
+  intent.avoidIfMissing &&
+  !intent.avoidIfMissing.some((x) => {
+    const nx = normalize(x);
+    return (
+      fields.topics.some((t) => t.includes(nx)) ||
+      fields.keywords.some((k) => k.includes(nx)) ||
+      fields.intentTags.some((t) => t.includes(nx)) ||
+      fields.moodTags.some((m) => m.includes(nx)) ||
+      fields.body.includes(nx) ||
+      fields.title.includes(nx)
+    );
+  })
+) {
+  score -= 14;
+}
 
   // generic usefulness bonuses
   if (fields.topics.length > 0) score += Math.min(6, fields.topics.length);
