@@ -42,7 +42,7 @@ export type Topic = {
   key: string;
   label: string;
   hint: string;
-  query: string; // what we inject into search
+  query: string;
 };
 
 export const TOPICS: Topic[] = [
@@ -61,50 +61,52 @@ export const TOPICS: Topic[] = [
 
 export const DATA: VerseItem[] = [
   // ENCOURAGEMENT — Peace
- {
-  mode: "encouragement",
-  sub: "peace",
-  title: "Peace in anxious moments",
-  body: "When your mind is racing, choose the calm path—wisdom steadies the heart.",
-  ref: "Proverbs 12:25",
-  tags: ["anxiety", "peace", "fear", "comfort", "heart", "hurting", "encouragement"],
-  keywords: ["anxious", "hurting", "hurt", "heavy heart", "comfort", "peace", "calm"],
-},
- {
-  mode: "encouragement",
-  sub: "peace",
-  title: "Guard your heart",
-  body: "Protect what you allow into your mind. Peace is built by boundaries—what you focus on grows.",
-  ref: "Proverbs 4:23",
-  tags: ["peace", "discipline", "integrity", "heart", "healing", "emotional pain"],
-  keywords: ["heart", "healing", "hurt", "inner life", "peace", "guard your heart"],
-},
-{
-  mode: "encouragement",
-  sub: "peace",
-  title: "Gentle words soften pressure",
-  body: "When tension rises, lower your voice—wisdom turns down the fire.",
-  ref: "Proverbs 15:1",
-  tags: ["anger", "relationships", "leadership", "gentle", "comfort", "hurt"],
-  keywords: ["hurt", "hurting", "gentle", "comfort", "relationship conflict", "healing words"],
-},
+  {
+    mode: "encouragement",
+    sub: "peace",
+    title: "Peace in anxious moments",
+    body: "When your mind is racing, choose the calm path—wisdom steadies the heart.",
+    ref: "Proverbs 12:25",
+    tags: ["anxiety", "peace", "fear", "comfort", "heart", "hurting", "encouragement"],
+    keywords: ["anxious", "hurting", "hurt", "heavy heart", "comfort", "peace", "calm"],
+  },
+  {
+    mode: "encouragement",
+    sub: "peace",
+    title: "Guard your heart",
+    body: "Protect what you allow into your mind. Peace is built by boundaries—what you focus on grows.",
+    ref: "Proverbs 4:23",
+    tags: ["peace", "discipline", "integrity", "heart", "healing", "emotional pain"],
+    keywords: ["heart", "healing", "hurt", "inner life", "peace", "guard your heart"],
+  },
+  {
+    mode: "encouragement",
+    sub: "peace",
+    title: "Gentle words soften pressure",
+    body: "When tension rises, lower your voice—wisdom turns down the fire.",
+    ref: "Proverbs 15:1",
+    tags: ["anger", "relationships", "leadership", "gentle", "comfort", "hurt"],
+    keywords: ["hurt", "hurting", "gentle", "comfort", "relationship conflict", "healing words"],
+  },
+
   // ENCOURAGEMENT — Strength
- {
-  mode: "encouragement",
-  sub: "strength",
-  title: "Strength for the day",
-  body: "Don’t quit in the pressure—steady courage grows quietly and wins later.",
-  ref: "Proverbs 24:10",
-  tags: ["strength", "discipline", "work", "weary", "adversity", "hurting"],
-  keywords: ["hurting", "weary", "pain", "adversity", "strength", "endure"],
-},
+  {
+    mode: "encouragement",
+    sub: "strength",
+    title: "Strength for the day",
+    body: "Don’t quit in the pressure—steady courage grows quietly and wins later.",
+    ref: "Proverbs 24:10",
+    tags: ["strength", "discipline", "work", "weary", "adversity", "hurting"],
+    keywords: ["hurting", "weary", "pain", "adversity", "strength", "endure"],
+  },
   {
     mode: "encouragement",
     sub: "strength",
     title: "Endurance over impulse",
     body: "Strong people don’t react fast—they respond wisely and finish well.",
     ref: "Proverbs 16:32",
-    tags: ["anger", "discipline", "leadership"],
+    tags: ["anger", "discipline", "leadership", "strength", "self-control"],
+    keywords: ["endurance", "impulse", "anger", "self-control", "respond wisely", "finish well"],
   },
   {
     mode: "encouragement",
@@ -112,7 +114,8 @@ export const DATA: VerseItem[] = [
     title: "Keep your footing",
     body: "Your steps are established when your decisions are clean and consistent.",
     ref: "Proverbs 4:26",
-    tags: ["discipline", "direction"],
+    tags: ["discipline", "direction", "strength", "consistency"],
+    keywords: ["footing", "steady", "steps", "consistent", "discipline", "direction"],
   },
 
   // ENCOURAGEMENT — Direction
@@ -122,7 +125,8 @@ export const DATA: VerseItem[] = [
     title: "Direction when unsure",
     body: "Seek counsel and walk the next right step—clarity comes with motion.",
     ref: "Proverbs 11:14",
-    tags: ["decision", "leadership", "direction"],
+    tags: ["decision", "leadership", "direction", "counsel"],
+    keywords: ["unsure", "direction", "guidance", "counsel", "clarity", "next step"],
   },
   {
     mode: "encouragement",
@@ -130,7 +134,8 @@ export const DATA: VerseItem[] = [
     title: "He will make your paths straight",
     body: "Trust beyond your understanding. Guidance often comes one step at a time—move in faith.",
     ref: "Proverbs 3:5–6",
-    tags: ["direction", "decision", "hope"],
+    tags: ["direction", "decision", "hope", "trust", "guidance"],
+    keywords: ["paths", "guidance", "trust", "direction", "faith", "understanding"],
   },
   {
     mode: "encouragement",
@@ -138,7 +143,8 @@ export const DATA: VerseItem[] = [
     title: "Commit your plans",
     body: "Submit your work, then execute with discipline—momentum follows obedience.",
     ref: "Proverbs 16:3",
-    tags: ["work", "discipline", "success"],
+    tags: ["work", "discipline", "success", "plans", "direction"],
+    keywords: ["plans", "commit", "work", "discipline", "momentum", "obedience"],
   },
 
   // ENCOURAGEMENT — Confidence
@@ -148,7 +154,8 @@ export const DATA: VerseItem[] = [
     title: "Boldness follows righteousness",
     body: "Fear shrinks when your conscience is clear—do what’s right and walk tall.",
     ref: "Proverbs 28:1",
-    tags: ["fear", "integrity", "confidence"],
+    tags: ["fear", "integrity", "confidence", "boldness", "righteousness"],
+    keywords: ["boldness", "confidence", "fear", "clear conscience", "righteous", "walk tall"],
   },
   {
     mode: "encouragement",
@@ -156,7 +163,8 @@ export const DATA: VerseItem[] = [
     title: "Speak with clarity",
     body: "Let your words be clean and direct—confidence is felt in simplicity.",
     ref: "Proverbs 10:19",
-    tags: ["relationships", "leadership", "integrity"],
+    tags: ["relationships", "leadership", "integrity", "confidence", "speech"],
+    keywords: ["clarity", "words", "speak", "communication", "confidence", "simplicity"],
   },
 
   // ENCOURAGEMENT — Hope
@@ -166,7 +174,8 @@ export const DATA: VerseItem[] = [
     title: "Your hope will not be cut off",
     body: "Keep doing what’s wise and right. God protects the long-term outcome of faithful people.",
     ref: "Proverbs 23:18",
-    tags: ["hope", "success"],
+    tags: ["hope", "success", "future", "faithfulness"],
+    keywords: ["hope", "future", "faithful", "outcome", "keep going", "not cut off"],
   },
   {
     mode: "encouragement",
@@ -174,7 +183,8 @@ export const DATA: VerseItem[] = [
     title: "Light rises",
     body: "Even if it’s dim right now—keep walking. Wisdom brings morning.",
     ref: "Proverbs 4:18",
-    tags: ["hope", "direction"],
+    tags: ["hope", "direction", "light", "future"],
+    keywords: ["light", "morning", "hope", "future", "dim", "keep walking"],
   },
 
   // WISDOM
@@ -184,20 +194,23 @@ export const DATA: VerseItem[] = [
     body: "If you’re unsure what to do next—choose wisdom first. It will shape every other decision.",
     ref: "Proverbs 4:7",
     tags: ["decision", "wisdom", "leadership"],
+    keywords: ["wisdom", "decision", "unsure", "what to do", "next step", "understanding"],
   },
   {
     mode: "wisdom",
     title: "Plans succeed with counsel",
     body: "Don’t isolate. The right feedback protects you from blind spots and speeds your results.",
     ref: "Proverbs 15:22",
-    tags: ["decision", "leadership", "relationships"],
+    tags: ["decision", "leadership", "relationships", "counsel"],
+    keywords: ["counsel", "advice", "feedback", "plans", "leadership", "guidance"],
   },
   {
     mode: "wisdom",
     title: "Listen first",
     body: "Quick answers create mistakes—wisdom listens before speaking.",
     ref: "Proverbs 18:13",
-    tags: ["relationships", "leadership", "integrity"],
+    tags: ["relationships", "leadership", "integrity", "speech"],
+    keywords: ["listen", "speaking", "quick answers", "mistakes", "communication", "wisdom"],
   },
 
   // SUCCESS
@@ -206,38 +219,42 @@ export const DATA: VerseItem[] = [
     title: "Diligent hands bring wealth",
     body: "Success is often the reward of consistency. Do the work you don’t feel like doing.",
     ref: "Proverbs 10:4",
-    tags: ["work", "discipline", "money"],
+    tags: ["work", "discipline", "money", "success", "diligence"],
+    keywords: ["wealth", "money", "work", "discipline", "consistency", "diligent"],
   },
   {
     mode: "success",
     title: "The plans of the diligent",
     body: "Steady, thoughtful work beats impulsive hustle. Consistency compounds.",
     ref: "Proverbs 21:5",
-    tags: ["work", "discipline", "success"],
+    tags: ["work", "discipline", "success", "planning", "diligence"],
+    keywords: ["diligent", "plans", "steady work", "consistency", "planning", "success"],
   },
   {
     mode: "success",
     title: "Skill creates opportunity",
     body: "Excellence opens doors—become so prepared your work speaks for you.",
     ref: "Proverbs 22:29",
-    tags: ["work", "leadership", "success"],
+    tags: ["work", "leadership", "success", "skill", "excellence"],
+    keywords: ["skill", "opportunity", "prepared", "excellence", "work", "promotion"],
   },
 ];
+
 // -------------------------
 // BOOK INDEX (Pro feature)
 // -------------------------
 export type BookMatch = {
-  topic: string;          // internal key
-  label: string;          // user-facing label
-  blurb: string;          // 1-line why this matters
-  pages: string;          // "pp. 12–15" style (you can refine later)
-  chapters: string[];     // chapter/section names
-  keywords: string[];     // words that should trigger this match
+  topic: string;
+  label: string;
+  blurb: string;
+  pages: string;
+  chapters: string[];
+  keywords: string[];
 };
 
-// ✅ Starter map (edit/expand anytime; no UI changes needed)
 export function findBookMatches(q: string): BookMatch[] {
   const query = q.toLowerCase().trim();
+  if (!query) return [];
 
   const matches: BookMatch[] = [];
 
@@ -317,7 +334,8 @@ export function findBookMatches(q: string): BookMatch[] {
 
   for (const topic of Object.keys(TOPIC_MAP)) {
     const match = TOPIC_MAP[topic];
-    if (query.includes(topic) && match) {
+
+    if (query.includes(topic)) {
       matches.push(match);
       continue;
     }
@@ -329,6 +347,7 @@ export function findBookMatches(q: string): BookMatch[] {
 
   return matches.slice(0, 4);
 }
+
 export const SMART_TOPIC_SUGGESTIONS: Record<string, string[]> = {
   fear: ["peace", "direction", "faith", "courage"],
   anxiety: ["peace", "trust", "direction"],
@@ -340,3 +359,203 @@ export const SMART_TOPIC_SUGGESTIONS: Record<string, string[]> = {
   discipline: ["diligence", "work", "success"],
   success: ["discipline", "wisdom", "planning"],
 };
+
+// -------------------------
+// SMART VERSE SEARCH
+// -------------------------
+export type ScoredVerse = VerseItem & {
+  score: number;
+  why: string[];
+};
+
+function normalizeText(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[’']/g, "")
+    .replace(/[^a-z0-9\s-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function tokenize(value: string): string[] {
+  return normalizeText(value)
+    .split(" ")
+    .map((x) => x.trim())
+    .filter(Boolean);
+}
+
+function uniq(items: string[]): string[] {
+  return Array.from(new Set(items));
+}
+
+function expandQueryTokens(rawQuery: string): string[] {
+  const base = tokenize(rawQuery);
+  const expanded = [...base];
+
+  const q = normalizeText(rawQuery);
+
+  const synonymMap: Record<string, string[]> = {
+    anxious: ["anxiety", "peace", "calm", "fear"],
+    anxiety: ["anxious", "peace", "calm", "fear"],
+    afraid: ["fear", "courage", "confidence"],
+    fear: ["afraid", "courage", "confidence"],
+    hurt: ["hurting", "comfort", "healing", "peace"],
+    hurting: ["hurt", "comfort", "healing", "peace"],
+    angry: ["anger", "gentle", "self-control"],
+    anger: ["angry", "gentle", "self-control"],
+    direction: ["guidance", "counsel", "decision"],
+    guidance: ["direction", "counsel", "wisdom"],
+    decision: ["direction", "counsel", "wisdom"],
+    money: ["wealth", "finances", "work", "diligence"],
+    finances: ["money", "wealth", "stewardship"],
+    work: ["diligence", "discipline", "success"],
+    leadership: ["leader", "counsel", "integrity"],
+    confidence: ["boldness", "fear", "courage"],
+    hope: ["future", "light", "faithfulness"],
+    weary: ["strength", "endure", "pressure"],
+    overwhelmed: ["anxious", "direction", "peace"],
+  };
+
+  for (const token of base) {
+    const extras = synonymMap[token];
+    if (extras) expanded.push(...extras);
+  }
+
+  if (q.includes("heavy heart")) {
+    expanded.push("heart", "comfort", "peace", "anxious");
+  }
+
+  if (q.includes("what should i do")) {
+    expanded.push("decision", "direction", "counsel", "wisdom");
+  }
+
+  if (q.includes("i need guidance")) {
+    expanded.push("guidance", "direction", "counsel", "wisdom");
+  }
+
+  if (q.includes("i feel overwhelmed")) {
+    expanded.push("overwhelmed", "peace", "direction", "anxious");
+  }
+
+  return uniq(expanded);
+}
+
+function scoreVerse(item: VerseItem, rawQuery: string): ScoredVerse {
+  const query = normalizeText(rawQuery);
+  const queryTokens = expandQueryTokens(rawQuery);
+
+  const haystackTitle = normalizeText(item.title);
+  const haystackBody = normalizeText(item.body);
+  const haystackRef = normalizeText(item.ref);
+  const haystackTags = (item.tags || []).map(normalizeText);
+  const haystackKeywords = (item.keywords || []).map(normalizeText);
+
+  let score = 0;
+  const why: string[] = [];
+
+  if (!query) {
+    return { ...item, score: 0, why: [] };
+  }
+
+  if (haystackTitle.includes(query)) {
+    score += 12;
+    why.push("title phrase");
+  }
+
+  if (haystackBody.includes(query)) {
+    score += 10;
+    why.push("body phrase");
+  }
+
+  if (haystackRef.includes(query)) {
+    score += 20;
+    why.push("reference");
+  }
+
+  if (haystackTags.some((t) => t.includes(query) || query.includes(t))) {
+    score += 14;
+    why.push("topic tag");
+  }
+
+  if (haystackKeywords.some((k) => k.includes(query) || query.includes(k))) {
+    score += 16;
+    why.push("keyword phrase");
+  }
+
+  for (const token of queryTokens) {
+    if (!token) continue;
+
+    if (haystackTitle.includes(token)) score += 5;
+    if (haystackBody.includes(token)) score += 3;
+    if (haystackTags.some((t) => t.includes(token))) score += 6;
+    if (haystackKeywords.some((k) => k.includes(token))) score += 7;
+  }
+
+  if (item.mode === "encouragement") {
+    if (queryTokens.includes("anxious") || queryTokens.includes("peace")) {
+      if (item.sub === "peace") score += 4;
+    }
+
+    if (queryTokens.includes("strength") || queryTokens.includes("weary")) {
+      if (item.sub === "strength") score += 4;
+    }
+
+    if (
+      queryTokens.includes("direction") ||
+      queryTokens.includes("guidance") ||
+      queryTokens.includes("decision")
+    ) {
+      if (item.sub === "direction") score += 4;
+    }
+
+    if (queryTokens.includes("confidence") || queryTokens.includes("courage")) {
+      if (item.sub === "confidence") score += 4;
+    }
+
+    if (queryTokens.includes("hope") || queryTokens.includes("future")) {
+      if (item.sub === "hope") score += 4;
+    }
+  }
+
+  return {
+    ...item,
+    score,
+    why: uniq(why),
+  };
+}
+
+export function findVerseMatches(
+  q: string,
+  options?: {
+    mode?: Mode;
+    sub?: Sub | "all";
+    limit?: number;
+  }
+): ScoredVerse[] {
+  const query = q.trim();
+  const limit = options?.limit ?? 20;
+
+  let pool = DATA;
+
+  if (options?.mode) {
+    pool = pool.filter((item) => item.mode === options.mode);
+  }
+
+  if (options?.mode === "encouragement" && options?.sub && options.sub !== "all") {
+    pool = pool.filter((item) => item.sub === options.sub);
+  }
+
+  if (!query) {
+    return pool.slice(0, limit).map((item) => ({
+      ...item,
+      score: 0,
+      why: [],
+    }));
+  }
+
+  return pool
+    .map((item) => scoreVerse(item, query))
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
+}
