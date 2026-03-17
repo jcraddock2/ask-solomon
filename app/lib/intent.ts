@@ -283,7 +283,36 @@ function expandedTerms(query: string): string[] {
     for (const term of intent.relatedTerms) tokens.add(normalize(term));
   }
 
-  return Array.from(tokens);
+  const STOPWORDS = new Set([
+    "i",
+    "am",
+    "im",
+    "ive",
+    "me",
+    "my",
+    "the",
+    "a",
+    "an",
+    "and",
+    "or",
+    "to",
+    "for",
+    "of",
+    "in",
+    "on",
+    "at",
+    "is",
+    "are",
+    "be",
+    "feel",
+    "feeling",
+    "need",
+    "want",
+  ]);
+
+  return Array.from(tokens).filter(
+    (t) => t && t.length > 2 && !STOPWORDS.has(t)
+  );
 }
 
 export function rankByIntent<T extends SearchableItem>(items: T[], query: string): T[] {
