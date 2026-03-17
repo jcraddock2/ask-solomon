@@ -14,6 +14,7 @@ type IntentBucket = {
   patterns: string[];
   boostTopics: string[];
   boostKeywords: string[];
+  avoidIfMissing?: string[];
 };
 
 const INTENT_MAP: IntentBucket[] = [
@@ -29,20 +30,19 @@ const INTENT_MAP: IntentBucket[] = [
       "burned out",
       "burnt out",
       "exhausted",
-      "tired",
       "mentally drained",
-      "i can't handle this",
-      "i cant handle this",
       "life feels heavy",
+      "heavy heart",
     ],
-    boostTopics: ["encouragement", "peace", "strength", "wisdom"],
-    boostKeywords: ["rest", "peace", "calm", "strength", "help", "trust"],
+    boostTopics: ["encouragement", "peace", "strength", "wisdom", "guidance"],
+    boostKeywords: ["rest", "peace", "calm", "strength", "help", "trust", "refuge"],
+    avoidIfMissing: ["peace", "strength", "trust", "guidance", "encouragement"],
   },
   {
     name: "fear",
     patterns: [
-      "afraid",
       "fear",
+      "afraid",
       "scared",
       "anxious",
       "anxiety",
@@ -51,11 +51,10 @@ const INTENT_MAP: IntentBucket[] = [
       "nervous",
       "panic",
       "uncertain",
-      "i don't know what will happen",
-      "i dont know what will happen",
     ],
-    boostTopics: ["peace", "faith", "encouragement", "wisdom"],
+    boostTopics: ["peace", "faith", "encouragement", "wisdom", "protection"],
     boostKeywords: ["fear", "trust", "peace", "courage", "secure", "refuge"],
+    avoidIfMissing: ["peace", "trust", "protection", "faith"],
   },
   {
     name: "guidance",
@@ -73,8 +72,9 @@ const INTENT_MAP: IntentBucket[] = [
       "i need wisdom",
       "show me what to do",
     ],
-    boostTopics: ["wisdom", "guidance", "discernment"],
-    boostKeywords: ["path", "understanding", "instruction", "wisdom", "discernment"],
+    boostTopics: ["wisdom", "guidance", "discernment", "direction"],
+    boostKeywords: ["path", "understanding", "instruction", "wisdom", "discernment", "steps"],
+    avoidIfMissing: ["wisdom", "guidance", "direction", "discernment"],
   },
   {
     name: "money",
@@ -92,9 +92,11 @@ const INTENT_MAP: IntentBucket[] = [
       "poor",
       "struggling financially",
       "worried about money",
+      "money stress",
     ],
-    boostTopics: ["finances", "work", "wisdom", "discipline"],
-    boostKeywords: ["wealth", "provision", "diligence", "stewardship", "planning"],
+    boostTopics: ["finances", "work", "wisdom", "discipline", "stewardship"],
+    boostKeywords: ["wealth", "provision", "diligence", "stewardship", "planning", "debt"],
+    avoidIfMissing: ["finances", "stewardship", "wealth", "provision", "diligence"],
   },
   {
     name: "discouraged",
@@ -111,9 +113,11 @@ const INTENT_MAP: IntentBucket[] = [
       "giving up",
       "defeated",
       "heavy heart",
+      "weary",
     ],
-    boostTopics: ["hope", "encouragement", "strength", "faith"],
-    boostKeywords: ["hope", "joy", "strength", "lift", "heart", "renew"],
+    boostTopics: ["hope", "encouragement", "strength", "faith", "peace"],
+    boostKeywords: ["hope", "joy", "strength", "heart", "renew", "rise"],
+    avoidIfMissing: ["hope", "encouragement", "strength", "faith"],
   },
   {
     name: "leadership",
@@ -130,8 +134,9 @@ const INTENT_MAP: IntentBucket[] = [
       "authority",
       "communication",
     ],
-    boostTopics: ["leadership", "wisdom", "speech", "relationships"],
-    boostKeywords: ["lead", "counsel", "speech", "understanding", "discipline"],
+    boostTopics: ["leadership", "wisdom", "speech", "relationships", "justice"],
+    boostKeywords: ["lead", "counsel", "speech", "understanding", "discipline", "justice"],
+    avoidIfMissing: ["leadership", "wisdom", "speech", "justice"],
   },
   {
     name: "relationships",
@@ -148,8 +153,9 @@ const INTENT_MAP: IntentBucket[] = [
       "betrayed",
       "trust issue",
     ],
-    boostTopics: ["relationships", "speech", "wisdom", "peace"],
-    boostKeywords: ["gentle", "answer", "love", "peace", "friend", "forgive"],
+    boostTopics: ["relationships", "speech", "wisdom", "peace", "love"],
+    boostKeywords: ["gentle", "answer", "love", "peace", "friend", "forgive", "kindness"],
+    avoidIfMissing: ["relationships", "peace", "love", "speech"],
   },
   {
     name: "confidence",
@@ -163,8 +169,9 @@ const INTENT_MAP: IntentBucket[] = [
       "timid",
       "second guessing",
     ],
-    boostTopics: ["confidence", "strength", "wisdom", "faith"],
+    boostTopics: ["confidence", "strength", "wisdom", "faith", "courage"],
     boostKeywords: ["bold", "strength", "courage", "trust", "steadfast"],
+    avoidIfMissing: ["confidence", "strength", "faith", "courage"],
   },
   {
     name: "discipline",
@@ -180,8 +187,9 @@ const INTENT_MAP: IntentBucket[] = [
       "focus",
       "productive",
     ],
-    boostTopics: ["discipline", "work", "wisdom"],
-    boostKeywords: ["diligent", "work", "instruction", "discipline", "focus"],
+    boostTopics: ["discipline", "work", "wisdom", "diligence"],
+    boostKeywords: ["diligent", "work", "instruction", "discipline", "focus", "effort"],
+    avoidIfMissing: ["discipline", "work", "diligence"],
   },
 ];
 
@@ -237,29 +245,39 @@ export function rankByIntent<T extends SearchableItem>(items: T[], query: string
 
       let score = 0;
 
-      // direct raw query hits
       const qWords = q.split(" ").filter(Boolean);
+
       score += scoreTextMatch(textText, qWords, 2);
-      score += scoreTextMatch(topicText, qWords, 3);
-      score += scoreTextMatch(keywordText, qWords, 4);
+      score += scoreTextMatch(topicText, qWords, 4);
+      score += scoreTextMatch(keywordText, qWords, 5);
 
-      // exact phrase boost
-      if (textText.includes(q)) score += 8;
-      if (topicText.includes(q)) score += 10;
-      if (keywordText.includes(q)) score += 12;
+      if (textText.includes(q)) score += 10;
+      if (topicText.includes(q)) score += 14;
+      if (keywordText.includes(q)) score += 16;
 
-      // intent-based boost
       for (const intent of matchedIntents) {
-        score += scoreTextMatch(topicText, intent.boostTopics.map(normalize), 14);
-        score += scoreTextMatch(keywordText, intent.boostKeywords.map(normalize), 16);
-        score += scoreTextMatch(textText, intent.boostKeywords.map(normalize), 5);
+        const topicHits = scoreTextMatch(topicText, intent.boostTopics.map(normalize), 16);
+        const keywordHits = scoreTextMatch(keywordText, intent.boostKeywords.map(normalize), 18);
+        const bodyHits = scoreTextMatch(textText, intent.boostKeywords.map(normalize), 6);
+
+        score += topicHits + keywordHits + bodyHits;
+
+        if (
+          intent.avoidIfMissing &&
+          !intent.avoidIfMissing.some((term) => {
+            const n = normalize(term);
+            return topicText.includes(n) || keywordText.includes(n) || textText.includes(n);
+          })
+        ) {
+          score -= 12;
+        }
       }
 
-      // short emotional phrases should still work
-      if (matchedIntents.length > 0) score += 5;
+      if (matchedIntents.length > 0) score += 6;
 
       return { item, score };
     })
+    .filter((x) => x.score > 0)
     .sort((a, b) => b.score - a.score)
     .map((x) => x.item);
 
@@ -272,7 +290,6 @@ export function smartSearch<T extends SearchableItem>(items: T[], query: string)
 
   const ranked = rankByIntent(items, q);
 
-  // Keep only meaningful matches first
   const strong = ranked.filter((item) => {
     const blob = normalize(
       [
@@ -297,5 +314,5 @@ export function smartSearch<T extends SearchableItem>(items: T[], query: string)
     return directHit || intentHit;
   });
 
-  return strong.length > 0 ? strong : ranked.slice(0, 12);
+  return strong.length > 0 ? strong.slice(0, 12) : ranked.slice(0, 12);
 }
