@@ -559,7 +559,6 @@ function uniqueScoredByRef(items: ScoredResult[]): ScoredResult[] {
   return Array.from(best.values());
 }
 
-}
 export function searchProverbsScored(
   query: string,
   limit = 12
@@ -580,8 +579,24 @@ export function searchProverbsScored(
       .sort((a, b) => b.score - a.score)
   );
 
+  console.log(
+    "SEARCH DEBUG",
+    cleaned,
+    scored.slice(0, 5).map((x) => ({
+      ref: x.item.ref,
+      title: x.item.title,
+      score: x.score,
+      why: x.why,
+      topics: x.item.topics,
+      keywords: x.item.keywords,
+      intentTags: x.item.intentTags,
+      moodTags: x.item.moodTags,
+    }))
+  );
+
   return scored.slice(0, limit);
 }
+
 export function getRelatedProverbs(
   source: ProverbEntry,
   limit = 4
@@ -604,6 +619,12 @@ export function getRelatedProverbs(
     return { item, score };
   });
 
+  return related
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((entry) => entry.item);
+}
   return related
     .filter((entry) => entry.score > 0)
     .sort((a, b) => b.score - a.score)
