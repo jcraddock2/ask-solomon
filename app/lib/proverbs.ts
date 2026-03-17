@@ -323,7 +323,6 @@ function scoreEntry(item: ProverbEntry, query: string): ScoredResult {
   const q = normalize(query);
   const expanded = expandQuery(query);
   const intents = detectIntent(query);
-
   const fields = fieldBlob(item);
   const why: string[] = [];
   let score = 0;
@@ -332,114 +331,132 @@ function scoreEntry(item: ProverbEntry, query: string): ScoredResult {
     return { item, score: 0, why: [] };
   }
 
-  let strongMatchCount = 0;
-  let emotionalMatchCount = 0;
-  let genericTokenHits = 0;
+  const STOPWORDS = new Set([
+    "i",
+    "am",
+    "im",
+    "ive",
+    "me",
+    "my",
+    "the",
+    "a",
+    "an",
+    "and",
+    "or",
+    "to",
+    "for",
+    "of",
+    "in",
+    "on",
+    "at",
+    "is",
+    "are",
+    "be",
+    "feel",
+    "feeling",
+    "need",
+    "want",
+  ]);
 
-  // Strong exact phrase matches
+  const meaningfulTokens = expanded.filter(
+    (token) => token && token.length > 2 && !STOPWORDS.has(token)
+  );
+
+  let exactFieldMatches = 0;
+  let strongSemanticMatches = 0;
+  let emotionalMatches = 0;
+  let weakBodyHits = 0;
+
   if (fields.title.includes(q)) {
-    score += 40;
-    strongMatchCount++;
+    score += 30;
+    exactFieldMatches++;
     addReason(why, "Title phrase match");
   }
 
   if (fields.body.includes(q)) {
-    score += 24;
-    strongMatchCount++;
+    score += 18;
+    exactFieldMatches++;
     addReason(why, "Verse phrase match");
   }
 
   if (fields.topics.some((t) => t.includes(q))) {
-    score += 42;
-    strongMatchCount++;
+    score += 40;
+    exactFieldMatches++;
+    strongSemanticMatches++;
     addReason(why, "Topic phrase match");
   }
 
   if (fields.keywords.some((k) => k.includes(q))) {
-    score += 46;
-    strongMatchCount++;
+    score += 42;
+    exactFieldMatches++;
+    strongSemanticMatches++;
     addReason(why, "Keyword phrase match");
   }
 
   if (fields.intentTags.some((t) => t.includes(q))) {
-    score += 50;
-    strongMatchCount++;
+    score += 44;
+    exactFieldMatches++;
+    strongSemanticMatches++;
     addReason(why, "Intent phrase match");
   }
 
   if (fields.moodTags.some((t) => t.includes(q))) {
-    score += 54;
-    strongMatchCount++;
-    emotionalMatchCount++;
+    score += 50;
+    exactFieldMatches++;
+    strongSemanticMatches++;
+    emotionalMatches++;
     addReason(why, "Mood phrase match");
   }
 
-  // Expanded token matches
-  for (const token of expanded) {
-    if (!token) continue;
-
+  for (const token of meaningfulTokens) {
     const inTitle = fields.title.includes(token);
     const inBody = fields.body.includes(token);
-    const inRef = fields.ref.includes(token);
     const inTopics = fields.topics.some((t) => t.includes(token));
     const inKeywords = fields.keywords.some((k) => k.includes(token));
     const inIntentTags = fields.intentTags.some((t) => t.includes(token));
     const inMoodTags = fields.moodTags.some((m) => m.includes(token));
 
-    if (inTitle) {
-      score += 8;
-      genericTokenHits++;
-    }
+    if (inTitle) score += 6;
 
     if (inBody) {
-      score += 4;
-      genericTokenHits++;
-    }
-
-    if (inRef) {
-      score += 1;
+      score += 2;
+      weakBodyHits++;
     }
 
     if (inTopics) {
-      score += 14;
-      strongMatchCount++;
+      score += 16;
+      strongSemanticMatches++;
       addReason(why, "Related topic");
     }
 
     if (inKeywords) {
-      score += 16;
-      strongMatchCount++;
+      score += 18;
+      strongSemanticMatches++;
       addReason(why, "Related keyword");
     }
 
     if (inIntentTags) {
       score += 20;
-      strongMatchCount++;
+      strongSemanticMatches++;
       addReason(why, "Intent alignment");
     }
 
     if (inMoodTags) {
       score += 24;
-      strongMatchCount++;
-      emotionalMatchCount++;
+      strongSemanticMatches++;
+      emotionalMatches++;
       addReason(why, "Emotional state match");
     }
   }
 
-  // Intent-based boosts
   for (const intent of intents) {
     const topicHits = intent.boostTopics.filter((x) =>
       fields.topics.some((t) => t.includes(normalize(x)))
     ).length;
 
-    const keywordHits = intent.boostKeywords.filter((x) => {
-      const nx = normalize(x);
-      return (
-        fields.keywords.some((k) => k.includes(nx)) ||
-        fields.body.includes(nx) ||
-        fields.title.includes(nx)
-      );
-    }).length;
+    const keywordHits = intent.boostKeywords.filter((x) =>
+      fields.keywords.some((k) => k.includes(normalize(x)))
+    ).length;
 
     const moodHits = intent.boostMoodTags.filter((x) =>
       fields.moodTags.some((m) => m.includes(normalize(x)))
@@ -450,87 +467,82 @@ function scoreEntry(item: ProverbEntry, query: string): ScoredResult {
     ).length;
 
     if (topicHits > 0) {
-      score += topicHits * 18;
-      strongMatchCount += topicHits;
+      score += topicHits * 14;
+      strongSemanticMatches += topicHits;
       addReason(why, `${intent.name} topic fit`);
     }
 
     if (keywordHits > 0) {
-      score += keywordHits * 12;
-      strongMatchCount += keywordHits;
+      score += keywordHits * 16;
+      strongSemanticMatches += keywordHits;
       addReason(why, `${intent.name} keyword fit`);
     }
 
     if (moodHits > 0) {
-      score += moodHits * 24;
-      strongMatchCount += moodHits;
-      emotionalMatchCount += moodHits;
+      score += moodHits * 22;
+      strongSemanticMatches += moodHits;
+      emotionalMatches += moodHits;
       addReason(why, `${intent.name} mood fit`);
     }
 
     if (intentHits > 0) {
-      score += intentHits * 22;
-      strongMatchCount += intentHits;
+      score += intentHits * 18;
+      strongSemanticMatches += intentHits;
       addReason(why, `${intent.name} intent fit`);
     }
-
-    if (
-      intent.avoidIfMissing &&
-      !intent.avoidIfMissing.some((x) => {
-        const nx = normalize(x);
-        return (
-          fields.topics.some((t) => t.includes(nx)) ||
-          fields.keywords.some((k) => k.includes(nx)) ||
-          fields.intentTags.some((t) => t.includes(nx)) ||
-          fields.moodTags.some((m) => m.includes(nx)) ||
-          fields.body.includes(nx) ||
-          fields.title.includes(nx)
-        );
-      })
-    ) {
-      score -= 16;
-    }
   }
 
-  // Penalize weak generic-only matches
-  if (strongMatchCount === 0 && genericTokenHits > 0) {
-    score -= 18;
-  }
+  const emotionalQueryTerms = [
+    "hurting",
+    "hurt",
+    "pain",
+    "grief",
+    "weary",
+    "discouraged",
+    "anxious",
+    "afraid",
+    "overwhelmed",
+  ];
 
-  // Penalize emotionally irrelevant matches for emotional queries
-  const emotionalQueryTerms = ["hurting", "hurt", "pain", "grief", "weary", "afraid", "anxious", "overwhelmed"];
+  const moneyQueryTerms = [
+    "money",
+    "stress",
+    "finances",
+    "financial",
+    "debt",
+    "wealth",
+    "poverty",
+    "stewardship",
+  ];
+
   const isEmotionalQuery = emotionalQueryTerms.some((term) => q.includes(term));
+  const isMoneyQuery = moneyQueryTerms.some((term) => q.includes(term));
 
-  if (isEmotionalQuery && emotionalMatchCount === 0) {
-    score -= 28;
+  if (strongSemanticMatches === 0 && weakBodyHits > 0) {
+    score -= 30;
   }
 
-  // Small bonus when both intent + emotion line up
-  if (strongMatchCount >= 2 && emotionalMatchCount >= 1) {
-    score += 16;
+  if (exactFieldMatches === 0 && strongSemanticMatches < 2) {
+    score -= 24;
   }
 
-  const exactIntentFit =
-    intents.length === 0 ||
-    intents.some((intent) =>
-      [
-        ...intent.boostTopics.map(normalize),
-        ...intent.boostKeywords.map(normalize),
-        ...intent.boostIntentTags.map(normalize),
-        ...intent.boostMoodTags.map(normalize),
-      ].some(
-        (term) =>
-          fields.topics.includes(term) ||
-          fields.keywords.includes(term) ||
-          fields.intentTags.includes(term) ||
-          fields.moodTags.includes(term) ||
-          fields.body.includes(term)
-      )
-    );
+  if (isEmotionalQuery && emotionalMatches === 0) {
+    score -= 36;
+  }
 
-  if (!exactIntentFit) score -= 18;
+  if (
+    isMoneyQuery &&
+    !fields.topics.some((t) =>
+      ["money", "wealth", "stewardship", "poverty", "diligence", "work"].includes(t)
+    ) &&
+    !fields.keywords.some((k) =>
+      ["money", "wealth", "riches", "finance", "financial", "debt", "poverty"].includes(k)
+    )
+  ) {
+    score -= 40;
+  }
 
-  return { item, score, why };
+  return { item, score, why: Array.from(new Set(why)) };
 }
   
 function uniqueScoredByRef(items: ScoredResult[]): ScoredResult[] {
@@ -556,7 +568,20 @@ export function searchProverbs(query: string, limit = 12): ProverbEntry[] {
       .filter((entry) => entry.score > 0)
       .sort((a, b) => b.score - a.score)
   );
-
+console.log(
+  "SEARCH DEBUG",
+  cleaned,
+  scored.slice(0, 5).map((x) => ({
+    ref: x.item.ref,
+    title: x.item.title,
+    score: x.score,
+    why: x.why,
+    topics: x.item.topics,
+    keywords: x.item.keywords,
+    intentTags: x.item.intentTags,
+    moodTags: x.item.moodTags,
+  }))
+);
   return scored.slice(0, limit).map((entry) => entry.item);
 }
 
@@ -597,13 +622,20 @@ export function getRelatedProverbs(
       if ((item.intentTags || []).includes(tag)) score += 3;
     }
 
-    for (const mood of source.moodTags || []) {
-      if ((item.moodTags || []).includes(mood)) score += 2;
-    }
-
-    return { item, score };
-  });
-
+   console.log(
+  "SEARCH DEBUG",
+  cleaned,
+  scored.slice(0, 5).map((x) => ({
+    ref: x.item.ref,
+    title: x.item.title,
+    score: x.score,
+    why: x.why,
+    topics: x.item.topics,
+    keywords: x.item.keywords,
+    intentTags: x.item.intentTags,
+    moodTags: x.item.moodTags,
+  }))
+);
   return related
     .filter((entry) => entry.score > 0)
     .sort((a, b) => b.score - a.score)
