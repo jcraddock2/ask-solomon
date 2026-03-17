@@ -332,59 +332,101 @@ function scoreEntry(item: ProverbEntry, query: string): ScoredResult {
     return { item, score: 0, why: [] };
   }
 
+  let strongMatchCount = 0;
+  let emotionalMatchCount = 0;
+  let genericTokenHits = 0;
+
+  // Strong exact phrase matches
   if (fields.title.includes(q)) {
     score += 40;
+    strongMatchCount++;
     addReason(why, "Title phrase match");
   }
+
   if (fields.body.includes(q)) {
-    score += 26;
+    score += 24;
+    strongMatchCount++;
     addReason(why, "Verse phrase match");
   }
+
   if (fields.topics.some((t) => t.includes(q))) {
-    score += 44;
+    score += 42;
+    strongMatchCount++;
     addReason(why, "Topic phrase match");
   }
+
   if (fields.keywords.some((k) => k.includes(q))) {
-    score += 42;
+    score += 46;
+    strongMatchCount++;
     addReason(why, "Keyword phrase match");
   }
+
   if (fields.intentTags.some((t) => t.includes(q))) {
-    score += 48;
+    score += 50;
+    strongMatchCount++;
     addReason(why, "Intent phrase match");
   }
+
   if (fields.moodTags.some((t) => t.includes(q))) {
-    score += 44;
+    score += 54;
+    strongMatchCount++;
+    emotionalMatchCount++;
     addReason(why, "Mood phrase match");
   }
 
+  // Expanded token matches
   for (const token of expanded) {
     if (!token) continue;
 
-    if (fields.title.includes(token)) score += 10;
-    if (fields.body.includes(token)) score += 6;
-    if (fields.ref.includes(token)) score += 2;
+    const inTitle = fields.title.includes(token);
+    const inBody = fields.body.includes(token);
+    const inRef = fields.ref.includes(token);
+    const inTopics = fields.topics.some((t) => t.includes(token));
+    const inKeywords = fields.keywords.some((k) => k.includes(token));
+    const inIntentTags = fields.intentTags.some((t) => t.includes(token));
+    const inMoodTags = fields.moodTags.some((m) => m.includes(token));
 
-    if (fields.topics.some((t) => t.includes(token))) {
-      score += 16;
+    if (inTitle) {
+      score += 8;
+      genericTokenHits++;
+    }
+
+    if (inBody) {
+      score += 4;
+      genericTokenHits++;
+    }
+
+    if (inRef) {
+      score += 1;
+    }
+
+    if (inTopics) {
+      score += 14;
+      strongMatchCount++;
       addReason(why, "Related topic");
     }
 
-    if (fields.keywords.some((k) => k.includes(token))) {
-      score += 18;
+    if (inKeywords) {
+      score += 16;
+      strongMatchCount++;
       addReason(why, "Related keyword");
     }
 
-    if (fields.intentTags.some((t) => t.includes(token))) {
-      score += 24;
+    if (inIntentTags) {
+      score += 20;
+      strongMatchCount++;
       addReason(why, "Intent alignment");
     }
 
-    if (fields.moodTags.some((t) => t.includes(token))) {
-      score += 22;
+    if (inMoodTags) {
+      score += 24;
+      strongMatchCount++;
+      emotionalMatchCount++;
       addReason(why, "Emotional state match");
     }
   }
 
+  // Intent-based boosts
   for (const intent of intents) {
     const topicHits = intent.boostTopics.filter((x) =>
       fields.topics.some((t) => t.includes(normalize(x)))
@@ -409,21 +451,26 @@ function scoreEntry(item: ProverbEntry, query: string): ScoredResult {
 
     if (topicHits > 0) {
       score += topicHits * 18;
+      strongMatchCount += topicHits;
       addReason(why, `${intent.name} topic fit`);
     }
 
     if (keywordHits > 0) {
-      score += keywordHits * 10;
+      score += keywordHits * 12;
+      strongMatchCount += keywordHits;
       addReason(why, `${intent.name} keyword fit`);
     }
 
     if (moodHits > 0) {
-      score += moodHits * 18;
+      score += moodHits * 24;
+      strongMatchCount += moodHits;
+      emotionalMatchCount += moodHits;
       addReason(why, `${intent.name} mood fit`);
     }
 
     if (intentHits > 0) {
       score += intentHits * 22;
+      strongMatchCount += intentHits;
       addReason(why, `${intent.name} intent fit`);
     }
 
@@ -441,8 +488,26 @@ function scoreEntry(item: ProverbEntry, query: string): ScoredResult {
         );
       })
     ) {
-      score -= 14;
+      score -= 16;
     }
+  }
+
+  // Penalize weak generic-only matches
+  if (strongMatchCount === 0 && genericTokenHits > 0) {
+    score -= 18;
+  }
+
+  // Penalize emotionally irrelevant matches for emotional queries
+  const emotionalQueryTerms = ["hurting", "hurt", "pain", "grief", "weary", "afraid", "anxious", "overwhelmed"];
+  const isEmotionalQuery = emotionalQueryTerms.some((term) => q.includes(term));
+
+  if (isEmotionalQuery && emotionalMatchCount === 0) {
+    score -= 28;
+  }
+
+  // Small bonus when both intent + emotion line up
+  if (strongMatchCount >= 2 && emotionalMatchCount >= 1) {
+    score += 16;
   }
 
   const exactIntentFit =
@@ -488,7 +553,7 @@ export function searchProverbs(query: string, limit = 12): ProverbEntry[] {
 
   const scored = uniqueScoredByRef(
     PROVERBS.map((item) => scoreEntry(item, cleaned))
-      .filter((entry) => entry.score > 12)
+      .filter((entry) => entry.score > 0)
       .sort((a, b) => b.score - a.score)
   );
 
@@ -511,13 +576,12 @@ export function searchProverbsScored(
 
   const scored = uniqueScoredByRef(
     PROVERBS.map((item) => scoreEntry(item, cleaned))
-      .filter((entry) => entry.score > 12)
+      .filter((entry) => entry.score > 0)
       .sort((a, b) => b.score - a.score)
   );
 
   return scored.slice(0, limit);
 }
-
 export function getRelatedProverbs(
   source: ProverbEntry,
   limit = 4
