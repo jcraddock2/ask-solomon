@@ -544,7 +544,7 @@ function scoreEntry(item: ProverbEntry, query: string): ScoredResult {
 
   return { item, score, why: Array.from(new Set(why)) };
 }
-  
+
 function uniqueScoredByRef(items: ScoredResult[]): ScoredResult[] {
   const best = new Map<string, ScoredResult>();
 
@@ -557,6 +557,19 @@ function uniqueScoredByRef(items: ScoredResult[]): ScoredResult[] {
   }
 
   return Array.from(best.values());
+}
+
+export function searchProverbs(query: string, limit = 12): ProverbEntry[] {
+  const cleaned = query.trim();
+  if (!cleaned) return PROVERBS.slice(0, limit);
+
+  const scored = uniqueScoredByRef(
+    PROVERBS.map((item) => scoreEntry(item, cleaned))
+      .filter((entry) => entry.score > 0)
+      .sort((a, b) => b.score - a.score)
+  );
+
+  return scored.slice(0, limit).map((entry) => entry.item);
 }
 
 export function searchProverbsScored(
@@ -625,13 +638,7 @@ export function getRelatedProverbs(
     .slice(0, limit)
     .map((entry) => entry.item);
 }
-  return related
-    .filter((entry) => entry.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map((entry) => entry.item);
-}
-
+ 
 export const PROVERBS: ProverbEntry[] = [
   createProverb(
     "Proverbs 1:33",
