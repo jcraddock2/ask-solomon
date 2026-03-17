@@ -332,7 +332,6 @@ function scoreEntry(item: ProverbEntry, query: string): ScoredResult {
     return { item, score: 0, why: [] };
   }
 
-  // strong full-query boosts
   if (fields.title.includes(q)) {
     score += 40;
     addReason(why, "Title phrase match");
@@ -358,7 +357,6 @@ function scoreEntry(item: ProverbEntry, query: string): ScoredResult {
     addReason(why, "Mood phrase match");
   }
 
-  // token and expanded semantic boosts
   for (const token of expanded) {
     if (!token) continue;
 
@@ -387,17 +385,19 @@ function scoreEntry(item: ProverbEntry, query: string): ScoredResult {
     }
   }
 
-  // intent-specific weighting
   for (const intent of intents) {
     const topicHits = intent.boostTopics.filter((x) =>
       fields.topics.some((t) => t.includes(normalize(x)))
     ).length;
 
-    const keywordHits = intent.boostKeywords.filter((x) =>
-      fields.keywords.some((k) => k.includes(normalize(x))) ||
-      fields.body.includes(normalize(x)) ||
-      fields.title.includes(normalize(x))
-    ).length;
+    const keywordHits = intent.boostKeywords.filter((x) => {
+      const nx = normalize(x);
+      return (
+        fields.keywords.some((k) => k.includes(nx)) ||
+        fields.body.includes(nx) ||
+        fields.title.includes(nx)
+      );
+    }).length;
 
     const moodHits = intent.boostMoodTags.filter((x) =>
       fields.moodTags.some((m) => m.includes(normalize(x)))
@@ -427,29 +427,24 @@ function scoreEntry(item: ProverbEntry, query: string): ScoredResult {
       addReason(why, `${intent.name} intent fit`);
     }
 
-    // penalize clearly off-theme verses for strong emotional searches
- if (
-  intent.avoidIfMissing &&
-  !intent.avoidIfMissing.some((x) => {
-    const nx = normalize(x);
-    return (
-      fields.topics.some((t) => t.includes(nx)) ||
-      fields.keywords.some((k) => k.includes(nx)) ||
-      fields.intentTags.some((t) => t.includes(nx)) ||
-      fields.moodTags.some((m) => m.includes(nx)) ||
-      fields.body.includes(nx) ||
-      fields.title.includes(nx)
-    );
-  })
-) {
-  score -= 14;
-}
+    if (
+      intent.avoidIfMissing &&
+      !intent.avoidIfMissing.some((x) => {
+        const nx = normalize(x);
+        return (
+          fields.topics.some((t) => t.includes(nx)) ||
+          fields.keywords.some((k) => k.includes(nx)) ||
+          fields.intentTags.some((t) => t.includes(nx)) ||
+          fields.moodTags.some((m) => m.includes(nx)) ||
+          fields.body.includes(nx) ||
+          fields.title.includes(nx)
+        );
+      })
+    ) {
+      score -= 14;
+    }
+  }
 
-  // generic usefulness bonuses
-  if (fields.topics.length > 0) score += Math.min(6, fields.topics.length);
-  if (fields.intentTags.length > 0) score += Math.min(6, fields.intentTags.length);
-
-  // stronger penalty for weak accidental matches
   const exactIntentFit =
     intents.length === 0 ||
     intents.some((intent) =>
@@ -472,6 +467,7 @@ function scoreEntry(item: ProverbEntry, query: string): ScoredResult {
 
   return { item, score, why };
 }
+  
 function uniqueScoredByRef(items: ScoredResult[]): ScoredResult[] {
   const best = new Map<string, ScoredResult>();
 
