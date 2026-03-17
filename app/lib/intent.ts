@@ -7,6 +7,7 @@ type SearchableItem = {
   body?: string;
   topics?: string[];
   keywords?: string[];
+  tags?: string[];
 };
 
 type IntentBucket = {
@@ -294,40 +295,54 @@ export function rankByIntent<T extends SearchableItem>(items: T[], query: string
 
   const ranked = items
     .map((item) => {
-      const topicText = normalize((item.topics || []).join(" "));
-      const keywordText = normalize((item.keywords || []).join(" "));
-      const textText = normalize(
-        [item.title || "", item.text || "", item.body || "", item.ref || ""].join(" ")
-      );
+   const topicText = normalize((item.topics || []).join(" "));
+const keywordText = normalize((item.keywords || []).join(" "));
+const tagText = normalize((item.tags || []).join(" "));
+const textText = normalize(
+  [item.title || "", item.text || "", item.body || "", item.ref || ""].join(" ")
+);
 
       let score = 0;
 
       const qWords = tokenize(q);
 
-      score += scoreTextMatch(textText, qWords, 2);
-      score += scoreTextMatch(topicText, qWords, 5);
-      score += scoreTextMatch(keywordText, qWords, 6);
+     score += scoreTextMatch(textText, qWords, 2);
+score += scoreTextMatch(topicText, qWords, 5);
+score += scoreTextMatch(keywordText, qWords, 6);
+score += scoreTextMatch(tagText, qWords, 8);
 
-      if (textText.includes(q)) score += 12;
-      if (topicText.includes(q)) score += 18;
-      if (keywordText.includes(q)) score += 20;
+if (textText.includes(q)) score += 12;
+if (topicText.includes(q)) score += 18;
+if (keywordText.includes(q)) score += 20;
+if (tagText.includes(q)) score += 24;
 
-      score += scoreTextMatch(textText, expanded, 4);
-      score += scoreTextMatch(topicText, expanded, 10);
-      score += scoreTextMatch(keywordText, expanded, 12);
+score += scoreTextMatch(textText, expanded, 4);
+score += scoreTextMatch(topicText, expanded, 10);
+score += scoreTextMatch(keywordText, expanded, 12);
+score += scoreTextMatch(tagText, expanded, 16);
 
       for (const intent of matchedIntents) {
-        const topicHits = scoreTextMatch(topicText, intent.boostTopics.map(normalize), 20);
-        const keywordHits = scoreTextMatch(keywordText, intent.boostKeywords.map(normalize), 22);
-        const relatedHits = scoreTextMatch(textText, intent.relatedTerms.map(normalize), 8);
+     const topicHits = scoreTextMatch(topicText, intent.boostTopics.map(normalize), 20);
+const keywordHits = scoreTextMatch(keywordText, intent.boostKeywords.map(normalize), 22);
+const tagHits = scoreTextMatch(
+  tagText,
+  [...intent.boostTopics, ...intent.boostKeywords, ...intent.relatedTerms].map(normalize),
+  24
+);
+const relatedHits = scoreTextMatch(textText, intent.relatedTerms.map(normalize), 8);
 
-        score += topicHits + keywordHits + relatedHits;
+score += topicHits + keywordHits + tagHits + relatedHits;
 
         if (
           intent.avoidIfMissing &&
           !intent.avoidIfMissing.some((term) => {
             const n = normalize(term);
-            return topicText.includes(n) || keywordText.includes(n) || textText.includes(n);
+        return (
+  topicText.includes(n) ||
+  keywordText.includes(n) ||
+  tagText.includes(n) ||
+  textText.includes(n)
+);
           })
         ) {
           score -= 18;
@@ -352,15 +367,16 @@ export function smartSearch<T extends SearchableItem>(items: T[], query: string)
   const ranked = rankByIntent(items, q);
 
   const strong = ranked.filter((item) => {
-    const blob = normalize(
-      [
-        item.title || "",
-        item.text || "",
-        item.body || "",
-        (item.topics || []).join(" "),
-        (item.keywords || []).join(" "),
-      ].join(" ")
-    );
+  const blob = normalize(
+  [
+    item.title || "",
+    item.text || "",
+    item.body || "",
+    (item.topics || []).join(" "),
+    (item.keywords || []).join(" "),
+    (item.tags || []).join(" "),
+  ].join(" ")
+); 
 
     const intents = detectIntent(q);
     const expanded = expandedTerms(q);
