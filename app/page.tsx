@@ -874,26 +874,37 @@ ${link}`;
     return list;
   };
 
-  const baseResults = useMemo(
-    () => buildFilteredPool(),
-    [mode, sub, q, favoritesOnly, favoriteKeys]
-  );
+const baseResults = useMemo(() => {
+  const query = q.trim();
 
-  const results = useMemo(() => {
-    if (!todayFocusOn) return baseResults;
-    if (!todayFocusKey) return [];
-    return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
-  }, [baseResults, todayFocusOn, todayFocusKey]);
+  let found = findVerseMatches(query, {
+    mode,
+    sub,
+    limit: 50,
+  });
 
-const smartExpandedTerms = useMemo(() => expandSmartTerms(q), [q]);
+  if (favoritesOnly) {
+    found = found.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
+  }
 
+  return found;
+}, [q, mode, sub, favoritesOnly, favoriteKeys]);
+
+const results = useMemo(() => {
+  if (!todayFocusOn) return baseResults;
+  if (!todayFocusKey) return [];
+  return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
+}, [baseResults, todayFocusOn, todayFocusKey]);
+
+const smartExpandedTerms = useMemo(() => expandSmartTerms(q), [q]); 
 const proverbMatches = useMemo<ProverbMatch[]>(() => {
-  if (!q.trim()) return [];
+  const query = q.trim();
+  if (!query) return [];
 
   try {
-    const found = searchProverbsScored(q, 8);
+    const found = asArray(searchProverbsScored(query, 8));
 
-    return asArray(found)
+    return found
       .map((entry: any) => {
         const p = entry?.item ?? {};
         const ref = String(p?.ref ?? "");
@@ -904,25 +915,27 @@ const proverbMatches = useMemo<ProverbMatch[]>(() => {
 
         const fallback = scoreProverbMatch(
           { ref, text, topics },
-          q,
+          query,
           smartExpandedTerms
         );
 
         const rawScore = Number(entry?.score ?? fallback.score ?? 0);
+
+        const why =
+          Array.isArray(entry?.why) && entry.why.length > 0
+            ? entry.why.map((w: any) => String(w))
+            : fallback.why.length > 0
+            ? fallback.why
+            : topics.length > 0
+            ? [`Matched topics: ${topics.slice(0, 3).join(", ")}`]
+            : ["Matched by Ask Solomon search"];
 
         return {
           ref,
           text,
           topics,
           score: rawScore,
-          why:
-            Array.isArray(entry?.why) && entry.why.length > 0
-              ? entry.why.map((w: any) => String(w))
-              : fallback.why.length > 0
-              ? fallback.why
-              : topics.length > 0
-              ? [`Matched topics: ${topics.slice(0, 3).join(", ")}`]
-              : ["Matched by Ask Solomon search"],
+          why,
         };
       })
       .filter((p) => p.ref && p.text)
@@ -931,33 +944,36 @@ const proverbMatches = useMemo<ProverbMatch[]>(() => {
   } catch {
     return [];
   }
-}, [q, smartExpandedTerms]); 
-  
-  const promotedProverb = useMemo(
-    () => proverbMatches.find((p) => p.ref === promotedProverbRef) || null,
-    [proverbMatches, promotedProverbRef]
+}, [q, smartExpandedTerms]);
+
+const promotedProverb = useMemo<ProverbMatch | null>(() => {
+  return proverbMatches.find((p) => p.ref === promotedProverbRef) || null;
+}, [proverbMatches, promotedProverbRef]);
+
+const relatedPromotedProverbs = useMemo<ProverbMatch[]>(() => {
+  if (!promotedProverb) return [];
+
+  const promotedTopics = new Set(
+    promotedProverb.topics.map((t) => normalizeText(t))
   );
 
-  const relatedPromotedProverbs = useMemo(() => {
-    if (!promotedProverb) return [];
-    const promotedTopics = new Set(promotedProverb.topics.map((t) => normalizeText(t)));
+  return proverbMatches
+    .filter((p) => p.ref !== promotedProverb.ref)
+    .filter((p) => p.topics.some((t) => promotedTopics.has(normalizeText(t))))
+    .slice(0, 3);
+}, [promotedProverb, proverbMatches]);
 
-    return proverbMatches
-      .filter((p) => p.ref !== promotedProverb.ref)
-      .filter((p) => p.topics.some((t) => promotedTopics.has(normalizeText(t))))
-      .slice(0, 3);
-  }, [promotedProverb, proverbMatches]);
+const bookMatches = useMemo<BookMatch[]>(() => {
+  const query = q.trim();
+  if (!query) return [];
 
-  const bookMatches = useMemo<BookMatch[]>(() => {
-    if (q.trim().length === 0) return [];
-
-    try {
-      return asArray<BookMatch>(findBookMatches(q));
-    } catch {
-      return [];
-    }
-  }, [q]);
-
+  try {
+    return asArray<BookMatch>(findBookMatches(query));
+  } catch {
+    return [];
+  }
+}, [q]); 
+  
   const rerollTodaysFocus = () => {
     if (baseResults.length === 0) {
       setTodayFocusKey("");
