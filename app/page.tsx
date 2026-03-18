@@ -1042,7 +1042,7 @@ return (
     <main style={pageStyle}>
       <header style={{ marginBottom: 18 }}>
         <div style={headerRow}>
-                 <div>
+          <div>
             <div
               style={{
                 fontSize: 12,
@@ -1054,6 +1054,7 @@ return (
             >
               Ask Solomon
             </div>
+
             <h1
               style={{
                 margin: "6px 0 0 0",
@@ -1064,11 +1065,18 @@ return (
             >
               Wisdom for what you’re facing right now
             </h1>
-            <p style={{ marginTop: 8, marginBottom: 0, color: "#334155", fontWeight: 800 }}>
+
+            <p
+              style={{
+                marginTop: 8,
+                marginBottom: 0,
+                color: "#334155",
+                fontWeight: 800,
+              }}
+            >
               Encouragement first—wisdom from Proverbs for what you’re facing right now.
             </p>
           </div>
-
           <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
             <span style={badgeStyle(isPro)}>{isPro ? "PRO" : "FREE"}</span>
             <button type="button" onClick={() => router.push("/book")} style={headerBtn}>
