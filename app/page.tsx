@@ -1034,9 +1034,6 @@ const toggleTodaysFocus = () => {
   });
 };
 
-  );
-};
-
 return (
   <div style={outerStyle}>
     <main style={pageStyle}>
