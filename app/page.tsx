@@ -1034,6 +1034,62 @@ const toggleTodaysFocus = () => {
   });
 };
 
+const applyTopic = (topicQuery: string) => {
+  setQ(topicQuery);
+  setFavoritesOnly(false);
+  setTodayFocusOn(false);
+  setTodayFocusKey("");
+  setUrl({ q: topicQuery });
+};
+
+const applySituation = (value: string) => {
+  setQ(value);
+  setTodayFocusOn(false);
+  setFavoritesOnly(false);
+  setTodayFocusKey("");
+  setUrl({ q: value });
+};
+
+const renderEmptyState = () => {
+  if (favoritesOnly && favoritesCount === 0) {
+    return (
+      <div
+        style={{
+          background: "rgba(255,255,255,0.85)",
+          border: "1px solid rgba(0,0,0,0.08)",
+          borderRadius: 16,
+          padding: 14,
+          boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
+        }}
+      >
+        <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>
+          ⭐ Build your Favorites Library
+        </div>
+        <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
+          Tap ☆ on any verse to save it. Then you can switch to Favorites anytime.
+        </div>
+        <div style={{ marginTop: 10, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
+          Tip: Save the verses you want to read again tomorrow.
+        </div>
+      </div>
+    );
+  }
+
+  if (todayFocusOn && !todayFocusKey) {
+    return (
+      <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
+        No matches for Today’s Focus. Try turning off Favorites or clearing search.
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
+      No matches. Try a different keyword.
+    </div>
+  );
+};
+
 return (
   <div style={outerStyle}>
     <main style={pageStyle}>
@@ -1051,7 +1107,6 @@ return (
             >
               Ask Solomon
             </div>
-
             <h1
               style={{
                 margin: "6px 0 0 0",
@@ -1062,15 +1117,7 @@ return (
             >
               Wisdom for what you’re facing right now
             </h1>
-
-            <p
-              style={{
-                marginTop: 8,
-                marginBottom: 0,
-                color: "#334155",
-                fontWeight: 800,
-              }}
-            >
+            <p style={{ marginTop: 8, marginBottom: 0, color: "#334155", fontWeight: 800 }}>
               Encouragement first—wisdom from Proverbs for what you’re facing right now.
             </p>
           </div>
