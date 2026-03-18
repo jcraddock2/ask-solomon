@@ -893,9 +893,21 @@ ${link}`;
     return list;
   };
 
-  const baseResults = useMemo(() => {
-  return buildFilteredPool();
-}, [mode, sub, q, favoritesOnly, favoriteKeys]);
+ const baseResults = useMemo(() => {
+  const scored = searchVerseItemsScored(q, {
+    mode,
+    sub,
+    limit: 50,
+  });
+
+  let found = scored.map((x) => x.item);
+
+  if (favoritesOnly) {
+    found = found.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
+  }
+
+  return found;
+}, [q, mode, sub, favoritesOnly, favoriteKeys]);
 
   const results = useMemo(() => {
     if (!todayFocusOn) return baseResults;
