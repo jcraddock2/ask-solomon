@@ -269,7 +269,8 @@ function PageInner() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [promotedProverbRef, setPromotedProverbRef] = useState<string>("");
 
-  const [shareTemplate, setShareTemplate] = useState<ShareTemplate>("gradientModern");
+  const [shareTemplate, setShareTemplate] =
+    useState<ShareTemplate>("gradientModern");
 
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
@@ -343,7 +344,9 @@ function PageInner() {
     cursor: "pointer",
     fontWeight: 900,
     fontSize: 13,
-    boxShadow: active ? "0 14px 30px rgba(0,0,0,0.16)" : "0 10px 24px rgba(0,0,0,0.06)",
+    boxShadow: active
+      ? "0 14px 30px rgba(0,0,0,0.16)"
+      : "0 10px 24px rgba(0,0,0,0.06)",
     whiteSpace: "nowrap",
     userSelect: "none",
   });
@@ -414,7 +417,10 @@ function PageInner() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    localStorage.setItem("asksolomon:shareTemplate", JSON.stringify(shareTemplate));
+    localStorage.setItem(
+      "asksolomon:shareTemplate",
+      JSON.stringify(shareTemplate)
+    );
   }, [shareTemplate]);
 
   useEffect(() => {
@@ -428,7 +434,9 @@ function PageInner() {
 
     const params = new URLSearchParams();
     if (nextMode !== "encouragement") params.set("mode", nextMode);
-    if (nextMode === "encouragement" && nextSub !== "all") params.set("sub", nextSub);
+    if (nextMode === "encouragement" && nextSub !== "all") {
+      params.set("sub", nextSub);
+    }
     if (nextQ.trim().length > 0) params.set("q", nextQ.trim());
 
     const qs = params.toString();
@@ -476,7 +484,10 @@ function PageInner() {
     }
   }, [favoritesOnly, favoritesCount]);
 
-  const handleCopy = async (item: Pick<VerseItem, "title" | "body" | "ref">, key: string) => {
+  const handleCopy = async (
+    item: Pick<VerseItem, "title" | "body" | "ref">,
+    key: string
+  ) => {
     const text = `${item.title}\n\n${item.body}\n\n${item.ref}`;
     try {
       await navigator.clipboard.writeText(text);
@@ -504,12 +515,19 @@ Get daily wisdom:
 ${link}`;
   };
 
-  const handleShare = async (item: Pick<VerseItem, "title" | "body" | "ref">, keyForUi?: string) => {
+  const handleShare = async (
+    item: Pick<VerseItem, "title" | "body" | "ref">,
+    keyForUi?: string
+  ) => {
     const text = buildShareText(item);
 
     try {
       if (typeof navigator !== "undefined" && "share" in navigator) {
-        await (navigator as Navigator & { share: (data: ShareData) => Promise<void> }).share({
+        await (
+          navigator as Navigator & {
+            share: (data: ShareData) => Promise<void>;
+          }
+        ).share({
           title: "Ask Solomon",
           text,
         });
@@ -875,145 +893,151 @@ ${link}`;
     return list;
   };
 
-const baseResults = useMemo(() => {
-  const query = q.trim();
+  const baseResults = useMemo(() => {
+    const query = q.trim();
 
-  let found = findVerseMatches(query, {
-    mode,
-    sub,
-    limit: 50,
-  });
+    let found = findVerseMatches(query, {
+      mode,
+      sub,
+      limit: 50,
+    });
 
-  if (favoritesOnly) {
-    found = found.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
-  }
+    if (favoritesOnly) {
+      found = found.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
+    }
 
-  return found;
-}, [q, mode, sub, favoritesOnly, favoriteKeys]);
+    return found;
+  }, [q, mode, sub, favoritesOnly, favoriteKeys]);
 
-const results = useMemo(() => {
-  if (!todayFocusOn) return baseResults;
-  if (!todayFocusKey) return [];
-  return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
-}, [baseResults, todayFocusOn, todayFocusKey]);
+  const results = useMemo(() => {
+    if (!todayFocusOn) return baseResults;
+    if (!todayFocusKey) return [];
+    return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
+  }, [baseResults, todayFocusOn, todayFocusKey]);
 
-const smartExpandedTerms = useMemo(() => {
-  const STOPWORDS = new Set([
-    "i",
-    "am",
-    "im",
-    "ive",
-    "me",
-    "my",
-    "the",
-    "a",
-    "an",
-    "and",
-    "or",
-    "to",
-    "for",
-    "of",
-    "in",
-    "on",
-    "at",
-    "is",
-    "are",
-    "be",
-    "feel",
-    "feeling",
-    "need",
-    "want",
-  ]);
+  const smartExpandedTerms = useMemo(() => {
+    const STOPWORDS = new Set([
+      "i",
+      "am",
+      "im",
+      "ive",
+      "me",
+      "my",
+      "the",
+      "a",
+      "an",
+      "and",
+      "or",
+      "to",
+      "for",
+      "of",
+      "in",
+      "on",
+      "at",
+      "is",
+      "are",
+      "be",
+      "feel",
+      "feeling",
+      "need",
+      "want",
+    ]);
 
-  return Array.from(
-    new Set(
-      expandSmartTerms(q).filter(
-        (term) => term && term.length > 2 && !STOPWORDS.has(term.toLowerCase())
+    return Array.from(
+      new Set(
+        expandSmartTerms(q).filter(
+          (term) => term && term.length > 2 && !STOPWORDS.has(term.toLowerCase())
+        )
       )
-    )
-  );
-}, [q]);
+    );
+  }, [q]);
 
-const proverbMatches = useMemo<ProverbMatch[]>(() => {
-  const query = q.trim();
-  if (!query) return [];
+  const proverbMatches = useMemo<ProverbMatch[]>(() => {
+    const query = q.trim();
+    if (!query) return [];
 
-  try {
-    const found = asArray(searchProverbsScored(query, 8));
+    try {
+      const found = asArray(searchProverbsScored(query, 8));
 
-    return found
-      .map((entry: any) => {
-        const p = entry?.item ?? {};
-        const ref = String(p?.ref ?? "");
-        const text = String(p?.text ?? p?.body ?? "");
-        const topics = Array.isArray(p?.topics)
-          ? p.topics.map((t: any) => String(t))
-          : [];
+      return found
+        .map((entry: any) => {
+          const p = entry?.item ?? {};
+          const ref = String(p?.ref ?? "");
+          const text = String(p?.text ?? p?.body ?? "");
+          const topics = Array.isArray(p?.topics)
+            ? p.topics.map((t: any) => String(t))
+            : [];
 
-        const fallback = scoreProverbMatch({ ref, text, topics }, query, smartExpandedTerms);
+          const fallback = scoreProverbMatch(
+            { ref, text, topics },
+            query,
+            smartExpandedTerms
+          );
 
-        const rawScore = Number(entry?.score ?? fallback.score ?? 0);
+          const rawScore = Number(entry?.score ?? fallback.score ?? 0);
 
-        const why =
-          Array.isArray(entry?.why) && entry.why.length > 0
-            ? entry.why.map((w: any) => String(w))
-            : fallback.why.length > 0
-            ? fallback.why
-            : topics.length > 0
-            ? [`Matched topics: ${topics.slice(0, 3).join(", ")}`]
-            : ["Matched by Ask Solomon search"];
+          const why =
+            Array.isArray(entry?.why) && entry.why.length > 0
+              ? entry.why.map((w: any) => String(w))
+              : fallback.why.length > 0
+              ? fallback.why
+              : topics.length > 0
+              ? [`Matched topics: ${topics.slice(0, 3).join(", ")}`]
+              : ["Matched by Ask Solomon search"];
 
-        return {
-          ref,
-          text,
-          topics,
-          score: rawScore,
-          why,
-        };
-      })
-      .filter((p) => p.ref && p.text)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 8);
-  } catch {
-    return [];
-  }
-}, [q, smartExpandedTerms]);
+          return {
+            ref,
+            text,
+            topics,
+            score: rawScore,
+            why,
+          };
+        })
+        .filter((p) => p.ref && p.text)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 8);
+    } catch {
+      return [];
+    }
+  }, [q, smartExpandedTerms]);
 
-const promotedProverb = useMemo<ProverbMatch | null>(() => {
-  return proverbMatches.find((p) => p.ref === promotedProverbRef) || null;
-}, [proverbMatches, promotedProverbRef]);
+  const promotedProverb = useMemo<ProverbMatch | null>(() => {
+    return proverbMatches.find((p) => p.ref === promotedProverbRef) || null;
+  }, [proverbMatches, promotedProverbRef]);
 
-const relatedPromotedProverbs = useMemo<ProverbMatch[]>(() => {
-  if (!promotedProverb) return [];
+  const relatedPromotedProverbs = useMemo<ProverbMatch[]>(() => {
+    if (!promotedProverb) return [];
 
-  const promotedTopics = new Set(promotedProverb.topics.map((t) => normalizeText(t)));
+    const promotedTopics = new Set(
+      promotedProverb.topics.map((t) => normalizeText(t))
+    );
 
-  return proverbMatches
-    .filter((p) => p.ref !== promotedProverb.ref)
-    .filter((p) => p.topics.some((t) => promotedTopics.has(normalizeText(t))))
-    .slice(0, 3);
-}, [promotedProverb, proverbMatches]);
+    return proverbMatches
+      .filter((p) => p.ref !== promotedProverb.ref)
+      .filter((p) => p.topics.some((t) => promotedTopics.has(normalizeText(t))))
+      .slice(0, 3);
+  }, [promotedProverb, proverbMatches]);
 
-const bookMatches = useMemo<BookMatch[]>(() => {
-  const query = q.trim();
-  if (!query) return [];
+  const bookMatches = useMemo<BookMatch[]>(() => {
+    const query = q.trim();
+    if (!query) return [];
 
-  try {
-    return asArray<BookMatch>(findBookMatches(query));
-  } catch {
-    return [];
-  }
-}, [q]);
+    try {
+      return asArray<BookMatch>(findBookMatches(query));
+    } catch {
+      return [];
+    }
+  }, [q]);
 
-const rerollTodaysFocus = () => {
-  if (baseResults.length === 0) {
-    setTodayFocusKey("");
-    return;
-  }
+  const rerollTodaysFocus = () => {
+    if (baseResults.length === 0) {
+      setTodayFocusKey("");
+      return;
+    }
 
-  const choice = baseResults[Math.floor(Math.random() * baseResults.length)];
-  setTodayFocusKey(`${choice.ref}-${choice.title}`);
-};
+    const choice = baseResults[Math.floor(Math.random() * baseResults.length)];
+    setTodayFocusKey(`${choice.ref}-${choice.title}`);
+  };
 
   const toggleTodaysFocus = () => {
     if (todayFocusOn) {
@@ -1043,7 +1067,7 @@ const rerollTodaysFocus = () => {
     setUrl({ q: situationQuery });
   };
 
-   const renderEmptyState = () => {
+  const renderEmptyState = () => {
     if (favoritesOnly && favoritesCount === 0) {
       return (
         <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
@@ -1075,563 +1099,888 @@ const rerollTodaysFocus = () => {
                 }}
               >
                 Ask Solomon
-            </div>
-            <h1
-              style={{
-                margin: "6px 0 0 0",
-                fontSize: 34,
-                lineHeight: 1.05,
-                color: "#111827",
-              }}
-            >
-              Wisdom for what you’re facing right now
-            </h1>
-            <p style={{ marginTop: 8, marginBottom: 0, color: "#334155", fontWeight: 800 }}>
-              Encouragement first—wisdom from Proverbs for what you’re facing right now.
-            </p>
-          </div>
-          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-            <span style={badgeStyle(isPro)}>{isPro ? "PRO" : "FREE"}</span>
-            <button type="button" onClick={() => router.push("/book")} style={headerBtn}>
-              Book
-            </button>
-            {!isPro && (
-              <button type="button" onClick={() => router.push("/upgrade")} style={headerBtn}>
-                Upgrade (Lifetime)
-              </button>
-            )}
-          </div>
-        </div>
-      </header>
-
-      <section style={cardStyle}>
-        <div
-          style={{
-            position: "sticky",
-            top: 10,
-            zIndex: 10,
-            background: "rgba(248,250,252,0.88)",
-            backdropFilter: "blur(10px)",
-            WebkitBackdropFilter: "blur(10px)",
-            border: "1px solid rgba(0,0,0,0.06)",
-            borderRadius: 18,
-            padding: 12,
-            boxShadow: "0 12px 28px rgba(0,0,0,0.08)",
-            marginBottom: 14,
-          }}
-        >
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-            {asArray(MODES).map((m: any) => {
-              const modeKey = getModeKey(m);
-              return (
-                <button
-                  key={modeKey}
-                  type="button"
-                  onClick={() => {
-                    setMode(modeKey);
-                    setSub("all");
-                    setFavoritesOnly(false);
-                    setTodayFocusOn(false);
-                    setTodayFocusKey("");
-                    setUrl({ mode: modeKey, sub: "all" });
-                  }}
-                  style={pillBtn(mode === modeKey)}
-                >
-                  {getModeLabel(m)}
-                </button>
-              );
-            })}
-
-            <button
-              type="button"
-              onClick={() => {
-                setFavoritesOnly((v) => !v);
-                setTodayFocusOn(false);
-                setTodayFocusKey("");
-              }}
-              style={{
-                ...pillBtn(favoritesOnly),
-                display: "flex",
-                gap: 8,
-                alignItems: "center",
-                transform: favPulse ? "scale(1.05)" : "scale(1)",
-                transition: "transform 160ms ease",
-              }}
-              title="Show only saved favorites"
-            >
-              <span>⭐</span>
-              <span>
-                {favoritesOnly
-                  ? `Showing Favorites (${favoritesCount})`
-                  : `Favorites (${favoritesCount})`}
-              </span>
-            </button>
-
-            <button
-              type="button"
-              onClick={toggleTodaysFocus}
-              style={{
-                ...pillBtn(todayFocusOn),
-                display: "flex",
-                gap: 8,
-                alignItems: "center",
-                animation: todayFocusOn ? "pulseGlow 1.8s ease-in-out infinite" : undefined,
-              }}
-              title="Show one random verse from the current filter"
-            >
-              <span>✨</span>
-              <span>{todayFocusOn ? "Today’s Focus (On)" : "Today’s Focus"}</span>
-            </button>
-
-            {todayFocusOn && (
-              <button
-                type="button"
-                onClick={() => {
-                  setTodayFocusOn(false);
-                  setTodayFocusKey("");
+              </div>
+              <h1
+                style={{
+                  margin: "6px 0 0 0",
+                  fontSize: 34,
+                  lineHeight: 1.05,
+                  color: "#111827",
                 }}
-                style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
-                title="Return to normal results"
               >
-                <span>↩️</span>
-                <span>Clear Focus</span>
-              </button>
-            )}
-
-            {todayFocusOn && (
-              <button
-                type="button"
-                onClick={rerollTodaysFocus}
-                style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
-                title="Pick a different verse"
+                Wisdom for what you’re facing right now
+              </h1>
+              <p
+                style={{
+                  marginTop: 8,
+                  marginBottom: 0,
+                  color: "#334155",
+                  fontWeight: 800,
+                }}
               >
-                <span>🔄</span>
-                <span>Re-roll</span>
-              </button>
-            )}
+                Encouragement first—wisdom from Proverbs for what you’re facing right now.
+              </p>
+            </div>
 
             <div
               style={{
                 display: "flex",
-                alignItems: "center",
                 gap: 8,
-                marginLeft: "auto",
+                alignItems: "center",
                 flexWrap: "wrap",
               }}
             >
-              <span style={{ fontSize: 12, fontWeight: 900, color: "#334155" }}>
-                Image Template
-              </span>
-              <select
-                value={shareTemplate}
-                onChange={(e) => setShareTemplate(e.target.value as ShareTemplate)}
-                style={selectStyle}
-                aria-label="Select share image template"
-                title="Choose the style for Image share cards"
+              <span style={badgeStyle(isPro)}>{isPro ? "PRO" : "FREE"}</span>
+              <button
+                type="button"
+                onClick={() => router.push("/book")}
+                style={headerBtn}
               >
-                <option value="gradientModern">{formatTemplateLabel("gradientModern")}</option>
-                <option value="classic">{formatTemplateLabel("classic")}</option>
-                <option value="dark">{formatTemplateLabel("dark")}</option>
-                <option value="gold">{formatTemplateLabel("gold")}</option>
-                <option value="daily">{formatTemplateLabel("daily")}</option>
-              </select>
+                Book
+              </button>
+              {!isPro && (
+                <button
+                  type="button"
+                  onClick={() => router.push("/upgrade")}
+                  style={headerBtn}
+                >
+                  Upgrade (Lifetime)
+                </button>
+              )}
             </div>
           </div>
+        </header>
 
-          {mode === "encouragement" && (
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
+        <section style={cardStyle}>
+          <div
+            style={{
+              position: "sticky",
+              top: 10,
+              zIndex: 10,
+              background: "rgba(248,250,252,0.88)",
+              backdropFilter: "blur(10px)",
+              WebkitBackdropFilter: "blur(10px)",
+              border: "1px solid rgba(0,0,0,0.06)",
+              borderRadius: 18,
+              padding: 12,
+              boxShadow: "0 12px 28px rgba(0,0,0,0.08)",
+              marginBottom: 14,
+            }}
+          >
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+              {asArray(MODES).map((m: any) => {
+                const modeKey = getModeKey(m);
+                return (
+                  <button
+                    key={modeKey}
+                    type="button"
+                    onClick={() => {
+                      setMode(modeKey);
+                      setSub("all");
+                      setFavoritesOnly(false);
+                      setTodayFocusOn(false);
+                      setTodayFocusKey("");
+                      setUrl({ mode: modeKey, sub: "all" });
+                    }}
+                    style={pillBtn(mode === modeKey)}
+                  >
+                    {getModeLabel(m)}
+                  </button>
+                );
+              })}
+
               <button
                 type="button"
                 onClick={() => {
-                  setSub("all");
+                  setFavoritesOnly((v) => !v);
                   setTodayFocusOn(false);
                   setTodayFocusKey("");
-                  setUrl({ sub: "all" });
                 }}
-                style={pillBtn(sub === "all")}
+                style={{
+                  ...pillBtn(favoritesOnly),
+                  display: "flex",
+                  gap: 8,
+                  alignItems: "center",
+                  transform: favPulse ? "scale(1.05)" : "scale(1)",
+                  transition: "transform 160ms ease",
+                }}
+                title="Show only saved favorites"
               >
-                All
+                <span>⭐</span>
+                <span>
+                  {favoritesOnly
+                    ? `Showing Favorites (${favoritesCount})`
+                    : `Favorites (${favoritesCount})`}
+                </span>
               </button>
 
-              {asArray(SUBS).map((s: any) => {
-                const subKey = getSubKey(s);
+              <button
+                type="button"
+                onClick={toggleTodaysFocus}
+                style={{
+                  ...pillBtn(todayFocusOn),
+                  display: "flex",
+                  gap: 8,
+                  alignItems: "center",
+                  animation: todayFocusOn
+                    ? "pulseGlow 1.8s ease-in-out infinite"
+                    : undefined,
+                }}
+                title="Show one random verse from the current filter"
+              >
+                <span>✨</span>
+                <span>{todayFocusOn ? "Today’s Focus (On)" : "Today’s Focus"}</span>
+              </button>
+
+              {todayFocusOn && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTodayFocusOn(false);
+                    setTodayFocusKey("");
+                  }}
+                  style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
+                  title="Return to normal results"
+                >
+                  <span>↩️</span>
+                  <span>Clear Focus</span>
+                </button>
+              )}
+
+              {todayFocusOn && (
+                <button
+                  type="button"
+                  onClick={rerollTodaysFocus}
+                  style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
+                  title="Pick a different verse"
+                >
+                  <span>🔄</span>
+                  <span>Re-roll</span>
+                </button>
+              )}
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  marginLeft: "auto",
+                  flexWrap: "wrap",
+                }}
+              >
+                <span style={{ fontSize: 12, fontWeight: 900, color: "#334155" }}>
+                  Image Template
+                </span>
+                <select
+                  value={shareTemplate}
+                  onChange={(e) => setShareTemplate(e.target.value as ShareTemplate)}
+                  style={selectStyle}
+                  aria-label="Select share image template"
+                  title="Choose the style for Image share cards"
+                >
+                  <option value="gradientModern">
+                    {formatTemplateLabel("gradientModern")}
+                  </option>
+                  <option value="classic">{formatTemplateLabel("classic")}</option>
+                  <option value="dark">{formatTemplateLabel("dark")}</option>
+                  <option value="gold">{formatTemplateLabel("gold")}</option>
+                  <option value="daily">{formatTemplateLabel("daily")}</option>
+                </select>
+              </div>
+            </div>
+
+            {mode === "encouragement" && (
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSub("all");
+                    setTodayFocusOn(false);
+                    setTodayFocusKey("");
+                    setUrl({ sub: "all" });
+                  }}
+                  style={pillBtn(sub === "all")}
+                >
+                  All
+                </button>
+
+                {asArray(SUBS).map((s: any) => {
+                  const subKey = getSubKey(s);
+                  return (
+                    <button
+                      key={subKey}
+                      type="button"
+                      onClick={() => {
+                        setSub(subKey);
+                        setTodayFocusOn(false);
+                        setTodayFocusKey("");
+                        setUrl({ sub: subKey });
+                      }}
+                      style={pillBtn(sub === subKey)}
+                    >
+                      {getSubLabel(s)}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
+              {asArray(TOPICS).map((t: any) => {
+                const topicQuery = getTopicQuery(t);
+                const active = normalizeText(q) === normalizeText(topicQuery);
                 return (
                   <button
-                    key={subKey}
+                    key={getTopicKey(t)}
                     type="button"
-                    onClick={() => {
-                      setSub(subKey);
-                      setTodayFocusOn(false);
-                      setTodayFocusKey("");
-                      setUrl({ sub: subKey });
-                    }}
-                    style={pillBtn(sub === subKey)}
+                    onClick={() => applyTopic(topicQuery)}
+                    style={topicPill(active)}
+                    title={getTopicHint(t)}
                   >
-                    {getSubLabel(s)}
+                    {getTopicLabel(t)}
                   </button>
                 );
               })}
             </div>
-          )}
 
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
-            {asArray(TOPICS).map((t: any) => {
-              const topicQuery = getTopicQuery(t);
-              const active = normalizeText(q) === normalizeText(topicQuery);
-              return (
-                <button
-                  key={getTopicKey(t)}
-                  type="button"
-                  onClick={() => applyTopic(topicQuery)}
-                  style={topicPill(active)}
-                  title={getTopicHint(t)}
-                >
-                  {getTopicLabel(t)}
-                </button>
-              );
-            })}
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              gap: 10,
-              marginTop: 10,
-              flexWrap: "wrap",
-              alignItems: "center",
-            }}
-          >
-            <div style={{ marginBottom: 10 }}>
-              <div
-                style={{
-                  fontSize: 11,
-                  fontWeight: 900,
-                  letterSpacing: 0.4,
-                  color: "#64748b",
-                  marginBottom: 6,
-                  textTransform: "uppercase",
-                }}
-              >
-                Situation Mode
-              </div>
-
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                {SITUATION_PRESETS.map((preset) => (
-                  <button
-                    key={preset.label}
-                    type="button"
-                    onClick={() => applySituation(preset.value)}
-                    style={{
-                      border: "1px solid rgba(0,0,0,0.08)",
-                      background: "#ffffff",
-                      color: "#0f172a",
-                      borderRadius: 999,
-                      padding: "6px 10px",
-                      fontSize: 12,
-                      fontWeight: 800,
-                      cursor: "pointer",
-                      boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-                    }}
-                  >
-                    {preset.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <input
-              value={q}
-              onChange={(e) => {
-                const val = e.target.value;
-                setQ(val);
-                setTodayFocusOn(false);
-                setTodayFocusKey("");
-                setUrl({ q: val });
-              }}
-              onFocus={() => setSearchFocused(true)}
-              onBlur={() => setSearchFocused(false)}
-              placeholder="Search a keyword (e.g., fear, diligence, counsel)…"
-              style={{
-                flex: 1,
-                minWidth: 260,
-                border: searchFocused
-                  ? "1px solid rgba(99,102,241,0.55)"
-                  : "1px solid rgba(0,0,0,0.12)",
-                borderRadius: 14,
-                padding: "10px 12px",
-                fontWeight: 800,
-                outline: "none",
-                background: "rgba(255,255,255,0.95)",
-                boxShadow: searchFocused
-                  ? "0 0 0 5px rgba(99,102,241,0.18), 0 12px 28px rgba(0,0,0,0.08)"
-                  : "none",
-                transition: "box-shadow 140ms ease, border 140ms ease",
-              }}
-            />
-
-            <button
-              type="button"
-              onClick={() => {
-                setQ("");
-                setTodayFocusOn(false);
-                setTodayFocusKey("");
-                setPromotedProverbRef("");
-                setUrl({ q: "" });
-              }}
-              style={headerBtn}
-            >
-              Clear
-            </button>
-          </div>
-
-          {q.trim().length > 0 && smartExpandedTerms.length > 1 && (
-            <div style={{ marginTop: 10 }}>
-              <div style={{ fontSize: 11, fontWeight: 900, color: "#64748b", marginBottom: 6 }}>
-                Smart Topic Mapping
-              </div>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {smartExpandedTerms.slice(0, 8).map((term) => (
-                  <button
-                    key={term}
-                    type="button"
-                    onClick={() => applyTopic(term)}
-                    style={{
-                      padding: "6px 10px",
-                      borderRadius: 999,
-                      border: "1px solid rgba(99,102,241,0.14)",
-                      background: "rgba(99,102,241,0.08)",
-                      fontWeight: 800,
-                      fontSize: 11,
-                      cursor: "pointer",
-                      color: "#312e81",
-                    }}
-                  >
-                    {term}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {mode === "encouragement" && sub !== "all" && subCommentary[sub as Sub] && (
             <div
               style={{
+                display: "flex",
+                gap: 10,
                 marginTop: 10,
-                marginBottom: 12,
-                padding: 12,
-                borderRadius: 14,
-                border: "1px solid rgba(0,0,0,0.08)",
-                background: "rgba(255,255,255,0.75)",
+                flexWrap: "wrap",
+                alignItems: "center",
               }}
             >
-              <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 6 }}>
-                Solomon’s note
-              </div>
-              <div style={{ fontSize: 14, color: "#334155", lineHeight: 1.5 }}>
-                {subCommentary[sub as Sub]}
-              </div>
-            </div>
-          )}
-
-          <div style={{ marginBottom: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>
-            Showing {results.length} result{results.length === 1 ? "" : "s"}
-          </div>
-
-          {q.trim().length > 0 && (
-            <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>
-                Book Matches
-              </div>
-
-              {isPro ? (
-                bookMatches.length === 0 ? (
-                  <div style={{ color: "#64748b", fontSize: 13, fontWeight: 800 }}>
-                    No book matches yet for “{q.trim()}”.
-                  </div>
-                ) : (
-                  <div style={{ display: "grid", gap: 10 }}>
-                    {bookMatches.map((m: any, idx: number) => (
-                      <div
-                        key={`${renderBookMatchTitle(m)}-${idx}`}
-                        style={{
-                          background: "rgba(255,255,255,0.85)",
-                          border: "1px solid rgba(0,0,0,0.08)",
-                          borderRadius: 16,
-                          padding: 14,
-                          boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
-                        }}
-                      >
-                        <div style={{ fontWeight: 900, fontSize: 15, color: "#111" }}>
-                          {renderBookMatchTitle(m)}
-                        </div>
-
-                        {renderBookMatchLine(m) ? (
-                          <div
-                            style={{
-                              marginTop: 6,
-                              color: "#334155",
-                              fontWeight: 800,
-                              fontSize: 13,
-                            }}
-                          >
-                            {renderBookMatchLine(m)}
-                          </div>
-                        ) : null}
-
-                        {renderBookMatchMeta(m) ? (
-                          <div
-                            style={{
-                              marginTop: 8,
-                              color: "#64748b",
-                              fontWeight: 900,
-                              fontSize: 12,
-                            }}
-                          >
-                            {renderBookMatchMeta(m)}
-                          </div>
-                        ) : null}
-
-                        <div style={{ marginTop: 10 }}>
-                          <button
-                            type="button"
-                            onClick={() => router.push("/book")}
-                            style={{
-                              border: "1px solid rgba(0,0,0,0.10)",
-                              background: "rgba(17,24,39,0.92)",
-                              color: "#fff",
-                              borderRadius: 14,
-                              padding: "10px 12px",
-                              cursor: "pointer",
-                              fontWeight: 900,
-                              fontSize: 13,
-                            }}
-                          >
-                            Open Book
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )
-              ) : (
+              <div style={{ marginBottom: 10 }}>
                 <div
                   style={{
-                    background: "rgba(255,255,255,0.85)",
-                    border: "1px solid rgba(0,0,0,0.08)",
-                    borderRadius: 16,
-                    padding: 14,
-                    boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
+                    fontSize: 11,
+                    fontWeight: 900,
+                    letterSpacing: 0.4,
+                    color: "#64748b",
+                    marginBottom: 6,
+                    textTransform: "uppercase",
                   }}
                 >
-                  <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>
-                    🔒 Book Matches are a Lifetime feature
-                  </div>
-                  <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
-                    Upgrade to see exactly where to read this in the book.
-                  </div>
-                  <div style={{ marginTop: 10 }}>
+                  Situation Mode
+                </div>
+
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  {SITUATION_PRESETS.map((preset) => (
                     <button
+                      key={preset.label}
                       type="button"
-                      onClick={() => router.push("/upgrade")}
+                      onClick={() => applySituation(preset.value)}
                       style={{
-                        border: "1px solid rgba(0,0,0,0.10)",
-                        background: "rgba(17,24,39,0.92)",
-                        color: "#fff",
-                        borderRadius: 14,
-                        padding: "10px 12px",
+                        border: "1px solid rgba(0,0,0,0.08)",
+                        background: "#ffffff",
+                        color: "#0f172a",
+                        borderRadius: 999,
+                        padding: "6px 10px",
+                        fontSize: 12,
+                        fontWeight: 800,
                         cursor: "pointer",
-                        fontWeight: 900,
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                      }}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <input
+                value={q}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setQ(val);
+                  setTodayFocusOn(false);
+                  setTodayFocusKey("");
+                  setUrl({ q: val });
+                }}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setSearchFocused(false)}
+                placeholder="Search a keyword (e.g., fear, diligence, counsel)…"
+                style={{
+                  flex: 1,
+                  minWidth: 260,
+                  border: searchFocused
+                    ? "1px solid rgba(99,102,241,0.55)"
+                    : "1px solid rgba(0,0,0,0.12)",
+                  borderRadius: 14,
+                  padding: "10px 12px",
+                  fontWeight: 800,
+                  outline: "none",
+                  background: "rgba(255,255,255,0.95)",
+                  boxShadow: searchFocused
+                    ? "0 0 0 5px rgba(99,102,241,0.18), 0 12px 28px rgba(0,0,0,0.08)"
+                    : "none",
+                  transition: "box-shadow 140ms ease, border 140ms ease",
+                }}
+              />
+
+              <button
+                type="button"
+                onClick={() => {
+                  setQ("");
+                  setTodayFocusOn(false);
+                  setTodayFocusKey("");
+                  setPromotedProverbRef("");
+                  setUrl({ q: "" });
+                }}
+                style={headerBtn}
+              >
+                Clear
+              </button>
+            </div>
+
+            {q.trim().length > 0 && smartExpandedTerms.length > 1 && (
+              <div style={{ marginTop: 10 }}>
+                <div style={{ fontSize: 11, fontWeight: 900, color: "#64748b", marginBottom: 6 }}>
+                  Smart Topic Mapping
+                </div>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  {smartExpandedTerms.slice(0, 8).map((term) => (
+                    <button
+                      key={term}
+                      type="button"
+                      onClick={() => applyTopic(term)}
+                      style={{
+                        padding: "6px 10px",
+                        borderRadius: 999,
+                        border: "1px solid rgba(99,102,241,0.14)",
+                        background: "rgba(99,102,241,0.08)",
+                        fontWeight: 800,
+                        fontSize: 11,
+                        cursor: "pointer",
+                        color: "#312e81",
+                      }}
+                    >
+                      {term}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {mode === "encouragement" && sub !== "all" && subCommentary[sub as Sub] && (
+              <div
+                style={{
+                  marginTop: 10,
+                  marginBottom: 12,
+                  padding: 12,
+                  borderRadius: 14,
+                  border: "1px solid rgba(0,0,0,0.08)",
+                  background: "rgba(255,255,255,0.75)",
+                }}
+              >
+                <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 6 }}>
+                  Solomon’s note
+                </div>
+                <div style={{ fontSize: 14, color: "#334155", lineHeight: 1.5 }}>
+                  {subCommentary[sub as Sub]}
+                </div>
+              </div>
+            )}
+
+            <div style={{ marginBottom: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>
+              Showing {results.length} result{results.length === 1 ? "" : "s"}
+            </div>
+
+            {q.trim().length > 0 && (
+              <div style={{ marginBottom: 16 }}>
+                <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>
+                  Book Matches
+                </div>
+
+                {isPro ? (
+                  bookMatches.length === 0 ? (
+                    <div style={{ color: "#64748b", fontSize: 13, fontWeight: 800 }}>
+                      No book matches yet for “{q.trim()}”.
+                    </div>
+                  ) : (
+                    <div style={{ display: "grid", gap: 10 }}>
+                      {bookMatches.map((m: any, idx: number) => (
+                        <div
+                          key={`${renderBookMatchTitle(m)}-${idx}`}
+                          style={{
+                            background: "rgba(255,255,255,0.85)",
+                            border: "1px solid rgba(0,0,0,0.08)",
+                            borderRadius: 16,
+                            padding: 14,
+                            boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
+                          }}
+                        >
+                          <div style={{ fontWeight: 900, fontSize: 15, color: "#111" }}>
+                            {renderBookMatchTitle(m)}
+                          </div>
+
+                          {renderBookMatchLine(m) ? (
+                            <div
+                              style={{
+                                marginTop: 6,
+                                color: "#334155",
+                                fontWeight: 800,
+                                fontSize: 13,
+                              }}
+                            >
+                              {renderBookMatchLine(m)}
+                            </div>
+                          ) : null}
+
+                          {renderBookMatchMeta(m) ? (
+                            <div
+                              style={{
+                                marginTop: 8,
+                                color: "#64748b",
+                                fontWeight: 900,
+                                fontSize: 12,
+                              }}
+                            >
+                              {renderBookMatchMeta(m)}
+                            </div>
+                          ) : null}
+
+                          <div style={{ marginTop: 10 }}>
+                            <button
+                              type="button"
+                              onClick={() => router.push("/book")}
+                              style={{
+                                border: "1px solid rgba(0,0,0,0.10)",
+                                background: "rgba(17,24,39,0.92)",
+                                color: "#fff",
+                                borderRadius: 14,
+                                padding: "10px 12px",
+                                cursor: "pointer",
+                                fontWeight: 900,
+                                fontSize: 13,
+                              }}
+                            >
+                              Open Book
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )
+                ) : (
+                  <div
+                    style={{
+                      background: "rgba(255,255,255,0.85)",
+                      border: "1px solid rgba(0,0,0,0.08)",
+                      borderRadius: 16,
+                      padding: 14,
+                      boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
+                    }}
+                  >
+                    <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>
+                      🔒 Book Matches are a Lifetime feature
+                    </div>
+                    <div
+                      style={{
+                        marginTop: 6,
+                        color: "#334155",
+                        fontWeight: 800,
                         fontSize: 13,
                       }}
                     >
-                      Upgrade (Lifetime)
-                    </button>
+                      Upgrade to see exactly where to read this in the book.
+                    </div>
+                    <div style={{ marginTop: 10 }}>
+                      <button
+                        type="button"
+                        onClick={() => router.push("/upgrade")}
+                        style={{
+                          border: "1px solid rgba(0,0,0,0.10)",
+                          background: "rgba(17,24,39,0.92)",
+                          color: "#fff",
+                          borderRadius: 14,
+                          padding: "10px 12px",
+                          cursor: "pointer",
+                          fontWeight: 900,
+                          fontSize: 13,
+                        }}
+                      >
+                        Upgrade (Lifetime)
+                      </button>
+                    </div>
                   </div>
+                )}
+              </div>
+            )}
+
+            {q.trim().length > 0 && proverbMatches.length > 0 && (
+              <div style={{ marginBottom: 16 }}>
+                <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>
+                  More Proverbs
                 </div>
-              )}
-            </div>
-          )}
 
-          {q.trim().length > 0 && proverbMatches.length > 0 && (
-            <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>
-                More Proverbs
+                <div
+                  style={{
+                    marginBottom: 10,
+                    fontSize: 12,
+                    color: "#64748b",
+                    fontWeight: 800,
+                  }}
+                >
+                  Smarter related Proverbs based on your search and connected themes.
+                </div>
+
+                <div style={{ display: "grid", gap: 10 }}>
+                  {proverbMatches.map((p) => {
+                    const proverbKey = `proverb-${p.ref}`;
+                    const isFav = !!favoriteKeys[proverbKey];
+                    const isCopied = copiedKey === proverbKey;
+                    const isPromoted = promotedProverbRef === p.ref;
+
+                    const proverbTitle =
+                      p.topics && p.topics.length > 0
+                        ? p.topics[0].charAt(0).toUpperCase() + p.topics[0].slice(1)
+                        : "More Proverbs";
+
+                    const proverbItem = {
+                      title: proverbTitle,
+                      body: p.text,
+                      ref: p.ref,
+                    } as VerseItem;
+
+                    if (isPromoted) {
+                      return (
+                        <div
+                          key={p.ref}
+                          style={{
+                            ...softCardStyle,
+                            border: "1px solid rgba(99,102,241,0.18)",
+                            boxShadow: "0 18px 44px rgba(0,0,0,0.10)",
+                            background:
+                              "linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,0.96))",
+                          }}
+                        >
+                          <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+                            <div style={{ flex: 1 }}>
+                              <div
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: 8,
+                                  padding: "6px 10px",
+                                  borderRadius: 999,
+                                  background: "rgba(99,102,241,0.08)",
+                                  color: "#4338ca",
+                                  fontWeight: 900,
+                                  fontSize: 11,
+                                  marginBottom: 10,
+                                }}
+                              >
+                                From Proverbs Search
+                              </div>
+
+                              <div style={{ fontWeight: 900, fontSize: 18, color: "#111" }}>
+                                {proverbTitle}
+                              </div>
+
+                              <div
+                                style={{
+                                  marginTop: 8,
+                                  fontSize: 15,
+                                  lineHeight: 1.6,
+                                  color: "#111",
+                                  fontWeight: 650,
+                                }}
+                              >
+                                {p.text}
+                              </div>
+
+                              <div
+                                style={{
+                                  marginTop: 10,
+                                  fontSize: 12,
+                                  color: "#64748b",
+                                  fontWeight: 700,
+                                }}
+                              >
+                                Save this. Sit with it. Apply it today.
+                              </div>
+
+                              <div
+                                style={{
+                                  marginTop: 10,
+                                  fontSize: 12,
+                                  color: "#64748b",
+                                  fontWeight: 900,
+                                }}
+                              >
+                                {p.ref}
+                              </div>
+
+                              {p.why.length > 0 && (
+                                <div style={{ marginTop: 10 }}>
+                                  <div
+                                    style={{
+                                      fontSize: 12,
+                                      fontWeight: 900,
+                                      color: "#64748b",
+                                      marginBottom: 6,
+                                    }}
+                                  >
+                                    Why this matched
+                                  </div>
+                                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                                    {p.why.map((reason) => (
+                                      <span
+                                        key={reason}
+                                        style={{
+                                          padding: "6px 10px",
+                                          borderRadius: 999,
+                                          border: "1px solid rgba(0,0,0,0.08)",
+                                          background: "rgba(255,255,255,0.92)",
+                                          fontWeight: 800,
+                                          fontSize: 11,
+                                          color: "#334155",
+                                        }}
+                                      >
+                                        {reason}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: 8,
+                                alignItems: "flex-end",
+                              }}
+                            >
+                              <button
+                                type="button"
+                                onClick={() => toggleFavorite(proverbKey)}
+                                style={miniBtn}
+                                title={isFav ? "Saved" : "Save this verse"}
+                                aria-label={isFav ? "Saved" : "Save this verse"}
+                              >
+                                {isFav ? "★" : "☆"}
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => handleCopy(proverbItem, proverbKey)}
+                                style={{ ...miniBtn, fontSize: 12 }}
+                                title="Copy verse"
+                              >
+                                {isCopied ? "Copied" : "Copy"}
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => handleShare(proverbItem, proverbKey)}
+                                style={{ ...miniBtn, fontSize: 12 }}
+                                title="Share this verse"
+                              >
+                                Share
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => handleImage(proverbItem)}
+                                style={{
+                                  ...miniBtn,
+                                  fontSize: 12,
+                                  background: "rgba(99,102,241,0.10)",
+                                  border: "1px solid rgba(99,102,241,0.18)",
+                                }}
+                                title="Create a share image"
+                              >
+                                Image
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setPromotedProverbRef("")}
+                                style={{
+                                  ...miniBtn,
+                                  fontSize: 12,
+                                  background: "rgba(99,102,241,0.10)",
+                                  border: "1px solid rgba(99,102,241,0.18)",
+                                  color: "#4338ca",
+                                }}
+                                title="Collapse full card"
+                              >
+                                Close
+                              </button>
+                            </div>
+                          </div>
+
+                          {relatedPromotedProverbs.length > 0 && (
+                            <div style={{ marginTop: 14 }}>
+                              <div
+                                style={{
+                                  fontSize: 12,
+                                  fontWeight: 900,
+                                  color: "#64748b",
+                                  marginBottom: 8,
+                                }}
+                              >
+                                Related Proverbs
+                              </div>
+
+                              <div style={{ display: "grid", gap: 8 }}>
+                                {relatedPromotedProverbs.map((related) => (
+                                  <button
+                                    key={related.ref}
+                                    type="button"
+                                    onClick={() => setPromotedProverbRef(related.ref)}
+                                    style={{
+                                      textAlign: "left",
+                                      border: "1px solid rgba(0,0,0,0.08)",
+                                      background: "rgba(255,255,255,0.92)",
+                                      borderRadius: 14,
+                                      padding: 12,
+                                      cursor: "pointer",
+                                    }}
+                                  >
+                                    <div style={{ fontWeight: 900, fontSize: 13, color: "#111" }}>
+                                      {related.ref}
+                                    </div>
+                                    <div
+                                      style={{
+                                        marginTop: 6,
+                                        color: "#334155",
+                                        fontWeight: 800,
+                                        fontSize: 13,
+                                        lineHeight: 1.5,
+                                      }}
+                                    >
+                                      {related.text}
+                                    </div>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div key={p.ref} className="verseCard" style={softCardStyle}>
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontWeight: 900, fontSize: 15, color: "#111" }}>
+                              {proverbTitle}
+                            </div>
+                            <div
+                              style={{
+                                marginTop: 8,
+                                color: "#334155",
+                                fontWeight: 800,
+                                fontSize: 14,
+                                lineHeight: 1.6,
+                              }}
+                            >
+                              {p.text}
+                            </div>
+                            <div
+                              style={{
+                                marginTop: 8,
+                                fontSize: 12,
+                                color: "#64748b",
+                                fontWeight: 900,
+                              }}
+                            >
+                              {p.ref}
+                            </div>
+
+                            {p.why.length > 0 && (
+                              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
+                                {p.why.slice(0, 3).map((reason) => (
+                                  <span
+                                    key={reason}
+                                    style={{
+                                      padding: "5px 8px",
+                                      borderRadius: 999,
+                                      background: "rgba(99,102,241,0.08)",
+                                      color: "#4338ca",
+                                      fontWeight: 800,
+                                      fontSize: 11,
+                                      border: "1px solid rgba(99,102,241,0.14)",
+                                    }}
+                                  >
+                                    {reason}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: 8,
+                              alignItems: "flex-end",
+                            }}
+                          >
+                            <button
+                              type="button"
+                              onClick={() => setPromotedProverbRef(p.ref)}
+                              style={{
+                                ...miniBtn,
+                                background: "rgba(99,102,241,0.10)",
+                                border: "1px solid rgba(99,102,241,0.18)",
+                                color: "#4338ca",
+                              }}
+                              title="Open full card"
+                            >
+                              Open
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
+            )}
 
-              <div
-                style={{
-                  marginBottom: 10,
-                  fontSize: 12,
-                  color: "#64748b",
-                  fontWeight: 800,
-                }}
-              >
-                Smarter related Proverbs based on your search and connected themes.
-              </div>
+            <div style={{ display: "grid", gap: 12 }}>
+              {results.length === 0
+                ? renderEmptyState()
+                : results.map((item) => {
+                    const key = `${item.ref}-${item.title}`;
+                    const isFav = !!favoriteKeys[key];
+                    const isCopied = copiedKey === key;
+                    const isSavedFlash = savedKey === key;
 
-              <div style={{ display: "grid", gap: 10 }}>
-                {proverbMatches.map((p) => {
-                  const proverbKey = `proverb-${p.ref}`;
-                  const isFav = !!favoriteKeys[proverbKey];
-                  const isCopied = copiedKey === proverbKey;
-                  const isPromoted = promotedProverbRef === p.ref;
-
-                  const proverbTitle =
-                    p.topics && p.topics.length > 0
-                      ? p.topics[0].charAt(0).toUpperCase() + p.topics[0].slice(1)
-                      : "More Proverbs";
-
-                  const proverbItem = {
-                    title: proverbTitle,
-                    body: p.text,
-                    ref: p.ref,
-                  } as VerseItem;
-
-                  if (isPromoted) {
                     return (
                       <div
-                        key={p.ref}
+                        key={key}
+                        className="verseCard"
                         style={{
                           ...softCardStyle,
-                          border: "1px solid rgba(99,102,241,0.18)",
-                          boxShadow: "0 18px 44px rgba(0,0,0,0.10)",
-                          background:
-                            "linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,0.96))",
+                          transform: isSavedFlash ? "scale(1.01)" : "scale(1)",
                         }}
                       >
                         <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
                           <div style={{ flex: 1 }}>
-                            <div
-                              style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: 8,
-                                padding: "6px 10px",
-                                borderRadius: 999,
-                                background: "rgba(99,102,241,0.08)",
-                                color: "#4338ca",
-                                fontWeight: 900,
-                                fontSize: 11,
-                                marginBottom: 10,
-                              }}
-                            >
-                              From Proverbs Search
-                            </div>
-
                             <div style={{ fontWeight: 900, fontSize: 18, color: "#111" }}>
-                              {proverbTitle}
+                              {item.title}
                             </div>
 
                             <div
                               style={{
                                 marginTop: 8,
                                 fontSize: 15,
-                                lineHeight: 1.6,
-                                color: "#111",
+                                lineHeight: 1.65,
+                                color: "#111827",
                                 fontWeight: 650,
                               }}
                             >
-                              {p.text}
+                              {item.body}
                             </div>
 
                             <div
@@ -1653,25 +2002,24 @@ const rerollTodaysFocus = () => {
                                 fontWeight: 900,
                               }}
                             >
-                              {p.ref}
+                              {item.ref}
                             </div>
 
-                            {p.why.length > 0 && (
-                              <div style={{ marginTop: 10 }}>
+                            {Array.isArray((item as any).topics) &&
+                              (item as any).topics.length > 0 && (
                                 <div
                                   style={{
-                                    fontSize: 12,
-                                    fontWeight: 900,
-                                    color: "#64748b",
-                                    marginBottom: 6,
+                                    display: "flex",
+                                    gap: 8,
+                                    flexWrap: "wrap",
+                                    marginTop: 10,
                                   }}
                                 >
-                                  Why this matched
-                                </div>
-                                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                                  {p.why.map((reason) => (
-                                    <span
-                                      key={reason}
+                                  {(item as any).topics.slice(0, 6).map((topic: string) => (
+                                    <button
+                                      key={topic}
+                                      type="button"
+                                      onClick={() => applyTopic(topic)}
                                       style={{
                                         padding: "6px 10px",
                                         borderRadius: 999,
@@ -1680,14 +2028,14 @@ const rerollTodaysFocus = () => {
                                         fontWeight: 800,
                                         fontSize: 11,
                                         color: "#334155",
+                                        cursor: "pointer",
                                       }}
                                     >
-                                      {reason}
-                                    </span>
+                                      {topic}
+                                    </button>
                                   ))}
                                 </div>
-                              </div>
-                            )}
+                              )}
                           </div>
 
                           <div
@@ -1700,17 +2048,16 @@ const rerollTodaysFocus = () => {
                           >
                             <button
                               type="button"
-                              onClick={() => toggleFavorite(proverbKey)}
+                              onClick={() => toggleFavorite(key)}
                               style={miniBtn}
                               title={isFav ? "Saved" : "Save this verse"}
-                              aria-label={isFav ? "Saved" : "Save this verse"}
                             >
                               {isFav ? "★" : "☆"}
                             </button>
 
                             <button
                               type="button"
-                              onClick={() => handleCopy(proverbItem, proverbKey)}
+                              onClick={() => handleCopy(item, key)}
                               style={{ ...miniBtn, fontSize: 12 }}
                               title="Copy verse"
                             >
@@ -1719,7 +2066,7 @@ const rerollTodaysFocus = () => {
 
                             <button
                               type="button"
-                              onClick={() => handleShare(proverbItem, proverbKey)}
+                              onClick={() => handleShare(item, key)}
                               style={{ ...miniBtn, fontSize: 12 }}
                               title="Share this verse"
                             >
@@ -1728,7 +2075,7 @@ const rerollTodaysFocus = () => {
 
                             <button
                               type="button"
-                              onClick={() => handleImage(proverbItem)}
+                              onClick={() => handleImage(item)}
                               style={{
                                 ...miniBtn,
                                 fontSize: 12,
@@ -1739,292 +2086,12 @@ const rerollTodaysFocus = () => {
                             >
                               Image
                             </button>
-
-                            <button
-                              type="button"
-                              onClick={() => setPromotedProverbRef("")}
-                              style={{
-                                ...miniBtn,
-                                fontSize: 12,
-                                background: "rgba(99,102,241,0.10)",
-                                border: "1px solid rgba(99,102,241,0.18)",
-                                color: "#4338ca",
-                              }}
-                              title="Collapse full card"
-                            >
-                              Close
-                            </button>
                           </div>
                         </div>
-
-                        {relatedPromotedProverbs.length > 0 && (
-                          <div style={{ marginTop: 14 }}>
-                            <div
-                              style={{
-                                fontSize: 12,
-                                fontWeight: 900,
-                                color: "#64748b",
-                                marginBottom: 8,
-                              }}
-                            >
-                              Related Proverbs
-                            </div>
-
-                            <div style={{ display: "grid", gap: 8 }}>
-                              {relatedPromotedProverbs.map((related) => (
-                                <button
-                                  key={related.ref}
-                                  type="button"
-                                  onClick={() => setPromotedProverbRef(related.ref)}
-                                  style={{
-                                    textAlign: "left",
-                                    border: "1px solid rgba(0,0,0,0.08)",
-                                    background: "rgba(255,255,255,0.92)",
-                                    borderRadius: 14,
-                                    padding: 12,
-                                    cursor: "pointer",
-                                  }}
-                                >
-                                  <div style={{ fontWeight: 900, fontSize: 13, color: "#111" }}>
-                                    {related.ref}
-                                  </div>
-                                  <div
-                                    style={{
-                                      marginTop: 6,
-                                      color: "#334155",
-                                      fontWeight: 800,
-                                      fontSize: 13,
-                                      lineHeight: 1.5,
-                                    }}
-                                  >
-                                    {related.text}
-                                  </div>
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        )}
                       </div>
                     );
-                  }
-
-                  return (
-                    <div key={p.ref} className="verseCard" style={softCardStyle}>
-                      <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ fontWeight: 900, fontSize: 15, color: "#111" }}>
-                            {proverbTitle}
-                          </div>
-                          <div
-                            style={{
-                              marginTop: 8,
-                              color: "#334155",
-                              fontWeight: 800,
-                              fontSize: 14,
-                              lineHeight: 1.6,
-                            }}
-                          >
-                            {p.text}
-                          </div>
-                          <div
-                            style={{
-                              marginTop: 8,
-                              fontSize: 12,
-                              color: "#64748b",
-                              fontWeight: 900,
-                            }}
-                          >
-                            {p.ref}
-                          </div>
-
-                          {p.why.length > 0 && (
-                            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
-                              {p.why.slice(0, 3).map((reason) => (
-                                <span
-                                  key={reason}
-                                  style={{
-                                    padding: "5px 8px",
-                                    borderRadius: 999,
-                                    background: "rgba(99,102,241,0.08)",
-                                    color: "#4338ca",
-                                    fontWeight: 800,
-                                    fontSize: 11,
-                                    border: "1px solid rgba(99,102,241,0.14)",
-                                  }}
-                                >
-                                  {reason}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: 8,
-                            alignItems: "flex-end",
-                          }}
-                        >
-                          <button
-                            type="button"
-                            onClick={() => setPromotedProverbRef(p.ref)}
-                            style={{
-                              ...miniBtn,
-                              background: "rgba(99,102,241,0.10)",
-                              border: "1px solid rgba(99,102,241,0.18)",
-                              color: "#4338ca",
-                            }}
-                            title="Open full card"
-                          >
-                            Open
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                  })}
             </div>
-          )}
-
-          <div style={{ display: "grid", gap: 12 }}>
-            {results.length === 0
-              ? renderEmptyState()
-              : results.map((item) => {
-                  const key = `${item.ref}-${item.title}`;
-                  const isFav = !!favoriteKeys[key];
-                  const isCopied = copiedKey === key;
-                  const isSavedFlash = savedKey === key;
-
-                  return (
-                    <div
-                      key={key}
-                      className="verseCard"
-                      style={{
-                        ...softCardStyle,
-                        transform: isSavedFlash ? "scale(1.01)" : "scale(1)",
-                      }}
-                    >
-                      <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ fontWeight: 900, fontSize: 18, color: "#111" }}>
-                            {item.title}
-                          </div>
-
-                          <div
-                            style={{
-                              marginTop: 8,
-                              fontSize: 15,
-                              lineHeight: 1.65,
-                              color: "#111827",
-                              fontWeight: 650,
-                            }}
-                          >
-                            {item.body}
-                          </div>
-
-                          <div
-                            style={{
-                              marginTop: 10,
-                              fontSize: 12,
-                              color: "#64748b",
-                              fontWeight: 700,
-                            }}
-                          >
-                            Save this. Sit with it. Apply it today.
-                          </div>
-
-                          <div
-                            style={{
-                              marginTop: 10,
-                              fontSize: 12,
-                              color: "#64748b",
-                              fontWeight: 900,
-                            }}
-                          >
-                            {item.ref}
-                          </div>
-
-                          {Array.isArray((item as any).topics) && (item as any).topics.length > 0 && (
-                            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
-                              {(item as any).topics.slice(0, 6).map((topic: string) => (
-                                <button
-                                  key={topic}
-                                  type="button"
-                                  onClick={() => applyTopic(topic)}
-                                  style={{
-                                    padding: "6px 10px",
-                                    borderRadius: 999,
-                                    border: "1px solid rgba(0,0,0,0.08)",
-                                    background: "rgba(255,255,255,0.92)",
-                                    fontWeight: 800,
-                                    fontSize: 11,
-                                    color: "#334155",
-                                    cursor: "pointer",
-                                  }}
-                                >
-                                  {topic}
-                                </button>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: 8,
-                            alignItems: "flex-end",
-                          }}
-                        >
-                          <button
-                            type="button"
-                            onClick={() => toggleFavorite(key)}
-                            style={miniBtn}
-                            title={isFav ? "Saved" : "Save this verse"}
-                          >
-                            {isFav ? "★" : "☆"}
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => handleCopy(item, key)}
-                            style={{ ...miniBtn, fontSize: 12 }}
-                            title="Copy verse"
-                          >
-                            {isCopied ? "Copied" : "Copy"}
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => handleShare(item, key)}
-                            style={{ ...miniBtn, fontSize: 12 }}
-                            title="Share this verse"
-                          >
-                            Share
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => handleImage(item)}
-                            style={{
-                              ...miniBtn,
-                              fontSize: 12,
-                              background: "rgba(99,102,241,0.10)",
-                              border: "1px solid rgba(99,102,241,0.18)",
-                            }}
-                            title="Create a share image"
-                          >
-                            Image
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
           </div>
         </section>
 
