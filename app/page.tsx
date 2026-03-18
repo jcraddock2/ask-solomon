@@ -1010,6 +1010,7 @@ const rerollTodaysFocus = () => {
     setTodayFocusKey("");
     return;
   }
+
   const choice = baseResults[Math.floor(Math.random() * baseResults.length)];
   setTodayFocusKey(`${choice.ref}-${choice.title}`);
 };
@@ -1088,8 +1089,9 @@ const renderEmptyState = () => {
     </div>
   );
 };
-  
+
 return (
+
   <div style={outerStyle}>
     <main style={pageStyle}>
       <header style={{ marginBottom: 18 }}>
