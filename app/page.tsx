@@ -1088,7 +1088,7 @@ const renderEmptyState = () => {
     </div>
   );
 };
-
+  
 return (
   <div style={outerStyle}>
     <main style={pageStyle}>
