@@ -559,3 +559,320 @@ export function findVerseMatches(
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
 }
+
+type SearchOptions = {
+  mode?: Mode;
+  sub?: Sub | "all";
+  limit?: number;
+};
+
+type ScoredVerseResult = {
+  item: VerseItem;
+  score: number;
+  why: string[];
+};
+
+const GENERIC_TERMS = new Set([
+  "wisdom",
+  "encouragement",
+  "peace",
+  "help",
+  "hope",
+  "strength",
+  "heart",
+]);
+
+const INTENT_MAP: Record<string, string[]> = {
+  lonely: [
+    "lonely",
+    "alone",
+    "isolated",
+    "abandoned",
+    "rejected",
+    "unseen",
+    "belonging",
+    "comfort",
+    "friendship",
+    "companionship",
+  ],
+  hurting: [
+    "hurting",
+    "hurt",
+    "pain",
+    "wounded",
+    "grief",
+    "sorrow",
+    "broken",
+    "brokenhearted",
+    "comfort",
+    "healing",
+  ],
+  direction: [
+    "direction",
+    "guidance",
+    "clarity",
+    "path",
+    "decision",
+    "counsel",
+    "understanding",
+    "wisdom",
+  ],
+  money: [
+    "money",
+    "finances",
+    "debt",
+    "provision",
+    "lack",
+    "wealth",
+    "stewardship",
+    "planning",
+    "resources",
+    "diligence",
+  ],
+  anxiety: [
+    "anxiety",
+    "anxious",
+    "fear",
+    "worry",
+    "overwhelmed",
+    "troubled",
+    "peace",
+    "calm",
+    "rest",
+  ],
+  anger: [
+    "anger",
+    "angry",
+    "rage",
+    "temper",
+    "patience",
+    "gentle",
+    "self-control",
+    "response",
+  ],
+  relationships: [
+    "relationship",
+    "relationships",
+    "conflict",
+    "marriage",
+    "friendship",
+    "strife",
+    "gentle",
+    "words",
+    "love",
+    "peace",
+  ],
+};
+
+function normalizeSearchText(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^\w\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function tokenizeSearch(value: string) {
+  const STOPWORDS = new Set([
+    "i",
+    "am",
+    "im",
+    "ive",
+    "me",
+    "my",
+    "the",
+    "a",
+    "an",
+    "and",
+    "or",
+    "to",
+    "for",
+    "of",
+    "in",
+    "on",
+    "at",
+    "is",
+    "are",
+    "be",
+    "feel",
+    "feeling",
+    "need",
+    "want",
+    "right",
+    "now",
+  ]);
+
+  return normalizeSearchText(value)
+    .split(" ")
+    .filter((t) => t.length > 1 && !STOPWORDS.has(t));
+}
+
+function expandIntentTokens(query: string) {
+  const tokens = tokenizeSearch(query);
+  const expanded = new Set(tokens);
+
+  for (const token of tokens) {
+    if (INTENT_MAP[token]) {
+      for (const related of INTENT_MAP[token]) expanded.add(related);
+    }
+  }
+
+  const full = normalizeSearchText(query);
+
+  if (full.includes("money stress")) {
+    INTENT_MAP.money.forEach((t) => expanded.add(t));
+  }
+  if (full.includes("need direction")) {
+    INTENT_MAP.direction.forEach((t) => expanded.add(t));
+  }
+  if (full.includes("relationship conflict")) {
+    INTENT_MAP.relationships.forEach((t) => expanded.add(t));
+  }
+  if (full.includes("feeling discouraged")) {
+    ["discouraged", "hope", "strength", "comfort", "courage"].forEach((t) =>
+      expanded.add(t)
+    );
+  }
+  if (full.includes("overwhelmed")) {
+    INTENT_MAP.anxiety.forEach((t) => expanded.add(t));
+  }
+
+  return Array.from(expanded);
+}
+
+function scoreVerseItem(item: VerseItem, query: string): ScoredVerseResult {
+  const why: string[] = [];
+  let score = 0;
+
+  const normalizedQuery = normalizeSearchText(query);
+  const tokens = expandIntentTokens(query);
+
+  const title = normalizeSearchText(item.title || "");
+  const body = normalizeSearchText(item.body || "");
+  const ref = normalizeSearchText(item.ref || "");
+  const tags = (item.tags || []).map(normalizeSearchText);
+  const keywords = (item.keywords || []).map(normalizeSearchText);
+
+  const allMeta = [...tags, ...keywords];
+
+  if (!normalizedQuery) {
+    return { item, score: 0, why };
+  }
+
+  if (title.includes(normalizedQuery)) {
+    score += 18;
+    why.push("title phrase");
+  }
+
+  if (body.includes(normalizedQuery)) {
+    score += 12;
+    why.push("body phrase");
+  }
+
+  for (const token of tokens) {
+    if (title.includes(token)) {
+      score += 8;
+      why.push(`title:${token}`);
+    }
+
+    if (keywords.includes(token)) {
+      score += 10;
+      why.push(`keyword:${token}`);
+    }
+
+    if (tags.includes(token)) {
+      score += 8;
+      why.push(`tag:${token}`);
+    }
+
+    if (body.includes(token)) {
+      score += 4;
+      why.push(`body:${token}`);
+    }
+
+    if (ref.includes(token)) {
+      score += 6;
+      why.push(`ref:${token}`);
+    }
+  }
+
+  const specificMatches = tokens.filter(
+    (t) =>
+      keywords.includes(t) ||
+      tags.includes(t) ||
+      title.includes(t) ||
+      body.includes(t)
+  );
+
+  const genericHits = specificMatches.filter((t) => GENERIC_TERMS.has(t)).length;
+  const nonGenericHits = specificMatches.filter((t) => !GENERIC_TERMS.has(t)).length;
+
+  if (nonGenericHits >= 2) {
+    score += 10;
+    why.push("strong intent match");
+  }
+
+  if (nonGenericHits === 0 && genericHits > 0) {
+    score -= 8;
+  }
+
+  if (allMeta.includes("lonely") || allMeta.includes("alone") || allMeta.includes("rejected")) {
+    if (normalizedQuery.includes("lonely") || normalizedQuery.includes("alone")) {
+      score += 12;
+      why.push("loneliness intent");
+    }
+  }
+
+  if (
+    allMeta.includes("hurting") ||
+    allMeta.includes("grief") ||
+    allMeta.includes("healing") ||
+    allMeta.includes("comfort")
+  ) {
+    if (
+      normalizedQuery.includes("hurting") ||
+      normalizedQuery.includes("hurt") ||
+      normalizedQuery.includes("pain")
+    ) {
+      score += 12;
+      why.push("pain intent");
+    }
+  }
+
+  return {
+    item,
+    score,
+    why: Array.from(new Set(why)).slice(0, 4),
+  };
+}
+
+export function searchVerseItemsScored(
+  query: string,
+  options: SearchOptions = {}
+): ScoredVerseResult[] {
+  const { mode, sub = "all", limit = 50 } = options;
+
+  let pool = [...DATA];
+
+  if (mode) {
+    pool = pool.filter((item) => item.mode === mode);
+  }
+
+  if (mode === "encouragement" && sub !== "all") {
+    pool = pool.filter((item) => item.sub === sub);
+  }
+
+  if (!query.trim()) {
+    return pool.slice(0, limit).map((item) => ({
+      item,
+      score: 0,
+      why: [],
+    }));
+  }
+
+  return pool
+    .map((item) => scoreVerseItem(item, query))
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
+}
