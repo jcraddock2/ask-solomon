@@ -894,20 +894,8 @@ ${link}`;
   };
 
   const baseResults = useMemo(() => {
-    const query = q.trim();
-
-    let found = findVerseMatches(query, {
-      mode,
-      sub,
-      limit: 50,
-    });
-
-    if (favoritesOnly) {
-      found = found.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
-    }
-
-    return found;
-  }, [q, mode, sub, favoritesOnly, favoriteKeys]);
+  return buildFilteredPool();
+}, [mode, sub, q, favoritesOnly, favoriteKeys]);
 
   const results = useMemo(() => {
     if (!todayFocusOn) return baseResults;
