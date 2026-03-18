@@ -897,7 +897,43 @@ const results = useMemo(() => {
   return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
 }, [baseResults, todayFocusOn, todayFocusKey]);
 
-const smartExpandedTerms = useMemo(() => expandSmartTerms(q), [q]); 
+const smartExpandedTerms = useMemo(() => {
+  const STOPWORDS = new Set([
+    "i",
+    "am",
+    "im",
+    "ive",
+    "me",
+    "my",
+    "the",
+    "a",
+    "an",
+    "and",
+    "or",
+    "to",
+    "for",
+    "of",
+    "in",
+    "on",
+    "at",
+    "is",
+    "are",
+    "be",
+    "feel",
+    "feeling",
+    "need",
+    "want",
+  ]);
+
+  return Array.from(
+    new Set(
+      expandSmartTerms(q).filter(
+        (term) => term && term.length > 2 && !STOPWORDS.has(term.toLowerCase())
+      )
+    )
+  );
+}, [q]);
+
 const proverbMatches = useMemo<ProverbMatch[]>(() => {
   const query = q.trim();
   if (!query) return [];
@@ -914,11 +950,7 @@ const proverbMatches = useMemo<ProverbMatch[]>(() => {
           ? p.topics.map((t: any) => String(t))
           : [];
 
-        const fallback = scoreProverbMatch(
-          { ref, text, topics },
-          query,
-          smartExpandedTerms
-        );
+        const fallback = scoreProverbMatch({ ref, text, topics }, query, smartExpandedTerms);
 
         const rawScore = Number(entry?.score ?? fallback.score ?? 0);
 
@@ -954,9 +986,7 @@ const promotedProverb = useMemo<ProverbMatch | null>(() => {
 const relatedPromotedProverbs = useMemo<ProverbMatch[]>(() => {
   if (!promotedProverb) return [];
 
-  const promotedTopics = new Set(
-    promotedProverb.topics.map((t) => normalizeText(t))
-  );
+  const promotedTopics = new Set(promotedProverb.topics.map((t) => normalizeText(t)));
 
   return proverbMatches
     .filter((p) => p.ref !== promotedProverb.ref)
@@ -973,447 +1003,446 @@ const bookMatches = useMemo<BookMatch[]>(() => {
   } catch {
     return [];
   }
-}, [q]); 
-  
-  const rerollTodaysFocus = () => {
-    if (baseResults.length === 0) {
-      setTodayFocusKey("");
-      return;
-    }
-    const choice = baseResults[Math.floor(Math.random() * baseResults.length)];
-    setTodayFocusKey(`${choice.ref}-${choice.title}`);
-  };
+}, [q]);
 
-  const toggleTodaysFocus = () => {
-    setTodayFocusOn((prev) => {
-      const next = !prev;
+const rerollTodaysFocus = () => {
+  if (baseResults.length === 0) {
+    setTodayFocusKey("");
+    return;
+  }
+  const choice = baseResults[Math.floor(Math.random() * baseResults.length)];
+  setTodayFocusKey(`${choice.ref}-${choice.title}`);
+};
 
-      if (next) {
-        if (baseResults.length === 0) {
-          setTodayFocusKey("");
-        } else {
-          const choice = baseResults[Math.floor(Math.random() * baseResults.length)];
-          setTodayFocusKey(`${choice.ref}-${choice.title}`);
-        }
-      } else {
+const toggleTodaysFocus = () => {
+  setTodayFocusOn((prev) => {
+    const next = !prev;
+
+    if (next) {
+      if (baseResults.length === 0) {
         setTodayFocusKey("");
+      } else {
+        const choice = baseResults[Math.floor(Math.random() * baseResults.length)];
+        setTodayFocusKey(`${choice.ref}-${choice.title}`);
       }
-
-      return next;
-    });
-  };
-
-  const applyTopic = (topicQuery: string) => {
-    setQ(topicQuery);
-    setFavoritesOnly(false);
-    setTodayFocusOn(false);
-    setTodayFocusKey("");
-    setUrl({ q: topicQuery });
-  };
-
-  const applySituation = (value: string) => {
-    setQ(value);
-    setTodayFocusOn(false);
-    setFavoritesOnly(false);
-    setTodayFocusKey("");
-    setUrl({ q: value });
-  };
-
-  const renderEmptyState = () => {
-    if (favoritesOnly && favoritesCount === 0) {
-      return (
-        <div
-          style={{
-            background: "rgba(255,255,255,0.85)",
-            border: "1px solid rgba(0,0,0,0.08)",
-            borderRadius: 16,
-            padding: 14,
-            boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
-          }}
-        >
-          <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>
-            ⭐ Build your Favorites Library
-          </div>
-          <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
-            Tap ☆ on any verse to save it. Then you can switch to Favorites anytime.
-          </div>
-          <div style={{ marginTop: 10, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
-            Tip: Save the verses you want to read again tomorrow.
-          </div>
-        </div>
-      );
+    } else {
+      setTodayFocusKey("");
     }
 
-    if (todayFocusOn && !todayFocusKey) {
-      return (
-        <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
-          No matches for Today’s Focus. Try turning off Favorites or clearing search.
-        </div>
-      );
-    }
+    return next;
+  });
+};
 
+const applyTopic = (topicQuery: string) => {
+  setQ(topicQuery);
+  setFavoritesOnly(false);
+  setTodayFocusOn(false);
+  setTodayFocusKey("");
+  setUrl({ q: topicQuery });
+};
+
+const applySituation = (value: string) => {
+  setQ(value);
+  setTodayFocusOn(false);
+  setFavoritesOnly(false);
+  setTodayFocusKey("");
+  setUrl({ q: value });
+};
+
+const renderEmptyState = () => {
+  if (favoritesOnly && favoritesCount === 0) {
     return (
-      <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
-        No matches. Try a different keyword.
+      <div
+        style={{
+          background: "rgba(255,255,255,0.85)",
+          border: "1px solid rgba(0,0,0,0.08)",
+          borderRadius: 16,
+          padding: 14,
+          boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
+        }}
+      >
+        <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>
+          ⭐ Build your Favorites Library
+        </div>
+        <div style={{ marginTop: 6, color: "#334155", fontWeight: 800, fontSize: 13 }}>
+          Tap ☆ on any verse to save it. Then you can switch to Favorites anytime.
+        </div>
+        <div style={{ marginTop: 10, color: "#64748b", fontWeight: 900, fontSize: 12 }}>
+          Tip: Save the verses you want to read again tomorrow.
+        </div>
       </div>
     );
-  };
+  }
+
+  if (todayFocusOn && !todayFocusKey) {
+    return (
+      <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
+        No matches for Today’s Focus. Try turning off Favorites or clearing search.
+      </div>
+    );
+  }
 
   return (
-    <div style={outerStyle}>
-      <main style={pageStyle}>
-        <header style={{ marginBottom: 18 }}>
-          <div style={headerRow}>
-            <div>
-              <div
-                style={{
-                  fontSize: 12,
-                  fontWeight: 900,
-                  letterSpacing: 0.6,
-                  color: "#64748b",
-                  textTransform: "uppercase",
-                }}
-              >
-                Ask Solomon
-              </div>
-              <h1
-                style={{
-                  margin: "6px 0 0 0",
-                  fontSize: 34,
-                  lineHeight: 1.05,
-                  color: "#111827",
-                }}
-              >
-                Wisdom for what you’re facing right now
-              </h1>
-              <p style={{ marginTop: 8, marginBottom: 0, color: "#334155", fontWeight: 800 }}>
-                Encouragement first—wisdom from Proverbs for what you’re facing right now.
-              </p>
-            </div>
+    <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
+      No matches. Try a different keyword.
+    </div>
+  );
+};
 
-            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-              <span style={badgeStyle(isPro)}>{isPro ? "PRO" : "FREE"}</span>
-              <button type="button" onClick={() => router.push("/book")} style={headerBtn}>
-                Book
-              </button>
-              {!isPro && (
-                <button type="button" onClick={() => router.push("/upgrade")} style={headerBtn}>
-                  Upgrade (Lifetime)
-                </button>
-              )}
+return (
+  <div style={outerStyle}>
+    <main style={pageStyle}>
+      <header style={{ marginBottom: 18 }}>
+        <div style={headerRow}>
+          <div>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 900,
+                letterSpacing: 0.6,
+                color: "#64748b",
+                textTransform: "uppercase",
+              }}
+            >
+              Ask Solomon
             </div>
+            <h1
+              style={{
+                margin: "6px 0 0 0",
+                fontSize: 34,
+                lineHeight: 1.05,
+                color: "#111827",
+              }}
+            >
+              Wisdom for what you’re facing right now
+            </h1>
+            <p style={{ marginTop: 8, marginBottom: 0, color: "#334155", fontWeight: 800 }}>
+              Encouragement first—wisdom from Proverbs for what you’re facing right now.
+            </p>
           </div>
-        </header>
 
-        <section style={cardStyle}>
-          <div
-            style={{
-              position: "sticky",
-              top: 10,
-              zIndex: 10,
-              background: "rgba(248,250,252,0.88)",
-              backdropFilter: "blur(10px)",
-              WebkitBackdropFilter: "blur(10px)",
-              border: "1px solid rgba(0,0,0,0.06)",
-              borderRadius: 18,
-              padding: 12,
-              boxShadow: "0 12px 28px rgba(0,0,0,0.08)",
-              marginBottom: 14,
-            }}
-          >
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-              {asArray(MODES).map((m: any) => {
-                const modeKey = getModeKey(m);
-                return (
-                  <button
-                    key={modeKey}
-                    type="button"
-                    onClick={() => {
-                      setMode(modeKey);
-                      setSub("all");
-                      setFavoritesOnly(false);
-                      setTodayFocusOn(false);
-                      setTodayFocusKey("");
-                      setUrl({ mode: modeKey, sub: "all" });
-                    }}
-                    style={pillBtn(mode === modeKey)}
-                  >
-                    {getModeLabel(m)}
-                  </button>
-                );
-              })}
+          <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+            <span style={badgeStyle(isPro)}>{isPro ? "PRO" : "FREE"}</span>
+            <button type="button" onClick={() => router.push("/book")} style={headerBtn}>
+              Book
+            </button>
+            {!isPro && (
+              <button type="button" onClick={() => router.push("/upgrade")} style={headerBtn}>
+                Upgrade (Lifetime)
+              </button>
+            )}
+          </div>
+        </div>
+      </header>
 
+      <section style={cardStyle}>
+        <div
+          style={{
+            position: "sticky",
+            top: 10,
+            zIndex: 10,
+            background: "rgba(248,250,252,0.88)",
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
+            border: "1px solid rgba(0,0,0,0.06)",
+            borderRadius: 18,
+            padding: 12,
+            boxShadow: "0 12px 28px rgba(0,0,0,0.08)",
+            marginBottom: 14,
+          }}
+        >
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+            {asArray(MODES).map((m: any) => {
+              const modeKey = getModeKey(m);
+              return (
+                <button
+                  key={modeKey}
+                  type="button"
+                  onClick={() => {
+                    setMode(modeKey);
+                    setSub("all");
+                    setFavoritesOnly(false);
+                    setTodayFocusOn(false);
+                    setTodayFocusKey("");
+                    setUrl({ mode: modeKey, sub: "all" });
+                  }}
+                  style={pillBtn(mode === modeKey)}
+                >
+                  {getModeLabel(m)}
+                </button>
+              );
+            })}
+
+            <button
+              type="button"
+              onClick={() => {
+                setFavoritesOnly((v) => !v);
+                setTodayFocusOn(false);
+                setTodayFocusKey("");
+              }}
+              style={{
+                ...pillBtn(favoritesOnly),
+                display: "flex",
+                gap: 8,
+                alignItems: "center",
+                transform: favPulse ? "scale(1.05)" : "scale(1)",
+                transition: "transform 160ms ease",
+              }}
+              title="Show only saved favorites"
+            >
+              <span>⭐</span>
+              <span>
+                {favoritesOnly
+                  ? `Showing Favorites (${favoritesCount})`
+                  : `Favorites (${favoritesCount})`}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={toggleTodaysFocus}
+              style={{
+                ...pillBtn(todayFocusOn),
+                display: "flex",
+                gap: 8,
+                alignItems: "center",
+                animation: todayFocusOn ? "pulseGlow 1.8s ease-in-out infinite" : undefined,
+              }}
+              title="Show one random verse from the current filter"
+            >
+              <span>✨</span>
+              <span>{todayFocusOn ? "Today’s Focus (On)" : "Today’s Focus"}</span>
+            </button>
+
+            {todayFocusOn && (
               <button
                 type="button"
                 onClick={() => {
-                  setFavoritesOnly((v) => !v);
                   setTodayFocusOn(false);
                   setTodayFocusKey("");
                 }}
-                style={{
-                  ...pillBtn(favoritesOnly),
-                  display: "flex",
-                  gap: 8,
-                  alignItems: "center",
-                  transform: favPulse ? "scale(1.05)" : "scale(1)",
-                  transition: "transform 160ms ease",
-                }}
-                title="Show only saved favorites"
+                style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
+                title="Return to normal results"
               >
-                <span>⭐</span>
-                <span>
-                  {favoritesOnly
-                    ? `Showing Favorites (${favoritesCount})`
-                    : `Favorites (${favoritesCount})`}
-                </span>
+                <span>↩️</span>
+                <span>Clear Focus</span>
               </button>
-
-              <button
-                type="button"
-                onClick={toggleTodaysFocus}
-                style={{
-                  ...pillBtn(todayFocusOn),
-                  display: "flex",
-                  gap: 8,
-                  alignItems: "center",
-                  animation: todayFocusOn ? "pulseGlow 1.8s ease-in-out infinite" : undefined,
-                }}
-                title="Show one random verse from the current filter"
-              >
-                <span>✨</span>
-                <span>{todayFocusOn ? "Today’s Focus (On)" : "Today’s Focus"}</span>
-              </button>
-
-              {todayFocusOn && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setTodayFocusOn(false);
-                    setTodayFocusKey("");
-                  }}
-                  style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
-                  title="Return to normal results"
-                >
-                  <span>↩️</span>
-                  <span>Clear Focus</span>
-                </button>
-              )}
-
-              {todayFocusOn && (
-                <button
-                  type="button"
-                  onClick={rerollTodaysFocus}
-                  style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
-                  title="Pick a different verse"
-                >
-                  <span>🔄</span>
-                  <span>Re-roll</span>
-                </button>
-              )}
-
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  marginLeft: "auto",
-                  flexWrap: "wrap",
-                }}
-              >
-                <span style={{ fontSize: 12, fontWeight: 900, color: "#334155" }}>
-                  Image Template
-                </span>
-                <select
-                  value={shareTemplate}
-                  onChange={(e) => setShareTemplate(e.target.value as ShareTemplate)}
-                  style={selectStyle}
-                  aria-label="Select share image template"
-                  title="Choose the style for Image share cards"
-                >
-                  <option value="gradientModern">{formatTemplateLabel("gradientModern")}</option>
-                  <option value="classic">{formatTemplateLabel("classic")}</option>
-                  <option value="dark">{formatTemplateLabel("dark")}</option>
-                  <option value="gold">{formatTemplateLabel("gold")}</option>
-                  <option value="daily">{formatTemplateLabel("daily")}</option>
-                </select>
-              </div>
-            </div>
-
-            {mode === "encouragement" && (
-              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSub("all");
-                    setTodayFocusOn(false);
-                    setTodayFocusKey("");
-                    setUrl({ sub: "all" });
-                  }}
-                  style={pillBtn(sub === "all")}
-                >
-                  All
-                </button>
-
-                {asArray(SUBS).map((s: any) => {
-                  const subKey = getSubKey(s);
-                  return (
-                    <button
-                      key={subKey}
-                      type="button"
-                      onClick={() => {
-                        setSub(subKey);
-                        setTodayFocusOn(false);
-                        setTodayFocusKey("");
-                        setUrl({ sub: subKey });
-                      }}
-                      style={pillBtn(sub === subKey)}
-                    >
-                      {getSubLabel(s)}
-                    </button>
-                  );
-                })}
-              </div>
             )}
 
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
-              {asArray(TOPICS).map((t: any) => {
-                const topicQuery = getTopicQuery(t);
-                const active = normalizeText(q) === normalizeText(topicQuery);
-                return (
-                  <button
-                    key={getTopicKey(t)}
-                    type="button"
-                    onClick={() => applyTopic(topicQuery)}
-                    style={topicPill(active)}
-                    title={getTopicHint(t)}
-                  >
-                    {getTopicLabel(t)}
-                  </button>
-                );
-              })}
-            </div>
+            {todayFocusOn && (
+              <button
+                type="button"
+                onClick={rerollTodaysFocus}
+                style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
+                title="Pick a different verse"
+              >
+                <span>🔄</span>
+                <span>Re-roll</span>
+              </button>
+            )}
 
             <div
               style={{
                 display: "flex",
-                gap: 10,
-                marginTop: 10,
-                flexWrap: "wrap",
                 alignItems: "center",
+                gap: 8,
+                marginLeft: "auto",
+                flexWrap: "wrap",
               }}
             >
-              <div style={{ marginBottom: 10 }}>
-                <div
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 900,
-                    letterSpacing: 0.4,
-                    color: "#64748b",
-                    marginBottom: 6,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Situation Mode
-                </div>
+              <span style={{ fontSize: 12, fontWeight: 900, color: "#334155" }}>
+                Image Template
+              </span>
+              <select
+                value={shareTemplate}
+                onChange={(e) => setShareTemplate(e.target.value as ShareTemplate)}
+                style={selectStyle}
+                aria-label="Select share image template"
+                title="Choose the style for Image share cards"
+              >
+                <option value="gradientModern">{formatTemplateLabel("gradientModern")}</option>
+                <option value="classic">{formatTemplateLabel("classic")}</option>
+                <option value="dark">{formatTemplateLabel("dark")}</option>
+                <option value="gold">{formatTemplateLabel("gold")}</option>
+                <option value="daily">{formatTemplateLabel("daily")}</option>
+              </select>
+            </div>
+          </div>
 
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {SITUATION_PRESETS.map((preset) => (
-                    <button
-                      key={preset.label}
-                      type="button"
-                      onClick={() => applySituation(preset.value)}
-                      style={{
-                        border: "1px solid rgba(0,0,0,0.08)",
-                        background: "#ffffff",
-                        color: "#0f172a",
-                        borderRadius: 999,
-                        padding: "6px 10px",
-                        fontSize: 12,
-                        fontWeight: 800,
-                        cursor: "pointer",
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-                      }}
-                    >
-                      {preset.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <input
-                value={q}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setQ(val);
-                  setTodayFocusOn(false);
-                  setTodayFocusKey("");
-                  setUrl({ q: val });
-                }}
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setSearchFocused(false)}
-                placeholder="Search a keyword (e.g., fear, diligence, counsel)…"
-                style={{
-                  flex: 1,
-                  minWidth: 260,
-                  border: searchFocused
-                    ? "1px solid rgba(99,102,241,0.55)"
-                    : "1px solid rgba(0,0,0,0.12)",
-                  borderRadius: 14,
-                  padding: "10px 12px",
-                  fontWeight: 800,
-                  outline: "none",
-                  background: "rgba(255,255,255,0.95)",
-                  boxShadow: searchFocused
-                    ? "0 0 0 5px rgba(99,102,241,0.18), 0 12px 28px rgba(0,0,0,0.08)"
-                    : "none",
-                  transition: "box-shadow 140ms ease, border 140ms ease",
-                }}
-              />
-
+          {mode === "encouragement" && (
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
               <button
                 type="button"
                 onClick={() => {
-                  setQ("");
+                  setSub("all");
                   setTodayFocusOn(false);
                   setTodayFocusKey("");
-                  setPromotedProverbRef("");
-                  setUrl({ q: "" });
+                  setUrl({ sub: "all" });
                 }}
-                style={headerBtn}
+                style={pillBtn(sub === "all")}
               >
-                Clear
+                All
               </button>
+
+              {asArray(SUBS).map((s: any) => {
+                const subKey = getSubKey(s);
+                return (
+                  <button
+                    key={subKey}
+                    type="button"
+                    onClick={() => {
+                      setSub(subKey);
+                      setTodayFocusOn(false);
+                      setTodayFocusKey("");
+                      setUrl({ sub: subKey });
+                    }}
+                    style={pillBtn(sub === subKey)}
+                  >
+                    {getSubLabel(s)}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
+            {asArray(TOPICS).map((t: any) => {
+              const topicQuery = getTopicQuery(t);
+              const active = normalizeText(q) === normalizeText(topicQuery);
+              return (
+                <button
+                  key={getTopicKey(t)}
+                  type="button"
+                  onClick={() => applyTopic(topicQuery)}
+                  style={topicPill(active)}
+                  title={getTopicHint(t)}
+                >
+                  {getTopicLabel(t)}
+                </button>
+              );
+            })}
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              gap: 10,
+              marginTop: 10,
+              flexWrap: "wrap",
+              alignItems: "center",
+            }}
+          >
+            <div style={{ marginBottom: 10 }}>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 900,
+                  letterSpacing: 0.4,
+                  color: "#64748b",
+                  marginBottom: 6,
+                  textTransform: "uppercase",
+                }}
+              >
+                Situation Mode
+              </div>
+
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {SITUATION_PRESETS.map((preset) => (
+                  <button
+                    key={preset.label}
+                    type="button"
+                    onClick={() => applySituation(preset.value)}
+                    style={{
+                      border: "1px solid rgba(0,0,0,0.08)",
+                      background: "#ffffff",
+                      color: "#0f172a",
+                      borderRadius: 999,
+                      padding: "6px 10px",
+                      fontSize: 12,
+                      fontWeight: 800,
+                      cursor: "pointer",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                    }}
+                  >
+                    {preset.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {q.trim().length > 0 && smartExpandedTerms.length > 1 && (
-              <div style={{ marginTop: 10 }}>
-                <div style={{ fontSize: 11, fontWeight: 900, color: "#64748b", marginBottom: 6 }}>
-                  Smart Topic Mapping
-                </div>
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  {smartExpandedTerms.slice(0, 8).map((term) => (
-                    <button
-                      key={term}
-                      type="button"
-                      onClick={() => applyTopic(term)}
-                      style={{
-                        padding: "6px 10px",
-                        borderRadius: 999,
-                        border: "1px solid rgba(99,102,241,0.14)",
-                        background: "rgba(99,102,241,0.08)",
-                        fontWeight: 800,
-                        fontSize: 11,
-                        cursor: "pointer",
-                        color: "#312e81",
-                      }}
-                    >
-                      {term}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+            <input
+              value={q}
+              onChange={(e) => {
+                const val = e.target.value;
+                setQ(val);
+                setTodayFocusOn(false);
+                setTodayFocusKey("");
+                setUrl({ q: val });
+              }}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
+              placeholder="Search a keyword (e.g., fear, diligence, counsel)…"
+              style={{
+                flex: 1,
+                minWidth: 260,
+                border: searchFocused
+                  ? "1px solid rgba(99,102,241,0.55)"
+                  : "1px solid rgba(0,0,0,0.12)",
+                borderRadius: 14,
+                padding: "10px 12px",
+                fontWeight: 800,
+                outline: "none",
+                background: "rgba(255,255,255,0.95)",
+                boxShadow: searchFocused
+                  ? "0 0 0 5px rgba(99,102,241,0.18), 0 12px 28px rgba(0,0,0,0.08)"
+                  : "none",
+                transition: "box-shadow 140ms ease, border 140ms ease",
+              }}
+            />
+
+            <button
+              type="button"
+              onClick={() => {
+                setQ("");
+                setTodayFocusOn(false);
+                setTodayFocusKey("");
+                setPromotedProverbRef("");
+                setUrl({ q: "" });
+              }}
+              style={headerBtn}
+            >
+              Clear
+            </button>
           </div>
+
+          {q.trim().length > 0 && smartExpandedTerms.length > 1 && (
+            <div style={{ marginTop: 10 }}>
+              <div style={{ fontSize: 11, fontWeight: 900, color: "#64748b", marginBottom: 6 }}>
+                Smart Topic Mapping
+              </div>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {smartExpandedTerms.slice(0, 8).map((term) => (
+                  <button
+                    key={term}
+                    type="button"
+                    onClick={() => applyTopic(term)}
+                    style={{
+                      padding: "6px 10px",
+                      borderRadius: 999,
+                      border: "1px solid rgba(99,102,241,0.14)",
+                      background: "rgba(99,102,241,0.08)",
+                      fontWeight: 800,
+                      fontSize: 11,
+                      cursor: "pointer",
+                      color: "#312e81",
+                    }}
+                  >
+                    {term}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {mode === "encouragement" && sub !== "all" && subCommentary[sub as Sub] && (
             <div
