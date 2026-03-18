@@ -1064,17 +1064,17 @@ const rerollTodaysFocus = () => {
       <main style={pageStyle}>
         <header style={{ marginBottom: 18 }}>
           <div style={headerRow}>
-          <div>
-            <div
-              style={{
-                fontSize: 12,
-                fontWeight: 900,
-                letterSpacing: 0.6,
-                color: "#64748b",
-                textTransform: "uppercase",
-              }}
-            >
-              Ask Solomon
+            <div>
+              <div
+                style={{
+                  fontSize: 12,
+                  fontWeight: 900,
+                  letterSpacing: 0.6,
+                  color: "#64748b",
+                  textTransform: "uppercase",
+                }}
+              >
+                Ask Solomon
             </div>
             <h1
               style={{
