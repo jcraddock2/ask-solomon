@@ -67,8 +67,8 @@ export const DATA: VerseItem[] = [
     title: "Peace in anxious moments",
     body: "When your mind is racing, choose the calm path—wisdom steadies the heart.",
     ref: "Proverbs 12:25",
-    tags: ["anxiety", "peace", "fear", "comfort", "heart", "hurting", "encouragement"],
-    keywords: ["anxious", "hurting", "hurt", "heavy heart", "comfort", "peace", "calm"],
+    tags: ["anxiety", "peace", "fear", "worry", "calm", "encouragement"],
+    keywords: ["anxious", "anxiety", "worry", "fear", "calm", "peace", "troubled"],
   },
   {
     mode: "encouragement",
@@ -76,8 +76,8 @@ export const DATA: VerseItem[] = [
     title: "Guard your heart",
     body: "Protect what you allow into your mind. Peace is built by boundaries—what you focus on grows.",
     ref: "Proverbs 4:23",
-    tags: ["peace", "discipline", "integrity", "heart", "healing", "emotional pain"],
-    keywords: ["heart", "healing", "hurt", "inner life", "peace", "guard your heart"],
+    tags: ["peace", "discipline", "integrity", "heart", "boundaries", "inner life"],
+    keywords: ["heart", "inner life", "boundaries", "guard your heart", "peace", "focus"],
   },
   {
     mode: "encouragement",
@@ -85,8 +85,8 @@ export const DATA: VerseItem[] = [
     title: "Gentle words soften pressure",
     body: "When tension rises, lower your voice—wisdom turns down the fire.",
     ref: "Proverbs 15:1",
-    tags: ["anger", "relationships", "leadership", "gentle", "comfort", "hurt"],
-    keywords: ["hurt", "hurting", "gentle", "comfort", "relationship conflict", "healing words"],
+    tags: ["anger", "relationships", "leadership", "gentle", "speech", "conflict"],
+    keywords: ["gentle", "words", "speech", "anger", "conflict", "relationship conflict"],
   },
 
   // ENCOURAGEMENT — Strength
@@ -96,8 +96,8 @@ export const DATA: VerseItem[] = [
     title: "Strength for the day",
     body: "Don’t quit in the pressure—steady courage grows quietly and wins later.",
     ref: "Proverbs 24:10",
-    tags: ["strength", "discipline", "work", "weary", "adversity", "hurting"],
-    keywords: ["hurting", "weary", "pain", "adversity", "strength", "endure"],
+    tags: ["strength", "discipline", "work", "weary", "adversity", "perseverance"],
+    keywords: ["weary", "adversity", "pressure", "strength", "endure", "persevere"],
   },
   {
     mode: "encouragement",
@@ -125,8 +125,8 @@ export const DATA: VerseItem[] = [
     title: "Direction when unsure",
     body: "Seek counsel and walk the next right step—clarity comes with motion.",
     ref: "Proverbs 11:14",
-    tags: ["decision", "leadership", "direction", "counsel"],
-    keywords: ["unsure", "direction", "guidance", "counsel", "clarity", "next step"],
+    tags: ["decision", "leadership", "direction", "counsel", "guidance", "clarity"],
+    keywords: ["unsure", "direction", "guidance", "counsel", "clarity", "next step", "decision"],
   },
   {
     mode: "encouragement",
@@ -134,8 +134,8 @@ export const DATA: VerseItem[] = [
     title: "He will make your paths straight",
     body: "Trust beyond your understanding. Guidance often comes one step at a time—move in faith.",
     ref: "Proverbs 3:5–6",
-    tags: ["direction", "decision", "hope", "trust", "guidance"],
-    keywords: ["paths", "guidance", "trust", "direction", "faith", "understanding"],
+    tags: ["direction", "decision", "hope", "trust", "guidance", "clarity"],
+    keywords: ["paths", "guidance", "trust", "direction", "faith", "understanding", "clarity"],
   },
   {
     mode: "encouragement",
@@ -174,8 +174,8 @@ export const DATA: VerseItem[] = [
     title: "Your hope will not be cut off",
     body: "Keep doing what’s wise and right. God protects the long-term outcome of faithful people.",
     ref: "Proverbs 23:18",
-    tags: ["hope", "success", "future", "faithfulness"],
-    keywords: ["hope", "future", "faithful", "outcome", "keep going", "not cut off"],
+    tags: ["hope", "success", "future", "faithfulness", "discouraged"],
+    keywords: ["hope", "future", "faithful", "outcome", "keep going", "not cut off", "discouraged"],
   },
   {
     mode: "encouragement",
@@ -183,8 +183,47 @@ export const DATA: VerseItem[] = [
     title: "Light rises",
     body: "Even if it’s dim right now—keep walking. Wisdom brings morning.",
     ref: "Proverbs 4:18",
-    tags: ["hope", "direction", "light", "future"],
-    keywords: ["light", "morning", "hope", "future", "dim", "keep walking"],
+    tags: ["hope", "direction", "light", "future", "discouraged"],
+    keywords: ["light", "morning", "hope", "future", "dim", "keep walking", "discouraged"],
+  },
+  {
+    mode: "encouragement",
+    sub: "hope",
+    title: "Healing for a wounded heart",
+    body: "Even deep pain does not have the final word—wisdom leads the wounded heart toward comfort and healing.",
+    ref: "Proverbs 17:22",
+    tags: ["hurting", "hurt", "pain", "grief", "healing", "comfort", "sorrow", "hope"],
+    keywords: [
+      "hurting",
+      "hurt",
+      "pain",
+      "wounded",
+      "grief",
+      "sorrow",
+      "broken",
+      "brokenhearted",
+      "comfort",
+      "healing",
+    ],
+  },
+  {
+    mode: "encouragement",
+    sub: "hope",
+    title: "You are not alone in this",
+    body: "When you feel unseen or isolated, wisdom reminds you that your life still carries value, meaning, and hope.",
+    ref: "Proverbs 3:5–6",
+    tags: ["lonely", "alone", "isolated", "rejected", "comfort", "hope", "belonging"],
+    keywords: [
+      "lonely",
+      "alone",
+      "isolated",
+      "rejected",
+      "abandoned",
+      "unseen",
+      "belonging",
+      "comfort",
+      "friendship",
+    ],
   },
 
   // WISDOM
@@ -239,7 +278,6 @@ export const DATA: VerseItem[] = [
     keywords: ["skill", "opportunity", "prepared", "excellence", "work", "promotion"],
   },
 ];
-
 // -------------------------
 // BOOK INDEX (Pro feature)
 // -------------------------
