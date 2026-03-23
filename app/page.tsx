@@ -1029,46 +1029,35 @@ ${link}`;
     }
   }, [q]);
 
-  const rerollTodaysFocus = () => {
-    if (baseResults.length === 0) {
-      setTodayFocusKey("");
-      return;
-    }
+ const toggleTodaysFocus = () => {
+  if (todayFocusOn) {
+    setTodayFocusOn(false);
+    setTodayFocusKey("");
+    return;
+  }
 
-    const choice = baseResults[Math.floor(Math.random() * baseResults.length)];
-    setTodayFocusKey(`${choice.ref}-${choice.title}`);
-  };
-
-  const toggleTodaysFocus = () => {
-    if (todayFocusOn) {
-      setTodayFocusOn(false);
-      setTodayFocusKey("");
-      return;
-    }
-
-    const pool = buildFilteredPool();
-    if (pool.length === 0) {
-      setTodayFocusOn(true);
-      setTodayFocusKey("");
-      return;
-    }
-
-    const choice = pool[Math.floor(Math.random() * pool.length)];
+  const pool = buildFilteredPool();
+  if (pool.length === 0) {
     setTodayFocusOn(true);
-    setTodayFocusKey(`${choice.ref}-${choice.title}`);
-  };
+    setTodayFocusKey("");
+    return;
+  }
 
-  const rerollTodaysFocus = () => {
-    const pool = buildFilteredPool();
-    if (pool.length === 0) {
-      setTodayFocusKey("");
-      return;
-    }
+  const choice = pool[Math.floor(Math.random() * pool.length)];
+  setTodayFocusOn(true);
+  setTodayFocusKey(`${choice.ref}-${choice.title}`);
+};
 
-    const choice = pool[Math.floor(Math.random() * pool.length)];
-    setTodayFocusKey(`${choice.ref}-${choice.title}`);
-  };
+const rerollTodaysFocus = () => {
+  const pool = buildFilteredPool();
+  if (pool.length === 0) {
+    setTodayFocusKey("");
+    return;
+  }
 
+  const choice = pool[Math.floor(Math.random() * pool.length)];
+  setTodayFocusKey(`${choice.ref}-${choice.title}`);
+};
   const applyTopic = (topicQuery: string) => {
     setQ(topicQuery);
     setFavoritesOnly(false);
