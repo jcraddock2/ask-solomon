@@ -2124,6 +2124,97 @@ ${link}`;
                       {p.ref}
                     </div>
                   </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 8,
+                      alignItems: "flex-end",
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setPromotedProverbRef(isPromoted ? "" : p.ref)}
+                      style={{
+                        ...miniBtn,
+                        fontSize: 12,
+                        background: "rgba(99,102,241,0.10)",
+                        border: "1px solid rgba(99,102,241,0.18)",
+                        color: "#4338ca",
+                      }}
+                      title="Open full card"
+                    >
+                      Open
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => toggleFavorite(proverbKey)}
+                      style={miniBtn}
+                      title={isFav ? "Saved" : "Save this verse"}
+                      aria-label={isFav ? "Saved" : "Save this verse"}
+                    >
+                      {isFav ? "★" : "☆"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(proverbItem, proverbKey)}
+                      style={{ ...miniBtn, fontSize: 12 }}
+                      title="Copy verse"
+                    >
+                      {isCopied ? "Copied" : "Copy"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </>
+    )}
+  </div>
+)}
+            return (
+              <div
+                key={p.ref}
+                style={{
+                  border: "1px solid rgba(0,0,0,0.08)",
+                  background: "rgba(255,255,255,0.95)",
+                  borderRadius: 16,
+                  padding: 14,
+                  boxShadow: "0 10px 24px rgba(0,0,0,0.06)",
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>
+                      {proverbTitle}
+                    </div>
+
+                    <div
+                      style={{
+                        marginTop: 6,
+                        fontSize: 13,
+                        lineHeight: 1.55,
+                        color: "#334155",
+                        fontWeight: 700,
+                      }}
+                    >
+                      {p.text}
+                    </div>
+
+                    <div
+                      style={{
+                        marginTop: 8,
+                        fontSize: 11,
+                        color: "#64748b",
+                        fontWeight: 900,
+                      }}
+                    >
+                      {p.ref}
+                    </div>
+                  </div>
 
                   <div
                     style={{
