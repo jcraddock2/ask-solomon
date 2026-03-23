@@ -1046,9 +1046,27 @@ ${link}`;
       return;
     }
 
-    setFavoritesOnly(false);
+    const pool = buildFilteredPool();
+    if (pool.length === 0) {
+      setTodayFocusOn(true);
+      setTodayFocusKey("");
+      return;
+    }
+
+    const choice = pool[Math.floor(Math.random() * pool.length)];
     setTodayFocusOn(true);
-    rerollTodaysFocus();
+    setTodayFocusKey(`${choice.ref}-${choice.title}`);
+  };
+
+  const rerollTodaysFocus = () => {
+    const pool = buildFilteredPool();
+    if (pool.length === 0) {
+      setTodayFocusKey("");
+      return;
+    }
+
+    const choice = pool[Math.floor(Math.random() * pool.length)];
+    setTodayFocusKey(`${choice.ref}-${choice.title}`);
   };
 
   const applyTopic = (topicQuery: string) => {
@@ -1056,6 +1074,7 @@ ${link}`;
     setFavoritesOnly(false);
     setTodayFocusOn(false);
     setTodayFocusKey("");
+    setPromotedProverbRef("");
     setUrl({ q: topicQuery });
   };
 
@@ -1064,6 +1083,7 @@ ${link}`;
     setFavoritesOnly(false);
     setTodayFocusOn(false);
     setTodayFocusKey("");
+    setPromotedProverbRef("");
     setUrl({ q: situationQuery });
   };
 
