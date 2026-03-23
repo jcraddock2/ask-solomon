@@ -1609,343 +1609,636 @@ ${link}`;
                 )}
               </div>
             )}
+{q.trim().length > 0 && proverbMatches.length > 0 && (
+  <div style={{ marginBottom: 16 }}>
+    <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>
+      Proverbs Insight
+    </div>
 
-            {q.trim().length > 0 && proverbMatches.length > 0 && (
-              <div style={{ marginBottom: 16 }}>
-                <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>
-                  More Proverbs
+    <div
+      style={{
+        marginBottom: 10,
+        fontSize: 12,
+        color: "#64748b",
+        fontWeight: 800,
+      }}
+    >
+      A stronger Proverbs match for what you searched.
+    </div>
+
+    {(() => {
+      const featured = proverbMatches[0];
+      const featuredKey = `proverb-${featured.ref}`;
+      const featuredFav = !!favoriteKeys[featuredKey];
+      const featuredCopied = copiedKey === featuredKey;
+
+      const featuredTitle =
+        featured.topics && featured.topics.length > 0
+          ? featured.topics[0].charAt(0).toUpperCase() + featured.topics[0].slice(1)
+          : "Proverbs Insight";
+
+      const featuredItem = {
+        title: featuredTitle,
+        body: featured.text,
+        ref: featured.ref,
+      } as VerseItem;
+
+      return (
+        <div
+          style={{
+            ...softCardStyle,
+            border: "1px solid rgba(99,102,241,0.20)",
+            boxShadow: "0 18px 44px rgba(0,0,0,0.10)",
+            background:
+              "linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,0.96))",
+            marginBottom: 12,
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+            <div style={{ flex: 1 }}>
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "6px 10px",
+                  borderRadius: 999,
+                  background: "rgba(99,102,241,0.08)",
+                  color: "#4338ca",
+                  fontWeight: 900,
+                  fontSize: 11,
+                  marginBottom: 10,
+                }}
+              >
+                Best Proverbs Match
+              </div>
+
+              <div style={{ fontWeight: 900, fontSize: 18, color: "#111" }}>
+                {featuredTitle}
+              </div>
+
+              <div
+                style={{
+                  marginTop: 8,
+                  fontSize: 15,
+                  lineHeight: 1.6,
+                  color: "#111",
+                  fontWeight: 650,
+                }}
+              >
+                {featured.text}
+              </div>
+
+              <div
+                style={{
+                  marginTop: 10,
+                  fontSize: 12,
+                  color: "#64748b",
+                  fontWeight: 700,
+                }}
+              >
+                Save this. Sit with it. Apply it today.
+              </div>
+
+              <div
+                style={{
+                  marginTop: 10,
+                  fontSize: 12,
+                  color: "#64748b",
+                  fontWeight: 900,
+                }}
+              >
+                {featured.ref}
+              </div>
+
+              {featured.why?.length > 0 && (
+                <div style={{ marginTop: 10 }}>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 900,
+                      color: "#64748b",
+                      marginBottom: 6,
+                    }}
+                  >
+                    Why this matched
+                  </div>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                    {featured.why.map((reason) => (
+                      <span
+                        key={reason}
+                        style={{
+                          padding: "6px 10px",
+                          borderRadius: 999,
+                          border: "1px solid rgba(0,0,0,0.08)",
+                          background: "rgba(255,255,255,0.92)",
+                          fontWeight: 800,
+                          fontSize: 11,
+                          color: "#334155",
+                        }}
+                      >
+                        {reason}
+                      </span>
+                    ))}
+                  </div>
                 </div>
+              )}
+            </div>
 
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+                alignItems: "flex-end",
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => toggleFavorite(featuredKey)}
+                style={miniBtn}
+                title={featuredFav ? "Saved" : "Save this verse"}
+                aria-label={featuredFav ? "Saved" : "Save this verse"}
+              >
+                {featuredFav ? "★" : "☆"}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleCopy(featuredItem, featuredKey)}
+                style={{ ...miniBtn, fontSize: 12 }}
+                title="Copy verse"
+              >
+                {featuredCopied ? "Copied" : "Copy"}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleShare(featuredItem, featuredKey)}
+                style={{ ...miniBtn, fontSize: 12 }}
+                title="Share this verse"
+              >
+                Share
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleImage(featuredItem)}
+                style={{
+                  ...miniBtn,
+                  fontSize: 12,
+                  background: "rgba(99,102,241,0.10)",
+                  border: "1px solid rgba(99,102,241,0.18)",
+                }}
+                title="Create a share image"
+              >
+                Image
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setPromotedProverbRef(
+                    promotedProverbRef === featured.ref ? "" : featured.ref
+                  )
+                }
+                style={{
+                  ...miniBtn,
+                  fontSize: 12,
+                  background: "rgba(99,102,241,0.10)",
+                  border: "1px solid rgba(99,102,241,0.18)",
+                  color: "#4338ca",
+                }}
+                title="Open full card"
+              >
+                {promotedProverbRef === featured.ref ? "Close" : "Open"}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    })()}
+
+    {proverbMatches.length > 1 && (
+      <>
+        <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>
+          More Proverbs
+        </div>
+
+        <div style={{ display: "grid", gap: 10 }}>
+          {proverbMatches.slice(1).map((p) => {
+            const proverbKey = `proverb-${p.ref}`;
+            const isFav = !!favoriteKeys[proverbKey];
+            const isCopied = copiedKey === proverbKey;
+            const isPromoted = promotedProverbRef === p.ref;
+
+            const proverbTitle =
+              p.topics && p.topics.length > 0
+                ? p.topics[0].charAt(0).toUpperCase() + p.topics[0].slice(1)
+                : "More Proverbs";
+
+            const proverbItem = {
+              title: proverbTitle,
+              body: p.text,
+              ref: p.ref,
+            } as VerseItem;
+
+            if (isPromoted) {
+              return (
                 <div
+                  key={p.ref}
                   style={{
-                    marginBottom: 10,
-                    fontSize: 12,
-                    color: "#64748b",
-                    fontWeight: 800,
+                    ...softCardStyle,
+                    border: "1px solid rgba(99,102,241,0.18)",
+                    boxShadow: "0 18px 44px rgba(0,0,0,0.10)",
+                    background:
+                      "linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,0.96))",
                   }}
                 >
-                  Smarter related Proverbs based on your search and connected themes.
-                </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 8,
+                          padding: "6px 10px",
+                          borderRadius: 999,
+                          background: "rgba(99,102,241,0.08)",
+                          color: "#4338ca",
+                          fontWeight: 900,
+                          fontSize: 11,
+                          marginBottom: 10,
+                        }}
+                      >
+                        From Proverbs Search
+                      </div>
 
-                <div style={{ display: "grid", gap: 10 }}>
-                  {proverbMatches.map((p) => {
-                    const proverbKey = `proverb-${p.ref}`;
-                    const isFav = !!favoriteKeys[proverbKey];
-                    const isCopied = copiedKey === proverbKey;
-                    const isPromoted = promotedProverbRef === p.ref;
+                      <div style={{ fontWeight: 900, fontSize: 18, color: "#111" }}>
+                        {proverbTitle}
+                      </div>
 
-                    const proverbTitle =
-                      p.topics && p.topics.length > 0
-                        ? p.topics[0].charAt(0).toUpperCase() + p.topics[0].slice(1)
-                        : "More Proverbs";
+                      <div
+                        style={{
+                          marginTop: 8,
+                          fontSize: 15,
+                          lineHeight: 1.6,
+                          color: "#111",
+                          fontWeight: 650,
+                        }}
+                      >
+                        {p.text}
+                      </div>
 
-                    const proverbItem = {
-                      title: proverbTitle,
-                      body: p.text,
-                      ref: p.ref,
-                    } as VerseItem;
+                      <div
+                        style={{
+                          marginTop: 10,
+                          fontSize: 12,
+                          color: "#64748b",
+                          fontWeight: 700,
+                        }}
+                      >
+                        Save this. Sit with it. Apply it today.
+                      </div>
 
-                    if (isPromoted) {
-                      return (
-                        <div
-                          key={p.ref}
-                          style={{
-                            ...softCardStyle,
-                            border: "1px solid rgba(99,102,241,0.18)",
-                            boxShadow: "0 18px 44px rgba(0,0,0,0.10)",
-                            background:
-                              "linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,0.96))",
-                          }}
-                        >
-                          <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
-                            <div style={{ flex: 1 }}>
-                              <div
-                                style={{
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  gap: 8,
-                                  padding: "6px 10px",
-                                  borderRadius: 999,
-                                  background: "rgba(99,102,241,0.08)",
-                                  color: "#4338ca",
-                                  fontWeight: 900,
-                                  fontSize: 11,
-                                  marginBottom: 10,
-                                }}
-                              >
-                                From Proverbs Search
-                              </div>
+                      <div
+                        style={{
+                          marginTop: 10,
+                          fontSize: 12,
+                          color: "#64748b",
+                          fontWeight: 900,
+                        }}
+                      >
+                        {p.ref}
+                      </div>
 
-                              <div style={{ fontWeight: 900, fontSize: 18, color: "#111" }}>
-                                {proverbTitle}
-                              </div>
-
-                              <div
-                                style={{
-                                  marginTop: 8,
-                                  fontSize: 15,
-                                  lineHeight: 1.6,
-                                  color: "#111",
-                                  fontWeight: 650,
-                                }}
-                              >
-                                {p.text}
-                              </div>
-
-                              <div
-                                style={{
-                                  marginTop: 10,
-                                  fontSize: 12,
-                                  color: "#64748b",
-                                  fontWeight: 700,
-                                }}
-                              >
-                                Save this. Sit with it. Apply it today.
-                              </div>
-
-                              <div
-                                style={{
-                                  marginTop: 10,
-                                  fontSize: 12,
-                                  color: "#64748b",
-                                  fontWeight: 900,
-                                }}
-                              >
-                                {p.ref}
-                              </div>
-
-                              {p.why.length > 0 && (
-                                <div style={{ marginTop: 10 }}>
-                                  <div
-                                    style={{
-                                      fontSize: 12,
-                                      fontWeight: 900,
-                                      color: "#64748b",
-                                      marginBottom: 6,
-                                    }}
-                                  >
-                                    Why this matched
-                                  </div>
-                                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                                    {p.why.map((reason) => (
-                                      <span
-                                        key={reason}
-                                        style={{
-                                          padding: "6px 10px",
-                                          borderRadius: 999,
-                                          border: "1px solid rgba(0,0,0,0.08)",
-                                          background: "rgba(255,255,255,0.92)",
-                                          fontWeight: 800,
-                                          fontSize: 11,
-                                          color: "#334155",
-                                        }}
-                                      >
-                                        {reason}
-                                      </span>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-
-                            <div
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: 8,
-                                alignItems: "flex-end",
-                              }}
-                            >
-                              <button
-                                type="button"
-                                onClick={() => toggleFavorite(proverbKey)}
-                                style={miniBtn}
-                                title={isFav ? "Saved" : "Save this verse"}
-                                aria-label={isFav ? "Saved" : "Save this verse"}
-                              >
-                                {isFav ? "★" : "☆"}
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() => handleCopy(proverbItem, proverbKey)}
-                                style={{ ...miniBtn, fontSize: 12 }}
-                                title="Copy verse"
-                              >
-                                {isCopied ? "Copied" : "Copy"}
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() => handleShare(proverbItem, proverbKey)}
-                                style={{ ...miniBtn, fontSize: 12 }}
-                                title="Share this verse"
-                              >
-                                Share
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() => handleImage(proverbItem)}
-                                style={{
-                                  ...miniBtn,
-                                  fontSize: 12,
-                                  background: "rgba(99,102,241,0.10)",
-                                  border: "1px solid rgba(99,102,241,0.18)",
-                                }}
-                                title="Create a share image"
-                              >
-                                Image
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() => setPromotedProverbRef("")}
-                                style={{
-                                  ...miniBtn,
-                                  fontSize: 12,
-                                  background: "rgba(99,102,241,0.10)",
-                                  border: "1px solid rgba(99,102,241,0.18)",
-                                  color: "#4338ca",
-                                }}
-                                title="Collapse full card"
-                              >
-                                Close
-                              </button>
-                            </div>
-                          </div>
-
-                          {relatedPromotedProverbs.length > 0 && (
-                            <div style={{ marginTop: 14 }}>
-                              <div
-                                style={{
-                                  fontSize: 12,
-                                  fontWeight: 900,
-                                  color: "#64748b",
-                                  marginBottom: 8,
-                                }}
-                              >
-                                Related Proverbs
-                              </div>
-
-                              <div style={{ display: "grid", gap: 8 }}>
-                                {relatedPromotedProverbs.map((related) => (
-                                  <button
-                                    key={related.ref}
-                                    type="button"
-                                    onClick={() => setPromotedProverbRef(related.ref)}
-                                    style={{
-                                      textAlign: "left",
-                                      border: "1px solid rgba(0,0,0,0.08)",
-                                      background: "rgba(255,255,255,0.92)",
-                                      borderRadius: 14,
-                                      padding: 12,
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    <div style={{ fontWeight: 900, fontSize: 13, color: "#111" }}>
-                                      {related.ref}
-                                    </div>
-                                    <div
-                                      style={{
-                                        marginTop: 6,
-                                        color: "#334155",
-                                        fontWeight: 800,
-                                        fontSize: 13,
-                                        lineHeight: 1.5,
-                                      }}
-                                    >
-                                      {related.text}
-                                    </div>
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    }
-
-                    return (
-                      <div key={p.ref} className="verseCard" style={softCardStyle}>
-                        <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
-                          <div style={{ flex: 1 }}>
-                            <div style={{ fontWeight: 900, fontSize: 15, color: "#111" }}>
-                              {proverbTitle}
-                            </div>
-                            <div
-                              style={{
-                                marginTop: 8,
-                                color: "#334155",
-                                fontWeight: 800,
-                                fontSize: 14,
-                                lineHeight: 1.6,
-                              }}
-                            >
-                              {p.text}
-                            </div>
-                            <div
-                              style={{
-                                marginTop: 8,
-                                fontSize: 12,
-                                color: "#64748b",
-                                fontWeight: 900,
-                              }}
-                            >
-                              {p.ref}
-                            </div>
-
-                            {p.why.length > 0 && (
-                              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
-                                {p.why.slice(0, 3).map((reason) => (
-                                  <span
-                                    key={reason}
-                                    style={{
-                                      padding: "5px 8px",
-                                      borderRadius: 999,
-                                      background: "rgba(99,102,241,0.08)",
-                                      color: "#4338ca",
-                                      fontWeight: 800,
-                                      fontSize: 11,
-                                      border: "1px solid rgba(99,102,241,0.14)",
-                                    }}
-                                  >
-                                    {reason}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-
+                      {p.why?.length > 0 && (
+                        <div style={{ marginTop: 10 }}>
                           <div
                             style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: 8,
-                              alignItems: "flex-end",
+                              fontSize: 12,
+                              fontWeight: 900,
+                              color: "#64748b",
+                              marginBottom: 6,
                             }}
                           >
-                            <button
-                              type="button"
-                              onClick={() => setPromotedProverbRef(p.ref)}
-                              style={{
-                                ...miniBtn,
-                                background: "rgba(99,102,241,0.10)",
-                                border: "1px solid rgba(99,102,241,0.18)",
-                                color: "#4338ca",
-                              }}
-                              title="Open full card"
-                            >
-                              Open
-                            </button>
+                            Why this matched
+                          </div>
+                          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                            {p.why.map((reason) => (
+                              <span
+                                key={reason}
+                                style={{
+                                  padding: "6px 10px",
+                                  borderRadius: 999,
+                                  border: "1px solid rgba(0,0,0,0.08)",
+                                  background: "rgba(255,255,255,0.92)",
+                                  fontWeight: 800,
+                                  fontSize: 11,
+                                  color: "#334155",
+                                }}
+                              >
+                                {reason}
+                              </span>
+                            ))}
                           </div>
                         </div>
+                      )}
+                    </div>
+
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 8,
+                        alignItems: "flex-end",
+                      }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => toggleFavorite(proverbKey)}
+                        style={miniBtn}
+                        title={isFav ? "Saved" : "Save this verse"}
+                        aria-label={isFav ? "Saved" : "Save this verse"}
+                      >
+                        {isFav ? "★" : "☆"}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(proverbItem, proverbKey)}
+                        style={{ ...miniBtn, fontSize: 12 }}
+                        title="Copy verse"
+                      >
+                        {isCopied ? "Copied" : "Copy"}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleShare(proverbItem, proverbKey)}
+                        style={{ ...miniBtn, fontSize: 12 }}
+                        title="Share this verse"
+                      >
+                        Share
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleImage(proverbItem)}
+                        style={{
+                          ...miniBtn,
+                          fontSize: 12,
+                          background: "rgba(99,102,241,0.10)",
+                          border: "1px solid rgba(99,102,241,0.18)",
+                        }}
+                        title="Create a share image"
+                      >
+                        Image
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setPromotedProverbRef("")}
+                        style={{
+                          ...miniBtn,
+                          fontSize: 12,
+                          background: "rgba(99,102,241,0.10)",
+                          border: "1px solid rgba(99,102,241,0.18)",
+                          color: "#4338ca",
+                        }}
+                        title="Collapse full card"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+
+                  {relatedPromotedProverbs.length > 0 && (
+                    <div style={{ marginTop: 14 }}>
+                      <div
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 900,
+                          color: "#64748b",
+                          marginBottom: 8,
+                        }}
+                      >
+                        Related Proverbs
                       </div>
-                    );
-                  })}
+
+                      <div style={{ display: "grid", gap: 8 }}>
+                        {relatedPromotedProverbs.map((related) => (
+                          <button
+                            key={related.ref}
+                            type="button"
+                            onClick={() => setPromotedProverbRef(related.ref)}
+                            style={{
+                              textAlign: "left",
+                              border: "1px solid rgba(0,0,0,0.08)",
+                              background: "rgba(255,255,255,0.92)",
+                              borderRadius: 14,
+                              padding: 12,
+                              cursor: "pointer",
+                            }}
+                          >
+                            <div style={{ fontWeight: 900, fontSize: 13, color: "#111" }}>
+                              {related.ref}
+                            </div>
+                            <div
+                              style={{
+                                marginTop: 6,
+                                color: "#334155",
+                                fontWeight: 800,
+                                fontSize: 13,
+                                lineHeight: 1.5,
+                              }}
+                            >
+                              {related.text}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            return (
+              <div
+                key={p.ref}
+                style={{
+                  border: "1px solid rgba(0,0,0,0.08)",
+                  background: "rgba(255,255,255,0.95)",
+                  borderRadius: 16,
+                  padding: 14,
+                  boxShadow: "0 10px 24px rgba(0,0,0,0.06)",
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>
+                      {proverbTitle}
+                    </div>
+
+                    <div
+                      style={{
+                        marginTop: 6,
+                        fontSize: 13,
+                        lineHeight: 1.55,
+                        color: "#334155",
+                        fontWeight: 700,
+                      }}
+                    >
+                      {p.text}
+                    </div>
+
+                    <div
+                      style={{
+                        marginTop: 8,
+                        fontSize: 11,
+                        color: "#64748b",
+                        fontWeight: 900,
+                      }}
+                    >
+                      {p.ref}
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 8,
+                      alignItems: "flex-end",
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setPromotedProverbRef(isPromoted ? "" : p.ref)
+                      }
+                      style={{
+                        ...miniBtn,
+                        fontSize: 12,
+                        background: "rgba(99,102,241,0.10)",
+                        border: "1px solid rgba(99,102,241,0.18)",
+                        color: "#4338ca",
+                      }}
+                      title="Open full card"
+                    >
+                      Open
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => toggleFavorite(proverbKey)}
+                      style={miniBtn}
+                      title={isFav ? "Saved" : "Save this verse"}
+                      aria-label={isFav ? "Saved" : "Save this verse"}
+                    >
+                      {isFav ? "★" : "☆"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(proverbItem, proverbKey)}
+                      style={{ ...miniBtn, fontSize: 12 }}
+                      title="Copy verse"
+                    >
+                      {isCopied ? "Copied" : "Copy"}
+                    </button>
+                  </div>
                 </div>
               </div>
-            )}
+            );
+          })}
+        </div>
+      </>
+    )}
+  </div>
+)}
+
+        return (
+          <div key={p.ref} className="verseCard" style={softCardStyle}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 900, fontSize: 15, color: "#111" }}>
+                  {proverbTitle}
+                </div>
+                <div
+                  style={{
+                    marginTop: 8,
+                    color: "#334155",
+                    fontWeight: 800,
+                    fontSize: 14,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  {p.text}
+                </div>
+                <div
+                  style={{
+                    marginTop: 8,
+                    fontSize: 12,
+                    color: "#64748b",
+                    fontWeight: 900,
+                  }}
+                >
+                  {p.ref}
+                </div>
+
+                {p.why.length > 0 && (
+                  <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
+                    {p.why.slice(0, 3).map((reason) => (
+                      <span
+                        key={reason}
+                        style={{
+                          padding: "5px 8px",
+                          borderRadius: 999,
+                          background: "rgba(99,102,241,0.08)",
+                          color: "#4338ca",
+                          fontWeight: 800,
+                          fontSize: 11,
+                          border: "1px solid rgba(99,102,241,0.14)",
+                        }}
+                      >
+                        {reason}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 8,
+                  alignItems: "flex-end",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setPromotedProverbRef(p.ref)}
+                  style={{
+                    ...miniBtn,
+                    background: "rgba(99,102,241,0.10)",
+                    border: "1px solid rgba(99,102,241,0.18)",
+                    color: "#4338ca",
+                  }}
+                  title="Open full card"
+                >
+                  Open
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+)}
 
             <div style={{ display: "grid", gap: 12 }}>
               {results.length === 0
