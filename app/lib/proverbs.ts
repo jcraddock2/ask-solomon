@@ -468,6 +468,149 @@ export const PROVERBS: ProverbEntry[] = [
     ["direction", "decision", "trust"],
     ["uncertain", "planning"]
   ),
+    // -------------------------
+  // EXPANSION — EMOTIONAL DEPTH (A)
+  // -------------------------
+
+  createProverb(
+    "Proverbs 12:25",
+    "A heavy heart can be lifted",
+    "Anxiety weighs a heart down, but a good word brings life back into it.",
+    ["anxiety", "heart", "comfort"],
+    ["heavy heart", "anxiety", "burdened", "comfort", "encouragement", "lift"],
+    ["hurting", "encouragement", "comfort"],
+    ["heavy", "burdened", "low"]
+  ),
+
+  createProverb(
+    "Proverbs 13:12",
+    "Hope restores the heart",
+    "Hope delayed can make the heart sick, but when it returns, it brings life again.",
+    ["hope", "heart", "restoration"],
+    ["hope", "discouraged", "heart sick", "waiting", "restoration", "desire"],
+    ["discouraged", "hope"],
+    ["weary", "waiting", "low"]
+  ),
+
+  createProverb(
+    "Proverbs 15:13",
+    "A joyful heart changes your strength",
+    "A glad heart shows in your face, but sorrow can drain your spirit.",
+    ["heart", "joy", "emotion"],
+    ["sorrow", "joy", "spirit", "emotions", "inner state", "hurting"],
+    ["hurting", "healing"],
+    ["sad", "low", "heavy"]
+  ),
+
+  createProverb(
+    "Proverbs 17:22",
+    "Joy strengthens the body",
+    "A joyful heart brings strength and healing, but a crushed spirit weakens you.",
+    ["healing", "strength", "heart"],
+    ["healing", "joy", "crushed spirit", "strength", "hurt", "pain"],
+    ["hurting", "healing"],
+    ["weak", "drained", "wounded"]
+  ),
+
+  createProverb(
+    "Proverbs 18:10",
+    "You have a place of safety",
+    "The name of the Lord is a strong tower; the righteous run to it and are safe.",
+    ["safety", "protection", "trust"],
+    ["safe", "protection", "fear", "security", "refuge", "help"],
+    ["fear", "comfort"],
+    ["afraid", "vulnerable"]
+  ),
+
+  createProverb(
+    "Proverbs 19:21",
+    "There is still a bigger plan",
+    "Many plans fill a person’s heart, but the Lord’s purpose will stand.",
+    ["purpose", "direction", "trust"],
+    ["plans", "purpose", "confusion", "direction", "uncertain", "future"],
+    ["direction", "trust"],
+    ["uncertain", "confused"]
+  ),
+
+  createProverb(
+    "Proverbs 20:5",
+    "Clarity is within reach",
+    "The purposes of a person’s heart are deep, but understanding draws them out.",
+    ["clarity", "understanding", "wisdom"],
+    ["clarity", "confusion", "understanding", "deep thoughts", "direction"],
+    ["direction", "wisdom"],
+    ["uncertain", "thinking"]
+  ),
+
+  createProverb(
+    "Proverbs 21:2",
+    "Your perspective may be incomplete",
+    "Every way seems right to a person, but the Lord weighs the heart.",
+    ["wisdom", "perspective", "humility"],
+    ["right", "decision", "perspective", "judgment", "heart", "understanding"],
+    ["direction", "wisdom"],
+    ["uncertain", "confident"]
+  ),
+
+  createProverb(
+    "Proverbs 24:16",
+    "You can rise again",
+    "Even if you fall repeatedly, you can rise again—resilience is part of wisdom.",
+    ["resilience", "strength", "hope"],
+    ["fall", "failure", "get back up", "resilience", "discouraged", "rise"],
+    ["discouraged", "strength"],
+    ["down", "defeated"]
+  ),
+
+  createProverb(
+    "Proverbs 27:17",
+    "You are shaped by people around you",
+    "As iron sharpens iron, people strengthen one another.",
+    ["relationships", "growth", "strength"],
+    ["friendship", "people", "relationships", "growth", "support"],
+    ["lonely", "relationships"],
+    ["isolated", "seeking"]
+  ),
+
+  createProverb(
+    "Proverbs 28:13",
+    "You are not stuck where you are",
+    "Those who hide their struggles do not move forward, but those who face them find mercy.",
+    ["growth", "healing", "honesty"],
+    ["struggle", "healing", "honest", "change", "growth", "freedom"],
+    ["hurting", "healing"],
+    ["stuck", "ashamed"]
+  ),
+
+  createProverb(
+    "Proverbs 29:11",
+    "You don’t have to react emotionally",
+    "Fools release everything they feel, but the wise hold steady and respond.",
+    ["self-control", "wisdom", "emotion"],
+    ["emotion", "anger", "control", "reaction", "wisdom", "response"],
+    ["anger", "wisdom"],
+    ["triggered", "emotional"]
+  ),
+
+  createProverb(
+    "Proverbs 29:18",
+    "Clarity creates direction",
+    "Where there is no vision, people drift—but clarity anchors your path.",
+    ["vision", "direction", "clarity"],
+    ["vision", "direction", "clarity", "drift", "purpose", "focus"],
+    ["direction", "focus"],
+    ["lost", "uncertain"]
+  ),
+
+  createProverb(
+    "Proverbs 30:5",
+    "You can rely on truth",
+    "Every word of God is proven true; He is a shield to those who take refuge in Him.",
+    ["truth", "trust", "protection"],
+    ["truth", "trust", "protection", "shield", "safe", "reliable"],
+    ["fear", "trust"],
+    ["uncertain", "seeking"]
+  ),
 ];
 
 export function getRelatedProverbs(
