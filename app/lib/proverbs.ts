@@ -672,7 +672,13 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     score += 12;
     why.push("text phrase");
   }
+if (normalizedQuery.includes("hurting")) {
+  if (intentTags.includes("hurting")) score += 20;
+}
 
+if (normalizedQuery.includes("lonely")) {
+  if (intentTags.includes("lonely")) score += 20;
+}
   for (const token of tokens) {
     if (title.includes(token)) {
       score += 8;
@@ -690,7 +696,7 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     }
 
     if (intentTags.includes(token)) {
-      score += 9;
+      score += 14;
       why.push(`intent:${token}`);
     }
 
