@@ -873,34 +873,44 @@ ${link}`;
     }
   };
 
-  const buildFilteredPool = () => {
-    let list = [...DATA] as VerseItem[];
+const buildFilteredPool = () => {
+  let list = [...DATA] as VerseItem[];
 
-    list = list.filter((item: any) => itemMode(item) === mode);
+  list = list.filter((item: any) => itemMode(item) === mode);
 
-    if (mode === "encouragement" && sub !== "all") {
-      list = list.filter((item: any) => itemSubs(item).includes(sub));
-    }
+  if (mode === "encouragement" && sub !== "all") {
+    list = list.filter((item: any) => itemSubs(item).includes(sub));
+  }
 
-    if (q.trim()) {
-      list = smartSearch(list, q);
-    }
+  if (favoritesOnly) {
+    list = list.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
+  }
+
+  return list;
+};
+
+const baseResults = useMemo(() => {
+  // Smart Proverbs search when user types
+  if (q.trim().length > 0) {
+    let found = searchProverbsScored(q).map((r) => ({
+      ...r.item,
+      score: r.score,
+      why: r.why,
+    }));
 
     if (favoritesOnly) {
-      list = list.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
+      found = found.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
     }
 
-    return list;
-  };
+    return found;
+  }
 
- const baseResults = useMemo(() => {
-  const scored = searchVerseItemsScored(q, {
-    mode,
-    sub,
-    limit: 50,
+  // Fallback when no query is typed
+  let found = DATA.filter((item) => {
+    if (item.mode !== mode) return false;
+    if (sub !== "all" && item.sub !== sub) return false;
+    return true;
   });
-
-  let found = scored.map((x) => x.item);
 
   if (favoritesOnly) {
     found = found.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
@@ -908,7 +918,6 @@ ${link}`;
 
   return found;
 }, [q, mode, sub, favoritesOnly, favoriteKeys]);
-
   const results = useMemo(() => {
     if (!todayFocusOn) return baseResults;
     if (!todayFocusKey) return [];
@@ -952,27 +961,27 @@ ${link}`;
     );
   }, [q]);
 
-  const proverbMatches = useMemo<ProverbMatch[]>(() => {
-    const query = q.trim();
-    if (!query) return [];
+const proverbMatches = useMemo<ProverbMatch[]>(() => {
+  const query = q.trim();
+  if (!query) return [];
 
-    try {
-      const found = asArray(searchProverbsScored(query, 8));
+  try {
+    const found = asArray(searchProverbsScored(query)).slice(0, 8);
 
-      return found
-        .map((entry: any) => {
-          const p = entry?.item ?? {};
-          const ref = String(p?.ref ?? "");
-          const text = String(p?.text ?? p?.body ?? "");
-          const topics = Array.isArray(p?.topics)
-            ? p.topics.map((t: any) => String(t))
-            : [];
+    return found
+      .map((entry: any) => {
+        const p = entry?.item ?? {};
+        const ref = String(p?.ref ?? "");
+        const text = String(p?.text ?? p?.body ?? "");
+        const topics = Array.isArray(p?.topics)
+          ? p.topics.map((t: any) => String(t))
+          : [];
 
-          const fallback = scoreProverbMatch(
-            { ref, text, topics },
-            query,
-            smartExpandedTerms
-          );
+        const fallback = scoreProverbMatch(
+          { ref, text, topics },
+          query,
+          smartExpandedTerms
+        );
 
           const rawScore = Number(entry?.score ?? fallback.score ?? 0);
 
