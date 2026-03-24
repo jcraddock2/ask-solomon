@@ -63,6 +63,11 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "healing",
     "comfort",
     "crushed spirit",
+    "heartache",
+    "heartbroken",
+    "loss",
+    "mourning",
+    "sad",
   ],
   lonely: [
     "lonely",
@@ -75,6 +80,10 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "belonging",
     "companionship",
     "unseen",
+    "forgotten",
+    "left out",
+    "nobody sees me",
+    "nobody understands me",
   ],
   discouraged: [
     "discouraged",
@@ -87,6 +96,13 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "strength",
     "rise",
     "light",
+    "burned out",
+    "burnt out",
+    "drained",
+    "defeated",
+    "stuck",
+    "exhausted",
+    "worn out",
   ],
   direction: [
     "direction",
@@ -99,6 +115,11 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "wisdom",
     "steps",
     "plans",
+    "next step",
+    "confused",
+    "lost",
+    "discernment",
+    "what should i do",
   ],
   money: [
     "money",
@@ -111,6 +132,12 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "planning",
     "diligence",
     "resources",
+    "bills",
+    "broke",
+    "income",
+    "expenses",
+    "budget",
+    "paycheck",
   ],
   fear: [
     "fear",
@@ -118,11 +145,16 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "anxiety",
     "anxious",
     "worry",
+    "worried",
     "troubled",
     "peace",
     "calm",
     "trust",
     "courage",
+    "overwhelmed",
+    "panic",
+    "stress",
+    "uneasy",
   ],
   anger: [
     "anger",
@@ -134,6 +166,11 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "patience",
     "words",
     "conflict",
+    "frustrated",
+    "frustration",
+    "bitter",
+    "bitterness",
+    "resentful",
   ],
   relationships: [
     "relationship",
@@ -146,6 +183,28 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "words",
     "peace",
     "love",
+    "difficult person",
+    "difficult boss",
+    "argument",
+    "fighting",
+    "tension",
+    "drama",
+  ],
+  leadership: [
+    "leader",
+    "leadership",
+    "boss",
+    "team",
+    "people",
+    "influence",
+    "authority",
+    "respect",
+    "management",
+    "responsibility",
+    "pressure",
+    "integrity",
+    "correction",
+    "stewardship",
   ],
 };
 
@@ -195,24 +254,23 @@ function expandQuery(query: string): string[] {
     }
   }
 
-  if (normalized.includes("money stress")) {
-    INTENT_EXPANSIONS.money.forEach((x) => expanded.add(x));
-  }
+  const phraseRules: Array<[string[], keyof typeof INTENT_EXPANSIONS]> = [
+    [["money stress", "worried about bills", "financial stress", "broke"], "money"],
+    [["need direction", "need clarity", "what should i do", "next step", "feel lost"], "direction"],
+    [["i am hurting", "im hurting", "heartbroken", "in pain", "grieving"], "hurting"],
+    [["i am lonely", "im lonely", "feel alone", "abandoned", "rejected", "unseen"], "lonely"],
+    [["burned out", "burnt out", "worn out", "drained", "exhausted", "feel stuck"], "discouraged"],
+    [["anxious", "overwhelmed", "panic", "worried", "afraid"], "fear"],
+    [["relationship conflict", "difficult person", "difficult boss", "argument", "tension"], "relationships"],
+    [["angry", "frustrated", "bitter", "resentful"], "anger"],
+    [["leadership pressure", "leading people", "team pressure", "as a leader"], "leadership"],
+  ];
 
-  if (normalized.includes("need direction")) {
-    INTENT_EXPANSIONS.direction.forEach((x) => expanded.add(x));
-  }
-
-  if (normalized.includes("i am hurting") || normalized.includes("im hurting")) {
-    INTENT_EXPANSIONS.hurting.forEach((x) => expanded.add(x));
-  }
-
-  if (normalized.includes("i am lonely") || normalized.includes("im lonely")) {
-    INTENT_EXPANSIONS.lonely.forEach((x) => expanded.add(x));
-  }
-
-  if (normalized.includes("relationship conflict")) {
-    INTENT_EXPANSIONS.relationships.forEach((x) => expanded.add(x));
+  for (const [phrases, lane] of phraseRules) {
+    if (phrases.some((phrase) => normalized.includes(phrase))) {
+      INTENT_EXPANSIONS[lane].forEach((x) => expanded.add(x));
+      expanded.add(lane);
+    }
   }
 
   return Array.from(expanded);
@@ -339,7 +397,7 @@ export const PROVERBS: ProverbEntry[] = [
     "Direction comes with counsel",
     "Where wise counsel is present, people are strengthened and protected from avoidable failure.",
     ["direction", "counsel", "leadership"],
-    ["counsel", "guidance", "direction", "advice", "clarity", "decision"],
+    ["counsel", "guidance", "direction", "advice", "clarity", "decision", "leadership", "team"],
     ["direction", "leadership", "guidance"],
     ["uncertain", "stuck"]
   ),
@@ -377,7 +435,7 @@ export const PROVERBS: ProverbEntry[] = [
     "Planning beats hurry",
     "Steady planning leads toward abundance, but rushed decisions often create lack.",
     ["money", "planning", "diligence"],
-    ["money", "planning", "abundance", "lack", "finances", "steady work"],
+    ["money", "planning", "abundance", "lack", "finances", "steady work", "budget", "expenses"],
     ["money", "direction", "stewardship"],
     ["stressed", "urgent"]
   ),
@@ -386,7 +444,7 @@ export const PROVERBS: ProverbEntry[] = [
     "Debt creates pressure",
     "Debt brings weight and pressure. Wisdom moves toward stewardship, restraint, and freedom.",
     ["money", "debt", "stewardship"],
-    ["debt", "money", "pressure", "finances", "lack", "stewardship", "burden"],
+    ["debt", "money", "pressure", "finances", "lack", "stewardship", "burden", "bills"],
     ["money", "stewardship", "freedom"],
     ["stressed", "burdened"]
   ),
@@ -406,7 +464,7 @@ export const PROVERBS: ProverbEntry[] = [
     "Fear is a trap",
     "The fear of people traps the heart, but trust opens a steadier path.",
     ["fear", "trust", "peace"],
-    ["fear", "afraid", "fear of man", "trust", "anxiety", "trap"],
+    ["fear", "afraid", "fear of man", "trust", "anxiety", "trap", "worried", "overwhelmed"],
     ["fear", "peace", "trust"],
     ["anxious", "afraid"]
   ),
@@ -426,7 +484,7 @@ export const PROVERBS: ProverbEntry[] = [
     "A gentle answer turns anger down",
     "When tension rises, gentleness can cool what harshness would inflame.",
     ["anger", "relationships", "speech"],
-    ["anger", "gentle answer", "conflict", "words", "relationships", "response"],
+    ["anger", "gentle answer", "conflict", "words", "relationships", "response", "difficult person", "difficult boss"],
     ["anger", "relationships", "peace"],
     ["triggered", "frustrated"]
   ),
@@ -435,7 +493,7 @@ export const PROVERBS: ProverbEntry[] = [
     "Calm restraint shows wisdom",
     "Measured words and a calm spirit reflect strength, not weakness.",
     ["anger", "speech", "wisdom"],
-    ["calm", "restraint", "words", "spirit", "anger", "self-control"],
+    ["calm", "restraint", "words", "spirit", "anger", "self-control", "frustrated"],
     ["anger", "wisdom", "relationships"],
     ["heated", "frustrated"]
   ),
@@ -446,7 +504,7 @@ export const PROVERBS: ProverbEntry[] = [
     "Boldness follows integrity",
     "A clear conscience strengthens confidence. Wisdom makes courage cleaner and steadier.",
     ["confidence", "integrity", "fear"],
-    ["confidence", "boldness", "integrity", "fear", "clear conscience"],
+    ["confidence", "boldness", "integrity", "fear", "clear conscience", "leadership", "authority"],
     ["confidence", "fear", "leadership"],
     ["hesitant", "uncertain"]
   ),
@@ -455,7 +513,7 @@ export const PROVERBS: ProverbEntry[] = [
     "Wisdom comes first",
     "When the way forward is unclear, start by valuing wisdom above impulse.",
     ["wisdom", "direction", "decision"],
-    ["wisdom", "direction", "decision", "understanding", "clarity", "next step"],
+    ["wisdom", "direction", "decision", "understanding", "clarity", "next step", "leadership"],
     ["direction", "leadership", "decision"],
     ["uncertain", "seeking"]
   ),
@@ -468,20 +526,17 @@ export const PROVERBS: ProverbEntry[] = [
     ["direction", "decision", "trust"],
     ["uncertain", "planning"]
   ),
-    // -------------------------
-  // EXPANSION — EMOTIONAL DEPTH (A)
-  // -------------------------
 
+  // EXPANSION — EMOTIONAL DEPTH
   createProverb(
     "Proverbs 12:25",
     "A heavy heart can be lifted",
     "Anxiety weighs a heart down, but a good word brings life back into it.",
     ["anxiety", "heart", "comfort"],
-    ["heavy heart", "anxiety", "burdened", "comfort", "encouragement", "lift"],
+    ["heavy heart", "anxiety", "burdened", "comfort", "encouragement", "lift", "overwhelmed"],
     ["hurting", "encouragement", "comfort"],
     ["heavy", "burdened", "low"]
   ),
-
   createProverb(
     "Proverbs 13:12",
     "Hope restores the heart",
@@ -491,7 +546,6 @@ export const PROVERBS: ProverbEntry[] = [
     ["discouraged", "hope"],
     ["weary", "waiting", "low"]
   ),
-
   createProverb(
     "Proverbs 15:13",
     "A joyful heart changes your strength",
@@ -501,7 +555,6 @@ export const PROVERBS: ProverbEntry[] = [
     ["hurting", "healing"],
     ["sad", "low", "heavy"]
   ),
-
   createProverb(
     "Proverbs 17:22",
     "Joy strengthens the body",
@@ -511,7 +564,6 @@ export const PROVERBS: ProverbEntry[] = [
     ["hurting", "healing"],
     ["weak", "drained", "wounded"]
   ),
-
   createProverb(
     "Proverbs 18:10",
     "You have a place of safety",
@@ -521,7 +573,6 @@ export const PROVERBS: ProverbEntry[] = [
     ["fear", "comfort"],
     ["afraid", "vulnerable"]
   ),
-
   createProverb(
     "Proverbs 19:21",
     "There is still a bigger plan",
@@ -531,7 +582,6 @@ export const PROVERBS: ProverbEntry[] = [
     ["direction", "trust"],
     ["uncertain", "confused"]
   ),
-
   createProverb(
     "Proverbs 20:5",
     "Clarity is within reach",
@@ -541,7 +591,6 @@ export const PROVERBS: ProverbEntry[] = [
     ["direction", "wisdom"],
     ["uncertain", "thinking"]
   ),
-
   createProverb(
     "Proverbs 21:2",
     "Your perspective may be incomplete",
@@ -551,57 +600,51 @@ export const PROVERBS: ProverbEntry[] = [
     ["direction", "wisdom"],
     ["uncertain", "confident"]
   ),
-
   createProverb(
     "Proverbs 24:16",
     "You can rise again",
     "Even if you fall repeatedly, you can rise again—resilience is part of wisdom.",
     ["resilience", "strength", "hope"],
-    ["fall", "failure", "get back up", "resilience", "discouraged", "rise"],
+    ["fall", "failure", "get back up", "resilience", "discouraged", "rise", "stuck"],
     ["discouraged", "strength"],
     ["down", "defeated"]
   ),
-
   createProverb(
     "Proverbs 27:17",
     "You are shaped by people around you",
     "As iron sharpens iron, people strengthen one another.",
     ["relationships", "growth", "strength"],
-    ["friendship", "people", "relationships", "growth", "support"],
-    ["lonely", "relationships"],
+    ["friendship", "people", "relationships", "growth", "support", "team", "leadership"],
+    ["lonely", "relationships", "leadership"],
     ["isolated", "seeking"]
   ),
-
   createProverb(
     "Proverbs 28:13",
     "You are not stuck where you are",
     "Those who hide their struggles do not move forward, but those who face them find mercy.",
     ["growth", "healing", "honesty"],
-    ["struggle", "healing", "honest", "change", "growth", "freedom"],
+    ["struggle", "healing", "honest", "change", "growth", "freedom", "stuck"],
     ["hurting", "healing"],
     ["stuck", "ashamed"]
   ),
-
   createProverb(
     "Proverbs 29:11",
     "You don’t have to react emotionally",
     "Fools release everything they feel, but the wise hold steady and respond.",
     ["self-control", "wisdom", "emotion"],
-    ["emotion", "anger", "control", "reaction", "wisdom", "response"],
+    ["emotion", "anger", "control", "reaction", "wisdom", "response", "frustrated"],
     ["anger", "wisdom"],
     ["triggered", "emotional"]
   ),
-
   createProverb(
     "Proverbs 29:18",
     "Clarity creates direction",
     "Where there is no vision, people drift—but clarity anchors your path.",
     ["vision", "direction", "clarity"],
-    ["vision", "direction", "clarity", "drift", "purpose", "focus"],
+    ["vision", "direction", "clarity", "drift", "purpose", "focus", "lost"],
     ["direction", "focus"],
     ["lost", "uncertain"]
   ),
-
   createProverb(
     "Proverbs 30:5",
     "You can rely on truth",
@@ -672,13 +715,85 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     score += 12;
     why.push("text phrase");
   }
-if (normalizedQuery.includes("hurting")) {
-  if (intentTags.includes("hurting")) score += 20;
-}
 
-if (normalizedQuery.includes("lonely")) {
-  if (intentTags.includes("lonely")) score += 20;
-}
+  if (
+    normalizedQuery.includes("hurting") ||
+    normalizedQuery.includes("heartbroken") ||
+    normalizedQuery.includes("grieving") ||
+    normalizedQuery.includes("in pain")
+  ) {
+    if (intentTags.includes("hurting")) score += 20;
+  }
+
+  if (
+    normalizedQuery.includes("lonely") ||
+    normalizedQuery.includes("alone") ||
+    normalizedQuery.includes("abandoned") ||
+    normalizedQuery.includes("rejected") ||
+    normalizedQuery.includes("unseen")
+  ) {
+    if (intentTags.includes("lonely")) score += 20;
+  }
+
+  if (
+    normalizedQuery.includes("discouraged") ||
+    normalizedQuery.includes("burned out") ||
+    normalizedQuery.includes("burnt out") ||
+    normalizedQuery.includes("stuck") ||
+    normalizedQuery.includes("drained") ||
+    normalizedQuery.includes("exhausted")
+  ) {
+    if (intentTags.includes("discouraged")) score += 20;
+  }
+
+  if (
+    normalizedQuery.includes("direction") ||
+    normalizedQuery.includes("clarity") ||
+    normalizedQuery.includes("what should i do") ||
+    normalizedQuery.includes("lost") ||
+    normalizedQuery.includes("confused")
+  ) {
+    if (intentTags.includes("direction")) score += 20;
+  }
+
+  if (
+    normalizedQuery.includes("money") ||
+    normalizedQuery.includes("bills") ||
+    normalizedQuery.includes("debt") ||
+    normalizedQuery.includes("broke") ||
+    normalizedQuery.includes("financial")
+  ) {
+    if (intentTags.includes("money")) score += 20;
+  }
+
+  if (
+    normalizedQuery.includes("fear") ||
+    normalizedQuery.includes("afraid") ||
+    normalizedQuery.includes("anxious") ||
+    normalizedQuery.includes("worried") ||
+    normalizedQuery.includes("overwhelmed")
+  ) {
+    if (intentTags.includes("fear")) score += 20;
+  }
+
+  if (
+    normalizedQuery.includes("angry") ||
+    normalizedQuery.includes("frustrated") ||
+    normalizedQuery.includes("resentful") ||
+    normalizedQuery.includes("bitter")
+  ) {
+    if (intentTags.includes("anger")) score += 20;
+  }
+
+  if (
+    normalizedQuery.includes("boss") ||
+    normalizedQuery.includes("team") ||
+    normalizedQuery.includes("leadership") ||
+    normalizedQuery.includes("people pressure")
+  ) {
+    if (intentTags.includes("leadership")) score += 20;
+  }
+
   for (const token of tokens) {
     if (title.includes(token)) {
       score += 8;
@@ -761,4 +876,3 @@ export function searchProverbs(
 ): ProverbEntry[] {
   return searchProverbsScored(query, limit).map((x) => x.item);
 }
-   
