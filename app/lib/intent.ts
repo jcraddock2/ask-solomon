@@ -1,426 +1,343 @@
 // app/lib/intent.ts
 
-type SearchableItem = {
-  ref: string;
+export type SearchableItem = {
   title?: string;
-  text?: string;
   body?: string;
-  topics?: string[];
-  keywords?: string[];
+  text?: string;
+  ref?: string;
   tags?: string[];
+  keywords?: string[];
+  topics?: string[];
+  intentTags?: string[];
+  moodTags?: string[];
 };
 
-type IntentBucket = {
+type IntentLane = {
   name: string;
-  patterns: string[];
-  boostTopics: string[];
-  boostKeywords: string[];
-  relatedTerms: string[];
-  avoidIfMissing?: string[];
+  terms: string[];
 };
 
-const INTENT_MAP: IntentBucket[] = [
+const STOPWORDS = new Set([
+  "i",
+  "am",
+  "im",
+  "i'm",
+  "ive",
+  "i've",
+  "me",
+  "my",
+  "mine",
+  "the",
+  "a",
+  "an",
+  "and",
+  "or",
+  "to",
+  "for",
+  "of",
+  "in",
+  "on",
+  "at",
+  "is",
+  "are",
+  "be",
+  "been",
+  "being",
+  "feel",
+  "feeling",
+  "need",
+  "want",
+  "with",
+  "that",
+  "this",
+  "it",
+  "so",
+  "very",
+  "just",
+  "really",
+]);
+
+const INTENT_LANES: IntentLane[] = [
   {
-    name: "overwhelmed",
-    patterns: [
-      "i feel overwhelmed",
-      "overwhelmed",
-      "too much",
-      "stressed",
-      "stress",
-      "pressure",
+    name: "hurting",
+    terms: [
+      "hurting",
+      "hurt",
+      "heartbroken",
+      "heartbreak",
+      "broken",
+      "pain",
+      "painful",
+      "wounded",
+      "grief",
+      "grieving",
+      "sorrow",
+      "sad",
+      "crushed",
+      "weeping",
+      "mourning",
+      "loss",
+    ],
+  },
+  {
+    name: "lonely",
+    terms: [
+      "lonely",
+      "alone",
+      "isolated",
+      "abandoned",
+      "unseen",
+      "left out",
+      "rejected",
+      "forgotten",
+      "nobody sees me",
+      "nobody understands me",
+      "by myself",
+    ],
+  },
+  {
+    name: "discouraged",
+    terms: [
+      "discouraged",
+      "down",
+      "hopeless",
+      "tired",
+      "drained",
+      "worn out",
+      "exhausted",
+      "defeated",
       "burned out",
       "burnt out",
-      "exhausted",
-      "tired",
-      "mentally drained",
-      "i can't handle this",
-      "i cant handle this",
-      "life feels heavy",
+      "empty",
+      "giving up",
+      "stuck",
     ],
-    boostTopics: ["encouragement", "peace", "strength", "wisdom", "guidance"],
-    boostKeywords: ["rest", "peace", "calm", "strength", "help", "trust", "refuge"],
-    relatedTerms: ["overwhelmed", "stress", "pressure", "heavy", "peace", "rest", "trust"],
-    avoidIfMissing: ["peace", "strength", "trust", "guidance", "encouragement"],
   },
   {
-    name: "fear",
-    patterns: [
-      "afraid",
-      "fear",
-      "scared",
-      "anxious",
-      "anxiety",
-      "worried",
-      "worry",
-      "nervous",
-      "panic",
-      "uncertain",
-      "i don't know what will happen",
-      "i dont know what will happen",
-    ],
-    boostTopics: ["peace", "faith", "encouragement", "wisdom", "protection"],
-    boostKeywords: ["fear", "trust", "peace", "courage", "secure", "refuge"],
-    relatedTerms: ["fear", "afraid", "anxious", "worry", "peace", "trust", "refuge"],
-    avoidIfMissing: ["peace", "trust", "protection", "faith"],
-  },
-  {
-    name: "guidance",
-    patterns: [
-      "i need direction",
-      "need direction",
-      "need guidance",
-      "what should i do",
-      "which way",
-      "next step",
+    name: "direction",
+    terms: [
+      "direction",
+      "guidance",
+      "clarity",
+      "wisdom",
       "decision",
-      "decide",
-      "unclear",
+      "choose",
+      "choice",
+      "next step",
+      "which way",
+      "what should i do",
+      "uncertain",
       "confused",
-      "i need wisdom",
-      "show me what to do",
+      "lost",
+      "discernment",
+      "understanding",
     ],
-    boostTopics: ["wisdom", "guidance", "discernment", "direction"],
-    boostKeywords: ["path", "understanding", "instruction", "wisdom", "discernment", "steps"],
-    relatedTerms: ["guidance", "direction", "path", "steps", "wisdom", "instruction"],
-    avoidIfMissing: ["wisdom", "guidance", "direction", "discernment"],
   },
   {
     name: "money",
-    patterns: [
+    terms: [
       "money",
       "finances",
       "financial",
       "bills",
       "debt",
       "broke",
+      "poverty",
       "provision",
       "income",
-      "prosperity",
+      "budget",
       "wealth",
-      "poor",
-      "struggling financially",
-      "worried about money",
-      "money stress",
+      "prosperity",
+      "paycheck",
+      "expenses",
+      "lack",
     ],
-    boostTopics: ["finances", "work", "wisdom", "discipline", "stewardship"],
-    boostKeywords: ["wealth", "provision", "diligence", "stewardship", "planning", "debt"],
-    relatedTerms: ["money", "debt", "wealth", "provision", "stewardship", "diligence"],
-    avoidIfMissing: ["finances", "stewardship", "wealth", "provision", "diligence"],
   },
   {
-    name: "discouraged",
-    patterns: [
-      "discouraged",
-      "down",
-      "sad",
-      "hopeless",
-      "hopelessness",
-      "depressed",
-      "low",
-      "feel like quitting",
-      "want to give up",
-      "giving up",
-      "defeated",
-      "heavy heart",
-      "weary",
+    name: "fear",
+    terms: [
+      "fear",
+      "afraid",
+      "scared",
+      "anxious",
+      "anxiety",
+      "worried",
+      "worry",
+      "panic",
+      "nervous",
+      "overwhelmed",
+      "troubled",
+      "uneasy",
+      "stress",
     ],
-    boostTopics: ["hope", "encouragement", "strength", "faith", "peace"],
-    boostKeywords: ["hope", "joy", "strength", "heart", "renew", "rise"],
-    relatedTerms: ["discouraged", "hope", "strength", "heart", "joy", "rise"],
-    avoidIfMissing: ["hope", "encouragement", "strength", "faith"],
   },
   {
-    name: "hurting",
-    patterns: [
-      "i am hurting",
-      "im hurting",
-      "i’m hurting",
-      "hurting",
-      "hurt",
-      "heartbroken",
-      "broken heart",
-      "in pain",
-      "emotionally hurt",
-      "wounded",
-      "deeply hurt",
-      "grieving",
-      "grief",
-      "sorrow",
-      "broken",
+    name: "conflict",
+    terms: [
+      "conflict",
+      "argument",
+      "fighting",
+      "strife",
+      "drama",
+      "offense",
+      "offended",
+      "offense",
+      "relationship tension",
+      "friction",
+      "division",
+      "quarrel",
+      "difficult person",
+      "difficult boss",
     ],
-    boostTopics: ["encouragement", "peace", "relationships", "hope", "healing"],
-    boostKeywords: ["heart", "healing", "comfort", "peace", "hope", "gentle", "restore"],
-    relatedTerms: ["hurt", "hurting", "heart", "healing", "comfort", "peace", "hope", "grief"],
-    avoidIfMissing: ["encouragement", "peace", "hope", "healing", "relationships"],
+  },
+  {
+    name: "anger",
+    terms: [
+      "anger",
+      "angry",
+      "mad",
+      "furious",
+      "resentful",
+      "resentment",
+      "rage",
+      "irritated",
+      "frustrated",
+      "frustration",
+      "bitter",
+      "bitterness",
+    ],
+  },
+  {
+    name: "temptation",
+    terms: [
+      "temptation",
+      "tempted",
+      "lust",
+      "sin",
+      "compromise",
+      "wrong choice",
+      "weakness",
+      "self control",
+      "self-control",
+      "discipline",
+      "impulse",
+      "addiction",
+    ],
   },
   {
     name: "leadership",
-    patterns: [
+    terms: [
+      "leader",
       "leadership",
-      "lead people",
+      "boss",
       "team",
-      "staff",
-      "manager",
-      "supervisor",
-      "conflict at work",
-      "how do i lead",
+      "people",
       "influence",
       "authority",
-      "communication",
+      "respect",
+      "management",
+      "responsibility",
+      "pressure",
+      "stewardship",
+      "example",
+      "integrity",
+      "correction",
     ],
-    boostTopics: ["leadership", "wisdom", "speech", "relationships", "justice"],
-    boostKeywords: ["lead", "counsel", "speech", "understanding", "discipline", "justice"],
-    relatedTerms: ["leadership", "speech", "justice", "counsel", "understanding"],
-    avoidIfMissing: ["leadership", "wisdom", "speech", "justice"],
-  },
-  {
-    name: "relationships",
-    patterns: [
-      "relationship",
-      "marriage",
-      "friend",
-      "friendship",
-      "people problem",
-      "conflict",
-      "argument",
-      "offended",
-      "forgiveness",
-      "betrayed",
-      "trust issue",
-    ],
-    boostTopics: ["relationships", "speech", "wisdom", "peace", "love"],
-    boostKeywords: ["gentle", "answer", "love", "peace", "friend", "forgive", "kindness"],
-    relatedTerms: ["relationships", "friend", "peace", "love", "gentle", "forgive"],
-    avoidIfMissing: ["relationships", "peace", "love", "speech"],
-  },
-  {
-    name: "confidence",
-    patterns: [
-      "confidence",
-      "boldness",
-      "self doubt",
-      "insecure",
-      "i feel small",
-      "hesitant",
-      "timid",
-      "second guessing",
-    ],
-    boostTopics: ["confidence", "strength", "wisdom", "faith", "courage"],
-    boostKeywords: ["bold", "strength", "courage", "trust", "steadfast"],
-    relatedTerms: ["confidence", "bold", "strength", "courage", "trust"],
-    avoidIfMissing: ["confidence", "strength", "faith", "courage"],
-  },
-  {
-    name: "discipline",
-    patterns: [
-      "discipline",
-      "lazy",
-      "procrastinating",
-      "procrastination",
-      "stuck",
-      "unmotivated",
-      "motivation",
-      "consistency",
-      "focus",
-      "productive",
-    ],
-    boostTopics: ["discipline", "work", "wisdom", "diligence"],
-    boostKeywords: ["diligent", "work", "instruction", "discipline", "focus", "effort"],
-    relatedTerms: ["discipline", "work", "diligence", "focus", "effort"],
-    avoidIfMissing: ["discipline", "work", "diligence"],
   },
 ];
 
 function normalize(input: string): string {
-  return input
-    .toLowerCase()
-    .replace(/[^\w\s]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+  return input.toLowerCase().replace(/[^\w\s']/g, " ").replace(/\s+/g, " ").trim();
 }
 
 function tokenize(input: string): string[] {
-  return normalize(input).split(" ").filter(Boolean);
+  return normalize(input)
+    .split(" ")
+    .map((t) => t.trim())
+    .filter((t) => t.length > 1 && !STOPWORDS.has(t));
 }
 
-function scoreTextMatch(haystack: string, needles: string[], points = 1): number {
-  let score = 0;
-  for (const needle of needles) {
-    if (haystack.includes(needle)) score += points;
-  }
-  return score;
-}
-
-function uniqueByRef<T extends SearchableItem>(items: T[]): T[] {
-  const seen = new Set<string>();
-  const out: T[] = [];
-  for (const item of items) {
-    if (seen.has(item.ref)) continue;
-    seen.add(item.ref);
-    out.push(item);
-  }
-  return out;
-}
-
-export function detectIntent(query: string): IntentBucket[] {
+function findMatchingLanes(query: string): IntentLane[] {
   const q = normalize(query);
-  if (!q) return [];
+  const words = tokenize(query);
 
-  return INTENT_MAP.filter((intent) =>
-    intent.patterns.some((pattern) => q.includes(normalize(pattern)))
-  );
-}
-
-function expandedTerms(query: string): string[] {
-  const q = normalize(query);
-  const tokens = new Set<string>(tokenize(q));
-
-  for (const intent of detectIntent(q)) {
-    tokens.add(intent.name);
-    for (const topic of intent.boostTopics) tokens.add(normalize(topic));
-    for (const keyword of intent.boostKeywords) tokens.add(normalize(keyword));
-    for (const term of intent.relatedTerms) tokens.add(normalize(term));
-  }
-
-  const STOPWORDS = new Set([
-    "i",
-    "am",
-    "im",
-    "ive",
-    "me",
-    "my",
-    "the",
-    "a",
-    "an",
-    "and",
-    "or",
-    "to",
-    "for",
-    "of",
-    "in",
-    "on",
-    "at",
-    "is",
-    "are",
-    "be",
-    "feel",
-    "feeling",
-    "need",
-    "want",
-  ]);
-
-  return Array.from(tokens).filter(
-    (t) => t && t.length > 2 && !STOPWORDS.has(t)
-  );
-}
-
-export function rankByIntent<T extends SearchableItem>(items: T[], query: string): T[] {
-  const q = normalize(query);
-  if (!q) return items;
-
-  const matchedIntents = detectIntent(q);
-  const expanded = expandedTerms(q);
-
-  const ranked = items
-    .map((item) => {
-   const topicText = normalize((item.topics || []).join(" "));
-const keywordText = normalize((item.keywords || []).join(" "));
-const tagText = normalize((item.tags || []).join(" "));
-const textText = normalize(
-  [item.title || "", item.text || "", item.body || "", item.ref || ""].join(" ")
-);
-
-      let score = 0;
-
-      const qWords = tokenize(q);
-
-     score += scoreTextMatch(textText, qWords, 2);
-score += scoreTextMatch(topicText, qWords, 5);
-score += scoreTextMatch(keywordText, qWords, 6);
-score += scoreTextMatch(tagText, qWords, 8);
-
-if (textText.includes(q)) score += 12;
-if (topicText.includes(q)) score += 18;
-if (keywordText.includes(q)) score += 20;
-if (tagText.includes(q)) score += 24;
-
-score += scoreTextMatch(textText, expanded, 4);
-score += scoreTextMatch(topicText, expanded, 10);
-score += scoreTextMatch(keywordText, expanded, 12);
-score += scoreTextMatch(tagText, expanded, 16);
-
-      for (const intent of matchedIntents) {
-     const topicHits = scoreTextMatch(topicText, intent.boostTopics.map(normalize), 20);
-const keywordHits = scoreTextMatch(keywordText, intent.boostKeywords.map(normalize), 22);
-const tagHits = scoreTextMatch(
-  tagText,
-  [...intent.boostTopics, ...intent.boostKeywords, ...intent.relatedTerms].map(normalize),
-  24
-);
-const relatedHits = scoreTextMatch(textText, intent.relatedTerms.map(normalize), 8);
-
-score += topicHits + keywordHits + tagHits + relatedHits;
-
-        if (
-          intent.avoidIfMissing &&
-          !intent.avoidIfMissing.some((term) => {
-            const n = normalize(term);
-        return (
-  topicText.includes(n) ||
-  keywordText.includes(n) ||
-  tagText.includes(n) ||
-  textText.includes(n)
-);
-          })
-        ) {
-          score -= 18;
-        }
-      }
-
-      if (matchedIntents.length > 0) score += 8;
-
-      return { item, score };
+  return INTENT_LANES.filter((lane) =>
+    lane.terms.some((term) => {
+      const t = normalize(term);
+      return q.includes(t) || words.includes(t);
     })
-    .filter((x) => x.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .map((x) => x.item);
+  );
+}
 
-  return uniqueByRef(ranked);
+export function expandSmartTerms(query: string): string[] {
+  const baseWords = tokenize(query);
+  const matchedLanes = findMatchingLanes(query);
+
+  const expanded = new Set<string>(baseWords);
+
+  for (const lane of matchedLanes) {
+    expanded.add(lane.name);
+    for (const term of lane.terms) {
+      const normalized = normalize(term);
+      if (normalized && normalized.length > 2) {
+        expanded.add(normalized);
+      }
+    }
+  }
+
+  return Array.from(expanded);
+}
+
+export function detectIntentLane(query: string): string | null {
+  const matched = findMatchingLanes(query);
+  if (matched.length === 0) return null;
+  return matched[0].name;
 }
 
 export function smartSearch<T extends SearchableItem>(items: T[], query: string): T[] {
   const q = normalize(query);
   if (!q) return items;
 
-  const ranked = rankByIntent(items, q);
+  const expanded = expandSmartTerms(query);
+  const lane = detectIntentLane(query);
 
-  const strong = ranked.filter((item) => {
-  const blob = normalize(
-  [
-    item.title || "",
-    item.text || "",
-    item.body || "",
-    (item.topics || []).join(" "),
-    (item.keywords || []).join(" "),
-    (item.tags || []).join(" "),
-  ].join(" ")
-); 
+  const scored = items.map((item) => {
+    let score = 0;
 
-    const intents = detectIntent(q);
-    const expanded = expandedTerms(q);
-    const qWords = tokenize(q);
+    const title = normalize(item.title || "");
+    const body = normalize(item.body || item.text || "");
+    const tags = (item.tags || []).map(normalize);
+    const keywords = (item.keywords || []).map(normalize);
+    const topics = (item.topics || []).map(normalize);
+    const intentTags = (item.intentTags || []).map(normalize);
+    const moodTags = (item.moodTags || []).map(normalize);
 
-    const directHit = qWords.some((word) => blob.includes(word));
-    const expandedHit = expanded.some((term) => blob.includes(term));
-    const intentHit = intents.some((intent) =>
-      [...intent.boostTopics, ...intent.boostKeywords, ...intent.relatedTerms].some((term) =>
-        blob.includes(normalize(term))
-      )
-    );
+    if (title.includes(q)) score += 10;
+    if (body.includes(q)) score += 8;
 
-    return directHit || expandedHit || intentHit;
+    for (const term of expanded) {
+      if (title.includes(term)) score += 6;
+      if (body.includes(term)) score += 4;
+      if (tags.includes(term)) score += 5;
+      if (keywords.includes(term)) score += 5;
+      if (topics.includes(term)) score += 5;
+      if (intentTags.includes(term)) score += 7;
+      if (moodTags.includes(term)) score += 6;
+    }
+
+    if (lane) {
+      if (topics.includes(lane)) score += 8;
+      if (intentTags.includes(lane)) score += 10;
+      if (moodTags.includes(lane)) score += 8;
+      if (tags.includes(lane)) score += 7;
+      if (keywords.includes(lane)) score += 7;
+    }
+
+    return { item, score };
   });
 
-  return strong.length > 0 ? strong.slice(0, 12) : ranked.slice(0, 12);
+  return scored
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map((x) => x.item);
 }
