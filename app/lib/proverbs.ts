@@ -1,5 +1,7 @@
 // app/lib/proverbs.ts
 
+import { detectSituation } from "./situations";
+
 export type ProverbEntry = {
   ref: string;
   title: string;
@@ -719,9 +721,24 @@ export function getRelatedProverbs(
     .map((x) => x.item);
 }
 
+function countMatches(source: string[], targets: string[]): number {
+  let hits = 0;
+
+  for (const target of targets) {
+    if (source.includes(normalizeText(target))) hits += 1;
+  }
+
+  return hits;
+}
+
+function hasAny(source: string[], targets: string[]): boolean {
+  return countMatches(source, targets) > 0;
+}
+
 function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResult {
   const normalizedQuery = normalizeText(query);
   const tokens = expandQuery(query);
+  const situation = detectSituation(query);
 
   const title = normalizeText(item.title);
   const text = normalizeText(item.text);
@@ -842,6 +859,7 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     }
   }
 
+  // Leadership stays lighter so workplace conflict does not get overshadowed
   if (
     normalizedQuery.includes("boss") ||
     normalizedQuery.includes("team") ||
@@ -850,7 +868,7 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     normalizedQuery.includes("supervisor")
   ) {
     if (intentTags.includes("leadership")) {
-      score += 18;
+      score += 8;
       why.push("leadership lane");
     }
   }
@@ -905,6 +923,122 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
       score += 4;
       why.push(`ref:${token}`);
     }
+  }
+
+  // Situation Router boosts
+  const topicHits = countMatches(topics, situation.boostTopics);
+  const intentHits = countMatches(intentTags, situation.boostIntentTags);
+  const moodHits = countMatches(moodTags, situation.boostMoodTags);
+
+  if (topicHits > 0) {
+    score += topicHits * 6;
+    why.push("situation topics");
+  }
+
+  if (intentHits > 0) {
+    score += intentHits * 7;
+    why.push("situation intent");
+  }
+
+  if (moodHits > 0) {
+    score += moodHits * 4;
+    why.push("situation mood");
+  }
+
+  if (
+    situation.types.includes("workplace_conflict") &&
+    (
+      hasAny(intentTags, ["relationships", "anger"]) ||
+      hasAny(topics, ["speech", "wisdom", "self-control", "gentleness", "peace"]) ||
+      hasAny(keywords, ["response", "conflict", "gentle answer", "restraint", "difficult boss"])
+    )
+  ) {
+    score += 24;
+    why.push("matched workplace conflict");
+  }
+
+  if (
+    situation.types.includes("difficult_person") &&
+    (
+      hasAny(topics, ["patience", "self-control", "wisdom", "speech", "gentleness"]) ||
+      hasAny(intentTags, ["anger", "relationships"]) ||
+      hasAny(keywords, ["difficult person", "restraint", "gentle answer", "response"])
+    )
+  ) {
+    score += 24;
+    why.push("matched difficult person");
+  }
+
+  if (
+    situation.types.includes("rejection") &&
+    (
+      hasAny(topics, ["friendship", "love", "encouragement", "confidence"]) ||
+      hasAny(intentTags, ["lonely", "relationships"]) ||
+      hasAny(keywords, ["rejected", "alone", "friend", "support"])
+    )
+  ) {
+    score += 18;
+    why.push("matched rejection");
+  }
+
+  if (
+    situation.types.includes("burnout") &&
+    (
+      hasAny(topics, ["strength", "hope", "peace", "rest"]) ||
+      hasAny(intentTags, ["discouraged", "strength", "hope"]) ||
+      hasAny(moodTags, ["weary", "tired", "drained"])
+    )
+  ) {
+    score += 18;
+    why.push("matched burnout");
+  }
+
+  if (
+    situation.types.includes("confusion") &&
+    (
+      hasAny(topics, ["direction", "guidance", "wisdom", "clarity", "plans", "purpose"]) ||
+      hasAny(intentTags, ["direction", "guidance", "decision", "trust"]) ||
+      hasAny(keywords, ["clarity", "direction", "decision", "counsel", "path"])
+    )
+  ) {
+    score += 18;
+    why.push("matched confusion");
+  }
+
+  if (
+    situation.types.includes("financial_pressure") &&
+    (
+      hasAny(topics, ["money", "work", "planning", "diligence", "stewardship", "debt"]) ||
+      hasAny(intentTags, ["money", "work", "stewardship"]) ||
+      hasAny(keywords, ["money", "debt", "bills", "budget", "finances"])
+    )
+  ) {
+    score += 18;
+    why.push("matched financial pressure");
+  }
+
+  if (
+    situation.types.includes("fear_anxiety") &&
+    (
+      hasAny(topics, ["fear", "peace", "trust", "safety", "protection", "rest"]) ||
+      hasAny(intentTags, ["fear", "peace", "trust", "comfort"]) ||
+      hasAny(moodTags, ["anxious", "afraid", "restless"])
+    )
+  ) {
+    score += 18;
+    why.push("matched fear/anxiety");
+  }
+
+  if (
+    situation.types.includes("loneliness") &&
+    (
+      hasAny(topics, ["friendship", "relationships", "encouragement", "love", "counsel"]) ||
+      hasAny(intentTags, ["lonely", "relationships", "friendship", "comfort"]) ||
+      hasAny(moodTags, ["alone", "isolated", "unseen"])
+    )
+  ) {
+    score += 18;
+    why.push("matched loneliness");
   }
 
   // Special boosts for difficult people / conflict searches
