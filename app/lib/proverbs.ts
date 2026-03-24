@@ -945,17 +945,26 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     why.push("situation mood");
   }
 
+ if (situation.types.includes("workplace_conflict")) {
+  // STRONG preference for response-based wisdom
   if (
-    situation.types.includes("workplace_conflict") &&
-    (
-      hasAny(intentTags, ["relationships", "anger"]) ||
-      hasAny(topics, ["speech", "wisdom", "self-control", "gentleness", "peace"]) ||
-      hasAny(keywords, ["response", "conflict", "gentle answer", "restraint", "difficult boss"])
-    )
+    hasAny(topics, ["speech", "self-control", "gentleness"]) ||
+    hasAny(keywords, ["response", "gentle answer", "restraint"]) ||
+    hasAny(intentTags, ["anger", "relationships"])
   ) {
-    score += 24;
-    why.push("matched workplace conflict");
+    score += 30;
+    why.push("conflict response wisdom");
   }
+
+  // SECONDARY: general wisdom (lower weight)
+  else if (
+    hasAny(topics, ["wisdom", "peace"]) ||
+    hasAny(intentTags, ["wisdom"])
+  ) {
+    score += 10;
+    why.push("general wisdom (conflict)");
+  }
+}
 
   if (
     situation.types.includes("difficult_person") &&
