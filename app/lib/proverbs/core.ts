@@ -3,10 +3,6 @@
 import { createProverb, type ProverbEntry } from "./shared";
 
 export const CORE_PROVERBS: ProverbEntry[] = [
-  // paste your CURRENT proverb entries here 
-  // app/lib/proverbs/core.ts
-
-import { createProverb, type ProverbEntry } from "./shared";
  createProverb(
     "Proverbs 17:22",
     "Healing for a wounded heart",
@@ -399,8 +395,6 @@ import { createProverb, type ProverbEntry } from "./shared";
     ["hurting", "healing"],
     ["stuck", "ashamed"]
   ),
-
-];
 
 ];
 
