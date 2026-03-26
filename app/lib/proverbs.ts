@@ -1,7 +1,7 @@
 // app/lib/proverbs.ts
 
 import { detectSituation } from "./situations";
-import { PROVERBS } from "./proverbs";
+import { PROVERBS } from "./proverbs/index";
 import {
   normalizeText,
   uniq,
