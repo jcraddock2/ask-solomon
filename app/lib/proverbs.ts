@@ -47,6 +47,8 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "left out",
     "nobody sees me",
     "nobody understands me",
+    "invisible",
+    "ignored",
   ],
   discouraged: [
     "discouraged",
@@ -66,6 +68,8 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "stuck",
     "exhausted",
     "worn out",
+    "failing",
+    "failure",
   ],
   direction: [
     "direction",
@@ -73,6 +77,7 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "clarity",
     "path",
     "decision",
+    "decisions",
     "counsel",
     "understanding",
     "wisdom",
@@ -83,6 +88,8 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "lost",
     "discernment",
     "what should i do",
+    "bad decisions",
+    "good judgment",
   ],
   money: [
     "money",
@@ -118,6 +125,9 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "panic",
     "stress",
     "uneasy",
+    "pressure",
+    "peace of mind",
+    "peace in my mind",
   ],
   anger: [
     "anger",
@@ -158,6 +168,9 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "hard person",
     "unfair",
     "unfair treatment",
+    "talks down to me",
+    "disrespected",
+    "dishonor",
   ],
   leadership: [
     "leader",
@@ -208,6 +221,26 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "motivated",
     "lazy",
     "effort",
+    "procrastinating",
+    "procrastination",
+    "failing",
+    "failure",
+  ],
+  confidence: [
+    "confidence",
+    "courage",
+    "boldness",
+    "secure",
+    "strength",
+    "identity",
+    "fearless",
+    "steady",
+    "not ashamed",
+    "worth",
+    "dignity",
+    "approval",
+    "rejection",
+    "invisible",
   ],
 };
 
@@ -226,20 +259,28 @@ const WORD_ALIASES: Record<string, string[]> = {
   lazy: ["discipline", "diligence", "effort", "work", "success"],
   productive: ["productivity", "success", "work", "discipline"],
   productivity: ["productive", "success", "work", "discipline"],
-
-  wealthy: ["money", "prosperity", "finance"],
-  broke: ["money", "financial", "poverty", "bills"],
-  rich: ["money", "prosperity", "wealth"],
+  procrastinating: ["procrastination", "lazy", "discipline", "diligence", "effort"],
+  procrastination: ["procrastinating", "lazy", "discipline", "diligence", "effort"],
+  failing: ["failure", "discouraged", "success", "growth"],
+  failure: ["failing", "discouraged", "success", "growth"],
 
   anxious: ["anxiety", "fear", "worry", "worried"],
   worried: ["worry", "fear", "anxiety", "anxious"],
   afraid: ["fear", "anxiety", "worry"],
+  pressure: ["stress", "overwhelmed", "fear", "responsibility"],
 
   angry: ["anger", "conflict", "frustration"],
   frustrated: ["anger", "conflict", "stress", "tension"],
 
   directionless: ["direction", "guidance", "clarity"],
   lost: ["direction", "guidance", "clarity", "confused"],
+  decisions: ["decision", "wisdom", "guidance", "clarity"],
+  decision: ["decisions", "wisdom", "guidance", "clarity"],
+
+  invisible: ["lonely", "rejected", "unseen", "ignored", "confidence"],
+  rejected: ["lonely", "invisible", "unseen", "confidence"],
+  confidence: ["courage", "boldness", "strength", "secure"],
+  courage: ["confidence", "boldness", "strength"],
 
   boss: ["leadership", "manager", "supervisor", "authority", "workplace"],
   manager: ["leadership", "boss", "supervisor", "authority", "workplace"],
@@ -286,6 +327,8 @@ function tokenizeQuery(query: string): string[] {
     "would",
     "just",
     "really",
+    "keep",
+    "stop",
   ]);
 
   return normalizeText(query)
@@ -330,11 +373,11 @@ function expandQuery(query: string): string[] {
       "discouraged",
     ],
     [
-      ["anxious", "overwhelmed", "panic", "worried", "afraid", "stressed"],
+      ["anxious", "overwhelmed", "panic", "worried", "afraid", "stressed", "peace in my mind", "peace of mind", "under pressure"],
       "fear",
     ],
     [
-      ["relationship conflict", "difficult person", "difficult boss", "argument", "tension", "hard to deal with"],
+      ["relationship conflict", "difficult person", "difficult boss", "argument", "tension", "hard to deal with", "talks down to me", "disrespected"],
       "relationships",
     ],
     [
@@ -342,11 +385,11 @@ function expandQuery(query: string): string[] {
       "anger",
     ],
     [
-      ["leadership pressure", "leading people", "team pressure", "as a leader", "boss", "manager", "supervisor"],
+      ["leadership pressure", "leading people", "team pressure", "as a leader", "boss", "manager", "supervisor", "under pressure"],
       "leadership",
     ],
     [
-      ["unfair treatment", "treated unfairly", "not respected", "work conflict"],
+      ["unfair treatment", "treated unfairly", "not respected", "work conflict", "talks down to me"],
       "relationships",
     ],
     [
@@ -363,8 +406,31 @@ function expandQuery(query: string): string[] {
         "i want to advance",
         "i want to do better",
         "i want progress",
+        "stop procrastinating",
+        "tired of failing",
       ],
       "success",
+    ],
+    [
+      [
+        "i need confidence",
+        "i feel invisible",
+        "i feel rejected",
+        "i need courage",
+        "i need boldness",
+        "i feel small",
+        "i feel insecure",
+      ],
+      "confidence",
+    ],
+    [
+      [
+        "bad decisions",
+        "keep making bad decisions",
+        "i keep making bad decisions",
+        "need good judgment",
+      ],
+      "direction",
     ],
   ];
 
@@ -373,30 +439,6 @@ function expandQuery(query: string): string[] {
       INTENT_EXPANSIONS[lane].forEach((x) => expanded.add(x));
       expanded.add(lane);
     }
-  }
-
-  if (normalized.includes("want to be successful")) {
-    ["success", "successful", "achievement", "progress", "discipline", "work", "growth"].forEach((x) =>
-      expanded.add(x)
-    );
-  }
-
-  if (normalized.includes("how do i succeed") || normalized.includes("how to succeed")) {
-    ["success", "successful", "achievement", "discipline", "direction", "wisdom"].forEach((x) =>
-      expanded.add(x)
-    );
-  }
-
-  if (normalized.includes("i need motivation") || normalized.includes("need motivation")) {
-    ["motivation", "motivated", "discipline", "effort", "success", "growth"].forEach((x) =>
-      expanded.add(x)
-    );
-  }
-
-  if (normalized.includes("i feel lazy") || normalized.includes("im lazy") || normalized.includes("i am lazy")) {
-    ["lazy", "discipline", "diligence", "effort", "work", "success"].forEach((x) =>
-      expanded.add(x)
-    );
   }
 
   return Array.from(expanded);
@@ -495,7 +537,8 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     normalizedQuery.includes("abandoned") ||
     normalizedQuery.includes("rejected") ||
     normalizedQuery.includes("unseen") ||
-    normalizedQuery.includes("left out")
+    normalizedQuery.includes("left out") ||
+    normalizedQuery.includes("invisible")
   ) {
     if (intentTags.includes("lonely")) {
       score += 22;
@@ -509,7 +552,8 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     normalizedQuery.includes("burnt out") ||
     normalizedQuery.includes("stuck") ||
     normalizedQuery.includes("drained") ||
-    normalizedQuery.includes("exhausted")
+    normalizedQuery.includes("exhausted") ||
+    normalizedQuery.includes("failing")
   ) {
     if (intentTags.includes("discouraged")) {
       score += 22;
@@ -522,24 +566,12 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     normalizedQuery.includes("clarity") ||
     normalizedQuery.includes("what should i do") ||
     normalizedQuery.includes("lost") ||
-    normalizedQuery.includes("confused")
+    normalizedQuery.includes("confused") ||
+    normalizedQuery.includes("decision")
   ) {
     if (intentTags.includes("direction")) {
       score += 22;
       why.push("direction lane");
-    }
-  }
-
-  if (
-    normalizedQuery.includes("money") ||
-    normalizedQuery.includes("bills") ||
-    normalizedQuery.includes("debt") ||
-    normalizedQuery.includes("broke") ||
-    normalizedQuery.includes("financial")
-  ) {
-    if (intentTags.includes("money")) {
-      score += 22;
-      why.push("money lane");
     }
   }
 
@@ -549,24 +581,13 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     normalizedQuery.includes("anxious") ||
     normalizedQuery.includes("worried") ||
     normalizedQuery.includes("overwhelmed") ||
-    normalizedQuery.includes("panic")
+    normalizedQuery.includes("panic") ||
+    normalizedQuery.includes("pressure") ||
+    normalizedQuery.includes("peace in my mind")
   ) {
     if (intentTags.includes("fear")) {
       score += 22;
       why.push("fear lane");
-    }
-  }
-
-  if (
-    normalizedQuery.includes("angry") ||
-    normalizedQuery.includes("frustrated") ||
-    normalizedQuery.includes("resentful") ||
-    normalizedQuery.includes("bitter") ||
-    normalizedQuery.includes("offended")
-  ) {
-    if (intentTags.includes("anger")) {
-      score += 22;
-      why.push("anger lane");
     }
   }
 
@@ -590,7 +611,9 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     normalizedQuery.includes("unfair treatment") ||
     normalizedQuery.includes("argument") ||
     normalizedQuery.includes("conflict") ||
-    normalizedQuery.includes("tension")
+    normalizedQuery.includes("tension") ||
+    normalizedQuery.includes("talks down to me") ||
+    normalizedQuery.includes("disrespected")
   ) {
     if (intentTags.includes("relationships") || intentTags.includes("anger")) {
       score += 26;
@@ -605,12 +628,26 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     normalizedQuery.includes("motivation") ||
     normalizedQuery.includes("lazy") ||
     normalizedQuery.includes("discipline") ||
-    normalizedQuery.includes("improve") ||
-    normalizedQuery.includes("progress")
+    normalizedQuery.includes("procrastinating") ||
+    normalizedQuery.includes("failing")
   ) {
     if (intentTags.includes("success")) {
       score += 24;
       why.push("success lane");
+    }
+  }
+
+  if (
+    normalizedQuery.includes("confidence") ||
+    normalizedQuery.includes("courage") ||
+    normalizedQuery.includes("boldness") ||
+    normalizedQuery.includes("invisible") ||
+    normalizedQuery.includes("rejected") ||
+    normalizedQuery.includes("insecure")
+  ) {
+    if (intentTags.includes("confidence")) {
+      score += 24;
+      why.push("confidence lane");
     }
   }
 
@@ -670,160 +707,6 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     why.push("situation mood");
   }
 
-  if (situation.types.includes("workplace_conflict")) {
-    if (
-      hasAny(topics, ["speech", "self-control", "gentleness"]) ||
-      hasAny(keywords, ["response", "gentle answer", "restraint"]) ||
-      hasAny(intentTags, ["anger", "relationships"])
-    ) {
-      score += 30;
-      why.push("conflict response wisdom");
-    } else if (
-      hasAny(topics, ["wisdom", "peace"]) ||
-      hasAny(intentTags, ["wisdom"])
-    ) {
-      score += 10;
-      why.push("general wisdom (conflict)");
-    }
-  }
-
-  if (
-    situation.types.includes("difficult_person") &&
-    (
-      hasAny(topics, ["patience", "self-control", "wisdom", "speech", "gentleness"]) ||
-      hasAny(intentTags, ["anger", "relationships"]) ||
-      hasAny(keywords, ["difficult person", "restraint", "gentle answer", "response"])
-    )
-  ) {
-    score += 24;
-    why.push("matched difficult person");
-  }
-
-  if (situation.types.includes("fear_anxiety")) {
-    if (
-      hasAny(topics, ["peace", "trust", "rest", "safety", "protection"]) ||
-      hasAny(intentTags, ["fear", "peace", "trust", "comfort"]) ||
-      hasAny(moodTags, ["anxious", "afraid", "restless", "troubled"])
-    ) {
-      score += 28;
-      why.push("fear peace lane");
-    } else if (
-      hasAny(topics, ["strength", "wisdom"]) ||
-      hasAny(intentTags, ["hope"])
-    ) {
-      score += 10;
-      why.push("general support (fear)");
-    }
-  }
-
-  if (situation.types.includes("confusion")) {
-    if (
-      hasAny(topics, ["direction", "guidance", "clarity", "plans", "purpose"]) ||
-      hasAny(intentTags, ["direction", "guidance", "decision", "trust"]) ||
-      hasAny(keywords, ["direction", "clarity", "decision", "counsel", "path", "next step"])
-    ) {
-      score += 28;
-      why.push("clarity direction lane");
-    } else if (
-      hasAny(topics, ["wisdom", "understanding"]) ||
-      hasAny(intentTags, ["wisdom"])
-    ) {
-      score += 10;
-      why.push("general wisdom (direction)");
-    }
-  }
-
-  if (situation.types.includes("financial_pressure")) {
-    if (
-      hasAny(topics, ["money", "planning", "diligence", "stewardship", "debt", "work"]) ||
-      hasAny(intentTags, ["money", "work", "stewardship"]) ||
-      hasAny(keywords, ["money", "debt", "bills", "budget", "finances", "provision"])
-    ) {
-      score += 28;
-      why.push("financial wisdom lane");
-    } else if (
-      hasAny(topics, ["trust", "peace", "hope"]) ||
-      hasAny(intentTags, ["trust", "comfort"])
-    ) {
-      score += 10;
-      why.push("general support (money)");
-    }
-  }
-
-  if (
-    situation.types.includes("loneliness") ||
-    situation.types.includes("rejection")
-  ) {
-    if (
-      hasAny(topics, ["friendship", "relationships", "love", "encouragement", "counsel"]) ||
-      hasAny(intentTags, ["lonely", "relationships", "friendship", "comfort"]) ||
-      hasAny(moodTags, ["alone", "isolated", "unseen"])
-    ) {
-      score += 28;
-      why.push("comfort companionship lane");
-    } else if (
-      hasAny(topics, ["direction", "growth", "strength"]) ||
-      hasAny(intentTags, ["wisdom"])
-    ) {
-      score += 10;
-      why.push("general support (lonely)");
-    }
-  }
-
-  if (situation.types.includes("burnout")) {
-    if (
-      hasAny(topics, ["strength", "hope", "peace", "rest"]) ||
-      hasAny(intentTags, ["discouraged", "strength", "hope"]) ||
-      hasAny(moodTags, ["weary", "tired", "drained"])
-    ) {
-      score += 28;
-      why.push("renewal strength lane");
-    } else if (
-      hasAny(topics, ["direction", "wisdom"]) ||
-      hasAny(intentTags, ["guidance"])
-    ) {
-      score += 10;
-      why.push("general support (burnout)");
-    }
-  }
-
-  if (
-    normalizedQuery.includes("boss") ||
-    normalizedQuery.includes("difficult") ||
-    normalizedQuery.includes("conflict") ||
-    normalizedQuery.includes("frustrated")
-  ) {
-    if (
-      keywords.includes("difficult boss") ||
-      keywords.includes("difficult person") ||
-      keywords.includes("gentle answer") ||
-      keywords.includes("restraint") ||
-      keywords.includes("response") ||
-      keywords.includes("conflict")
-    ) {
-      score += 18;
-      why.push("workable conflict wisdom");
-    }
-  }
-
-  if (
-    normalizedQuery.includes("successful") ||
-    normalizedQuery.includes("success") ||
-    normalizedQuery.includes("succeed") ||
-    normalizedQuery.includes("motivation") ||
-    normalizedQuery.includes("lazy") ||
-    normalizedQuery.includes("discipline")
-  ) {
-    if (
-      hasAny(topics, ["success", "discipline", "work", "diligence", "planning", "growth"]) ||
-      hasAny(intentTags, ["success", "direction"]) ||
-      hasAny(keywords, ["success", "successful", "motivation", "discipline", "diligence", "work", "goals"])
-    ) {
-      score += 26;
-      why.push("growth success wisdom");
-    }
-  }
-
   const specificHits = tokens.filter(
     (token) =>
       keywords.includes(token) ||
@@ -845,7 +728,11 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
 
   if (score === 0) {
     const softTokens = tokens.filter(
-      (token) => title.includes(token) || text.includes(token) || keywords.includes(token) || topics.includes(token)
+      (token) =>
+        title.includes(token) ||
+        text.includes(token) ||
+        keywords.includes(token) ||
+        topics.includes(token)
     );
 
     if (softTokens.length >= 2) {
