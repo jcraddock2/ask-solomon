@@ -559,5 +559,84 @@ createProverb(
   ["discouraged", "comparison"],
   ["behind", "heavy", "discouraged"]
 ),
+  createProverb(
+  "Proverbs 3:21-22",
+  "Sound Judgment Builds Confidence",
+  "My son, do not let wisdom and understanding out of your sight, preserve sound judgment and discretion; they will be life for you and grace to your neck.",
+  ["confidence", "judgment", "wisdom", "dignity"],
+  ["second guessing", "judgment", "confidence", "discretion", "uncertain", "unsure"],
+  ["confidence", "direction", "comparison"],
+  ["unsure", "hesitant", "insecure"]
+),
+
+createProverb(
+  "Proverbs 4:25-27",
+  "Stay Focused and Keep Moving Forward",
+  "Let your eyes look straight ahead; fix your gaze directly before you. Give careful thought to the paths for your feet and be steadfast in all your ways.",
+  ["progress", "focus", "direction", "discipline"],
+  ["behind in life", "behind", "progress", "forward", "focus", "direction"],
+  ["success", "direction", "comparison"],
+  ["behind", "stuck", "uncertain"]
+),
+
+createProverb(
+  "Proverbs 13:12",
+  "Delay Does Not Mean Defeat",
+  "Hope deferred makes the heart sick, but a longing fulfilled is a tree of life.",
+  ["hope", "delay", "discouragement", "healing"],
+  ["behind in life", "delay", "waiting", "behind", "discouraged", "hope deferred"],
+  ["discouraged", "comparison"],
+  ["behind", "heavy", "discouraged"]
+),
+
+createProverb(
+  "Proverbs 14:15",
+  "Wise People Slow Down and Discern",
+  "The simple believe anything, but the prudent give thought to their steps.",
+  ["discernment", "judgment", "wisdom", "direction"],
+  ["second guessing", "bad decisions", "judgment", "discernment", "careful", "steps"],
+  ["direction", "confidence", "comparison"],
+  ["unsure", "uncertain", "hesitant"]
+),
+
+createProverb(
+  "Proverbs 16:3",
+  "Commit Your Way and Gain Stability",
+  "Commit to the Lord whatever you do, and he will establish your plans.",
+  ["direction", "stability", "success", "trust"],
+  ["uncertain", "plans", "stability", "direction", "future", "progress"],
+  ["direction", "success", "confidence"],
+  ["unsure", "uncertain", "behind"]
+),
+
+createProverb(
+  "Proverbs 22:1",
+  "A Good Name Matters More Than Status",
+  "A good name is more desirable than great riches; to be esteemed is better than silver or gold.",
+  ["respect", "honor", "character", "dignity"],
+  ["respected", "respect", "esteem", "honor", "good name", "dignity"],
+  ["respect", "confidence"],
+  ["dishonored", "overlooked", "small"]
+),
+
+createProverb(
+  "Proverbs 12:8",
+  "Good Judgment Earns Respect",
+  "A person is praised according to their prudence, and one with a warped mind is despised.",
+  ["respect", "prudence", "wisdom", "honor"],
+  ["respected", "respect", "praised", "prudence", "honor", "good judgment"],
+  ["respect", "confidence", "direction"],
+  ["overlooked", "small", "unsure"]
+),
+
+createProverb(
+  "Proverbs 15:33",
+  "Humility Comes Before Honor",
+  "Wisdom’s instruction is to fear the Lord, and humility comes before honor.",
+  ["honor", "humility", "wisdom", "respect"],
+  ["honor", "respected", "respect", "humility", "esteem", "dignity"],
+  ["respect", "confidence"],
+  ["small", "ignored", "overlooked"]
+),
 ];
 
