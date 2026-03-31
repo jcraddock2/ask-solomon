@@ -461,5 +461,64 @@ createProverb(
   ["relationships"],
   ["confused", "hurt"]
 ),
+  createProverb(
+  "Proverbs 3:26",
+  "You Can Stand Steady Under Pressure",
+  "For the Lord will be at your side and will keep your foot from being snared.",
+  ["confidence", "peace", "protection", "stability"],
+  ["pressure", "confidence", "peace of mind", "steady", "fear", "safety"],
+  ["fear", "confidence"],
+  ["pressured", "anxious", "shaken"]
+),
+
+createProverb(
+  "Proverbs 4:23",
+  "Guard Your Inner Life",
+  "Above all else, guard your heart, for everything you do flows from it.",
+  ["peace", "wisdom", "inner life", "self-control"],
+  ["peace in my mind", "mind", "heart", "thoughts", "inner peace", "guard"],
+  ["fear", "direction"],
+  ["troubled", "uneasy", "overwhelmed"]
+),
+
+createProverb(
+  "Proverbs 3:5-6",
+  "Trust Brings Clear Direction",
+  "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.",
+  ["direction", "guidance", "clarity", "trust"],
+  ["bad decisions", "decision", "guidance", "clarity", "path", "next step"],
+  ["direction"],
+  ["confused", "uncertain", "seeking"]
+),
+
+createProverb(
+  "Proverbs 6:6-8",
+  "Learn Diligence and Stop Delaying",
+  "Go to the ant, you sluggard; consider its ways and be wise.",
+  ["discipline", "diligence", "wisdom", "success"],
+  ["procrastinating", "procrastination", "lazy", "discipline", "effort", "delay"],
+  ["success"],
+  ["stuck", "unmotivated"]
+),
+
+createProverb(
+  "Proverbs 4:25-27",
+  "Stay Focused and Keep Moving Forward",
+  "Let your eyes look straight ahead; fix your gaze directly before you. Give careful thought to the paths for your feet and be steadfast in all your ways.",
+  ["focus", "discipline", "direction", "success"],
+  ["focus", "procrastinating", "progress", "direction", "discipline", "forward"],
+  ["success", "direction"],
+  ["distracted", "stuck", "uncertain"]
+),
+
+createProverb(
+  "Proverbs 3:21-22",
+  "Wisdom Makes You Walk With Confidence",
+  "My son, do not let wisdom and understanding out of your sight, preserve sound judgment and discretion; they will be life for you and an ornament to grace your neck.",
+  ["confidence", "wisdom", "judgment", "dignity"],
+  ["confidence", "bad decisions", "judgment", "wisdom", "dignity", "grace"],
+  ["confidence", "direction"],
+  ["unsure", "insecure"]
+),
 ];
 
