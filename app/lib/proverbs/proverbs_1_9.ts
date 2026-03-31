@@ -411,6 +411,55 @@ createProverb(
   ["fake", "two-faced", "trust", "betrayal", "coworker"],
   ["relationships"],
   ["confused", "hurt"]
+), 
+  createProverb(
+  "Proverbs 16:7",
+  "When God Is Pleased, Even Enemies Shift",
+  "When a person’s ways please the Lord, he makes even their enemies live at peace with them.",
+  ["favor", "relationships", "conflict", "peace"],
+  ["enemy", "boss", "conflict", "tension", "relationship", "difficult people"],
+  ["relationships", "workplace conflict"],
+  ["frustrated", "opposed"]
+),
+
+createProverb(
+  "Proverbs 20:3",
+  "It Is Wise to Avoid Strife",
+  "It is to one’s honor to avoid strife, but every fool is quick to quarrel.",
+  ["wisdom", "conflict", "self-control"],
+  ["argument", "fight", "conflict", "drama", "work tension"],
+  ["anger", "relationships"],
+  ["angry", "triggered"]
+),
+
+createProverb(
+  "Proverbs 25:15",
+  "Patience Can Break Resistance",
+  "Through patience a ruler can be persuaded, and a gentle tongue can break a bone.",
+  ["patience", "influence", "leadership"],
+  ["boss", "authority", "leader", "persuasion", "difficult boss"],
+  ["leadership", "workplace conflict"],
+  ["frustrated", "powerless"]
+),
+
+createProverb(
+  "Proverbs 22:24-25",
+  "Do Not Absorb Toxic Anger",
+  "Do not make friends with a hot-tempered person, do not associate with one easily angered, or you may learn their ways.",
+  ["boundaries", "relationships", "wisdom"],
+  ["toxic", "angry person", "workplace", "bad energy"],
+  ["relationships", "anger"],
+  ["drained", "frustrated"]
+),
+
+createProverb(
+  "Proverbs 27:6",
+  "Wounds From Truth Are Better Than Fake Peace",
+  "Wounds from a friend can be trusted, but an enemy multiplies kisses.",
+  ["truth", "relationships", "discernment"],
+  ["fake", "two-faced", "trust", "betrayal", "coworker"],
+  ["relationships"],
+  ["confused", "hurt"]
 ),
 ];
 
