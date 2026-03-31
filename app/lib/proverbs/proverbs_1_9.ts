@@ -520,5 +520,44 @@ createProverb(
   ["confidence", "direction"],
   ["unsure", "insecure"]
 ),
+  createProverb(
+  "Proverbs 3:21-22",
+  "Wisdom Makes You Walk With Confidence",
+  "My son, do not let wisdom and understanding out of your sight, preserve sound judgment and discretion; they will be life for you and an ornament to grace your neck.",
+  ["confidence", "wisdom", "judgment", "dignity"],
+  ["confidence", "second guessing", "judgment", "wisdom", "dignity", "discretion"],
+  ["confidence", "direction", "comparison"],
+  ["unsure", "insecure", "hesitant"]
+),
+
+createProverb(
+  "Proverbs 4:25-27",
+  "Stay Steady and Keep Moving Forward",
+  "Let your eyes look straight ahead; fix your gaze directly before you. Give careful thought to the paths for your feet and be steadfast in all your ways.",
+  ["focus", "direction", "discipline", "progress"],
+  ["behind in life", "progress", "forward", "focus", "direction", "steady"],
+  ["success", "direction", "comparison"],
+  ["behind", "uncertain", "stuck"]
+),
+
+createProverb(
+  "Proverbs 14:15",
+  "Do Not Trust Every Impulse",
+  "The simple believe anything, but the prudent give thought to their steps.",
+  ["wisdom", "judgment", "discernment", "direction"],
+  ["second guessing", "bad decisions", "judgment", "discernment", "careful"],
+  ["direction", "confidence", "comparison"],
+  ["unsure", "uncertain"]
+),
+
+createProverb(
+  "Proverbs 13:12",
+  "Delayed Hope Can Hurt the Heart",
+  "Hope deferred makes the heart sick, but a longing fulfilled is a tree of life.",
+  ["hope", "discouragement", "delay", "healing"],
+  ["behind in life", "delay", "discouraged", "waiting", "behind", "hope deferred"],
+  ["discouraged", "comparison"],
+  ["behind", "heavy", "discouraged"]
+),
 ];
 
