@@ -14,6 +14,18 @@ export type ScoredProverbResult = {
   why: string[];
 };
 
+const GENERIC_TOKENS = new Set([
+  "life",
+  "wisdom",
+  "peace",
+  "hope",
+  "strength",
+  "guidance",
+  "good",
+  "better",
+  "right",
+]);
+
 const INTENT_EXPANSIONS: Record<string, string[]> = {
   hurting: [
     "hurting",
@@ -70,6 +82,7 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "worn out",
     "failing",
     "failure",
+    "behind",
   ],
   direction: [
     "direction",
@@ -225,6 +238,7 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "procrastination",
     "failing",
     "failure",
+    "behind",
   ],
   confidence: [
     "confidence",
@@ -241,6 +255,26 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "approval",
     "rejection",
     "invisible",
+    "self-doubt",
+    "unsure",
+    "hesitant",
+  ],
+  comparison: [
+    "behind",
+    "behind in life",
+    "falling behind",
+    "comparison",
+    "compare",
+    "comparing",
+    "not enough",
+    "late",
+    "progress",
+    "delay",
+    "self-doubt",
+    "second guessing",
+    "second guess",
+    "unsure",
+    "uncertain",
   ],
 };
 
@@ -281,6 +315,15 @@ const WORD_ALIASES: Record<string, string[]> = {
   rejected: ["lonely", "invisible", "unseen", "confidence"],
   confidence: ["courage", "boldness", "strength", "secure"],
   courage: ["confidence", "boldness", "strength"],
+
+  behind: ["progress", "delay", "comparison", "discouraged", "success"],
+  comparing: ["comparison", "behind", "self-doubt", "progress"],
+  comparison: ["comparing", "behind", "self-doubt", "progress"],
+  unsure: ["self-doubt", "confidence", "direction", "clarity"],
+  uncertain: ["self-doubt", "direction", "clarity", "confidence"],
+  hesitant: ["self-doubt", "confidence", "fear"],
+  guessing: ["second guessing", "self-doubt", "uncertain"],
+  second: ["second guessing", "self-doubt"],
 
   boss: ["leadership", "manager", "supervisor", "authority", "workplace"],
   manager: ["leadership", "boss", "supervisor", "authority", "workplace"],
@@ -329,6 +372,7 @@ function tokenizeQuery(query: string): string[] {
     "really",
     "keep",
     "stop",
+    "myself",
   ]);
 
   return normalizeText(query)
@@ -352,86 +396,57 @@ function expandQuery(query: string): string[] {
   }
 
   const phraseRules: Array<[string[], keyof typeof INTENT_EXPANSIONS]> = [
-    [
-      ["money stress", "worried about bills", "financial stress", "broke", "unpaid bills"],
-      "money",
-    ],
-    [
-      ["need direction", "need clarity", "what should i do", "next step", "feel lost", "need wisdom"],
-      "direction",
-    ],
-    [
-      ["i am hurting", "im hurting", "heartbroken", "in pain", "grieving", "deep pain"],
-      "hurting",
-    ],
-    [
-      ["i am lonely", "im lonely", "feel alone", "abandoned", "rejected", "unseen", "left out"],
-      "lonely",
-    ],
-    [
-      ["burned out", "burnt out", "worn out", "drained", "exhausted", "feel stuck"],
-      "discouraged",
-    ],
-    [
-      ["anxious", "overwhelmed", "panic", "worried", "afraid", "stressed", "peace in my mind", "peace of mind", "under pressure"],
-      "fear",
-    ],
-    [
-      ["relationship conflict", "difficult person", "difficult boss", "argument", "tension", "hard to deal with", "talks down to me", "disrespected"],
-      "relationships",
-    ],
-    [
-      ["angry", "frustrated", "bitter", "resentful", "offended"],
-      "anger",
-    ],
-    [
-      ["leadership pressure", "leading people", "team pressure", "as a leader", "boss", "manager", "supervisor", "under pressure"],
-      "leadership",
-    ],
-    [
-      ["unfair treatment", "treated unfairly", "not respected", "work conflict", "talks down to me"],
-      "relationships",
-    ],
-    [
-      [
-        "want to be successful",
-        "want success",
-        "how do i succeed",
-        "how to succeed",
-        "i want to grow",
-        "i want to improve my life",
-        "i need motivation",
-        "i feel lazy",
-        "i want discipline",
-        "i want to advance",
-        "i want to do better",
-        "i want progress",
-        "stop procrastinating",
-        "tired of failing",
-      ],
-      "success",
-    ],
-    [
-      [
-        "i need confidence",
-        "i feel invisible",
-        "i feel rejected",
-        "i need courage",
-        "i need boldness",
-        "i feel small",
-        "i feel insecure",
-      ],
-      "confidence",
-    ],
-    [
-      [
-        "bad decisions",
-        "keep making bad decisions",
-        "i keep making bad decisions",
-        "need good judgment",
-      ],
-      "direction",
-    ],
+    [["money stress", "worried about bills", "financial stress", "broke", "unpaid bills"], "money"],
+    [["need direction", "need clarity", "what should i do", "next step", "feel lost", "need wisdom"], "direction"],
+    [["i am hurting", "im hurting", "heartbroken", "in pain", "grieving", "deep pain"], "hurting"],
+    [["i am lonely", "im lonely", "feel alone", "abandoned", "rejected", "unseen", "left out"], "lonely"],
+    [["burned out", "burnt out", "worn out", "drained", "exhausted", "feel stuck"], "discouraged"],
+    [["anxious", "overwhelmed", "panic", "worried", "afraid", "stressed", "peace in my mind", "peace of mind", "under pressure"], "fear"],
+    [["relationship conflict", "difficult person", "difficult boss", "argument", "tension", "hard to deal with", "talks down to me", "disrespected"], "relationships"],
+    [["angry", "frustrated", "bitter", "resentful", "offended"], "anger"],
+    [["leadership pressure", "leading people", "team pressure", "as a leader", "boss", "manager", "supervisor", "under pressure"], "leadership"],
+    [["unfair treatment", "treated unfairly", "not respected", "work conflict", "talks down to me"], "relationships"],
+    [[
+      "want to be successful",
+      "want success",
+      "how do i succeed",
+      "how to succeed",
+      "i want to grow",
+      "i want to improve my life",
+      "i need motivation",
+      "i feel lazy",
+      "i want discipline",
+      "i want to advance",
+      "i want to do better",
+      "i want progress",
+      "stop procrastinating",
+      "tired of failing",
+    ], "success"],
+    [[
+      "i need confidence",
+      "i feel invisible",
+      "i feel rejected",
+      "i need courage",
+      "i need boldness",
+      "i feel small",
+      "i feel insecure",
+    ], "confidence"],
+    [[
+      "bad decisions",
+      "keep making bad decisions",
+      "i keep making bad decisions",
+      "need good judgment",
+    ], "direction"],
+    [[
+      "i feel behind in life",
+      "behind in life",
+      "falling behind",
+      "i feel behind",
+      "i am behind",
+      "i keep second guessing myself",
+      "second guessing myself",
+      "i second guess myself",
+    ], "comparison"],
   ];
 
   for (const [phrases, lane] of phraseRules) {
@@ -489,6 +504,18 @@ function hasAny(source: string[], targets: string[]): boolean {
   return countMatches(source, targets) > 0;
 }
 
+function scoreTokenHit(token: string, kind: "title" | "keyword" | "topic" | "intent" | "mood" | "text" | "ref"): number {
+  const generic = GENERIC_TOKENS.has(token);
+
+  if (kind === "intent") return generic ? 6 : 14;
+  if (kind === "keyword") return generic ? 4 : 10;
+  if (kind === "topic") return generic ? 4 : 8;
+  if (kind === "title") return generic ? 3 : 8;
+  if (kind === "mood") return generic ? 3 : 6;
+  if (kind === "text") return generic ? 1 : 4;
+  return generic ? 1 : 4;
+}
+
 function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResult {
   const normalizedQuery = normalizeText(query);
   const tokens = expandQuery(query);
@@ -520,120 +547,25 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
   }
 
   if (
-    normalizedQuery.includes("hurting") ||
-    normalizedQuery.includes("heartbroken") ||
-    normalizedQuery.includes("grieving") ||
-    normalizedQuery.includes("in pain")
+    normalizedQuery.includes("second guessing") ||
+    normalizedQuery.includes("second guess") ||
+    normalizedQuery.includes("unsure") ||
+    normalizedQuery.includes("uncertain")
   ) {
-    if (intentTags.includes("hurting")) {
-      score += 22;
-      why.push("hurting lane");
-    }
-  }
-
-  if (
-    normalizedQuery.includes("lonely") ||
-    normalizedQuery.includes("alone") ||
-    normalizedQuery.includes("abandoned") ||
-    normalizedQuery.includes("rejected") ||
-    normalizedQuery.includes("unseen") ||
-    normalizedQuery.includes("left out") ||
-    normalizedQuery.includes("invisible")
-  ) {
-    if (intentTags.includes("lonely")) {
-      score += 22;
-      why.push("lonely lane");
-    }
-  }
-
-  if (
-    normalizedQuery.includes("discouraged") ||
-    normalizedQuery.includes("burned out") ||
-    normalizedQuery.includes("burnt out") ||
-    normalizedQuery.includes("stuck") ||
-    normalizedQuery.includes("drained") ||
-    normalizedQuery.includes("exhausted") ||
-    normalizedQuery.includes("failing")
-  ) {
-    if (intentTags.includes("discouraged")) {
-      score += 22;
-      why.push("discouraged lane");
-    }
-  }
-
-  if (
-    normalizedQuery.includes("direction") ||
-    normalizedQuery.includes("clarity") ||
-    normalizedQuery.includes("what should i do") ||
-    normalizedQuery.includes("lost") ||
-    normalizedQuery.includes("confused") ||
-    normalizedQuery.includes("decision")
-  ) {
-    if (intentTags.includes("direction")) {
-      score += 22;
-      why.push("direction lane");
-    }
-  }
-
-  if (
-    normalizedQuery.includes("fear") ||
-    normalizedQuery.includes("afraid") ||
-    normalizedQuery.includes("anxious") ||
-    normalizedQuery.includes("worried") ||
-    normalizedQuery.includes("overwhelmed") ||
-    normalizedQuery.includes("panic") ||
-    normalizedQuery.includes("pressure") ||
-    normalizedQuery.includes("peace in my mind")
-  ) {
-    if (intentTags.includes("fear")) {
-      score += 22;
-      why.push("fear lane");
-    }
-  }
-
-  if (
-    normalizedQuery.includes("boss") ||
-    normalizedQuery.includes("team") ||
-    normalizedQuery.includes("leadership") ||
-    normalizedQuery.includes("manager") ||
-    normalizedQuery.includes("supervisor")
-  ) {
-    if (intentTags.includes("leadership")) {
-      score += 8;
-      why.push("leadership lane");
-    }
-  }
-
-  if (
-    normalizedQuery.includes("difficult boss") ||
-    normalizedQuery.includes("difficult person") ||
-    normalizedQuery.includes("hard to deal with") ||
-    normalizedQuery.includes("unfair treatment") ||
-    normalizedQuery.includes("argument") ||
-    normalizedQuery.includes("conflict") ||
-    normalizedQuery.includes("tension") ||
-    normalizedQuery.includes("talks down to me") ||
-    normalizedQuery.includes("disrespected")
-  ) {
-    if (intentTags.includes("relationships") || intentTags.includes("anger")) {
-      score += 26;
-      why.push("conflict lane");
-    }
-  }
-
-  if (
-    normalizedQuery.includes("successful") ||
-    normalizedQuery.includes("success") ||
-    normalizedQuery.includes("succeed") ||
-    normalizedQuery.includes("motivation") ||
-    normalizedQuery.includes("lazy") ||
-    normalizedQuery.includes("discipline") ||
-    normalizedQuery.includes("procrastinating") ||
-    normalizedQuery.includes("failing")
-  ) {
-    if (intentTags.includes("success")) {
+    if (intentTags.includes("confidence") || intentTags.includes("direction") || intentTags.includes("comparison")) {
       score += 24;
-      why.push("success lane");
+      why.push("self doubt lane");
+    }
+  }
+
+  if (
+    normalizedQuery.includes("behind in life") ||
+    normalizedQuery.includes("falling behind") ||
+    normalizedQuery.includes("behind")
+  ) {
+    if (intentTags.includes("comparison") || intentTags.includes("discouraged") || intentTags.includes("success")) {
+      score += 24;
+      why.push("behind comparison lane");
     }
   }
 
@@ -653,37 +585,37 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
 
   for (const token of tokens) {
     if (title.includes(token)) {
-      score += 8;
+      score += scoreTokenHit(token, "title");
       why.push(`title:${token}`);
     }
 
     if (keywords.includes(token)) {
-      score += 10;
+      score += scoreTokenHit(token, "keyword");
       why.push(`keyword:${token}`);
     }
 
     if (topics.includes(token)) {
-      score += 8;
+      score += scoreTokenHit(token, "topic");
       why.push(`topic:${token}`);
     }
 
     if (intentTags.includes(token)) {
-      score += 14;
+      score += scoreTokenHit(token, "intent");
       why.push(`intent:${token}`);
     }
 
     if (moodTags.includes(token)) {
-      score += 6;
+      score += scoreTokenHit(token, "mood");
       why.push(`mood:${token}`);
     }
 
     if (text.includes(token)) {
-      score += 4;
+      score += scoreTokenHit(token, "text");
       why.push(`text:${token}`);
     }
 
     if (ref.includes(token)) {
-      score += 4;
+      score += scoreTokenHit(token, "ref");
       why.push(`ref:${token}`);
     }
   }
@@ -709,19 +641,18 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
 
   const specificHits = tokens.filter(
     (token) =>
-      keywords.includes(token) ||
-      topics.includes(token) ||
-      intentTags.includes(token) ||
-      moodTags.includes(token) ||
-      title.includes(token) ||
-      text.includes(token)
+      !GENERIC_TOKENS.has(token) &&
+      (
+        keywords.includes(token) ||
+        topics.includes(token) ||
+        intentTags.includes(token) ||
+        moodTags.includes(token) ||
+        title.includes(token) ||
+        text.includes(token)
+      )
   );
 
-  const nonGeneric = specificHits.filter(
-    (x) => !["wisdom", "hope", "peace", "strength", "guidance"].includes(x)
-  );
-
-  if (nonGeneric.length >= 2) {
+  if (specificHits.length >= 2) {
     score += 10;
     why.push("strong intent match");
   }
@@ -729,10 +660,13 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
   if (score === 0) {
     const softTokens = tokens.filter(
       (token) =>
-        title.includes(token) ||
-        text.includes(token) ||
-        keywords.includes(token) ||
-        topics.includes(token)
+        !GENERIC_TOKENS.has(token) &&
+        (
+          title.includes(token) ||
+          text.includes(token) ||
+          keywords.includes(token) ||
+          topics.includes(token)
+        )
     );
 
     if (softTokens.length >= 2) {
