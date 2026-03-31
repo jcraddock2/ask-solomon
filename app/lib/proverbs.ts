@@ -179,6 +179,71 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "workplace",
     "coworker",
   ],
+  success: [
+    "success",
+    "successful",
+    "succeed",
+    "achievement",
+    "progress",
+    "growth",
+    "discipline",
+    "diligence",
+    "work",
+    "skill",
+    "promotion",
+    "advance",
+    "advancement",
+    "improve",
+    "improvement",
+    "excel",
+    "excellence",
+    "goals",
+    "plans",
+    "future",
+    "purpose",
+    "calling",
+    "productive",
+    "productivity",
+    "motivation",
+    "motivated",
+    "lazy",
+    "effort",
+  ],
+};
+
+const WORD_ALIASES: Record<string, string[]> = {
+  successful: ["success", "succeed", "achievement", "progress", "growth"],
+  succeed: ["success", "successful", "achievement", "progress", "growth"],
+  succeeding: ["success", "successful", "achievement", "progress", "growth"],
+  success: ["successful", "succeed", "achievement", "progress", "growth"],
+
+  motivate: ["motivation", "discipline", "drive", "effort"],
+  motivated: ["motivation", "discipline", "drive", "effort", "success"],
+  motivation: ["motivated", "discipline", "drive", "effort", "success"],
+  discipline: ["diligence", "self-control", "effort", "work"],
+  diligent: ["diligence", "discipline", "effort", "work"],
+  diligence: ["diligent", "discipline", "effort", "work"],
+  lazy: ["discipline", "diligence", "effort", "work", "success"],
+  productive: ["productivity", "success", "work", "discipline"],
+  productivity: ["productive", "success", "work", "discipline"],
+
+  wealthy: ["money", "prosperity", "finance"],
+  broke: ["money", "financial", "poverty", "bills"],
+  rich: ["money", "prosperity", "wealth"],
+
+  anxious: ["anxiety", "fear", "worry", "worried"],
+  worried: ["worry", "fear", "anxiety", "anxious"],
+  afraid: ["fear", "anxiety", "worry"],
+
+  angry: ["anger", "conflict", "frustration"],
+  frustrated: ["anger", "conflict", "stress", "tension"],
+
+  directionless: ["direction", "guidance", "clarity"],
+  lost: ["direction", "guidance", "clarity", "confused"],
+
+  boss: ["leadership", "manager", "supervisor", "authority", "workplace"],
+  manager: ["leadership", "boss", "supervisor", "authority", "workplace"],
+  supervisor: ["leadership", "boss", "manager", "authority", "workplace"],
 };
 
 function tokenizeQuery(query: string): string[] {
@@ -214,6 +279,13 @@ function tokenizeQuery(query: string): string[] {
     "that",
     "this",
     "it",
+    "do",
+    "how",
+    "can",
+    "should",
+    "would",
+    "just",
+    "really",
   ]);
 
   return normalizeText(query)
@@ -222,27 +294,78 @@ function tokenizeQuery(query: string): string[] {
 }
 
 function expandQuery(query: string): string[] {
-  const base = tokenizeQuery(query);
-  const expanded = new Set(base);
   const normalized = normalizeText(query);
+  const base = tokenizeQuery(query);
+  const expanded = new Set<string>(base);
 
   for (const token of base) {
     if (INTENT_EXPANSIONS[token]) {
       INTENT_EXPANSIONS[token].forEach((x) => expanded.add(x));
     }
+
+    if (WORD_ALIASES[token]) {
+      WORD_ALIASES[token].forEach((x) => expanded.add(x));
+    }
   }
 
   const phraseRules: Array<[string[], keyof typeof INTENT_EXPANSIONS]> = [
-    [["money stress", "worried about bills", "financial stress", "broke", "unpaid bills"], "money"],
-    [["need direction", "need clarity", "what should i do", "next step", "feel lost", "need wisdom"], "direction"],
-    [["i am hurting", "im hurting", "heartbroken", "in pain", "grieving", "deep pain"], "hurting"],
-    [["i am lonely", "im lonely", "feel alone", "abandoned", "rejected", "unseen", "left out"], "lonely"],
-    [["burned out", "burnt out", "worn out", "drained", "exhausted", "feel stuck"], "discouraged"],
-    [["anxious", "overwhelmed", "panic", "worried", "afraid", "stressed"], "fear"],
-    [["relationship conflict", "difficult person", "difficult boss", "argument", "tension", "hard to deal with"], "relationships"],
-    [["angry", "frustrated", "bitter", "resentful", "offended"], "anger"],
-    [["leadership pressure", "leading people", "team pressure", "as a leader", "boss", "manager", "supervisor"], "leadership"],
-    [["unfair treatment", "treated unfairly", "not respected", "work conflict"], "relationships"],
+    [
+      ["money stress", "worried about bills", "financial stress", "broke", "unpaid bills"],
+      "money",
+    ],
+    [
+      ["need direction", "need clarity", "what should i do", "next step", "feel lost", "need wisdom"],
+      "direction",
+    ],
+    [
+      ["i am hurting", "im hurting", "heartbroken", "in pain", "grieving", "deep pain"],
+      "hurting",
+    ],
+    [
+      ["i am lonely", "im lonely", "feel alone", "abandoned", "rejected", "unseen", "left out"],
+      "lonely",
+    ],
+    [
+      ["burned out", "burnt out", "worn out", "drained", "exhausted", "feel stuck"],
+      "discouraged",
+    ],
+    [
+      ["anxious", "overwhelmed", "panic", "worried", "afraid", "stressed"],
+      "fear",
+    ],
+    [
+      ["relationship conflict", "difficult person", "difficult boss", "argument", "tension", "hard to deal with"],
+      "relationships",
+    ],
+    [
+      ["angry", "frustrated", "bitter", "resentful", "offended"],
+      "anger",
+    ],
+    [
+      ["leadership pressure", "leading people", "team pressure", "as a leader", "boss", "manager", "supervisor"],
+      "leadership",
+    ],
+    [
+      ["unfair treatment", "treated unfairly", "not respected", "work conflict"],
+      "relationships",
+    ],
+    [
+      [
+        "want to be successful",
+        "want success",
+        "how do i succeed",
+        "how to succeed",
+        "i want to grow",
+        "i want to improve my life",
+        "i need motivation",
+        "i feel lazy",
+        "i want discipline",
+        "i want to advance",
+        "i want to do better",
+        "i want progress",
+      ],
+      "success",
+    ],
   ];
 
   for (const [phrases, lane] of phraseRules) {
@@ -250,6 +373,30 @@ function expandQuery(query: string): string[] {
       INTENT_EXPANSIONS[lane].forEach((x) => expanded.add(x));
       expanded.add(lane);
     }
+  }
+
+  if (normalized.includes("want to be successful")) {
+    ["success", "successful", "achievement", "progress", "discipline", "work", "growth"].forEach((x) =>
+      expanded.add(x)
+    );
+  }
+
+  if (normalized.includes("how do i succeed") || normalized.includes("how to succeed")) {
+    ["success", "successful", "achievement", "discipline", "direction", "wisdom"].forEach((x) =>
+      expanded.add(x)
+    );
+  }
+
+  if (normalized.includes("i need motivation") || normalized.includes("need motivation")) {
+    ["motivation", "motivated", "discipline", "effort", "success", "growth"].forEach((x) =>
+      expanded.add(x)
+    );
+  }
+
+  if (normalized.includes("i feel lazy") || normalized.includes("im lazy") || normalized.includes("i am lazy")) {
+    ["lazy", "discipline", "diligence", "effort", "work", "success"].forEach((x) =>
+      expanded.add(x)
+    );
   }
 
   return Array.from(expanded);
@@ -308,10 +455,10 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
   const title = normalizeText(item.title);
   const text = normalizeText(item.text);
   const ref = normalizeText(item.ref);
-  const topics = item.topics || [];
-  const keywords = item.keywords || [];
-  const intentTags = item.intentTags || [];
-  const moodTags = item.moodTags || [];
+  const topics = (item.topics || []).map(normalizeText);
+  const keywords = (item.keywords || []).map(normalizeText);
+  const intentTags = (item.intentTags || []).map(normalizeText);
+  const moodTags = (item.moodTags || []).map(normalizeText);
 
   let score = 0;
   const why: string[] = [];
@@ -448,6 +595,22 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     if (intentTags.includes("relationships") || intentTags.includes("anger")) {
       score += 26;
       why.push("conflict lane");
+    }
+  }
+
+  if (
+    normalizedQuery.includes("successful") ||
+    normalizedQuery.includes("success") ||
+    normalizedQuery.includes("succeed") ||
+    normalizedQuery.includes("motivation") ||
+    normalizedQuery.includes("lazy") ||
+    normalizedQuery.includes("discipline") ||
+    normalizedQuery.includes("improve") ||
+    normalizedQuery.includes("progress")
+  ) {
+    if (intentTags.includes("success")) {
+      score += 24;
+      why.push("success lane");
     }
   }
 
@@ -643,6 +806,24 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     }
   }
 
+  if (
+    normalizedQuery.includes("successful") ||
+    normalizedQuery.includes("success") ||
+    normalizedQuery.includes("succeed") ||
+    normalizedQuery.includes("motivation") ||
+    normalizedQuery.includes("lazy") ||
+    normalizedQuery.includes("discipline")
+  ) {
+    if (
+      hasAny(topics, ["success", "discipline", "work", "diligence", "planning", "growth"]) ||
+      hasAny(intentTags, ["success", "direction"]) ||
+      hasAny(keywords, ["success", "successful", "motivation", "discipline", "diligence", "work", "goals"])
+    ) {
+      score += 26;
+      why.push("growth success wisdom");
+    }
+  }
+
   const specificHits = tokens.filter(
     (token) =>
       keywords.includes(token) ||
@@ -660,6 +841,17 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
   if (nonGeneric.length >= 2) {
     score += 10;
     why.push("strong intent match");
+  }
+
+  if (score === 0) {
+    const softTokens = tokens.filter(
+      (token) => title.includes(token) || text.includes(token) || keywords.includes(token) || topics.includes(token)
+    );
+
+    if (softTokens.length >= 2) {
+      score += 6;
+      why.push("soft match");
+    }
   }
 
   return {
