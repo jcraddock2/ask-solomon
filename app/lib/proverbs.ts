@@ -276,6 +276,20 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "unsure",
     "uncertain",
   ],
+  respect: [
+  "respect",
+  "respected",
+  "honor",
+  "honored",
+  "esteem",
+  "esteemed",
+  "dignity",
+  "good name",
+  "praised",
+  "overlooked",
+  "ignored",
+  "dishonored",
+],
 };
 
 const WORD_ALIASES: Record<string, string[]> = {
@@ -406,6 +420,17 @@ function expandQuery(query: string): string[] {
     [["angry", "frustrated", "bitter", "resentful", "offended"], "anger"],
     [["leadership pressure", "leading people", "team pressure", "as a leader", "boss", "manager", "supervisor", "under pressure"], "leadership"],
     [["unfair treatment", "treated unfairly", "not respected", "work conflict", "talks down to me"], "relationships"],
+    [
+  [
+    "i want to be respected",
+    "i want respect",
+    "people do not respect me",
+    "i feel disrespected",
+    "i feel overlooked",
+    "i feel ignored",
+  ],
+  "respect",
+],
     [[
       "want to be successful",
       "want success",
@@ -582,7 +607,19 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
       why.push("confidence lane");
     }
   }
-
+if (
+  normalizedQuery.includes("respect") ||
+  normalizedQuery.includes("respected") ||
+  normalizedQuery.includes("honor") ||
+  normalizedQuery.includes("overlooked") ||
+  normalizedQuery.includes("ignored") ||
+  normalizedQuery.includes("disrespected")
+) {
+  if (intentTags.includes("respect") || intentTags.includes("confidence")) {
+    score += 24;
+    why.push("respect lane");
+  }
+}
   for (const token of tokens) {
     if (title.includes(token)) {
       score += scoreTokenHit(token, "title");
