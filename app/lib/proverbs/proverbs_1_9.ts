@@ -12,7 +12,7 @@ export const PROVERBS_1_9: ProverbEntry[] = [
     ["direction", "wisdom"],
     ["seeking", "uncertain"]
   ),
-   createProverb(
+  createProverb(
     "Proverbs 3:13",
     "Wisdom is worth more than gain",
     "Blessed are those who find wisdom, those who gain understanding.",
@@ -40,6 +40,15 @@ export const PROVERBS_1_9: ProverbEntry[] = [
     ["anxious", "afraid", "troubled"]
   ),
   createProverb(
+    "Proverbs 3:26",
+    "You can stand steady under pressure",
+    "For the Lord will be at your side and will keep your foot from being snared.",
+    ["confidence", "peace", "protection", "stability"],
+    ["pressure", "confidence", "peace of mind", "steady", "fear", "safety"],
+    ["fear", "confidence"],
+    ["pressured", "anxious", "shaken"]
+  ),
+  createProverb(
     "Proverbs 3:27",
     "Do not hold back good",
     "Do not withhold good from those to whom it is due, when it is in your power to act.",
@@ -58,13 +67,31 @@ export const PROVERBS_1_9: ProverbEntry[] = [
     ["tempted", "uncertain"]
   ),
   createProverb(
+    "Proverbs 3:5-6",
+    "Trust brings clear direction",
+    "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.",
+    ["direction", "guidance", "clarity", "trust"],
+    ["bad decisions", "decision", "guidance", "clarity", "path", "next step"],
+    ["direction"],
+    ["confused", "uncertain", "seeking"]
+  ),
+  createProverb(
+    "Proverbs 3:21-22",
+    "Sound judgment builds confidence",
+    "My son, do not let wisdom and understanding out of your sight, preserve sound judgment and discretion; they will be life for you and grace to your neck.",
+    ["confidence", "judgment", "wisdom", "dignity"],
+    ["second guessing", "judgment", "confidence", "discretion", "uncertain", "unsure"],
+    ["confidence", "direction", "comparison"],
+    ["unsure", "hesitant", "insecure"]
+  ),
+  createProverb(
     "Proverbs 4:23",
-    "Guard your heart",
+    "Guard your inner life",
     "Above all else, guard your heart, for everything you do flows from it.",
-    ["heart", "boundaries", "wisdom"],
-    ["guard your heart", "heart", "boundaries", "protect yourself", "inner life"],
-    ["wisdom", "relationships", "healing"],
-    ["vulnerable", "hurt", "reflective"]
+    ["peace", "wisdom", "inner life", "self-control"],
+    ["peace in my mind", "mind", "heart", "thoughts", "inner peace", "guard"],
+    ["fear", "direction"],
+    ["troubled", "uneasy", "overwhelmed"]
   ),
   createProverb(
     "Proverbs 4:24",
@@ -83,6 +110,15 @@ export const PROVERBS_1_9: ProverbEntry[] = [
     ["focus", "direction", "path", "next step", "clarity", "discipline"],
     ["direction", "guidance", "wisdom"],
     ["uncertain", "distracted"]
+  ),
+  createProverb(
+    "Proverbs 4:25-27",
+    "Stay focused and keep moving forward",
+    "Let your eyes look straight ahead; fix your gaze directly before you. Give careful thought to the paths for your feet and be steadfast in all your ways.",
+    ["progress", "focus", "direction", "discipline"],
+    ["behind in life", "behind", "progress", "forward", "focus", "direction"],
+    ["success", "direction", "comparison"],
+    ["behind", "stuck", "uncertain"]
   ),
   createProverb(
     "Proverbs 4:27",
@@ -104,12 +140,12 @@ export const PROVERBS_1_9: ProverbEntry[] = [
   ),
   createProverb(
     "Proverbs 6:6-8",
-    "Learn from diligence",
+    "Learn diligence and stop delaying",
     "Go to the ant, you sluggard; consider its ways and be wise.",
-    ["diligence", "work", "wisdom"],
-    ["work", "lazy", "discipline", "diligence", "motivation", "wise work"],
-    ["money", "work", "wisdom"],
-    ["unmotivated", "stuck", "urgent"]
+    ["discipline", "diligence", "wisdom", "success"],
+    ["procrastinating", "procrastination", "lazy", "discipline", "effort", "delay"],
+    ["success", "money", "work"],
+    ["stuck", "unmotivated", "urgent"]
   ),
   createProverb(
     "Proverbs 6:9-11",
@@ -182,8 +218,8 @@ export const PROVERBS_1_9: ProverbEntry[] = [
     ["wisdom", "understanding", "fear of the lord", "foundation", "knowledge"],
     ["wisdom", "direction", "guidance"],
     ["seeking", "uncertain"]
-  ), 
-    createProverb(
+  ),
+  createProverb(
     "Proverbs 10:9",
     "Integrity creates stability",
     "Whoever walks in integrity walks securely, but whoever takes crooked paths will be found out.",
@@ -265,6 +301,15 @@ export const PROVERBS_1_9: ProverbEntry[] = [
     ["teachable", "reflective"]
   ),
   createProverb(
+    "Proverbs 12:8",
+    "Good judgment earns respect",
+    "A person is praised according to their prudence, and one with a warped mind is despised.",
+    ["respect", "prudence", "wisdom", "honor"],
+    ["respected", "respect", "praised", "prudence", "honor", "good judgment"],
+    ["respect", "confidence", "direction"],
+    ["overlooked", "small", "unsure"]
+  ),
+  createProverb(
     "Proverbs 12:16",
     "Do not reveal every offense immediately",
     "Fools show their annoyance at once, but the prudent overlook an insult.",
@@ -302,12 +347,12 @@ export const PROVERBS_1_9: ProverbEntry[] = [
   ),
   createProverb(
     "Proverbs 13:12",
-    "Delayed hope affects the heart",
+    "Delay does not mean defeat",
     "Hope deferred makes the heart sick, but a longing fulfilled is a tree of life.",
-    ["hope", "heart", "discouragement"],
-    ["hope deferred", "heart sick", "discouraged", "longing", "waiting", "hope"],
-    ["discouraged", "hope", "comfort"],
-    ["weary", "sad", "heavy"]
+    ["hope", "delay", "discouragement", "healing"],
+    ["behind in life", "delay", "waiting", "behind", "discouraged", "hope deferred"],
+    ["discouraged", "comparison"],
+    ["behind", "heavy", "discouraged"]
   ),
   createProverb(
     "Proverbs 14:8",
@@ -320,12 +365,12 @@ export const PROVERBS_1_9: ProverbEntry[] = [
   ),
   createProverb(
     "Proverbs 14:15",
-    "Not everything should be believed quickly",
+    "Wise people slow down and discern",
     "The simple believe anything, but the prudent give thought to their steps.",
-    ["discernment", "wisdom", "direction"],
-    ["discernment", "believe anything", "prudent", "steps", "careful", "judgment"],
-    ["direction", "wisdom", "guidance"],
-    ["uncertain", "cautious"]
+    ["discernment", "judgment", "wisdom", "direction"],
+    ["second guessing", "bad decisions", "judgment", "discernment", "careful", "steps"],
+    ["direction", "confidence", "comparison"],
+    ["unsure", "uncertain", "hesitant"]
   ),
   createProverb(
     "Proverbs 14:29",
@@ -364,279 +409,76 @@ export const PROVERBS_1_9: ProverbEntry[] = [
     ["triggered", "heated", "tense"]
   ),
   createProverb(
-  "Proverbs 16:7",
-  "When God Is Pleased, Even Enemies Shift",
-  "When a person’s ways please the Lord, he makes even their enemies live at peace with them.",
-  ["favor", "relationships", "conflict", "peace"],
-  ["enemy", "boss", "conflict", "tension", "relationship", "difficult people"],
-  ["relationships", "workplace conflict"],
-  ["frustrated", "opposed"]
-),
-
-createProverb(
-  "Proverbs 20:3",
-  "It Is Wise to Avoid Strife",
-  "It is to one’s honor to avoid strife, but every fool is quick to quarrel.",
-  ["wisdom", "conflict", "self-control"],
-  ["argument", "fight", "conflict", "drama", "work tension"],
-  ["anger", "relationships"],
-  ["angry", "triggered"]
-),
-
-createProverb(
-  "Proverbs 25:15",
-  "Patience Can Break Resistance",
-  "Through patience a ruler can be persuaded, and a gentle tongue can break a bone.",
-  ["patience", "influence", "leadership"],
-  ["boss", "authority", "leader", "persuasion", "difficult boss"],
-  ["leadership", "workplace conflict"],
-  ["frustrated", "powerless"]
-),
-
-createProverb(
-  "Proverbs 22:24-25",
-  "Do Not Absorb Toxic Anger",
-  "Do not make friends with a hot-tempered person, do not associate with one easily angered, or you may learn their ways.",
-  ["boundaries", "relationships", "wisdom"],
-  ["toxic", "angry person", "workplace", "bad energy"],
-  ["relationships", "anger"],
-  ["drained", "frustrated"]
-),
-
-createProverb(
-  "Proverbs 27:6",
-  "Wounds From Truth Are Better Than Fake Peace",
-  "Wounds from a friend can be trusted, but an enemy multiplies kisses.",
-  ["truth", "relationships", "discernment"],
-  ["fake", "two-faced", "trust", "betrayal", "coworker"],
-  ["relationships"],
-  ["confused", "hurt"]
-), 
+    "Proverbs 15:33",
+    "Humility comes before honor",
+    "Wisdom’s instruction is to fear the Lord, and humility comes before honor.",
+    ["honor", "humility", "wisdom", "respect"],
+    ["honor", "respected", "respect", "humility", "esteem", "dignity"],
+    ["respect", "confidence"],
+    ["small", "ignored", "overlooked"]
+  ),
   createProverb(
-  "Proverbs 16:7",
-  "When God Is Pleased, Even Enemies Shift",
-  "When a person’s ways please the Lord, he makes even their enemies live at peace with them.",
-  ["favor", "relationships", "conflict", "peace"],
-  ["enemy", "boss", "conflict", "tension", "relationship", "difficult people"],
-  ["relationships", "workplace conflict"],
-  ["frustrated", "opposed"]
-),
-
-createProverb(
-  "Proverbs 20:3",
-  "It Is Wise to Avoid Strife",
-  "It is to one’s honor to avoid strife, but every fool is quick to quarrel.",
-  ["wisdom", "conflict", "self-control"],
-  ["argument", "fight", "conflict", "drama", "work tension"],
-  ["anger", "relationships"],
-  ["angry", "triggered"]
-),
-
-createProverb(
-  "Proverbs 25:15",
-  "Patience Can Break Resistance",
-  "Through patience a ruler can be persuaded, and a gentle tongue can break a bone.",
-  ["patience", "influence", "leadership"],
-  ["boss", "authority", "leader", "persuasion", "difficult boss"],
-  ["leadership", "workplace conflict"],
-  ["frustrated", "powerless"]
-),
-
-createProverb(
-  "Proverbs 22:24-25",
-  "Do Not Absorb Toxic Anger",
-  "Do not make friends with a hot-tempered person, do not associate with one easily angered, or you may learn their ways.",
-  ["boundaries", "relationships", "wisdom"],
-  ["toxic", "angry person", "workplace", "bad energy"],
-  ["relationships", "anger"],
-  ["drained", "frustrated"]
-),
-
-createProverb(
-  "Proverbs 27:6",
-  "Wounds From Truth Are Better Than Fake Peace",
-  "Wounds from a friend can be trusted, but an enemy multiplies kisses.",
-  ["truth", "relationships", "discernment"],
-  ["fake", "two-faced", "trust", "betrayal", "coworker"],
-  ["relationships"],
-  ["confused", "hurt"]
-),
+    "Proverbs 16:3",
+    "Commit your way and gain stability",
+    "Commit to the Lord whatever you do, and he will establish your plans.",
+    ["direction", "stability", "success", "trust"],
+    ["uncertain", "plans", "stability", "direction", "future", "progress"],
+    ["direction", "success", "confidence"],
+    ["unsure", "uncertain", "behind"]
+  ),
   createProverb(
-  "Proverbs 3:26",
-  "You Can Stand Steady Under Pressure",
-  "For the Lord will be at your side and will keep your foot from being snared.",
-  ["confidence", "peace", "protection", "stability"],
-  ["pressure", "confidence", "peace of mind", "steady", "fear", "safety"],
-  ["fear", "confidence"],
-  ["pressured", "anxious", "shaken"]
-),
-
-createProverb(
-  "Proverbs 4:23",
-  "Guard Your Inner Life",
-  "Above all else, guard your heart, for everything you do flows from it.",
-  ["peace", "wisdom", "inner life", "self-control"],
-  ["peace in my mind", "mind", "heart", "thoughts", "inner peace", "guard"],
-  ["fear", "direction"],
-  ["troubled", "uneasy", "overwhelmed"]
-),
-
-createProverb(
-  "Proverbs 3:5-6",
-  "Trust Brings Clear Direction",
-  "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.",
-  ["direction", "guidance", "clarity", "trust"],
-  ["bad decisions", "decision", "guidance", "clarity", "path", "next step"],
-  ["direction"],
-  ["confused", "uncertain", "seeking"]
-),
-
-createProverb(
-  "Proverbs 6:6-8",
-  "Learn Diligence and Stop Delaying",
-  "Go to the ant, you sluggard; consider its ways and be wise.",
-  ["discipline", "diligence", "wisdom", "success"],
-  ["procrastinating", "procrastination", "lazy", "discipline", "effort", "delay"],
-  ["success"],
-  ["stuck", "unmotivated"]
-),
-
-createProverb(
-  "Proverbs 4:25-27",
-  "Stay Focused and Keep Moving Forward",
-  "Let your eyes look straight ahead; fix your gaze directly before you. Give careful thought to the paths for your feet and be steadfast in all your ways.",
-  ["focus", "discipline", "direction", "success"],
-  ["focus", "procrastinating", "progress", "direction", "discipline", "forward"],
-  ["success", "direction"],
-  ["distracted", "stuck", "uncertain"]
-),
-
-createProverb(
-  "Proverbs 3:21-22",
-  "Wisdom Makes You Walk With Confidence",
-  "My son, do not let wisdom and understanding out of your sight, preserve sound judgment and discretion; they will be life for you and an ornament to grace your neck.",
-  ["confidence", "wisdom", "judgment", "dignity"],
-  ["confidence", "bad decisions", "judgment", "wisdom", "dignity", "grace"],
-  ["confidence", "direction"],
-  ["unsure", "insecure"]
-),
+    "Proverbs 16:7",
+    "When God is pleased, even enemies shift",
+    "When a person’s ways please the Lord, he makes even their enemies live at peace with them.",
+    ["favor", "relationships", "conflict", "peace"],
+    ["enemy", "boss", "conflict", "tension", "relationship", "difficult people"],
+    ["relationships", "workplace conflict"],
+    ["frustrated", "opposed"]
+  ),
   createProverb(
-  "Proverbs 3:21-22",
-  "Wisdom Makes You Walk With Confidence",
-  "My son, do not let wisdom and understanding out of your sight, preserve sound judgment and discretion; they will be life for you and an ornament to grace your neck.",
-  ["confidence", "wisdom", "judgment", "dignity"],
-  ["confidence", "second guessing", "judgment", "wisdom", "dignity", "discretion"],
-  ["confidence", "direction", "comparison"],
-  ["unsure", "insecure", "hesitant"]
-),
-
-createProverb(
-  "Proverbs 4:25-27",
-  "Stay Steady and Keep Moving Forward",
-  "Let your eyes look straight ahead; fix your gaze directly before you. Give careful thought to the paths for your feet and be steadfast in all your ways.",
-  ["focus", "direction", "discipline", "progress"],
-  ["behind in life", "progress", "forward", "focus", "direction", "steady"],
-  ["success", "direction", "comparison"],
-  ["behind", "uncertain", "stuck"]
-),
-
-createProverb(
-  "Proverbs 14:15",
-  "Do Not Trust Every Impulse",
-  "The simple believe anything, but the prudent give thought to their steps.",
-  ["wisdom", "judgment", "discernment", "direction"],
-  ["second guessing", "bad decisions", "judgment", "discernment", "careful"],
-  ["direction", "confidence", "comparison"],
-  ["unsure", "uncertain"]
-),
-
-createProverb(
-  "Proverbs 13:12",
-  "Delayed Hope Can Hurt the Heart",
-  "Hope deferred makes the heart sick, but a longing fulfilled is a tree of life.",
-  ["hope", "discouragement", "delay", "healing"],
-  ["behind in life", "delay", "discouraged", "waiting", "behind", "hope deferred"],
-  ["discouraged", "comparison"],
-  ["behind", "heavy", "discouraged"]
-),
+    "Proverbs 20:3",
+    "It is wise to avoid strife",
+    "It is to one’s honor to avoid strife, but every fool is quick to quarrel.",
+    ["wisdom", "conflict", "self-control"],
+    ["argument", "fight", "conflict", "drama", "work tension"],
+    ["anger", "relationships"],
+    ["angry", "triggered"]
+  ),
   createProverb(
-  "Proverbs 3:21-22",
-  "Sound Judgment Builds Confidence",
-  "My son, do not let wisdom and understanding out of your sight, preserve sound judgment and discretion; they will be life for you and grace to your neck.",
-  ["confidence", "judgment", "wisdom", "dignity"],
-  ["second guessing", "judgment", "confidence", "discretion", "uncertain", "unsure"],
-  ["confidence", "direction", "comparison"],
-  ["unsure", "hesitant", "insecure"]
-),
-
-createProverb(
-  "Proverbs 4:25-27",
-  "Stay Focused and Keep Moving Forward",
-  "Let your eyes look straight ahead; fix your gaze directly before you. Give careful thought to the paths for your feet and be steadfast in all your ways.",
-  ["progress", "focus", "direction", "discipline"],
-  ["behind in life", "behind", "progress", "forward", "focus", "direction"],
-  ["success", "direction", "comparison"],
-  ["behind", "stuck", "uncertain"]
-),
-
-createProverb(
-  "Proverbs 13:12",
-  "Delay Does Not Mean Defeat",
-  "Hope deferred makes the heart sick, but a longing fulfilled is a tree of life.",
-  ["hope", "delay", "discouragement", "healing"],
-  ["behind in life", "delay", "waiting", "behind", "discouraged", "hope deferred"],
-  ["discouraged", "comparison"],
-  ["behind", "heavy", "discouraged"]
-),
-
-createProverb(
-  "Proverbs 14:15",
-  "Wise People Slow Down and Discern",
-  "The simple believe anything, but the prudent give thought to their steps.",
-  ["discernment", "judgment", "wisdom", "direction"],
-  ["second guessing", "bad decisions", "judgment", "discernment", "careful", "steps"],
-  ["direction", "confidence", "comparison"],
-  ["unsure", "uncertain", "hesitant"]
-),
-
-createProverb(
-  "Proverbs 16:3",
-  "Commit Your Way and Gain Stability",
-  "Commit to the Lord whatever you do, and he will establish your plans.",
-  ["direction", "stability", "success", "trust"],
-  ["uncertain", "plans", "stability", "direction", "future", "progress"],
-  ["direction", "success", "confidence"],
-  ["unsure", "uncertain", "behind"]
-),
-
-createProverb(
-  "Proverbs 22:1",
-  "A Good Name Matters More Than Status",
-  "A good name is more desirable than great riches; to be esteemed is better than silver or gold.",
-  ["respect", "honor", "character", "dignity"],
-  ["respected", "respect", "esteem", "honor", "good name", "dignity"],
-  ["respect", "confidence"],
-  ["dishonored", "overlooked", "small"]
-),
-
-createProverb(
-  "Proverbs 12:8",
-  "Good Judgment Earns Respect",
-  "A person is praised according to their prudence, and one with a warped mind is despised.",
-  ["respect", "prudence", "wisdom", "honor"],
-  ["respected", "respect", "praised", "prudence", "honor", "good judgment"],
-  ["respect", "confidence", "direction"],
-  ["overlooked", "small", "unsure"]
-),
-
-createProverb(
-  "Proverbs 15:33",
-  "Humility Comes Before Honor",
-  "Wisdom’s instruction is to fear the Lord, and humility comes before honor.",
-  ["honor", "humility", "wisdom", "respect"],
-  ["honor", "respected", "respect", "humility", "esteem", "dignity"],
-  ["respect", "confidence"],
-  ["small", "ignored", "overlooked"]
-),
+    "Proverbs 22:1",
+    "A good name matters more than status",
+    "A good name is more desirable than great riches; to be esteemed is better than silver or gold.",
+    ["respect", "honor", "character", "dignity"],
+    ["respected", "respect", "esteem", "honor", "good name", "dignity"],
+    ["respect", "confidence"],
+    ["dishonored", "overlooked", "small"]
+  ),
+  createProverb(
+    "Proverbs 22:24-25",
+    "Do not absorb toxic anger",
+    "Do not make friends with a hot-tempered person, do not associate with one easily angered, or you may learn their ways.",
+    ["boundaries", "relationships", "wisdom"],
+    ["toxic", "angry person", "workplace", "bad energy"],
+    ["relationships", "anger"],
+    ["drained", "frustrated"]
+  ),
+  createProverb(
+    "Proverbs 25:15",
+    "Patience can break resistance",
+    "Through patience a ruler can be persuaded, and a gentle tongue can break a bone.",
+    ["patience", "influence", "leadership"],
+    ["boss", "authority", "leader", "persuasion", "difficult boss"],
+    ["leadership", "workplace conflict"],
+    ["frustrated", "powerless"]
+  ),
+  createProverb(
+    "Proverbs 27:6",
+    "Wounds from truth are better than fake peace",
+    "Wounds from a friend can be trusted, but an enemy multiplies kisses.",
+    ["truth", "relationships", "discernment"],
+    ["fake", "two-faced", "trust", "betrayal", "coworker"],
+    ["relationships"],
+    ["confused", "hurt"]
+  ),
 ];
 
