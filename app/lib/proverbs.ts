@@ -277,19 +277,19 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "uncertain",
   ],
   respect: [
-  "respect",
-  "respected",
-  "honor",
-  "honored",
-  "esteem",
-  "esteemed",
-  "dignity",
-  "good name",
-  "praised",
-  "overlooked",
-  "ignored",
-  "dishonored",
-],
+    "respect",
+    "respected",
+    "honor",
+    "honored",
+    "esteem",
+    "esteemed",
+    "dignity",
+    "good name",
+    "praised",
+    "overlooked",
+    "ignored",
+    "dishonored",
+  ],
 };
 
 const WORD_ALIASES: Record<string, string[]> = {
@@ -343,6 +343,85 @@ const WORD_ALIASES: Record<string, string[]> = {
   manager: ["leadership", "boss", "supervisor", "authority", "workplace"],
   supervisor: ["leadership", "boss", "manager", "authority", "workplace"],
 };
+
+const LANE_PHRASE_BOOSTS: Array<{
+  phrases: string[];
+  intents: string[];
+  moods?: string[];
+  bonus: number;
+  label: string;
+}> = [
+  {
+    phrases: [
+      "second guessing",
+      "second guess",
+      "second guessing myself",
+      "i second guess myself",
+      "self-doubt",
+      "unsure",
+      "uncertain",
+      "hesitant",
+    ],
+    intents: ["comparison", "confidence", "direction"],
+    moods: ["uncertain", "insecure", "hesitant"],
+    bonus: 36,
+    label: "self doubt lane",
+  },
+  {
+    phrases: [
+      "behind in life",
+      "falling behind",
+      "i feel behind",
+      "i am behind",
+      "behind",
+      "not enough",
+      "late in life",
+      "late",
+      "comparison",
+      "comparing",
+    ],
+    intents: ["comparison", "discouraged", "direction"],
+    moods: ["discouraged", "stuck", "uncertain"],
+    bonus: 38,
+    label: "comparison lane",
+  },
+  {
+    phrases: [
+      "confidence",
+      "courage",
+      "boldness",
+      "invisible",
+      "rejected",
+      "insecure",
+      "small",
+      "approval",
+    ],
+    intents: ["confidence"],
+    moods: ["insecure", "rejected", "unseen"],
+    bonus: 30,
+    label: "confidence lane",
+  },
+  {
+    phrases: [
+      "respect",
+      "respected",
+      "honor",
+      "honored",
+      "overlooked",
+      "ignored",
+      "disrespected",
+      "dishonored",
+      "i want to be respected",
+      "i want respect",
+      "people do not respect me",
+      "not respected",
+    ],
+    intents: ["respect", "confidence", "leadership"],
+    moods: ["ignored", "overlooked", "disrespected"],
+    bonus: 40,
+    label: "respect lane",
+  },
+];
 
 function tokenizeQuery(query: string): string[] {
   const STOPWORDS = new Set([
@@ -421,57 +500,69 @@ function expandQuery(query: string): string[] {
     [["leadership pressure", "leading people", "team pressure", "as a leader", "boss", "manager", "supervisor", "under pressure"], "leadership"],
     [["unfair treatment", "treated unfairly", "not respected", "work conflict", "talks down to me"], "relationships"],
     [
-  [
-    "i want to be respected",
-    "i want respect",
-    "people do not respect me",
-    "i feel disrespected",
-    "i feel overlooked",
-    "i feel ignored",
-  ],
-  "respect",
-],
-    [[
-      "want to be successful",
-      "want success",
-      "how do i succeed",
-      "how to succeed",
-      "i want to grow",
-      "i want to improve my life",
-      "i need motivation",
-      "i feel lazy",
-      "i want discipline",
-      "i want to advance",
-      "i want to do better",
-      "i want progress",
-      "stop procrastinating",
-      "tired of failing",
-    ], "success"],
-    [[
-      "i need confidence",
-      "i feel invisible",
-      "i feel rejected",
-      "i need courage",
-      "i need boldness",
-      "i feel small",
-      "i feel insecure",
-    ], "confidence"],
-    [[
-      "bad decisions",
-      "keep making bad decisions",
-      "i keep making bad decisions",
-      "need good judgment",
-    ], "direction"],
-    [[
-      "i feel behind in life",
-      "behind in life",
-      "falling behind",
-      "i feel behind",
-      "i am behind",
-      "i keep second guessing myself",
-      "second guessing myself",
-      "i second guess myself",
-    ], "comparison"],
+      [
+        "i want to be respected",
+        "i want respect",
+        "people do not respect me",
+        "i feel disrespected",
+        "i feel overlooked",
+        "i feel ignored",
+      ],
+      "respect",
+    ],
+    [
+      [
+        "want to be successful",
+        "want success",
+        "how do i succeed",
+        "how to succeed",
+        "i want to grow",
+        "i want to improve my life",
+        "i need motivation",
+        "i feel lazy",
+        "i want discipline",
+        "i want to advance",
+        "i want to do better",
+        "i want progress",
+        "stop procrastinating",
+        "tired of failing",
+      ],
+      "success",
+    ],
+    [
+      [
+        "i need confidence",
+        "i feel invisible",
+        "i feel rejected",
+        "i need courage",
+        "i need boldness",
+        "i feel small",
+        "i feel insecure",
+      ],
+      "confidence",
+    ],
+    [
+      [
+        "bad decisions",
+        "keep making bad decisions",
+        "i keep making bad decisions",
+        "need good judgment",
+      ],
+      "direction",
+    ],
+    [
+      [
+        "i feel behind in life",
+        "behind in life",
+        "falling behind",
+        "i feel behind",
+        "i am behind",
+        "i keep second guessing myself",
+        "second guessing myself",
+        "i second guess myself",
+      ],
+      "comparison",
+    ],
   ];
 
   for (const [phrases, lane] of phraseRules) {
@@ -529,7 +620,10 @@ function hasAny(source: string[], targets: string[]): boolean {
   return countMatches(source, targets) > 0;
 }
 
-function scoreTokenHit(token: string, kind: "title" | "keyword" | "topic" | "intent" | "mood" | "text" | "ref"): number {
+function scoreTokenHit(
+  token: string,
+  kind: "title" | "keyword" | "topic" | "intent" | "mood" | "text" | "ref"
+): number {
   const generic = GENERIC_TOKENS.has(token);
 
   if (kind === "intent") return generic ? 6 : 14;
@@ -539,6 +633,64 @@ function scoreTokenHit(token: string, kind: "title" | "keyword" | "topic" | "int
   if (kind === "mood") return generic ? 3 : 6;
   if (kind === "text") return generic ? 1 : 4;
   return generic ? 1 : 4;
+}
+
+function applyLanePhraseBoosts(
+  normalizedQuery: string,
+  intentTags: string[],
+  moodTags: string[],
+  why: string[]
+): number {
+  let bonus = 0;
+
+  for (const rule of LANE_PHRASE_BOOSTS) {
+    const matchedPhrase = rule.phrases.some((phrase) => normalizedQuery.includes(phrase));
+    if (!matchedPhrase) continue;
+
+    const intentMatch = hasAny(intentTags, rule.intents);
+    const moodMatch = rule.moods ? hasAny(moodTags, rule.moods) : false;
+
+    if (intentMatch) {
+      bonus += rule.bonus;
+      why.push(rule.label);
+    } else if (moodMatch) {
+      bonus += Math.round(rule.bonus * 0.55);
+      why.push(`${rule.label} mood`);
+    }
+  }
+
+  return bonus;
+}
+
+function applySituationBoosts(
+  topicHits: number,
+  intentHits: number,
+  moodHits: number,
+  why: string[]
+): number {
+  let bonus = 0;
+
+  if (topicHits > 0) {
+    bonus += topicHits * 6;
+    why.push("situation topics");
+  }
+
+  if (intentHits > 0) {
+    bonus += intentHits * 10;
+    why.push("situation intent");
+  }
+
+  if (moodHits > 0) {
+    bonus += moodHits * 5;
+    why.push("situation mood");
+  }
+
+  if (intentHits > 0 && moodHits > 0) {
+    bonus += 8;
+    why.push("situation alignment");
+  }
+
+  return bonus;
 }
 
 function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResult {
@@ -571,55 +723,8 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     why.push("text phrase");
   }
 
-  if (
-    normalizedQuery.includes("second guessing") ||
-    normalizedQuery.includes("second guess") ||
-    normalizedQuery.includes("unsure") ||
-    normalizedQuery.includes("uncertain")
-  ) {
-    if (intentTags.includes("confidence") || intentTags.includes("direction") || intentTags.includes("comparison")) {
-      score += 24;
-      why.push("self doubt lane");
-    }
-  }
+  score += applyLanePhraseBoosts(normalizedQuery, intentTags, moodTags, why);
 
-  if (
-    normalizedQuery.includes("behind in life") ||
-    normalizedQuery.includes("falling behind") ||
-    normalizedQuery.includes("behind")
-  ) {
-    if (intentTags.includes("comparison") || intentTags.includes("discouraged") || intentTags.includes("success")) {
-      score += 24;
-      why.push("behind comparison lane");
-    }
-  }
-
-  if (
-    normalizedQuery.includes("confidence") ||
-    normalizedQuery.includes("courage") ||
-    normalizedQuery.includes("boldness") ||
-    normalizedQuery.includes("invisible") ||
-    normalizedQuery.includes("rejected") ||
-    normalizedQuery.includes("insecure")
-  ) {
-    if (intentTags.includes("confidence")) {
-      score += 24;
-      why.push("confidence lane");
-    }
-  }
-if (
-  normalizedQuery.includes("respect") ||
-  normalizedQuery.includes("respected") ||
-  normalizedQuery.includes("honor") ||
-  normalizedQuery.includes("overlooked") ||
-  normalizedQuery.includes("ignored") ||
-  normalizedQuery.includes("disrespected")
-) {
-  if (intentTags.includes("respect") || intentTags.includes("confidence")) {
-    score += 24;
-    why.push("respect lane");
-  }
-}
   for (const token of tokens) {
     if (title.includes(token)) {
       score += scoreTokenHit(token, "title");
@@ -661,20 +766,7 @@ if (
   const intentHits = countMatches(intentTags, situation.boostIntentTags);
   const moodHits = countMatches(moodTags, situation.boostMoodTags);
 
-  if (topicHits > 0) {
-    score += topicHits * 6;
-    why.push("situation topics");
-  }
-
-  if (intentHits > 0) {
-    score += intentHits * 7;
-    why.push("situation intent");
-  }
-
-  if (moodHits > 0) {
-    score += moodHits * 4;
-    why.push("situation mood");
-  }
+  score += applySituationBoosts(topicHits, intentHits, moodHits, why);
 
   const specificHits = tokens.filter(
     (token) =>
@@ -692,6 +784,11 @@ if (
   if (specificHits.length >= 2) {
     score += 10;
     why.push("strong intent match");
+  }
+
+  if (specificHits.length >= 3 && hasAny(intentTags, tokens)) {
+    score += 8;
+    why.push("lane confirmation");
   }
 
   if (score === 0) {
@@ -715,7 +812,7 @@ if (
   return {
     item,
     score,
-    why: uniq(why).slice(0, 5),
+    why: uniq(why).slice(0, 6),
   };
 }
 
