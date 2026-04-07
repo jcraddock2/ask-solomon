@@ -1438,50 +1438,70 @@ const rerollTodaysFocus = () => {
                 }}
               />
 
-              <button
-                type="button"
-                onClick={() => {
-                  setQ("");
-                  setTodayFocusOn(false);
-                  setTodayFocusKey("");
-                  setPromotedProverbRef("");
-                  setUrl({ q: "" });
-                }}
-                style={headerBtn}
-              >
-                Clear
-              </button>
-            </div>
+            <button
+  type="button"
+  onClick={() => {
+    setQ("");
+    setTodayFocusOn(false);
+    setTodayFocusKey("");
+    setPromotedProverbRef("");
+    setUrl({ q: "" });
+  }}
+  style={headerBtn}
+>
+  Clear
+</button>
+</div>
 
-            {q.trim().length > 0 && smartExpandedTerms.length > 1 && (
-              <div style={{ marginTop: 10 }}>
-                <div style={{ fontSize: 11, fontWeight: 900, color: "#64748b", marginBottom: 6 }}>
-                  Smart Topic Mapping
-                </div>
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  {smartExpandedTerms.slice(0, 8).map((term) => (
-                    <button
-                      key={term}
-                      type="button"
-                      onClick={() => applyTopic(term)}
-                      style={{
-                        padding: "6px 10px",
-                        borderRadius: 999,
-                        border: "1px solid rgba(99,102,241,0.14)",
-                        background: "rgba(99,102,241,0.08)",
-                        fontWeight: 800,
-                        fontSize: 11,
-                        cursor: "pointer",
-                        color: "#312e81",
-                      }}
-                    >
-                      {term}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+{q.trim().length > 0 && (
+  <div
+    style={{
+      marginBottom: 16,
+      padding: "12px 14px",
+      borderRadius: 12,
+      background: "rgba(99,102,241,0.08)",
+      border: "1px solid rgba(99,102,241,0.15)",
+      fontSize: 14,
+      color: "#4338ca",
+    }}
+  >
+    <div style={{ fontWeight: 800, marginBottom: 4 }}>
+      Wisdom for this moment
+    </div>
+    <div style={{ fontWeight: 600 }}>
+      {interpretQuery(q)}
+    </div>
+  </div>
+)}
 
+{q.trim().length > 0 && smartExpandedTerms.length > 1 && (
+  <div style={{ marginTop: 10 }}>
+    <div style={{ fontSize: 11, fontWeight: 900, color: "#64748b", marginBottom: 6 }}>
+      Smart Topic Mapping
+    </div>
+    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      {smartExpandedTerms.slice(0, 8).map((term) => (
+        <button
+          key={term}
+          type="button"
+          onClick={() => applyTopic(term)}
+          style={{
+            padding: "6px 10px",
+            borderRadius: 999,
+            border: "1px solid rgba(99,102,241,0.14)",
+            background: "rgba(99,102,241,0.08)",
+            fontWeight: 800,
+            fontSize: 11,
+            cursor: "pointer",
+            color: "#312e81",
+          }}
+        >
+          {term}
+        </button>
+      ))}
+    </div>
+  </div>
+)}
             {mode === "encouragement" && sub !== "all" && subCommentary[sub as Sub] && (
               <div
                 style={{
