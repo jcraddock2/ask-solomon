@@ -341,3 +341,72 @@ export function smartSearch<T extends SearchableItem>(items: T[], query: string)
     .sort((a, b) => b.score - a.score)
     .map((x) => x.item);
 }
+export function interpretQuery(query: string): string {
+  const q = query.toLowerCase();
+
+  if (
+    q.includes("behind") ||
+    q.includes("comparison") ||
+    q.includes("not enough") ||
+    q.includes("falling behind")
+  ) {
+    return "You may be feeling behind and unsure of your progress.";
+  }
+
+  if (
+    q.includes("second guessing") ||
+    q.includes("second-guessing") ||
+    q.includes("unsure") ||
+    q.includes("uncertain")
+  ) {
+    return "You may be feeling uncertain and struggling with confidence.";
+  }
+
+  if (
+    q.includes("confidence") ||
+    q.includes("courage") ||
+    q.includes("bold") ||
+    q.includes("insecure")
+  ) {
+    return "You may be wanting greater confidence and steadiness.";
+  }
+
+  if (
+    q.includes("boss") ||
+    q.includes("relationship") ||
+    q.includes("conflict") ||
+    q.includes("argument") ||
+    q.includes("tension")
+  ) {
+    return "You may be dealing with relational tension or a difficult person.";
+  }
+
+  if (
+    q.includes("money") ||
+    q.includes("debt") ||
+    q.includes("bills") ||
+    q.includes("financial")
+  ) {
+    return "You may be carrying pressure around provision or finances.";
+  }
+
+  if (
+    q.includes("direction") ||
+    q.includes("decision") ||
+    q.includes("what should i do") ||
+    q.includes("clarity")
+  ) {
+    return "You may be looking for clarity and direction in your next step.";
+  }
+
+  if (
+    q.includes("discouraged") ||
+    q.includes("tired") ||
+    q.includes("weary") ||
+    q.includes("exhausted")
+  ) {
+    return "You may be feeling discouraged and worn down.";
+  }
+
+  return "You may be looking for wisdom for what you’re facing right now.";
+}
