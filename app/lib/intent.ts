@@ -293,7 +293,126 @@ const INTENT_LANES: IntentLane[] = [
     ],
   },
 ];
-
+const LANE_EXPANSIONS: Record<string, string[]> = {
+  hurting: [
+    "hurt",
+    "pain",
+    "grief",
+    "loss",
+    "broken",
+    "sorrow",
+    "mourning",
+    "wounded",
+  ],
+  lonely: [
+    "alone",
+    "isolated",
+    "rejected",
+    "abandoned",
+    "unseen",
+    "left out",
+    "unsupported",
+  ],
+  discouraged: [
+    "tired",
+    "drained",
+    "stuck",
+    "defeated",
+    "hopeless",
+    "worn out",
+    "burned out",
+    "exhausted",
+  ],
+  direction: [
+    "guidance",
+    "clarity",
+    "decision",
+    "wisdom",
+    "next step",
+    "confused",
+    "lost",
+    "discernment",
+  ],
+  money: [
+    "bills",
+    "debt",
+    "financial",
+    "provision",
+    "lack",
+    "income",
+    "expenses",
+    "budget",
+  ],
+  fear: [
+    "afraid",
+    "anxious",
+    "worried",
+    "panic",
+    "stress",
+    "overwhelmed",
+    "uneasy",
+  ],
+  conflict: [
+    "argument",
+    "strife",
+    "friction",
+    "drama",
+    "difficult person",
+    "difficult boss",
+    "disrespected",
+    "ignored",
+    "overlooked",
+  ],
+  anger: [
+    "angry",
+    "mad",
+    "frustrated",
+    "resentful",
+    "bitter",
+    "rage",
+    "irritated",
+  ],
+  temptation: [
+    "tempted",
+    "lust",
+    "compromise",
+    "weakness",
+    "self control",
+    "discipline",
+    "impulse",
+    "addiction",
+  ],
+  leadership: [
+    "boss",
+    "manager",
+    "supervisor",
+    "authority",
+    "respect",
+    "responsibility",
+    "influence",
+    "workplace",
+  ],
+  confidence: [
+    "courage",
+    "bold",
+    "boldness",
+    "insecure",
+    "self doubt",
+    "approval",
+    "hesitant",
+    "not good enough",
+  ],
+  comparison: [
+    "behind",
+    "behind in life",
+    "falling behind",
+    "not enough",
+    "progress",
+    "late in life",
+    "stuck",
+    "discouraged",
+  ],
+};
 function normalize(input: string): string {
   return input
     .toLowerCase()
@@ -358,6 +477,7 @@ export function smartSearch<T extends SearchableItem>(items: T[], query: string)
   const expanded = expandSmartTerms(query);
   const interpreted = interpretQueryAdvanced(query);
 const lane = interpreted.lane || detectIntentLane(query);
+  const laneTerms = lane ? (LANE_EXPANSIONS[lane] || []) : [];
   const scored = items.map((item) => {
     let score = 0;
 
@@ -391,6 +511,17 @@ if (lane) {
 }
 if (lane && title.includes(lane)) score += 8;
 if (lane && body.includes(lane)) score += 6;
+   for (const term of laneTerms) {
+  const normalizedTerm = normalize(term);
+
+  if (title.includes(normalizedTerm)) score += 5;
+  if (body.includes(normalizedTerm)) score += 4;
+  if (tags.includes(normalizedTerm)) score += 6;
+  if (keywords.includes(normalizedTerm)) score += 6;
+  if (topics.includes(normalizedTerm)) score += 6;
+  if (intentTags.includes(normalizedTerm)) score += 7;
+  if (moodTags.includes(normalizedTerm)) score += 6;
+} 
     return { item, score };
   });
 
