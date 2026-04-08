@@ -181,13 +181,18 @@ const INTENT_LANES: IntentLane[] = [
       "drama",
       "offense",
       "offended",
-      "offense",
       "relationship tension",
       "friction",
       "division",
       "quarrel",
       "difficult person",
       "difficult boss",
+      "mean boss",
+      "toxic boss",
+      "toxic relationship",
+      "disrespected",
+      "ignored",
+      "overlooked",
     ],
   },
   {
@@ -230,6 +235,8 @@ const INTENT_LANES: IntentLane[] = [
       "leader",
       "leadership",
       "boss",
+      "manager",
+      "supervisor",
       "team",
       "people",
       "influence",
@@ -242,12 +249,54 @@ const INTENT_LANES: IntentLane[] = [
       "example",
       "integrity",
       "correction",
+      "work",
+      "workplace",
+    ],
+  },
+  {
+    name: "confidence",
+    terms: [
+      "confidence",
+      "confident",
+      "courage",
+      "bold",
+      "boldness",
+      "insecure",
+      "insecurity",
+      "self doubt",
+      "self-doubt",
+      "second guessing",
+      "second-guessing",
+      "hesitant",
+      "fear of people",
+      "approval",
+      "rejected",
+      "not good enough",
+    ],
+  },
+  {
+    name: "comparison",
+    terms: [
+      "behind",
+      "behind in life",
+      "falling behind",
+      "comparison",
+      "comparing",
+      "everyone else",
+      "not enough",
+      "not where i should be",
+      "late in life",
+      "stuck behind",
     ],
   },
 ];
 
 function normalize(input: string): string {
-  return input.toLowerCase().replace(/[^\w\s']/g, " ").replace(/\s+/g, " ").trim();
+  return input
+    .toLowerCase()
+    .replace(/[^\w\s']/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function tokenize(input: string): string[] {
@@ -255,6 +304,10 @@ function tokenize(input: string): string[] {
     .split(" ")
     .map((t) => t.trim())
     .filter((t) => t.length > 1 && !STOPWORDS.has(t));
+}
+
+function includesPhrase(query: string, phrases: string[]): boolean {
+  return phrases.some((phrase) => normalize(query).includes(normalize(phrase)));
 }
 
 function findMatchingLanes(query: string): IntentLane[] {
@@ -277,6 +330,7 @@ export function expandSmartTerms(query: string): string[] {
 
   for (const lane of matchedLanes) {
     expanded.add(lane.name);
+
     for (const term of lane.terms) {
       const normalized = normalize(term);
       if (normalized && normalized.length > 2) {
@@ -341,71 +395,245 @@ export function smartSearch<T extends SearchableItem>(items: T[], query: string)
     .sort((a, b) => b.score - a.score)
     .map((x) => x.item);
 }
+
 export function interpretQuery(query: string): string {
-  const q = query.toLowerCase();
+  const q = normalize(query);
 
+  // HIGH-SPECIFICITY: boss / authority / workplace conflict
   if (
-    q.includes("behind") ||
-    q.includes("comparison") ||
-    q.includes("not enough") ||
-    q.includes("falling behind")
+    includesPhrase(q, [
+      "my boss",
+      "boss is",
+      "mean boss",
+      "difficult boss",
+      "toxic boss",
+      "manager",
+      "supervisor",
+    ])
   ) {
-    return "You may be feeling behind and unsure of your progress.";
+    if (
+      includesPhrase(q, [
+        "mean",
+        "difficult",
+        "toxic",
+        "rude",
+        "harsh",
+        "unfair",
+        "disrespectful",
+      ])
+    ) {
+      return "You may be dealing with a difficult boss or unhealthy work dynamic.";
+    }
+
+    return "You may be carrying stress from a difficult work relationship or authority figure.";
   }
 
+  // HIGH-SPECIFICITY: behind / comparison
   if (
-    q.includes("second guessing") ||
-    q.includes("second-guessing") ||
-    q.includes("unsure") ||
-    q.includes("uncertain")
+    includesPhrase(q, [
+      "behind in life",
+      "falling behind",
+      "everyone else",
+      "not where i should be",
+      "late in life",
+      "behind",
+      "comparison",
+      "comparing myself",
+    ])
   ) {
-    return "You may be feeling uncertain and struggling with confidence.";
+    return "You may be feeling behind and comparing your progress to others.";
   }
 
+  // HIGH-SPECIFICITY: self-doubt / indecision
   if (
-    q.includes("confidence") ||
-    q.includes("courage") ||
-    q.includes("bold") ||
-    q.includes("insecure")
+    includesPhrase(q, [
+      "second guessing",
+      "second-guessing",
+      "keep doubting",
+      "self doubt",
+      "self-doubt",
+      "can't decide",
+      "cannot decide",
+      "unsure",
+      "uncertain",
+    ])
   ) {
-    return "You may be wanting greater confidence and steadiness.";
+    return "You may be stuck in self-doubt and struggling to trust your decisions.";
   }
 
+  // HIGH-SPECIFICITY: direction / lost
   if (
-    q.includes("boss") ||
-    q.includes("relationship") ||
-    q.includes("conflict") ||
-    q.includes("argument") ||
-    q.includes("tension")
+    includesPhrase(q, [
+      "i feel lost",
+      "no direction",
+      "need direction",
+      "what should i do",
+      "what do i do",
+      "which way",
+      "next step",
+      "need clarity",
+      "need guidance",
+    ])
   ) {
-    return "You may be dealing with relational tension or a difficult person.";
+    return "You may be feeling uncertain and searching for clear direction.";
   }
 
+  // HIGH-SPECIFICITY: money pressure
   if (
-    q.includes("money") ||
-    q.includes("debt") ||
-    q.includes("bills") ||
-    q.includes("financial")
+    includesPhrase(q, [
+      "no money",
+      "money stress",
+      "financial stress",
+      "bills",
+      "debt",
+      "broke",
+      "can't pay",
+      "cannot pay",
+      "expenses",
+    ])
   ) {
-    return "You may be carrying pressure around provision or finances.";
+    return "You may be feeling pressure around money, provision, or stability.";
   }
 
+  // HIGH-SPECIFICITY: loneliness / rejection
   if (
-    q.includes("direction") ||
-    q.includes("decision") ||
-    q.includes("what should i do") ||
-    q.includes("clarity")
+    includesPhrase(q, [
+      "no one cares",
+      "nobody cares",
+      "lonely",
+      "alone",
+      "left out",
+      "rejected",
+      "abandoned",
+      "unseen",
+    ])
+  ) {
+    return "You may be feeling alone, rejected, or unsupported right now.";
+  }
+
+  // HIGH-SPECIFICITY: burnout / exhaustion
+  if (
+    includesPhrase(q, [
+      "burned out",
+      "burnt out",
+      "exhausted",
+      "worn out",
+      "drained",
+      "tired",
+    ])
+  ) {
+    return "You may be feeling worn down and running low on energy.";
+  }
+
+  // HIGH-SPECIFICITY: anger / frustration
+  if (
+    includesPhrase(q, [
+      "angry",
+      "mad",
+      "furious",
+      "frustrated",
+      "resentful",
+      "bitter",
+    ])
+  ) {
+    return "You may be dealing with frustration, anger, or unresolved hurt.";
+  }
+
+  // MID-LEVEL: confidence
+  if (
+    includesPhrase(q, [
+      "confidence",
+      "confident",
+      "courage",
+      "bold",
+      "insecure",
+      "not good enough",
+      "approval",
+      "fear of people",
+    ])
+  ) {
+    return "You may be struggling with confidence or a sense of self-worth.";
+  }
+
+  // MID-LEVEL: relationship conflict
+  if (
+    includesPhrase(q, [
+      "relationship",
+      "conflict",
+      "argument",
+      "drama",
+      "friction",
+      "tension",
+      "difficult person",
+      "disrespected",
+      "ignored",
+      "overlooked",
+    ])
+  ) {
+    return "You may be facing tension or conflict in an important relationship.";
+  }
+
+  // MID-LEVEL: direction
+  if (
+    includesPhrase(q, [
+      "direction",
+      "decision",
+      "clarity",
+      "guidance",
+      "wisdom",
+      "discernment",
+    ])
   ) {
     return "You may be looking for clarity and direction in your next step.";
   }
 
+  // MID-LEVEL: discouragement
   if (
-    q.includes("discouraged") ||
-    q.includes("tired") ||
-    q.includes("weary") ||
-    q.includes("exhausted")
+    includesPhrase(q, [
+      "discouraged",
+      "hopeless",
+      "down",
+      "defeated",
+      "giving up",
+      "stuck",
+    ])
   ) {
-    return "You may be feeling discouraged and worn down.";
+    return "You may be feeling discouraged and losing momentum.";
+  }
+
+  // MID-LEVEL: fear / anxiety
+  if (
+    includesPhrase(q, [
+      "fear",
+      "afraid",
+      "scared",
+      "anxious",
+      "anxiety",
+      "worried",
+      "worry",
+      "panic",
+      "overwhelmed",
+      "stress",
+    ])
+  ) {
+    return "You may be carrying fear, anxiety, or inner pressure right now.";
+  }
+
+  // MID-LEVEL: hurting
+  if (
+    includesPhrase(q, [
+      "hurting",
+      "hurt",
+      "heartbroken",
+      "broken",
+      "pain",
+      "grief",
+      "loss",
+      "sorrow",
+      "mourning",
+    ])
+  ) {
+    return "You may be carrying pain, grief, or emotional hurt.";
   }
 
   return "You may be looking for wisdom for what you’re facing right now.";
