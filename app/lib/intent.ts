@@ -16,7 +16,10 @@ type IntentLane = {
   name: string;
   terms: string[];
 };
-
+type Interpretation = {
+  message: string;
+  lane: string | null;
+};
 const STOPWORDS = new Set([
   "i",
   "am",
@@ -637,4 +640,280 @@ export function interpretQuery(query: string): string {
   }
 
   return "You may be looking for wisdom for what you’re facing right now.";
+}
+export function interpretQueryAdvanced(query: string): Interpretation {
+  const q = normalize(query);
+
+  if (
+    includesPhrase(q, [
+      "my boss",
+      "boss is",
+      "mean boss",
+      "difficult boss",
+      "toxic boss",
+      "manager",
+      "supervisor",
+    ])
+  ) {
+    if (
+      includesPhrase(q, [
+        "mean",
+        "difficult",
+        "toxic",
+        "rude",
+        "harsh",
+        "unfair",
+        "disrespectful",
+      ])
+    ) {
+      return {
+        message: "You may be dealing with a difficult boss or unhealthy work dynamic.",
+        lane: "conflict",
+      };
+    }
+
+    return {
+      message: "You may be carrying stress from a difficult work relationship or authority figure.",
+      lane: "leadership",
+    };
+  }
+
+  if (
+    includesPhrase(q, [
+      "behind in life",
+      "falling behind",
+      "everyone else",
+      "not where i should be",
+      "late in life",
+      "behind",
+      "comparison",
+      "comparing myself",
+    ])
+  ) {
+    return {
+      message: "You may be feeling behind and comparing your progress to others.",
+      lane: "comparison",
+    };
+  }
+
+  if (
+    includesPhrase(q, [
+      "second guessing",
+      "second-guessing",
+      "keep doubting",
+      "self doubt",
+      "self-doubt",
+      "can't decide",
+      "cannot decide",
+      "unsure",
+      "uncertain",
+    ])
+  ) {
+    return {
+      message: "You may be stuck in self-doubt and struggling to trust your decisions.",
+      lane: "confidence",
+    };
+  }
+
+  if (
+    includesPhrase(q, [
+      "i feel lost",
+      "no direction",
+      "need direction",
+      "what should i do",
+      "what do i do",
+      "which way",
+      "next step",
+      "need clarity",
+      "need guidance",
+    ])
+  ) {
+    return {
+      message: "You may be feeling uncertain and searching for clear direction.",
+      lane: "direction",
+    };
+  }
+
+  if (
+    includesPhrase(q, [
+      "no money",
+      "money stress",
+      "financial stress",
+      "bills",
+      "debt",
+      "broke",
+      "can't pay",
+      "cannot pay",
+      "expenses",
+    ])
+  ) {
+    return {
+      message: "You may be feeling pressure around money, provision, or stability.",
+      lane: "money",
+    };
+  }
+
+  if (
+    includesPhrase(q, [
+      "no one cares",
+      "nobody cares",
+      "lonely",
+      "alone",
+      "left out",
+      "rejected",
+      "abandoned",
+      "unseen",
+    ])
+  ) {
+    return {
+      message: "You may be feeling alone, rejected, or unsupported right now.",
+      lane: "lonely",
+    };
+  }
+
+  if (
+    includesPhrase(q, [
+      "burned out",
+      "burnt out",
+      "exhausted",
+      "worn out",
+      "drained",
+      "tired",
+    ])
+  ) {
+    return {
+      message: "You may be feeling worn down and running low on energy.",
+      lane: "discouraged",
+    };
+  }
+
+  if (
+    includesPhrase(q, [
+      "angry",
+      "mad",
+      "furious",
+      "frustrated",
+      "resentful",
+      "bitter",
+    ])
+  ) {
+    return {
+      message: "You may be dealing with frustration, anger, or unresolved hurt.",
+      lane: "anger",
+    };
+  }
+
+  if (
+    includesPhrase(q, [
+      "confidence",
+      "confident",
+      "courage",
+      "bold",
+      "insecure",
+      "not good enough",
+      "approval",
+      "fear of people",
+    ])
+  ) {
+    return {
+      message: "You may be struggling with confidence or a sense of self-worth.",
+      lane: "confidence",
+    };
+  }
+
+  if (
+    includesPhrase(q, [
+      "relationship",
+      "conflict",
+      "argument",
+      "drama",
+      "friction",
+      "tension",
+      "difficult person",
+      "disrespected",
+      "ignored",
+      "overlooked",
+    ])
+  ) {
+    return {
+      message: "You may be facing tension or conflict in an important relationship.",
+      lane: "conflict",
+    };
+  }
+
+  if (
+    includesPhrase(q, [
+      "direction",
+      "decision",
+      "clarity",
+      "guidance",
+      "wisdom",
+      "discernment",
+    ])
+  ) {
+    return {
+      message: "You may be looking for clarity and direction in your next step.",
+      lane: "direction",
+    };
+  }
+
+  if (
+    includesPhrase(q, [
+      "discouraged",
+      "hopeless",
+      "down",
+      "defeated",
+      "giving up",
+      "stuck",
+    ])
+  ) {
+    return {
+      message: "You may be feeling discouraged and losing momentum.",
+      lane: "discouraged",
+    };
+  }
+
+  if (
+    includesPhrase(q, [
+      "fear",
+      "afraid",
+      "scared",
+      "anxious",
+      "anxiety",
+      "worried",
+      "worry",
+      "panic",
+      "overwhelmed",
+      "stress",
+    ])
+  ) {
+    return {
+      message: "You may be carrying fear, anxiety, or inner pressure right now.",
+      lane: "fear",
+    };
+  }
+
+  if (
+    includesPhrase(q, [
+      "hurting",
+      "hurt",
+      "heartbroken",
+      "broken",
+      "pain",
+      "grief",
+      "loss",
+      "sorrow",
+      "mourning",
+    ])
+  ) {
+    return {
+      message: "You may be carrying pain, grief, or emotional hurt.",
+      lane: "hurting",
+    };
+  }
+
+  return {
+    message: "You may be looking for wisdom for what you’re facing right now.",
+    lane: null,
+  };
 }
