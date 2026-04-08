@@ -5,7 +5,7 @@ import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isProUser } from "./lib/access";
 import { searchProverbsScored } from "./lib/proverbs";
-import { smartSearch, interpretQuery } from "./lib/intent";
+import { smartSearch, interpretQueryAdvanced } from "./lib/intent";
 import {
   DATA,
   MODES,
@@ -1469,7 +1469,7 @@ const rerollTodaysFocus = () => {
       Wisdom for this moment
     </div>
     <div style={{ fontWeight: 600 }}>
-      {interpretQuery(q)}
+      {interpretQueryAdvanced(q).message}
     </div>
   </div>
 )}
