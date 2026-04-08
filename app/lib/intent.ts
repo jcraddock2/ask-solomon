@@ -356,8 +356,8 @@ export function smartSearch<T extends SearchableItem>(items: T[], query: string)
   if (!q) return items;
 
   const expanded = expandSmartTerms(query);
-  const lane = detectIntentLane(query);
-
+  const interpreted = interpretQueryAdvanced(query);
+const lane = interpreted.lane || detectIntentLane(query);
   const scored = items.map((item) => {
     let score = 0;
 
@@ -382,14 +382,15 @@ export function smartSearch<T extends SearchableItem>(items: T[], query: string)
       if (moodTags.includes(term)) score += 6;
     }
 
-    if (lane) {
-      if (topics.includes(lane)) score += 8;
-      if (intentTags.includes(lane)) score += 10;
-      if (moodTags.includes(lane)) score += 8;
-      if (tags.includes(lane)) score += 7;
-      if (keywords.includes(lane)) score += 7;
-    }
-
+if (lane) {
+  if (topics.includes(lane)) score += 10;
+  if (intentTags.includes(lane)) score += 14;
+  if (moodTags.includes(lane)) score += 10;
+  if (tags.includes(lane)) score += 8;
+  if (keywords.includes(lane)) score += 8;
+}
+if (lane && title.includes(lane)) score += 8;
+if (lane && body.includes(lane)) score += 6;
     return { item, score };
   });
 
