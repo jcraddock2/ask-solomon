@@ -938,15 +938,6 @@ const smartExpandedTerms = useMemo(() => {
   return Array.from(new Set([advanced.lane, ...expanded]));
 }, [q]);
 
-    return Array.from(
-      new Set(
-        expandSmartTerms(q).filter(
-          (term) => term && term.length > 2 && !STOPWORDS.has(term.toLowerCase())
-        )
-      )
-    );
-  }, [q]);
-
 const proverbMatches = useMemo<ProverbMatch[]>(() => {
   const query = q.trim();
   if (!query) return [];
