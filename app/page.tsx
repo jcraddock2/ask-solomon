@@ -927,7 +927,7 @@ const baseResults = useMemo(() => {
     return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
   }, [baseResults, todayFocusOn, todayFocusKey]);
 
- const smartExpandedTerms = useMemo(() => {
+const smartExpandedTerms = useMemo(() => {
   if (q.trim().length === 0) return [];
 
   const advanced = interpretQueryAdvanced(q);
@@ -935,12 +935,7 @@ const baseResults = useMemo(() => {
 
   if (!advanced.lane) return expanded;
 
-  return Array.from(
-    new Set([
-      advanced.lane,
-      ...expanded,
-    ])
-  );
+  return Array.from(new Set([advanced.lane, ...expanded]));
 }, [q]);
 
     return Array.from(
