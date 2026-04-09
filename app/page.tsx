@@ -170,27 +170,9 @@ function tokenizeQuery(q: string): string[] {
     .filter(Boolean);
 }
 
-function expandSmartTerms(q: string): string[] {
-  const tokens = tokenizeQuery(q);
-  const expanded = new Set<string>();
+// NOTE: expandSmartTerms is now imported from ./lib/intent
+// DO NOT redefine it here
 
-  for (const token of tokens) {
-    expanded.add(token);
-
-    for (const [root, related] of Object.entries(SMART_TOPIC_MAP)) {
-      if (token === root || related.includes(token)) {
-        expanded.add(root);
-        for (const r of related) expanded.add(r);
-      }
-    }
-  }
-
-  if (tokens.length === 1 && SMART_TOPIC_MAP[tokens[0]]) {
-    for (const r of SMART_TOPIC_MAP[tokens[0]]) expanded.add(r);
-  }
-
-  return Array.from(expanded);
-}
 function scoreProverbMatch(
   proverb: { ref: string; text: string; topics: string[] },
   q: string,
@@ -245,6 +227,7 @@ function scoreProverbMatch(
     why,
   };
 }
+
 function PageInner() {
   const router = useRouter();
   const sp = useSearchParams();
@@ -281,7 +264,6 @@ function PageInner() {
       "radial-gradient(1200px 600px at 20% 10%, rgba(99,102,241,0.14), rgba(255,255,255,0)), radial-gradient(900px 500px at 80% 0%, rgba(16,185,129,0.12), rgba(255,255,255,0)), #f8fafc",
     padding: 18,
   };
-
   const pageStyle: React.CSSProperties = {
     maxWidth: 920,
     margin: "0 auto",
