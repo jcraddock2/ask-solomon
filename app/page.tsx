@@ -5,7 +5,11 @@ import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isProUser } from "./lib/access";
 import { searchProverbsScored } from "./lib/proverbs";
-import { smartSearch, interpretQueryAdvanced } from "./lib/intent";
+import {
+  smartSearch,
+  interpretQueryAdvanced,
+  expandSmartTerms,
+} from "./lib/intent";
 import {
   DATA,
   MODES,
@@ -19,7 +23,6 @@ import {
   type Sub,
   type VerseItem,
 } from "./lib/verses";
-
 function safeParse<T>(raw: string | null, fallback: T): T {
   if (!raw) return fallback;
   try {
@@ -924,33 +927,21 @@ const baseResults = useMemo(() => {
     return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
   }, [baseResults, todayFocusOn, todayFocusKey]);
 
-  const smartExpandedTerms = useMemo(() => {
-    const STOPWORDS = new Set([
-      "i",
-      "am",
-      "im",
-      "ive",
-      "me",
-      "my",
-      "the",
-      "a",
-      "an",
-      "and",
-      "or",
-      "to",
-      "for",
-      "of",
-      "in",
-      "on",
-      "at",
-      "is",
-      "are",
-      "be",
-      "feel",
-      "feeling",
-      "need",
-      "want",
-    ]);
+ const smartExpandedTerms = useMemo(() => {
+  if (q.trim().length === 0) return [];
+
+  const advanced = interpretQueryAdvanced(q);
+  const expanded = expandSmartTerms(q);
+
+  if (!advanced.lane) return expanded;
+
+  return Array.from(
+    new Set([
+      advanced.lane,
+      ...expanded,
+    ])
+  );
+}, [q]);
 
     return Array.from(
       new Set(
