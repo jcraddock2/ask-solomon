@@ -10,6 +10,7 @@ import {
   interpretQueryAdvanced,
   expandSmartTerms,
 } from "./lib/intent";
+import { getWisdomForMoment } from "./lib/getWisdomForMoment";
 import {
   DATA,
   MODES,
@@ -239,7 +240,11 @@ function PageInner() {
   const [mode, setMode] = useState<Mode>(rawUrlMode);
   const [sub, setSub] = useState<Sub | "all">(rawUrlSub);
   const [q, setQ] = useState<string>(urlQ);
-
+  
+const insightData =
+  q.trim().length > 0
+    ? getWisdomForMoment(q)
+    : { insight: "", guidance: "" };
   const [isPro, setIsPro] = useState(false);
 
   const [favoritesOnly, setFavoritesOnly] = useState(false);
