@@ -1827,64 +1827,101 @@ const rerollTodaysFocus = () => {
                     </div>
                   );
                 })()}
+{topResult && (
+  <div
+  {topResult && (
+  <div
+    style={{
+      marginBottom: 18,
+      padding: "14px 16px",
+      borderRadius: 14,
+      background: "rgba(0,0,0,0.04)",
+      border: "1px solid rgba(0,0,0,0.08)",
+    }}
+  >
+    <div
+      style={{
+        fontSize: 11,
+        fontWeight: 900,
+        color: "#64748b",
+        marginBottom: 6,
+      }}
+    >
+      This may speak to you
+    </div>
 
-                {proverbMatches.length > 1 && (
-                  <>
-                    <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>
-                      More Proverbs
-                    </div>
+    <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 6 }}>
+      {topResult.item.title}
+    </div>
 
-                    <div style={{ display: "grid", gap: 10 }}>
-                      {proverbMatches.slice(1).map((p) => {
-                        const proverbKey = `proverb-${p.ref}`;
-                        const isFav = !!favoriteKeys[proverbKey];
-                        const isCopied = copiedKey === proverbKey;
-                        const isPromoted = promotedProverbRef === p.ref;
+    <div style={{ fontSize: 14, marginBottom: 6 }}>
+      {topResult.item.body}
+    </div>
 
-                        const proverbTitle =
-                          p.topics && p.topics.length > 0
-                            ? p.topics[0].charAt(0).toUpperCase() + p.topics[0].slice(1)
-                            : "More Proverbs";
+    <div style={{ fontSize: 12, color: "#64748b" }}>
+      {topResult.item.ref}
+    </div>
+  </div>
+)}
 
-                        const proverbItem = {
-                          title: proverbTitle,
-                          body: p.text,
-                          ref: p.ref,
-                        } as VerseItem;
+{proverbMatches.length > 1 && (
+  <>
+    <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>
+      More Proverbs
+    </div>
 
-                        if (isPromoted) {
-                          return (
-                            <div
-                              key={p.ref}
-                              style={{
-                                ...softCardStyle,
-                                border: "1px solid rgba(99,102,241,0.18)",
-                                boxShadow: "0 18px 44px rgba(0,0,0,0.10)",
-                                background:
-                                  "linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,0.96))",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  gap: 10,
-                                }}
-                              >
-                                <div style={{ flex: 1 }}>
-                                  <div
-                                    style={{
-                                      display: "inline-flex",
-                                      alignItems: "center",
-                                      gap: 8,
-                                      padding: "6px 10px",
-                                      borderRadius: 999,
-                                      background: "rgba(99,102,241,0.08)",
-                                      color: "#4338ca",
-                                      fontWeight: 900,
-                                      fontSize: 11,
-                                      marginBottom: 10,
-                                    }}
+    <div style={{ display: "grid", gap: 10 }}>
+      {proverbMatches.slice(1).map((p) => {
+        const proverbKey = `proverb-${p.ref}`;
+        const isFav = !!favoriteKeys[proverbKey];
+        const isCopied = copiedKey === proverbKey;
+        const isPromoted = promotedProverbRef === p.ref;
+
+        const proverbTitle =
+          p.topics && p.topics.length > 0
+            ? p.topics[0].charAt(0).toUpperCase() + p.topics[0].slice(1)
+            : "More Proverbs";
+
+        const proverbItem = {
+          title: proverbTitle,
+          body: p.text,
+          ref: p.ref,
+        } as VerseItem;
+
+        if (isPromoted) {
+          return (
+            <div
+              key={p.ref}
+              style={{
+                ...softCardStyle,
+                border: "1px solid rgba(99,102,241,0.18)",
+                boxShadow: "0 18px 44px rgba(0,0,0,0.10)",
+                background:
+                  "linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,0.96))",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: 10,
+                }}
+              >
+                <div style={{ flex: 1 }}>
+                  <div
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 8,
+                      padding: "6px 10px",
+                      borderRadius: 999,
+                      background: "rgba(99,102,241,0.08)",
+                      color: "#4338ca",
+                      fontWeight: 900,
+                      fontSize: 11,
+                      marginBottom: 10,
+                    }}
+                  >
                                   >
                                     From Proverbs Search
                                   </div>
