@@ -1412,7 +1412,7 @@ const rerollTodaysFocus = () => {
 </button>
 </div>
 
-{q.trim().length > 0 && (
+{q.trim().length > 0 && insightData.insight && (
   <div
     style={{
       marginBottom: 16,
@@ -1427,8 +1427,13 @@ const rerollTodaysFocus = () => {
     <div style={{ fontWeight: 800, marginBottom: 4 }}>
       Wisdom for this moment
     </div>
-    <div style={{ fontWeight: 600 }}>
-      {interpretQueryAdvanced(q).message}
+
+    <div style={{ fontWeight: 600, marginBottom: 6 }}>
+      {insightData.insight}
+    </div>
+
+    <div style={{ fontSize: 13, color: "#555", fontWeight: 500 }}>
+      {insightData.guidance}
     </div>
   </div>
 )}
