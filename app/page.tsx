@@ -961,6 +961,7 @@ function PageInner() {
   };
 
   const renderEmptyState = () => {
+   const renderEmptyState = () => {
     if (favoritesOnly && favoritesCount === 0) {
       return (
         <div
@@ -992,38 +993,7 @@ function PageInner() {
 
   return (
     <div style={outerStyle}>
-    if (favoritesOnly && favoritesCount === 0) {
-      return (
-        <div
-          style={{
-            color: "#64748b",
-            fontSize: 14,
-            padding: 8,
-            fontWeight: 800,
-          }}
-        >
-          You haven’t saved any favorites yet. Tap ☆ on a verse to save it.
-        </div>
-      );
-    }
-
-    return (
-      <div
-        style={{
-          color: "#64748b",
-          fontSize: 14,
-          padding: 8,
-          fontWeight: 800,
-        }}
-      >
-        No matches. Try a different keyword.
-      </div>
-    );
-  };
-
-  return (
-    <div style={outerStyle}>
-      <main style={pageStyle}>
+      <main style={pageStyle}> 
         <header style={{ marginBottom: 18 }}>
           <div style={headerRow}>
             <div>
