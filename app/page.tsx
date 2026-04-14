@@ -10,7 +10,6 @@ import {
   interpretQueryAdvanced,
   expandSmartTerms,
 } from "./lib/intent";
-import { getWisdomForMoment } from "./lib/getWisdomForMoment";
 import {
   DATA,
   MODES,
@@ -24,7 +23,6 @@ import {
   type Sub,
   type VerseItem,
 } from "./lib/verses";
-
 function safeParse<T>(raw: string | null, fallback: T): T {
   if (!raw) return fallback;
   try {
@@ -43,12 +41,7 @@ const SITUATION_PRESETS = [
   { label: "🌧 Feeling Discouraged", value: "discouraged" },
 ] as const;
 
-type ShareTemplate =
-  | "classic"
-  | "dark"
-  | "gold"
-  | "daily"
-  | "gradientModern";
+type ShareTemplate = "classic" | "dark" | "gold" | "daily" | "gradientModern";
 
 type ProverbMatch = {
   ref: string;
@@ -106,7 +99,6 @@ function itemSubs(item: any): string[] {
   const subs: string[] = [];
 
   if (typeof item?.sub === "string" && item.sub.trim()) subs.push(item.sub);
-
   if (Array.isArray(item?.subs)) {
     for (const s of item.subs) {
       if (typeof s === "string" && s.trim()) subs.push(s);
@@ -136,7 +128,6 @@ function renderBookMatchMeta(match: any): string {
   const parts: string[] = [];
 
   if (match?.pages) parts.push(String(match.pages));
-
   if (Array.isArray(match?.chapters) && match.chapters.length > 0) {
     parts.push(match.chapters.join(" • "));
   } else if (match?.chapter) {
@@ -147,29 +138,11 @@ function renderBookMatchMeta(match: any): string {
 }
 
 const SMART_TOPIC_MAP: Record<string, string[]> = {
-  fear: [
-    "fear",
-    "afraid",
-    "anxiety",
-    "anxious",
-    "worry",
-    "worried",
-    "courage",
-    "confidence",
-    "trust",
-  ],
+  fear: ["fear", "afraid", "anxiety", "anxious", "worry", "worried", "courage", "confidence", "trust"],
   anxiety: ["anxiety", "anxious", "fear", "worry", "peace", "trust", "rest"],
   peace: ["peace", "calm", "rest", "quiet", "stillness", "trust"],
   stress: ["stress", "pressure", "burden", "anxiety", "peace", "rest", "strength"],
-  direction: [
-    "direction",
-    "guidance",
-    "counsel",
-    "planning",
-    "understanding",
-    "wisdom",
-    "discernment",
-  ],
+  direction: ["direction", "guidance", "counsel", "planning", "understanding", "wisdom", "discernment"],
   wisdom: ["wisdom", "understanding", "discernment", "knowledge", "instruction", "insight"],
   discipline: ["discipline", "self-control", "instruction", "correction", "training", "diligence"],
   diligence: ["diligence", "hard work", "work", "lazy", "sluggard", "effort", "discipline"],
@@ -197,8 +170,8 @@ function tokenizeQuery(q: string): string[] {
     .filter(Boolean);
 }
 
-// expandSmartTerms is imported from ./lib/intent
-// do not redefine it here
+// NOTE: expandSmartTerms is now imported from ./lib/intent
+// DO NOT redefine it here
 
 function scoreProverbMatch(
   proverb: { ref: string; text: string; topics: string[] },
@@ -268,24 +241,22 @@ function PageInner() {
   const [q, setQ] = useState<string>(urlQ);
 
   const [isPro, setIsPro] = useState(false);
+
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [favoriteKeys, setFavoriteKeys] = useState<Record<string, boolean>>({});
+
   const [copiedKey, setCopiedKey] = useState<string>("");
   const [savedKey, setSavedKey] = useState<string>("");
   const [favPulse, setFavPulse] = useState(false);
+
   const [todayFocusOn, setTodayFocusOn] = useState(false);
   const [todayFocusKey, setTodayFocusKey] = useState<string>("");
+
   const [searchFocused, setSearchFocused] = useState(false);
   const [promotedProverbRef, setPromotedProverbRef] = useState<string>("");
+
   const [shareTemplate, setShareTemplate] =
     useState<ShareTemplate>("gradientModern");
-
-  const insightData = useMemo(() => {
-    if (q.trim().length === 0) {
-      return { insight: "", guidance: "" };
-    }
-    return getWisdomForMoment(q);
-  }, [q]);
 
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
@@ -293,7 +264,6 @@ function PageInner() {
       "radial-gradient(1200px 600px at 20% 10%, rgba(99,102,241,0.14), rgba(255,255,255,0)), radial-gradient(900px 500px at 80% 0%, rgba(16,185,129,0.12), rgba(255,255,255,0)), #f8fafc",
     padding: 18,
   };
-
   const pageStyle: React.CSSProperties = {
     maxWidth: 920,
     margin: "0 auto",
@@ -458,6 +428,111 @@ function PageInner() {
     router.replace(qs ? `/?${qs}` : "/");
   };
 
+  useEffect(() => {
+    setMode(rawUrlMode);
+    setSub(rawUrlSub);
+    setQ(urlQ);
+  }, [rawUrlMode, rawUrlSub, urlQ]);
+
+  const favoritesCount = useMemo(
+    () => Object.keys(favoriteKeys).filter((k) => favoriteKeys[k]).length,
+    [favoriteKeys]
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setFavPulse(true);
+    const t = window.setTimeout(() => setFavPulse(false), 260);
+    return () => window.clearTimeout(t);
+  }, [favoritesCount]);
+
+  const toggleFavorite = (key: string) => {
+    setFavoriteKeys((prev) => {
+      const next = { ...prev };
+      const alreadySaved = !!next[key];
+
+      if (alreadySaved) {
+        delete next[key];
+      } else {
+        next[key] = true;
+        setSavedKey(key);
+        window.setTimeout(() => setSavedKey(""), 900);
+      }
+
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    if (favoritesOnly && favoritesCount === 0) {
+      setFavoritesOnly(false);
+    }
+  }, [favoritesOnly, favoritesCount]);
+
+  const handleCopy = async (
+    item: Pick<VerseItem, "title" | "body" | "ref">,
+    key: string
+  ) => {
+    const text = `${item.title}\n\n${item.body}\n\n${item.ref}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedKey(key);
+      window.setTimeout(() => setCopiedKey(""), 900);
+    } catch {
+      // silent
+    }
+  };
+
+  const buildShareText = (item: Pick<VerseItem, "title" | "body" | "ref">) => {
+    const link = "https://ask-solomon.app";
+
+    return `Ask Solomon
+
+${item.title}
+
+${item.body}
+
+${item.ref}
+
+Save this. Sit with it. Apply it today.
+
+Get daily wisdom:
+${link}`;
+  };
+
+  const handleShare = async (
+    item: Pick<VerseItem, "title" | "body" | "ref">,
+    keyForUi?: string
+  ) => {
+    const text = buildShareText(item);
+
+    try {
+      if (typeof navigator !== "undefined" && "share" in navigator) {
+        await (
+          navigator as Navigator & {
+            share: (data: ShareData) => Promise<void>;
+          }
+        ).share({
+          title: "Ask Solomon",
+          text,
+        });
+        return;
+      }
+    } catch {
+      // ignore and fall back
+    }
+
+    try {
+      await navigator.clipboard.writeText(text);
+      if (keyForUi) {
+        setCopiedKey(keyForUi);
+        window.setTimeout(() => setCopiedKey(""), 900);
+      }
+    } catch {
+      // silent
+    }
+  };
+
   const wrapText = (
     ctx: CanvasRenderingContext2D,
     text: string,
@@ -467,18 +542,18 @@ function PageInner() {
     lineHeight: number
   ) => {
     const words = text.split(/\s+/).filter(Boolean);
-    if (words.length === 0) return 0;
-
+    let line = "";
     const lines: string[] = [];
-    let line = words[0];
 
-    for (let i = 1; i < words.length; i++) {
-      const test = `${line} ${words[i]}`;
-      if (ctx.measureText(test).width > maxWidth) {
+    for (let i = 0; i < words.length; i++) {
+      const testLine = line ? `${line} ${words[i]}` : words[i];
+      const metrics = ctx.measureText(testLine);
+
+      if (metrics.width > maxWidth && i > 0) {
         lines.push(line);
         line = words[i];
       } else {
-        line = test;
+        line = testLine;
       }
     }
 
@@ -646,9 +721,7 @@ function PageInner() {
     }
   };
 
-  const handleImage = async (
-    item: Pick<VerseItem, "title" | "body" | "ref">
-  ) => {
+  const handleImage = async (item: Pick<VerseItem, "title" | "body" | "ref">) => {
     try {
       const W = 1080;
       const H = 1350;
@@ -707,26 +780,15 @@ function PageInner() {
       const refFont = "900 34px system-ui";
       const refLineH = 44;
 
-      const panelH =
-        innerPad + verseBlockH + gapAfterVerse + refLineH + innerPad;
+      const panelH = innerPad + verseBlockH + gapAfterVerse + refLineH + innerPad;
 
       const headerBottom = topPad + 150;
       const footerTop = H - bottomPad - 90;
       const available = footerTop - headerBottom;
-      const panelY =
-        headerBottom + Math.max(24, Math.floor((available - panelH) / 2));
+      const panelY = headerBottom + Math.max(24, Math.floor((available - panelH) / 2));
       const panelX = padX;
 
-      drawRoundedPanel(
-        ctx,
-        panelX,
-        panelY,
-        cardW,
-        panelH,
-        radius,
-        style.panelFill,
-        true
-      );
+      drawRoundedPanel(ctx, panelX, panelY, cardW, panelH, radius, style.panelFill, true);
 
       ctx.save();
       ctx.strokeStyle = "rgba(255,255,255,0.45)";
@@ -740,14 +802,7 @@ function PageInner() {
       ctx.fillStyle = style.verseText;
       ctx.font = verseFont;
 
-      const used = wrapText(
-        ctx,
-        verse,
-        panelX + innerPad,
-        y,
-        maxTextWidth,
-        lineHeight
-      );
+      const used = wrapText(ctx, verse, panelX + innerPad, y, maxTextWidth, lineHeight);
       y += used * lineHeight + gapAfterVerse;
 
       ctx.fillStyle = style.refText;
@@ -767,11 +822,7 @@ function PageInner() {
       const safeRef = (item.ref || "verse").replace(/[^\w\-]+/g, "_");
       const filename = `ask-solomon-${safeRef}.png`;
 
-      if (
-        typeof navigator !== "undefined" &&
-        "share" in navigator &&
-        canvas.toBlob
-      ) {
+      if (typeof navigator !== "undefined" && "share" in navigator && canvas.toBlob) {
         const blob: Blob | null = await new Promise((resolve) =>
           canvas.toBlob((b) => resolve(b), "image/png")
         );
@@ -795,7 +846,7 @@ function PageInner() {
               return;
             }
           } catch {
-            // fall through to download
+            // fall through
           }
         }
       }
@@ -807,98 +858,89 @@ function PageInner() {
     }
   };
 
-  const buildFilteredPool = () => {
-    let list = [...DATA] as VerseItem[];
+const buildFilteredPool = () => {
+  let list = [...DATA] as VerseItem[];
 
-    list = list.filter((item: any) => itemMode(item) === mode);
+  list = list.filter((item: any) => itemMode(item) === mode);
 
-    if (mode === "encouragement" && sub !== "all") {
-      list = list.filter((item: any) => itemSubs(item).includes(sub));
-    }
+  if (mode === "encouragement" && sub !== "all") {
+    list = list.filter((item: any) => itemSubs(item).includes(sub));
+  }
 
-    if (favoritesOnly) {
-      list = list.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
-    }
+  if (favoritesOnly) {
+    list = list.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
+  }
 
-    return list;
-  };
+  return list;
+};
 
-  const baseResults = useMemo(() => {
-    if (q.trim().length > 0) {
-      let found = searchProverbsScored(q).map((r) => ({
-        ...r.item,
-        score: r.score,
-        why: r.why,
-      }));
-
-      if (favoritesOnly) {
-        found = found.filter(
-          (item) => favoriteKeys[`${item.ref}-${item.title}`]
-        );
-      }
-
-      return found;
-    }
-
-    let found = DATA.filter((item) => {
-      if (item.mode !== mode) return false;
-      if (mode === "encouragement" && sub !== "all" && item.sub !== sub) {
-        return false;
-      }
-      return true;
-    });
+const baseResults = useMemo(() => {
+  // Smart Proverbs search when user types
+  if (q.trim().length > 0) {
+    let found = searchProverbsScored(q).map((r) => ({
+      ...r.item,
+      score: r.score,
+      why: r.why,
+    }));
 
     if (favoritesOnly) {
       found = found.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
     }
 
     return found;
-  }, [q, mode, sub, favoritesOnly, favoriteKeys]);
+  }
 
+  // Fallback when no query is typed
+  let found = DATA.filter((item) => {
+    if (item.mode !== mode) return false;
+    if (sub !== "all" && item.sub !== sub) return false;
+    return true;
+  });
+
+  if (favoritesOnly) {
+    found = found.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
+  }
+
+  return found;
+}, [q, mode, sub, favoritesOnly, favoriteKeys]);
   const results = useMemo(() => {
     if (!todayFocusOn) return baseResults;
     if (!todayFocusKey) return [];
-    return baseResults.filter(
-      (item) => `${item.ref}-${item.title}` === todayFocusKey
-    );
+    return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
   }, [baseResults, todayFocusOn, todayFocusKey]);
 
-  const favoritesCount = useMemo(() => {
-    return Object.values(favoriteKeys).filter(Boolean).length;
-  }, [favoriteKeys]);
+const smartExpandedTerms = useMemo(() => {
+  if (q.trim().length === 0) return [];
 
-  const smartExpandedTerms = useMemo(() => {
-    if (q.trim().length === 0) return [];
+  const advanced = interpretQueryAdvanced(q);
+  const expanded = expandSmartTerms(q);
 
-    const advanced = interpretQueryAdvanced(q);
-    const expanded = expandSmartTerms(q);
+  if (!advanced.lane) return expanded;
 
-    if (!advanced.lane) return expanded;
+  return Array.from(new Set([advanced.lane, ...expanded]));
+}, [q]);
 
-    return Array.from(new Set([advanced.lane, ...expanded]));
-  }, [q]);
+const proverbMatches = useMemo<ProverbMatch[]>(() => {
+  const query = q.trim();
+  if (!query) return [];
 
-  const proverbMatches = useMemo<ProverbMatch[]>(() => {
-    const query = q.trim();
-    if (!query) return [];
+  try {
+    const found = asArray(searchProverbsScored(query)).slice(0, 8);
 
-    try {
-      const found = asArray(searchProverbsScored(query)).slice(0, 8);
+    return found
+      .map((entry: any) => {
+        const p = entry?.item ?? {};
+        const ref = String(p?.ref ?? "");
+        const text = String(p?.text ?? p?.body ?? "");
+        const topics = Array.isArray(p?.topics)
+          ? p.topics.map((t: any) => String(t))
+          : [];
 
-      return found
-        .map((entry: any) => {
-          const p = entry?.item ?? {};
-          const ref = String(p?.ref ?? "");
-          const text = String(p?.text ?? p?.body ?? "");
-          const topics = Array.isArray(p?.topics)
-            ? p.topics.map((t: any) => String(t))
-            : [];
-
-          const fallback = scoreProverbMatch(
-            { ref, text, topics },
-            query,
-            smartExpandedTerms
-          );
+        const fallback = scoreProverbMatch(
+          { ref, text, topics },
+          query,
+          smartExpandedTerms
+        );
 
           const rawScore = Number(entry?.score ?? fallback.score ?? 0);
 
@@ -927,15 +969,6 @@ function PageInner() {
     }
   }, [q, smartExpandedTerms]);
 
-   useEffect(() => {
-    if (!q.trim()) return;
-    if (proverbMatches.length === 0) {
-      setPromotedProverbRef("");
-      return;
-    }
-    setPromotedProverbRef(proverbMatches[0].ref);
-  }, [q, proverbMatches]);
-
   const promotedProverb = useMemo<ProverbMatch | null>(() => {
     return proverbMatches.find((p) => p.ref === promotedProverbRef) || null;
   }, [proverbMatches, promotedProverbRef]);
@@ -949,9 +982,7 @@ function PageInner() {
 
     return proverbMatches
       .filter((p) => p.ref !== promotedProverb.ref)
-      .filter((p) =>
-        p.topics.some((t) => promotedTopics.has(normalizeText(t)))
-      )
+      .filter((p) => p.topics.some((t) => promotedTopics.has(normalizeText(t))))
       .slice(0, 3);
   }, [promotedProverb, proverbMatches]);
 
@@ -966,36 +997,35 @@ function PageInner() {
     }
   }, [q]);
 
-  const toggleTodaysFocus = () => {
-    if (todayFocusOn) {
-      setTodayFocusOn(false);
-      setTodayFocusKey("");
-      return;
-    }
+ const toggleTodaysFocus = () => {
+  if (todayFocusOn) {
+    setTodayFocusOn(false);
+    setTodayFocusKey("");
+    return;
+  }
 
-    const pool = buildFilteredPool();
-    if (pool.length === 0) {
-      setTodayFocusOn(true);
-      setTodayFocusKey("");
-      return;
-    }
-
-    const choice = pool[Math.floor(Math.random() * pool.length)];
+  const pool = buildFilteredPool();
+  if (pool.length === 0) {
     setTodayFocusOn(true);
-    setTodayFocusKey(`${choice.ref}-${choice.title}`);
-  };
+    setTodayFocusKey("");
+    return;
+  }
 
-  const rerollTodaysFocus = () => {
-    const pool = buildFilteredPool();
-    if (pool.length === 0) {
-      setTodayFocusKey("");
-      return;
-    }
+  const choice = pool[Math.floor(Math.random() * pool.length)];
+  setTodayFocusOn(true);
+  setTodayFocusKey(`${choice.ref}-${choice.title}`);
+};
 
-    const choice = pool[Math.floor(Math.random() * pool.length)];
-    setTodayFocusKey(`${choice.ref}-${choice.title}`);
-  };
+const rerollTodaysFocus = () => {
+  const pool = buildFilteredPool();
+  if (pool.length === 0) {
+    setTodayFocusKey("");
+    return;
+  }
 
+  const choice = pool[Math.floor(Math.random() * pool.length)];
+  setTodayFocusKey(`${choice.ref}-${choice.title}`);
+};
   const applyTopic = (topicQuery: string) => {
     setQ(topicQuery);
     setFavoritesOnly(false);
@@ -1017,28 +1047,14 @@ function PageInner() {
   const renderEmptyState = () => {
     if (favoritesOnly && favoritesCount === 0) {
       return (
-        <div
-          style={{
-            color: "#64748b",
-            fontSize: 14,
-            padding: 8,
-            fontWeight: 800,
-          }}
-        >
+        <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
           You haven’t saved any favorites yet. Tap ☆ on a verse to save it.
         </div>
       );
     }
 
     return (
-      <div
-        style={{
-          color: "#64748b",
-          fontSize: 14,
-          padding: 8,
-          fontWeight: 800,
-        }}
-      >
+      <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
         No matches. Try a different keyword.
       </div>
     );
@@ -1046,7 +1062,7 @@ function PageInner() {
 
   return (
     <div style={outerStyle}>
-      <main style={pageStyle}> 
+      <main style={pageStyle}>
         <header style={{ marginBottom: 18 }}>
           <div style={headerRow}>
             <div>
@@ -1061,7 +1077,6 @@ function PageInner() {
               >
                 Ask Solomon
               </div>
-
               <h1
                 style={{
                   margin: "6px 0 0 0",
@@ -1072,7 +1087,6 @@ function PageInner() {
               >
                 Wisdom for what you’re facing right now
               </h1>
-
               <p
                 style={{
                   marginTop: 8,
@@ -1081,8 +1095,7 @@ function PageInner() {
                   fontWeight: 800,
                 }}
               >
-                Encouragement first—wisdom from Proverbs for what you’re facing
-                right now.
+                Encouragement first—wisdom from Proverbs for what you’re facing right now.
               </p>
             </div>
 
@@ -1095,7 +1108,6 @@ function PageInner() {
               }}
             >
               <span style={badgeStyle(isPro)}>{isPro ? "PRO" : "FREE"}</span>
-
               <button
                 type="button"
                 onClick={() => router.push("/book")}
@@ -1103,7 +1115,6 @@ function PageInner() {
               >
                 Book
               </button>
-
               {!isPro && (
                 <button
                   type="button"
@@ -1116,8 +1127,6 @@ function PageInner() {
             </div>
           </div>
         </header>
-
-        {/* KEEP YOUR EXISTING LOWER JSX STARTING HERE */}
 
         <section style={cardStyle}>
           <div
@@ -1403,7 +1412,7 @@ function PageInner() {
 </button>
 </div>
 
-{q.trim().length > 0 && insightData.insight && (
+{q.trim().length > 0 && (
   <div
     style={{
       marginBottom: 16,
@@ -1418,13 +1427,8 @@ function PageInner() {
     <div style={{ fontWeight: 800, marginBottom: 4 }}>
       Wisdom for this moment
     </div>
-
-    <div style={{ fontWeight: 600, marginBottom: 6 }}>
-      {insightData.insight}
-    </div>
-
-    <div style={{ fontSize: 13, color: "#555", fontWeight: 500 }}>
-      {insightData.guidance}
+    <div style={{ fontWeight: 600 }}>
+      {interpretQueryAdvanced(q).message}
     </div>
   </div>
 )}
@@ -1812,100 +1816,65 @@ function PageInner() {
                       </div>
                     </div>
                   );
-                        })()}
+                })()}
 
-                {topResult && (
-                  <div
-                    style={{
-                      marginBottom: 18,
-                      padding: "14px 16px",
-                      borderRadius: 14,
-                      background: "rgba(0,0,0,0.04)",
-                      border: "1px solid rgba(0,0,0,0.08)",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: 11,
-                        fontWeight: 900,
-                        color: "#64748b",
-                        marginBottom: 6,
-                      }}
-                    >
-                      This may speak to you
+                {proverbMatches.length > 1 && (
+                  <>
+                    <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>
+                      More Proverbs
                     </div>
 
-                    <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 6 }}>
-                      {topResult.item.title}
-                    </div>
+                    <div style={{ display: "grid", gap: 10 }}>
+                      {proverbMatches.slice(1).map((p) => {
+                        const proverbKey = `proverb-${p.ref}`;
+                        const isFav = !!favoriteKeys[proverbKey];
+                        const isCopied = copiedKey === proverbKey;
+                        const isPromoted = promotedProverbRef === p.ref;
 
-                    <div style={{ fontSize: 14, marginBottom: 6 }}>
-                      {topResult.item.body}
-                    </div>
-    <div style={{ fontSize: 12, color: "#64748b" }}>
-      {topResult.item.ref}
-    </div>
-  </div>
-)}
+                        const proverbTitle =
+                          p.topics && p.topics.length > 0
+                            ? p.topics[0].charAt(0).toUpperCase() + p.topics[0].slice(1)
+                            : "More Proverbs";
 
-{proverbMatches.length > 1 && (
-  <>
-    <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>
-      More Proverbs
-    </div>
+                        const proverbItem = {
+                          title: proverbTitle,
+                          body: p.text,
+                          ref: p.ref,
+                        } as VerseItem;
 
-    <div style={{ display: "grid", gap: 10 }}>
-      {proverbMatches.slice(1).map((p) => {
-        const proverbKey = `proverb-${p.ref}`;
-        const isFav = !!favoriteKeys[proverbKey];
-        const isCopied = copiedKey === proverbKey;
-        const isPromoted = promotedProverbRef === p.ref;
-
-        const proverbTitle =
-          p.topics && p.topics.length > 0
-            ? p.topics[0].charAt(0).toUpperCase() + p.topics[0].slice(1)
-            : "More Proverbs";
-
-        const proverbItem = {
-          title: proverbTitle,
-          body: p.text,
-          ref: p.ref,
-        } as VerseItem;
-
-        if (isPromoted) {
-          return (
-            <div
-              key={p.ref}
-              style={{
-                ...softCardStyle,
-                border: "1px solid rgba(99,102,241,0.18)",
-                boxShadow: "0 18px 44px rgba(0,0,0,0.10)",
-                background:
-                  "linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,0.96))",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  gap: 10,
-                }}
-              >
-                <div style={{ flex: 1 }}>
-                  <div
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 8,
-                      padding: "6px 10px",
-                      borderRadius: 999,
-                      background: "rgba(99,102,241,0.08)",
-                      color: "#4338ca",
-                      fontWeight: 900,
-                      fontSize: 11,
-                      marginBottom: 10,
-                    }}
-                  >
+                        if (isPromoted) {
+                          return (
+                            <div
+                              key={p.ref}
+                              style={{
+                                ...softCardStyle,
+                                border: "1px solid rgba(99,102,241,0.18)",
+                                boxShadow: "0 18px 44px rgba(0,0,0,0.10)",
+                                background:
+                                  "linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,0.96))",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  gap: 10,
+                                }}
+                              >
+                                <div style={{ flex: 1 }}>
+                                  <div
+                                    style={{
+                                      display: "inline-flex",
+                                      alignItems: "center",
+                                      gap: 8,
+                                      padding: "6px 10px",
+                                      borderRadius: 999,
+                                      background: "rgba(99,102,241,0.08)",
+                                      color: "#4338ca",
+                                      fontWeight: 900,
+                                      fontSize: 11,
+                                      marginBottom: 10,
+                                    }}
                                   >
                                     From Proverbs Search
                                   </div>
