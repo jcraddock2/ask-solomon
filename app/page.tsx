@@ -433,134 +433,34 @@ const insightData =
     router.replace(qs ? `/?${qs}` : "/");
   };
 
-  useEffect(() => {
-    setMode(rawUrlMode);
-    setSub(rawUrlSub);
-    setQ(urlQ);
-  }, [rawUrlMode, rawUrlSub, urlQ]);
-
-  const favoritesCount = useMemo(
-    () => Object.keys(favoriteKeys).filter((k) => favoriteKeys[k]).length,
-    [favoriteKeys]
-  );
-
-  useEffect(() => {
+    useEffect(() => {
     if (typeof window === "undefined") return;
-    setFavPulse(true);
-    const t = window.setTimeout(() => setFavPulse(false), 260);
-    return () => window.clearTimeout(t);
-  }, [favoritesCount]);
-
-  const toggleFavorite = (key: string) => {
-    setFavoriteKeys((prev) => {
-      const next = { ...prev };
-      const alreadySaved = !!next[key];
-
-      if (alreadySaved) {
-        delete next[key];
-      } else {
-        next[key] = true;
-        setSavedKey(key);
-        window.setTimeout(() => setSavedKey(""), 900);
-      }
-
-      return next;
-    });
-  };
+    localStorage.setItem(
+      "asksolomon:shareTemplate",
+      JSON.stringify(shareTemplate)
+    );
+  }, [shareTemplate]);
 
   useEffect(() => {
-    if (favoritesOnly && favoritesCount === 0) {
-      setFavoritesOnly(false);
-    }
-  }, [favoritesOnly, favoritesCount]);
+    setPromotedProverbRef("");
+  }, [q, mode, sub]);
 
-  const handleCopy = async (
-    item: Pick<VerseItem, "title" | "body" | "ref">,
-    key: string
-  ) => {
-    const text = `${item.title}\n\n${item.body}\n\n${item.ref}`;
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedKey(key);
-      window.setTimeout(() => setCopiedKey(""), 900);
-    } catch {
-      // silent
+  const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
+    const nextMode = next.mode ?? mode;
+    const nextSub = next.sub ?? sub;
+    const nextQ = next.q ?? q;
+
+    const params = new URLSearchParams();
+    if (nextMode !== "encouragement") params.set("mode", nextMode);
+    if (nextMode === "encouragement" && nextSub !== "all") {
+      params.set("sub", nextSub);
     }
+    if (nextQ.trim().length > 0) params.set("q", nextQ.trim());
+
+    const qs = params.toString();
+    router.replace(qs ? `/?${qs}` : "/");
   };
 
-  const buildShareText = (item: Pick<VerseItem, "title" | "body" | "ref">) => {
-    const link = "https://ask-solomon.app";
-
-    return `Ask Solomon
-
-${item.title}
-
-${item.body}
-
-${item.ref}
-
-Save this. Sit with it. Apply it today.
-
-Get daily wisdom:
-${link}`;
-  };
-
-  const handleShare = async (
-    item: Pick<VerseItem, "title" | "body" | "ref">,
-    keyForUi?: string
-  ) => {
-    const text = buildShareText(item);
-
-    try {
-      if (typeof navigator !== "undefined" && "share" in navigator) {
-        await (
-          navigator as Navigator & {
-            share: (data: ShareData) => Promise<void>;
-          }
-        ).share({
-          title: "Ask Solomon",
-          text,
-        });
-        return;
-      }
-    } catch {
-      // ignore and fall back
-    }
-
-    try {
-      await navigator.clipboard.writeText(text);
-      if (keyForUi) {
-        setCopiedKey(keyForUi);
-        window.setTimeout(() => setCopiedKey(""), 900);
-      }
-    } catch {
-      // silent
-    }
-  };
-
-  const wrapText = (
-    ctx: CanvasRenderingContext2D,
-    text: string,
-    x: number,
-    y: number,
-    maxWidth: number,
-    lineHeight: number
-  ) => {
-    const words = text.split(/\s+/).filter(Boolean);
-    let line = "";
-    const lines: string[] = [];
-
-    for (let i = 0; i < words.length; i++) {
-      const testLine = line ? `${line} ${words[i]}` : words[i];
-      const metrics = ctx.measureText(testLine);
-
-      if (metrics.width > maxWidth && i > 0) {
-        lines.push(line);
-        line = words[i];
-      } else {
-        line = testLine;
-      }
-    }
 
     if (line) lines.push(line);
 
@@ -1048,22 +948,21 @@ const rerollTodaysFocus = () => {
     setPromotedProverbRef("");
     setUrl({ q: situationQuery });
   };
-
-  const renderEmptyState = () => {
-    if (favoritesOnly && favoritesCount === 0) {
-      return (
-        <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
-          You haven’t saved any favorites yet. Tap ☆ on a verse to save it.
-        </div>
-      );
-    }
-
+const renderEmptyState = () => {
+  if (favoritesOnly && favoritesCount === 0) {
     return (
       <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
-        No matches. Try a different keyword.
+        You haven’t saved any favorites yet. Tap ☆ on a verse to save it.
       </div>
     );
-  
+  }
+
+  return (
+    <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
+      No matches. Try a different keyword.
+    </div>
+  );
+};
   return (
     <div style={outerStyle}>
       <main style={pageStyle}>
