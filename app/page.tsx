@@ -24,6 +24,7 @@ import {
   type Sub,
   type VerseItem,
 } from "./lib/verses";
+
 function safeParse<T>(raw: string | null, fallback: T): T {
   if (!raw) return fallback;
   try {
@@ -42,7 +43,12 @@ const SITUATION_PRESETS = [
   { label: "🌧 Feeling Discouraged", value: "discouraged" },
 ] as const;
 
-type ShareTemplate = "classic" | "dark" | "gold" | "daily" | "gradientModern";
+type ShareTemplate =
+  | "classic"
+  | "dark"
+  | "gold"
+  | "daily"
+  | "gradientModern";
 
 type ProverbMatch = {
   ref: string;
@@ -100,6 +106,7 @@ function itemSubs(item: any): string[] {
   const subs: string[] = [];
 
   if (typeof item?.sub === "string" && item.sub.trim()) subs.push(item.sub);
+
   if (Array.isArray(item?.subs)) {
     for (const s of item.subs) {
       if (typeof s === "string" && s.trim()) subs.push(s);
@@ -129,6 +136,7 @@ function renderBookMatchMeta(match: any): string {
   const parts: string[] = [];
 
   if (match?.pages) parts.push(String(match.pages));
+
   if (Array.isArray(match?.chapters) && match.chapters.length > 0) {
     parts.push(match.chapters.join(" • "));
   } else if (match?.chapter) {
@@ -139,11 +147,29 @@ function renderBookMatchMeta(match: any): string {
 }
 
 const SMART_TOPIC_MAP: Record<string, string[]> = {
-  fear: ["fear", "afraid", "anxiety", "anxious", "worry", "worried", "courage", "confidence", "trust"],
+  fear: [
+    "fear",
+    "afraid",
+    "anxiety",
+    "anxious",
+    "worry",
+    "worried",
+    "courage",
+    "confidence",
+    "trust",
+  ],
   anxiety: ["anxiety", "anxious", "fear", "worry", "peace", "trust", "rest"],
   peace: ["peace", "calm", "rest", "quiet", "stillness", "trust"],
   stress: ["stress", "pressure", "burden", "anxiety", "peace", "rest", "strength"],
-  direction: ["direction", "guidance", "counsel", "planning", "understanding", "wisdom", "discernment"],
+  direction: [
+    "direction",
+    "guidance",
+    "counsel",
+    "planning",
+    "understanding",
+    "wisdom",
+    "discernment",
+  ],
   wisdom: ["wisdom", "understanding", "discernment", "knowledge", "instruction", "insight"],
   discipline: ["discipline", "self-control", "instruction", "correction", "training", "diligence"],
   diligence: ["diligence", "hard work", "work", "lazy", "sluggard", "effort", "discipline"],
@@ -171,8 +197,8 @@ function tokenizeQuery(q: string): string[] {
     .filter(Boolean);
 }
 
-// NOTE: expandSmartTerms is now imported from ./lib/intent
-// DO NOT redefine it here
+// expandSmartTerms is imported from ./lib/intent
+// do not redefine it here
 
 function scoreProverbMatch(
   proverb: { ref: string; text: string; topics: string[] },
@@ -240,28 +266,26 @@ function PageInner() {
   const [mode, setMode] = useState<Mode>(rawUrlMode);
   const [sub, setSub] = useState<Sub | "all">(rawUrlSub);
   const [q, setQ] = useState<string>(urlQ);
-  
-const insightData =
-  q.trim().length > 0
-    ? getWisdomForMoment(q)
-    : { insight: "", guidance: "" };
-  const [isPro, setIsPro] = useState(false);
 
+  const [isPro, setIsPro] = useState(false);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [favoriteKeys, setFavoriteKeys] = useState<Record<string, boolean>>({});
-
   const [copiedKey, setCopiedKey] = useState<string>("");
   const [savedKey, setSavedKey] = useState<string>("");
   const [favPulse, setFavPulse] = useState(false);
-
   const [todayFocusOn, setTodayFocusOn] = useState(false);
   const [todayFocusKey, setTodayFocusKey] = useState<string>("");
-
   const [searchFocused, setSearchFocused] = useState(false);
   const [promotedProverbRef, setPromotedProverbRef] = useState<string>("");
-
   const [shareTemplate, setShareTemplate] =
     useState<ShareTemplate>("gradientModern");
+
+  const insightData = useMemo(() => {
+    if (q.trim().length === 0) {
+      return { insight: "", guidance: "" };
+    }
+    return getWisdomForMoment(q);
+  }, [q]);
 
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
@@ -269,6 +293,7 @@ const insightData =
       "radial-gradient(1200px 600px at 20% 10%, rgba(99,102,241,0.14), rgba(255,255,255,0)), radial-gradient(900px 500px at 80% 0%, rgba(16,185,129,0.12), rgba(255,255,255,0)), #f8fafc",
     padding: 18,
   };
+
   const pageStyle: React.CSSProperties = {
     maxWidth: 920,
     margin: "0 auto",
@@ -373,270 +398,6 @@ const insightData =
     outline: "none",
     maxWidth: 230,
   };
-
-  useEffect(() => {
-    try {
-      setIsPro(isProUser());
-    } catch {
-      setIsPro(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const saved = safeParse<Record<string, boolean>>(
-      localStorage.getItem("asksolomon:favorites"),
-      {}
-    );
-    setFavoriteKeys(saved);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    localStorage.setItem("asksolomon:favorites", JSON.stringify(favoriteKeys));
-  }, [favoriteKeys]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const savedTemplate = safeParse<ShareTemplate>(
-      localStorage.getItem("asksolomon:shareTemplate"),
-      "gradientModern"
-    );
-    setShareTemplate(savedTemplate);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    localStorage.setItem(
-      "asksolomon:shareTemplate",
-      JSON.stringify(shareTemplate)
-    );
-  }, [shareTemplate]);
-
-  useEffect(() => {
-    setPromotedProverbRef("");
-  }, [q, mode, sub]);
-
-  const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
-    const nextMode = next.mode ?? mode;
-    const nextSub = next.sub ?? sub;
-    const nextQ = next.q ?? q;
-
-    const params = new URLSearchParams();
-    if (nextMode !== "encouragement") params.set("mode", nextMode);
-    if (nextMode === "encouragement" && nextSub !== "all") {
-      params.set("sub", nextSub);
-    }
-    if (nextQ.trim().length > 0) params.set("q", nextQ.trim());
-
-    const qs = params.toString();
-    router.replace(qs ? `/?${qs}` : "/");
-  };
-
-    useEffect(() => {
-    if (typeof window === "undefined") return;
-    localStorage.setItem(
-      "asksolomon:shareTemplate",
-      JSON.stringify(shareTemplate)
-    );
-  }, [shareTemplate]);
-
-  useEffect(() => {
-    setPromotedProverbRef("");
-  }, [q, mode, sub]);
-
-  const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
-    const nextMode = next.mode ?? mode;
-    const nextSub = next.sub ?? sub;
-    const nextQ = next.q ?? q;
-
-    const params = new URLSearchParams();
-    if (nextMode !== "encouragement") params.set("mode", nextMode);
-    if (nextMode === "encouragement" && nextSub !== "all") {
-      params.set("sub", nextSub);
-    }
-    if (nextQ.trim().length > 0) params.set("q", nextQ.trim());
-
-    const qs = params.toString();
-    router.replace(qs ? `/?${qs}` : "/");
-  };
-
-
-    if (line) lines.push(line);
-
-    for (let i = 0; i < lines.length; i++) {
-      ctx.fillText(lines[i], x, y + i * lineHeight);
-    }
-
-    return lines.length;
-  };
-
-  const measureWrappedLines = (
-    ctx: CanvasRenderingContext2D,
-    text: string,
-    maxWidth: number
-  ) => {
-    const words = text.split(/\s+/).filter(Boolean);
-    if (words.length === 0) return 0;
-
-    let lines = 1;
-    let line = words[0];
-
-    for (let i = 1; i < words.length; i++) {
-      const test = `${line} ${words[i]}`;
-      if (ctx.measureText(test).width > maxWidth) {
-        lines++;
-        line = words[i];
-      } else {
-        line = test;
-      }
-    }
-
-    return lines;
-  };
-
-  const roundRectPath = (
-    ctx: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-    r: number
-  ) => {
-    const radius = Math.min(r, w / 2, h / 2);
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.arcTo(x + w, y, x + w, y + h, radius);
-    ctx.arcTo(x + w, y + h, x, y + h, radius);
-    ctx.arcTo(x, y + h, x, y, radius);
-    ctx.arcTo(x, y, x + w, y, radius);
-    ctx.closePath();
-  };
-
-  const drawRoundedPanel = (
-    ctx: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    w: number,
-    h: number,
-    r: number,
-    fill: string,
-    shadow = true
-  ) => {
-    ctx.save();
-    if (shadow) {
-      ctx.shadowColor = "rgba(0,0,0,0.22)";
-      ctx.shadowBlur = 26;
-      ctx.shadowOffsetY = 14;
-    }
-    ctx.fillStyle = fill;
-    roundRectPath(ctx, x, y, w, h, r);
-    ctx.fill();
-    ctx.restore();
-  };
-
-  const downloadDataUrl = (dataUrl: string, filename: string) => {
-    const a = document.createElement("a");
-    a.href = dataUrl;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  };
-
-  const getTemplateStyle = (t: ShareTemplate) => {
-    switch (t) {
-      case "classic":
-        return {
-          bgA: "#f8fafc",
-          bgB: "#e2e8f0",
-          panelFill: "rgba(255,255,255,0.92)",
-          headerText: "#0f172a",
-          subHeaderText: "rgba(15,23,42,0.65)",
-          verseText: "#0f172a",
-          refText: "#0f172a",
-          footerText: "rgba(15,23,42,0.75)",
-          accent: "#0f172a",
-        };
-      case "dark":
-        return {
-          bgA: "#0b1220",
-          bgB: "#111827",
-          panelFill: "rgba(255,255,255,0.10)",
-          headerText: "rgba(255,255,255,0.92)",
-          subHeaderText: "rgba(255,255,255,0.72)",
-          verseText: "rgba(255,255,255,0.94)",
-          refText: "rgba(255,255,255,0.86)",
-          footerText: "rgba(255,255,255,0.78)",
-          accent: "rgba(255,255,255,0.90)",
-        };
-      case "gold":
-        return {
-          bgA: "#0b1020",
-          bgB: "#1f2937",
-          panelFill: "rgba(17,24,39,0.76)",
-          headerText: "rgba(255,255,255,0.92)",
-          subHeaderText: "rgba(255,255,255,0.72)",
-          verseText: "rgba(255,255,255,0.95)",
-          refText: "rgba(255,255,255,0.86)",
-          footerText: "rgba(255,255,255,0.78)",
-          accent: "#fbbf24",
-        };
-      case "daily":
-        return {
-          bgA: "#fff7ed",
-          bgB: "#ffedd5",
-          panelFill: "rgba(255,255,255,0.94)",
-          headerText: "#7c2d12",
-          subHeaderText: "rgba(124,45,18,0.70)",
-          verseText: "#0f172a",
-          refText: "#7c2d12",
-          footerText: "rgba(124,45,18,0.85)",
-          accent: "#ea580c",
-        };
-      case "gradientModern":
-      default:
-        return {
-          bgA: "#0f172a",
-          bgB: "#1d4ed8",
-          panelFill: "rgba(255,255,255,0.92)",
-          headerText: "rgba(255,255,255,0.92)",
-          subHeaderText: "rgba(255,255,255,0.76)",
-          verseText: "#0f172a",
-          refText: "#0f172a",
-          footerText: "rgba(255,255,255,0.88)",
-          accent: "rgba(255,255,255,0.90)",
-        };
-    }
-  };
-
-  const formatTemplateLabel = (t: ShareTemplate) => {
-    switch (t) {
-      case "classic":
-        return "Classic";
-      case "dark":
-        return "Dark Mode";
-      case "gold":
-        return "Gold Wisdom";
-      case "daily":
-        return "Daily Verse";
-      case "gradientModern":
-      default:
-        return "Gradient Modern";
-    }
-  };
-
-  const handleImage = async (item: Pick<VerseItem, "title" | "body" | "ref">) => {
-    try {
-      const W = 1080;
-      const H = 1350;
-
-      const canvas = document.createElement("canvas");
-      canvas.width = W;
-      canvas.height = H;
-
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
 
   useEffect(() => {
     try {
@@ -885,7 +646,9 @@ const insightData =
     }
   };
 
-  const handleImage = async (item: Pick<VerseItem, "title" | "body" | "ref">) => {
+  const handleImage = async (
+    item: Pick<VerseItem, "title" | "body" | "ref">
+  ) => {
     try {
       const W = 1080;
       const H = 1350;
@@ -944,15 +707,26 @@ const insightData =
       const refFont = "900 34px system-ui";
       const refLineH = 44;
 
-      const panelH = innerPad + verseBlockH + gapAfterVerse + refLineH + innerPad;
+      const panelH =
+        innerPad + verseBlockH + gapAfterVerse + refLineH + innerPad;
 
       const headerBottom = topPad + 150;
       const footerTop = H - bottomPad - 90;
       const available = footerTop - headerBottom;
-      const panelY = headerBottom + Math.max(24, Math.floor((available - panelH) / 2));
+      const panelY =
+        headerBottom + Math.max(24, Math.floor((available - panelH) / 2));
       const panelX = padX;
 
-      drawRoundedPanel(ctx, panelX, panelY, cardW, panelH, radius, style.panelFill, true);
+      drawRoundedPanel(
+        ctx,
+        panelX,
+        panelY,
+        cardW,
+        panelH,
+        radius,
+        style.panelFill,
+        true
+      );
 
       ctx.save();
       ctx.strokeStyle = "rgba(255,255,255,0.45)";
@@ -966,7 +740,14 @@ const insightData =
       ctx.fillStyle = style.verseText;
       ctx.font = verseFont;
 
-      const used = wrapText(ctx, verse, panelX + innerPad, y, maxTextWidth, lineHeight);
+      const used = wrapText(
+        ctx,
+        verse,
+        panelX + innerPad,
+        y,
+        maxTextWidth,
+        lineHeight
+      );
       y += used * lineHeight + gapAfterVerse;
 
       ctx.fillStyle = style.refText;
@@ -986,7 +767,11 @@ const insightData =
       const safeRef = (item.ref || "verse").replace(/[^\w\-]+/g, "_");
       const filename = `ask-solomon-${safeRef}.png`;
 
-      if (typeof navigator !== "undefined" && "share" in navigator && canvas.toBlob) {
+      if (
+        typeof navigator !== "undefined" &&
+        "share" in navigator &&
+        canvas.toBlob
+      ) {
         const blob: Blob | null = await new Promise((resolve) =>
           canvas.toBlob((b) => resolve(b), "image/png")
         );
@@ -1010,7 +795,7 @@ const insightData =
               return;
             }
           } catch {
-            // fall through
+            // fall through to download
           }
         }
       }
@@ -1047,7 +832,9 @@ const insightData =
       }));
 
       if (favoritesOnly) {
-        found = found.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
+        found = found.filter(
+          (item) => favoriteKeys[`${item.ref}-${item.title}`]
+        );
       }
 
       return found;
@@ -1055,7 +842,9 @@ const insightData =
 
     let found = DATA.filter((item) => {
       if (item.mode !== mode) return false;
-      if (sub !== "all" && item.sub !== sub) return false;
+      if (mode === "encouragement" && sub !== "all" && item.sub !== sub) {
+        return false;
+      }
       return true;
     });
 
@@ -1069,8 +858,14 @@ const insightData =
   const results = useMemo(() => {
     if (!todayFocusOn) return baseResults;
     if (!todayFocusKey) return [];
-    return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
+    return baseResults.filter(
+      (item) => `${item.ref}-${item.title}` === todayFocusKey
+    );
   }, [baseResults, todayFocusOn, todayFocusKey]);
+
+  const favoritesCount = useMemo(() => {
+    return Object.values(favoriteKeys).filter(Boolean).length;
+  }, [favoriteKeys]);
 
   const smartExpandedTerms = useMemo(() => {
     if (q.trim().length === 0) return [];
@@ -1154,7 +949,9 @@ const insightData =
 
     return proverbMatches
       .filter((p) => p.ref !== promotedProverb.ref)
-      .filter((p) => p.topics.some((t) => promotedTopics.has(normalizeText(t))))
+      .filter((p) =>
+        p.topics.some((t) => promotedTopics.has(normalizeText(t)))
+      )
       .slice(0, 3);
   }, [promotedProverb, proverbMatches]);
 
@@ -1220,18 +1017,33 @@ const insightData =
   const renderEmptyState = () => {
     if (favoritesOnly && favoritesCount === 0) {
       return (
-        <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
+        <div
+          style={{
+            color: "#64748b",
+            fontSize: 14,
+            padding: 8,
+            fontWeight: 800,
+          }}
+        >
           You haven’t saved any favorites yet. Tap ☆ on a verse to save it.
         </div>
       );
     }
 
     return (
-      <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
+      <div
+        style={{
+          color: "#64748b",
+          fontSize: 14,
+          padding: 8,
+          fontWeight: 800,
+        }}
+      >
         No matches. Try a different keyword.
       </div>
     );
   };
+
   return (
     <div style={outerStyle}>
       <main style={pageStyle}>
@@ -1249,6 +1061,7 @@ const insightData =
               >
                 Ask Solomon
               </div>
+
               <h1
                 style={{
                   margin: "6px 0 0 0",
@@ -1259,6 +1072,7 @@ const insightData =
               >
                 Wisdom for what you’re facing right now
               </h1>
+
               <p
                 style={{
                   marginTop: 8,
@@ -1267,7 +1081,8 @@ const insightData =
                   fontWeight: 800,
                 }}
               >
-                Encouragement first—wisdom from Proverbs for what you’re facing right now.
+                Encouragement first—wisdom from Proverbs for what you’re facing
+                right now.
               </p>
             </div>
 
@@ -1280,6 +1095,7 @@ const insightData =
               }}
             >
               <span style={badgeStyle(isPro)}>{isPro ? "PRO" : "FREE"}</span>
+
               <button
                 type="button"
                 onClick={() => router.push("/book")}
@@ -1287,6 +1103,7 @@ const insightData =
               >
                 Book
               </button>
+
               {!isPro && (
                 <button
                   type="button"
@@ -1299,6 +1116,8 @@ const insightData =
             </div>
           </div>
         </header>
+
+        {/* KEEP YOUR EXISTING LOWER JSX STARTING HERE */}
 
         <section style={cardStyle}>
           <div
