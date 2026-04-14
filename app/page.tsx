@@ -1812,38 +1812,36 @@ function PageInner() {
                       </div>
                     </div>
                   );
-                })()}
-{topResult && (
-  <div
-  {topResult && (
-  <div
-    style={{
-      marginBottom: 18,
-      padding: "14px 16px",
-      borderRadius: 14,
-      background: "rgba(0,0,0,0.04)",
-      border: "1px solid rgba(0,0,0,0.08)",
-    }}
-  >
-    <div
-      style={{
-        fontSize: 11,
-        fontWeight: 900,
-        color: "#64748b",
-        marginBottom: 6,
-      }}
-    >
-      This may speak to you
-    </div>
+                        })()}
 
-    <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 6 }}>
-      {topResult.item.title}
-    </div>
+                {topResult && (
+                  <div
+                    style={{
+                      marginBottom: 18,
+                      padding: "14px 16px",
+                      borderRadius: 14,
+                      background: "rgba(0,0,0,0.04)",
+                      border: "1px solid rgba(0,0,0,0.08)",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 900,
+                        color: "#64748b",
+                        marginBottom: 6,
+                      }}
+                    >
+                      This may speak to you
+                    </div>
 
-    <div style={{ fontSize: 14, marginBottom: 6 }}>
-      {topResult.item.body}
-    </div>
+                    <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 6 }}>
+                      {topResult.item.title}
+                    </div>
 
+                    <div style={{ fontSize: 14, marginBottom: 6 }}>
+                      {topResult.item.body}
+                    </div>
     <div style={{ fontSize: 12, color: "#64748b" }}>
       {topResult.item.ref}
     </div>
