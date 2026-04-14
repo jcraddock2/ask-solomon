@@ -638,6 +638,265 @@ const insightData =
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
+  useEffect(() => {
+    try {
+      setIsPro(isProUser());
+    } catch {
+      setIsPro(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const saved = safeParse<Record<string, boolean>>(
+      localStorage.getItem("asksolomon:favorites"),
+      {}
+    );
+    setFavoriteKeys(saved);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    localStorage.setItem("asksolomon:favorites", JSON.stringify(favoriteKeys));
+  }, [favoriteKeys]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const savedTemplate = safeParse<ShareTemplate>(
+      localStorage.getItem("asksolomon:shareTemplate"),
+      "gradientModern"
+    );
+    setShareTemplate(savedTemplate);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    localStorage.setItem(
+      "asksolomon:shareTemplate",
+      JSON.stringify(shareTemplate)
+    );
+  }, [shareTemplate]);
+
+  useEffect(() => {
+    setPromotedProverbRef("");
+  }, [q, mode, sub]);
+
+  const setUrl = (next: { mode?: Mode; sub?: Sub | "all"; q?: string }) => {
+    const nextMode = next.mode ?? mode;
+    const nextSub = next.sub ?? sub;
+    const nextQ = next.q ?? q;
+
+    const params = new URLSearchParams();
+    if (nextMode !== "encouragement") params.set("mode", nextMode);
+    if (nextMode === "encouragement" && nextSub !== "all") {
+      params.set("sub", nextSub);
+    }
+    if (nextQ.trim().length > 0) params.set("q", nextQ.trim());
+
+    const qs = params.toString();
+    router.replace(qs ? `/?${qs}` : "/");
+  };
+
+  const wrapText = (
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    x: number,
+    y: number,
+    maxWidth: number,
+    lineHeight: number
+  ) => {
+    const words = text.split(/\s+/).filter(Boolean);
+    if (words.length === 0) return 0;
+
+    const lines: string[] = [];
+    let line = words[0];
+
+    for (let i = 1; i < words.length; i++) {
+      const test = `${line} ${words[i]}`;
+      if (ctx.measureText(test).width > maxWidth) {
+        lines.push(line);
+        line = words[i];
+      } else {
+        line = test;
+      }
+    }
+
+    if (line) lines.push(line);
+
+    for (let i = 0; i < lines.length; i++) {
+      ctx.fillText(lines[i], x, y + i * lineHeight);
+    }
+
+    return lines.length;
+  };
+
+  const measureWrappedLines = (
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    maxWidth: number
+  ) => {
+    const words = text.split(/\s+/).filter(Boolean);
+    if (words.length === 0) return 0;
+
+    let lines = 1;
+    let line = words[0];
+
+    for (let i = 1; i < words.length; i++) {
+      const test = `${line} ${words[i]}`;
+      if (ctx.measureText(test).width > maxWidth) {
+        lines++;
+        line = words[i];
+      } else {
+        line = test;
+      }
+    }
+
+    return lines;
+  };
+
+  const roundRectPath = (
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number
+  ) => {
+    const radius = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.arcTo(x + w, y, x + w, y + h, radius);
+    ctx.arcTo(x + w, y + h, x, y + h, radius);
+    ctx.arcTo(x, y + h, x, y, radius);
+    ctx.arcTo(x, y, x + w, y, radius);
+    ctx.closePath();
+  };
+
+  const drawRoundedPanel = (
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number,
+    fill: string,
+    shadow = true
+  ) => {
+    ctx.save();
+    if (shadow) {
+      ctx.shadowColor = "rgba(0,0,0,0.22)";
+      ctx.shadowBlur = 26;
+      ctx.shadowOffsetY = 14;
+    }
+    ctx.fillStyle = fill;
+    roundRectPath(ctx, x, y, w, h, r);
+    ctx.fill();
+    ctx.restore();
+  };
+
+  const downloadDataUrl = (dataUrl: string, filename: string) => {
+    const a = document.createElement("a");
+    a.href = dataUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
+  const getTemplateStyle = (t: ShareTemplate) => {
+    switch (t) {
+      case "classic":
+        return {
+          bgA: "#f8fafc",
+          bgB: "#e2e8f0",
+          panelFill: "rgba(255,255,255,0.92)",
+          headerText: "#0f172a",
+          subHeaderText: "rgba(15,23,42,0.65)",
+          verseText: "#0f172a",
+          refText: "#0f172a",
+          footerText: "rgba(15,23,42,0.75)",
+          accent: "#0f172a",
+        };
+      case "dark":
+        return {
+          bgA: "#0b1220",
+          bgB: "#111827",
+          panelFill: "rgba(255,255,255,0.10)",
+          headerText: "rgba(255,255,255,0.92)",
+          subHeaderText: "rgba(255,255,255,0.72)",
+          verseText: "rgba(255,255,255,0.94)",
+          refText: "rgba(255,255,255,0.86)",
+          footerText: "rgba(255,255,255,0.78)",
+          accent: "rgba(255,255,255,0.90)",
+        };
+      case "gold":
+        return {
+          bgA: "#0b1020",
+          bgB: "#1f2937",
+          panelFill: "rgba(17,24,39,0.76)",
+          headerText: "rgba(255,255,255,0.92)",
+          subHeaderText: "rgba(255,255,255,0.72)",
+          verseText: "rgba(255,255,255,0.95)",
+          refText: "rgba(255,255,255,0.86)",
+          footerText: "rgba(255,255,255,0.78)",
+          accent: "#fbbf24",
+        };
+      case "daily":
+        return {
+          bgA: "#fff7ed",
+          bgB: "#ffedd5",
+          panelFill: "rgba(255,255,255,0.94)",
+          headerText: "#7c2d12",
+          subHeaderText: "rgba(124,45,18,0.70)",
+          verseText: "#0f172a",
+          refText: "#7c2d12",
+          footerText: "rgba(124,45,18,0.85)",
+          accent: "#ea580c",
+        };
+      case "gradientModern":
+      default:
+        return {
+          bgA: "#0f172a",
+          bgB: "#1d4ed8",
+          panelFill: "rgba(255,255,255,0.92)",
+          headerText: "rgba(255,255,255,0.92)",
+          subHeaderText: "rgba(255,255,255,0.76)",
+          verseText: "#0f172a",
+          refText: "#0f172a",
+          footerText: "rgba(255,255,255,0.88)",
+          accent: "rgba(255,255,255,0.90)",
+        };
+    }
+  };
+
+  const formatTemplateLabel = (t: ShareTemplate) => {
+    switch (t) {
+      case "classic":
+        return "Classic";
+      case "dark":
+        return "Dark Mode";
+      case "gold":
+        return "Gold Wisdom";
+      case "daily":
+        return "Daily Verse";
+      case "gradientModern":
+      default:
+        return "Gradient Modern";
+    }
+  };
+
+  const handleImage = async (item: Pick<VerseItem, "title" | "body" | "ref">) => {
+    try {
+      const W = 1080;
+      const H = 1350;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = W;
+      canvas.height = H;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
       const style = getTemplateStyle(shareTemplate);
 
       const grad = ctx.createLinearGradient(0, 0, W, H);
@@ -763,89 +1022,88 @@ const insightData =
     }
   };
 
-const buildFilteredPool = () => {
-  let list = [...DATA] as VerseItem[];
+  const buildFilteredPool = () => {
+    let list = [...DATA] as VerseItem[];
 
-  list = list.filter((item: any) => itemMode(item) === mode);
+    list = list.filter((item: any) => itemMode(item) === mode);
 
-  if (mode === "encouragement" && sub !== "all") {
-    list = list.filter((item: any) => itemSubs(item).includes(sub));
-  }
+    if (mode === "encouragement" && sub !== "all") {
+      list = list.filter((item: any) => itemSubs(item).includes(sub));
+    }
 
-  if (favoritesOnly) {
-    list = list.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
-  }
+    if (favoritesOnly) {
+      list = list.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
+    }
 
-  return list;
-};
+    return list;
+  };
 
-const baseResults = useMemo(() => {
-  // Smart Proverbs search when user types
-  if (q.trim().length > 0) {
-    let found = searchProverbsScored(q).map((r) => ({
-      ...r.item,
-      score: r.score,
-      why: r.why,
-    }));
+  const baseResults = useMemo(() => {
+    if (q.trim().length > 0) {
+      let found = searchProverbsScored(q).map((r) => ({
+        ...r.item,
+        score: r.score,
+        why: r.why,
+      }));
+
+      if (favoritesOnly) {
+        found = found.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
+      }
+
+      return found;
+    }
+
+    let found = DATA.filter((item) => {
+      if (item.mode !== mode) return false;
+      if (sub !== "all" && item.sub !== sub) return false;
+      return true;
+    });
 
     if (favoritesOnly) {
       found = found.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
     }
 
     return found;
-  }
+  }, [q, mode, sub, favoritesOnly, favoriteKeys]);
 
-  // Fallback when no query is typed
-  let found = DATA.filter((item) => {
-    if (item.mode !== mode) return false;
-    if (sub !== "all" && item.sub !== sub) return false;
-    return true;
-  });
-
-  if (favoritesOnly) {
-    found = found.filter((item) => favoriteKeys[`${item.ref}-${item.title}`]);
-  }
-
-  return found;
-}, [q, mode, sub, favoritesOnly, favoriteKeys]);
   const results = useMemo(() => {
     if (!todayFocusOn) return baseResults;
     if (!todayFocusKey) return [];
     return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
   }, [baseResults, todayFocusOn, todayFocusKey]);
 
-const smartExpandedTerms = useMemo(() => {
-  if (q.trim().length === 0) return [];
+  const smartExpandedTerms = useMemo(() => {
+    if (q.trim().length === 0) return [];
 
-  const advanced = interpretQueryAdvanced(q);
-  const expanded = expandSmartTerms(q);
+    const advanced = interpretQueryAdvanced(q);
+    const expanded = expandSmartTerms(q);
 
-  if (!advanced.lane) return expanded;
+    if (!advanced.lane) return expanded;
 
-  return Array.from(new Set([advanced.lane, ...expanded]));
-}, [q]);
+    return Array.from(new Set([advanced.lane, ...expanded]));
+  }, [q]);
 
-const proverbMatches = useMemo<ProverbMatch[]>(() => {
-  const query = q.trim();
-  if (!query) return [];
+  const proverbMatches = useMemo<ProverbMatch[]>(() => {
+    const query = q.trim();
+    if (!query) return [];
 
-  try {
-    const found = asArray(searchProverbsScored(query)).slice(0, 8);
+    try {
+      const found = asArray(searchProverbsScored(query)).slice(0, 8);
 
-    return found
-      .map((entry: any) => {
-        const p = entry?.item ?? {};
-        const ref = String(p?.ref ?? "");
-        const text = String(p?.text ?? p?.body ?? "");
-        const topics = Array.isArray(p?.topics)
-          ? p.topics.map((t: any) => String(t))
-          : [];
+      return found
+        .map((entry: any) => {
+          const p = entry?.item ?? {};
+          const ref = String(p?.ref ?? "");
+          const text = String(p?.text ?? p?.body ?? "");
+          const topics = Array.isArray(p?.topics)
+            ? p.topics.map((t: any) => String(t))
+            : [];
 
-        const fallback = scoreProverbMatch(
-          { ref, text, topics },
-          query,
-          smartExpandedTerms
-        );
+          const fallback = scoreProverbMatch(
+            { ref, text, topics },
+            query,
+            smartExpandedTerms
+          );
 
           const rawScore = Number(entry?.score ?? fallback.score ?? 0);
 
@@ -874,114 +1132,106 @@ const proverbMatches = useMemo<ProverbMatch[]>(() => {
     }
   }, [q, smartExpandedTerms]);
 
+  useEffect(() => {
+    if (!q.trim()) return;
+    if (proverbMatches.length === 0) {
+      setPromotedProverbRef("");
+      return;
+    }
+    setPromotedProverbRef(proverbMatches[0].ref);
+  }, [q, proverbMatches]);
+
   const promotedProverb = useMemo<ProverbMatch | null>(() => {
     return proverbMatches.find((p) => p.ref === promotedProverbRef) || null;
   }, [proverbMatches, promotedProverbRef]);
 
-const relatedPromotedProverbs = useMemo<ProverbMatch[]>(() => {
-  if (!promotedProverb) return [];
+  const relatedPromotedProverbs = useMemo<ProverbMatch[]>(() => {
+    if (!promotedProverb) return [];
 
-  const promotedTopics = new Set(
-    promotedProverb.topics.map((t) => normalizeText(t))
-  );
+    const promotedTopics = new Set(
+      promotedProverb.topics.map((t) => normalizeText(t))
+    );
 
-  return proverbMatches
-    .filter((p) => p.ref !== promotedProverb.ref)
-    .filter((p) => p.topics.some((t) => promotedTopics.has(normalizeText(t))))
-    .slice(0, 3);
-}, [promotedProverb, proverbMatches]);
+    return proverbMatches
+      .filter((p) => p.ref !== promotedProverb.ref)
+      .filter((p) => p.topics.some((t) => promotedTopics.has(normalizeText(t))))
+      .slice(0, 3);
+  }, [promotedProverb, proverbMatches]);
 
-const bookMatches = useMemo<BookMatch[]>(() => {
-  const query = q.trim();
-  if (!query) return [];
+  const bookMatches = useMemo<BookMatch[]>(() => {
+    const query = q.trim();
+    if (!query) return [];
 
-  try {
-    return asArray<BookMatch>(findBookMatches(query));
-  } catch {
-    return [];
-  }
-}, [q]);
+    try {
+      return asArray<BookMatch>(findBookMatches(query));
+    } catch {
+      return [];
+    }
+  }, [q]);
 
-const toggleTodaysFocus = () => {
-  if (todayFocusOn) {
+  const toggleTodaysFocus = () => {
+    if (todayFocusOn) {
+      setTodayFocusOn(false);
+      setTodayFocusKey("");
+      return;
+    }
+
+    const pool = buildFilteredPool();
+    if (pool.length === 0) {
+      setTodayFocusOn(true);
+      setTodayFocusKey("");
+      return;
+    }
+
+    const choice = pool[Math.floor(Math.random() * pool.length)];
+    setTodayFocusOn(true);
+    setTodayFocusKey(`${choice.ref}-${choice.title}`);
+  };
+
+  const rerollTodaysFocus = () => {
+    const pool = buildFilteredPool();
+    if (pool.length === 0) {
+      setTodayFocusKey("");
+      return;
+    }
+
+    const choice = pool[Math.floor(Math.random() * pool.length)];
+    setTodayFocusKey(`${choice.ref}-${choice.title}`);
+  };
+
+  const applyTopic = (topicQuery: string) => {
+    setQ(topicQuery);
+    setFavoritesOnly(false);
     setTodayFocusOn(false);
     setTodayFocusKey("");
-    return;
-  }
+    setPromotedProverbRef("");
+    setUrl({ q: topicQuery });
+  };
 
-  const pool = buildFilteredPool();
-  if (pool.length === 0) {
-    setTodayFocusOn(true);
-    setTodayFocusKey("");
-    return;
-  }
-
-  const choice = pool[Math.floor(Math.random() * pool.length)];
-  setTodayFocusOn(true);
-  setTodayFocusKey(`${choice.ref}-${choice.title}`);
-};
-  if (todayFocusOn) {
+  const applySituation = (situationQuery: string) => {
+    setQ(situationQuery);
+    setFavoritesOnly(false);
     setTodayFocusOn(false);
     setTodayFocusKey("");
-    return;
-  }
+    setPromotedProverbRef("");
+    setUrl({ q: situationQuery });
+  };
 
-  const pool = buildFilteredPool();
-  if (pool.length === 0) {
-    setTodayFocusOn(true);
-    setTodayFocusKey("");
-    return;
-  }
+  const renderEmptyState = () => {
+    if (favoritesOnly && favoritesCount === 0) {
+      return (
+        <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
+          You haven’t saved any favorites yet. Tap ☆ on a verse to save it.
+        </div>
+      );
+    }
 
-  const choice = pool[Math.floor(Math.random() * pool.length)];
-  setTodayFocusOn(true);
-  setTodayFocusKey(`${choice.ref}-${choice.title}`);
-};
-
-const rerollTodaysFocus = () => {
-  const pool = buildFilteredPool();
-  if (pool.length === 0) {
-    setTodayFocusKey("");
-    return;
-  }
-
-  const choice = pool[Math.floor(Math.random() * pool.length)];
-  setTodayFocusKey(`${choice.ref}-${choice.title}`);
-};
-
-const applyTopic = (topicQuery: string) => {
-  setQ(topicQuery);
-  setFavoritesOnly(false);
-  setTodayFocusOn(false);
-  setTodayFocusKey("");
-  setPromotedProverbRef("");
-  setUrl({ q: topicQuery });
-};
-
-const applySituation = (situationQuery: string) => {
-  setQ(situationQuery);
-  setFavoritesOnly(false);
-  setTodayFocusOn(false);
-  setTodayFocusKey("");
-  setPromotedProverbRef("");
-  setUrl({ q: situationQuery });
-};
-
-const renderEmptyState = () => {
-  if (favoritesOnly && favoritesCount === 0) {
     return (
       <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
-        You haven’t saved any favorites yet. Tap ☆ on a verse to save it.
+        No matches. Try a different keyword.
       </div>
     );
-  }
-
-  return (
-    <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
-      No matches. Try a different keyword.
-    </div>
-  );
-};
+  };
   return (
     <div style={outerStyle}>
       <main style={pageStyle}>
