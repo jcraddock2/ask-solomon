@@ -902,7 +902,7 @@ const proverbMatches = useMemo<ProverbMatch[]>(() => {
     }
   }, [q]);
 
- const toggleTodaysFocus = () => {
+const toggleTodaysFocus = () => {
   if (todayFocusOn) {
     setTodayFocusOn(false);
     setTodayFocusKey("");
@@ -931,23 +931,25 @@ const rerollTodaysFocus = () => {
   const choice = pool[Math.floor(Math.random() * pool.length)];
   setTodayFocusKey(`${choice.ref}-${choice.title}`);
 };
-  const applyTopic = (topicQuery: string) => {
-    setQ(topicQuery);
-    setFavoritesOnly(false);
-    setTodayFocusOn(false);
-    setTodayFocusKey("");
-    setPromotedProverbRef("");
-    setUrl({ q: topicQuery });
-  };
 
-  const applySituation = (situationQuery: string) => {
-    setQ(situationQuery);
-    setFavoritesOnly(false);
-    setTodayFocusOn(false);
-    setTodayFocusKey("");
-    setPromotedProverbRef("");
-    setUrl({ q: situationQuery });
-  };
+const applyTopic = (topicQuery: string) => {
+  setQ(topicQuery);
+  setFavoritesOnly(false);
+  setTodayFocusOn(false);
+  setTodayFocusKey("");
+  setPromotedProverbRef("");
+  setUrl({ q: topicQuery });
+};
+
+const applySituation = (situationQuery: string) => {
+  setQ(situationQuery);
+  setFavoritesOnly(false);
+  setTodayFocusOn(false);
+  setTodayFocusKey("");
+  setPromotedProverbRef("");
+  setUrl({ q: situationQuery });
+};
+
 const renderEmptyState = () => {
   if (favoritesOnly && favoritesCount === 0) {
     return (
