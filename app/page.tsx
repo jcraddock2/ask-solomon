@@ -878,31 +878,48 @@ const proverbMatches = useMemo<ProverbMatch[]>(() => {
     return proverbMatches.find((p) => p.ref === promotedProverbRef) || null;
   }, [proverbMatches, promotedProverbRef]);
 
-  const relatedPromotedProverbs = useMemo<ProverbMatch[]>(() => {
-    if (!promotedProverb) return [];
+const relatedPromotedProverbs = useMemo<ProverbMatch[]>(() => {
+  if (!promotedProverb) return [];
 
-    const promotedTopics = new Set(
-      promotedProverb.topics.map((t) => normalizeText(t))
-    );
+  const promotedTopics = new Set(
+    promotedProverb.topics.map((t) => normalizeText(t))
+  );
 
-    return proverbMatches
-      .filter((p) => p.ref !== promotedProverb.ref)
-      .filter((p) => p.topics.some((t) => promotedTopics.has(normalizeText(t))))
-      .slice(0, 3);
-  }, [promotedProverb, proverbMatches]);
+  return proverbMatches
+    .filter((p) => p.ref !== promotedProverb.ref)
+    .filter((p) => p.topics.some((t) => promotedTopics.has(normalizeText(t))))
+    .slice(0, 3);
+}, [promotedProverb, proverbMatches]);
 
-  const bookMatches = useMemo<BookMatch[]>(() => {
-    const query = q.trim();
-    if (!query) return [];
+const bookMatches = useMemo<BookMatch[]>(() => {
+  const query = q.trim();
+  if (!query) return [];
 
-    try {
-      return asArray<BookMatch>(findBookMatches(query));
-    } catch {
-      return [];
-    }
-  }, [q]);
+  try {
+    return asArray<BookMatch>(findBookMatches(query));
+  } catch {
+    return [];
+  }
+}, [q]);
 
 const toggleTodaysFocus = () => {
+  if (todayFocusOn) {
+    setTodayFocusOn(false);
+    setTodayFocusKey("");
+    return;
+  }
+
+  const pool = buildFilteredPool();
+  if (pool.length === 0) {
+    setTodayFocusOn(true);
+    setTodayFocusKey("");
+    return;
+  }
+
+  const choice = pool[Math.floor(Math.random() * pool.length)];
+  setTodayFocusOn(true);
+  setTodayFocusKey(`${choice.ref}-${choice.title}`);
+};
   if (todayFocusOn) {
     setTodayFocusOn(false);
     setTodayFocusKey("");
