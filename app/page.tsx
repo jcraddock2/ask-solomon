@@ -1063,8 +1063,7 @@ const rerollTodaysFocus = () => {
         No matches. Try a different keyword.
       </div>
     );
-  };
-
+  
   return (
     <div style={outerStyle}>
       <main style={pageStyle}>
