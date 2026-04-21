@@ -1532,7 +1532,7 @@ const rerollTodaysFocus = () => {
         marginBottom: 8,
       }}
     >
-    {topResult.body || topResult.text} 
+    {topResult.body || ("text" in topResult ? topResult.text : "")}
     </div>
 
     <div
