@@ -908,7 +908,11 @@ const baseResults = useMemo(() => {
     if (!todayFocusKey) return [];
     return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
   }, [baseResults, todayFocusOn, todayFocusKey]);
-
+  const topResult = useMemo(() => {
+    if (q.trim().length === 0) return null;
+    if (!results || results.length === 0) return null;
+    return results[0];
+  }, [q, results]);
 const smartExpandedTerms = useMemo(() => {
   if (q.trim().length === 0) return [];
 
@@ -1484,7 +1488,64 @@ const rerollTodaysFocus = () => {
             <div style={{ marginBottom: 10, fontSize: 12, color: "#64748b", fontWeight: 900 }}>
               Showing {results.length} result{results.length === 1 ? "" : "s"}
             </div>
+{topResult && (
+  <div
+    style={{
+      marginBottom: 16,
+      padding: "14px 16px",
+      borderRadius: 16,
+      background: "rgba(0,0,0,0.04)",
+      border: "1px solid rgba(0,0,0,0.08)",
+      boxShadow: "0 10px 24px rgba(0,0,0,0.05)",
+    }}
+  >
+    <div
+      style={{
+        fontSize: 11,
+        fontWeight: 900,
+        color: "#64748b",
+        marginBottom: 6,
+        textTransform: "uppercase",
+        letterSpacing: 0.4,
+      }}
+    >
+      This may speak to you
+    </div>
 
+    <div
+      style={{
+        fontSize: 17,
+        fontWeight: 900,
+        color: "#111827",
+        marginBottom: 8,
+      }}
+    >
+      {topResult.title}
+    </div>
+
+    <div
+      style={{
+        fontSize: 14,
+        lineHeight: 1.6,
+        color: "#334155",
+        fontWeight: 700,
+        marginBottom: 8,
+      }}
+    >
+      {topResult.body}
+    </div>
+
+    <div
+      style={{
+        fontSize: 12,
+        color: "#64748b",
+        fontWeight: 900,
+      }}
+    >
+      {topResult.ref}
+    </div>
+  </div>
+)}
             {q.trim().length > 0 && (
               <div style={{ marginBottom: 16 }}>
                 <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 8 }}>
