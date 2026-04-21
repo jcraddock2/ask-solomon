@@ -1520,7 +1520,7 @@ const rerollTodaysFocus = () => {
         marginBottom: 8,
       }}
     >
-      {topResult.title}
+      {topResult.title || "A word for you"}
     </div>
 
     <div
@@ -1532,7 +1532,7 @@ const rerollTodaysFocus = () => {
         marginBottom: 8,
       }}
     >
-      {topResult.body}
+    {topResult.body || topResult.text} 
     </div>
 
     <div
