@@ -1030,24 +1030,35 @@ const rerollTodaysFocus = () => {
   const choice = pool[Math.floor(Math.random() * pool.length)];
   setTodayFocusKey(`${choice.ref}-${choice.title}`);
 };
-  const applyTopic = (topicQuery: string) => {
-    setQ(topicQuery);
-    setFavoritesOnly(false);
-    setTodayFocusOn(false);
-    setTodayFocusKey("");
-    setPromotedProverbRef("");
-    setUrl({ q: topicQuery });
-  };
 
-  const applySituation = (situationQuery: string) => {
-    setQ(situationQuery);
-    setFavoritesOnly(false);
-    setTodayFocusOn(false);
-    setTodayFocusKey("");
-    setPromotedProverbRef("");
-    setUrl({ q: situationQuery });
-  };
+const clearAllFilters = () => {
+  setQ("");
+  setMode("encouragement");
+  setSub("all");
+  setFavoritesOnly(false);
+  setTodayFocusOn(false);
+  setTodayFocusKey("");
+  setPromotedProverbRef("");
+  setUrl({ q: "" });
+};
 
+const applyTopic = (topicQuery: string) => {
+  setQ(topicQuery);
+  setFavoritesOnly(false);
+  setTodayFocusOn(false);
+  setTodayFocusKey("");
+  setPromotedProverbRef("");
+  setUrl({ q: topicQuery });
+};
+
+const applySituation = (situationQuery: string) => {
+  setQ(situationQuery);
+  setFavoritesOnly(false);
+  setTodayFocusOn(false);
+  setTodayFocusKey("");
+  setPromotedProverbRef("");
+  setUrl({ q: situationQuery });
+};
   const renderEmptyState = () => {
     if (favoritesOnly && favoritesCount === 0) {
       return (
@@ -1400,19 +1411,18 @@ const rerollTodaysFocus = () => {
                   transition: "box-shadow 140ms ease, border 140ms ease",
                 }}
               />
-
-            <button
+<button
   type="button"
-  onClick={() => {
-    setQ("");
-    setTodayFocusOn(false);
-    setTodayFocusKey("");
-    setPromotedProverbRef("");
-    setUrl({ q: "" });
+  onClick={clearAllFilters}
+  style={{
+    ...headerBtn,
+    background: "rgba(99,102,241,0.10)",
+    border: "1px solid rgba(99,102,241,0.18)",
+    color: "#4338ca",
+    fontWeight: 900,
   }}
-  style={headerBtn}
 >
-  Clear
+  Clear Filters
 </button>
 </div>
 
