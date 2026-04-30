@@ -404,7 +404,7 @@ const bookIndexMatches: BookMatch[] = BOOK_INDEX.filter((entry) => {
 }).map((entry) => ({
   topic: entry.id,
   label: entry.title,
-  pages: entry.chapter,
+  pages: entry.page,
   chapters: [entry.chapter],
   blurb: entry.excerpt,
   keywords: entry.keywords,
