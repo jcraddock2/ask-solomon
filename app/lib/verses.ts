@@ -390,7 +390,34 @@ export function findBookMatches(q: string): BookMatch[] {
     }
   }
 
-  return matches.slice(0, 4);
+const bookIndexMatches: BookMatch[] = BOOK_INDEX.filter((entry) => {
+  const searchable = [
+    entry.title,
+    entry.excerpt,
+    ...entry.tags,
+    ...entry.keywords,
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  return queryWords.some((word) => searchable.includes(word));
+}).map((entry) => ({
+  topic: entry.id,
+  label: entry.title,
+  pages: entry.chapter,
+  chapters: [entry.chapter],
+  blurb: entry.excerpt,
+  keywords: entry.keywords,
+}));
+
+const combined = [...matches, ...bookIndexMatches];
+
+const deduped = combined.filter(
+  (item, index, arr) =>
+    index === arr.findIndex((x) => x.label === item.label)
+);
+
+return deduped.slice(0, 6); 
 }
 export const SMART_TOPIC_SUGGESTIONS: Record<string, string[]> = {
   fear: ["peace", "direction", "faith", "courage"],
