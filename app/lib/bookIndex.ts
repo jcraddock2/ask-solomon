@@ -163,4 +163,213 @@ export const BOOK_INDEX: BookEntry[] = [
       "identity",
     ],
   },
+  ,
+{
+  id: "identity-1",
+  chapter: "Chapter 9",
+  page: "Page 118",
+  title: "Identity Shapes Decisions",
+  excerpt:
+    "People often struggle because they make decisions from insecurity instead of identity. Clear identity creates stable direction.",
+  searchPhrase: "Identity Shapes Decisions",
+  tags: ["identity", "confidence", "direction"],
+  keywords: [
+    "identity",
+    "who am i",
+    "confidence",
+    "direction",
+    "clarity",
+    "self worth",
+  ],
+},
+
+{
+  id: "rejection-1",
+  chapter: "Chapter 10",
+  page: "Page 132",
+  title: "Rejection Is Not Your Identity",
+  excerpt:
+    "Rejection hurts, but it does not define value. Many people confuse painful moments with permanent identity.",
+  searchPhrase: "Rejection Is Not Your Identity",
+  tags: ["rejection", "worth", "identity"],
+  keywords: [
+    "rejection",
+    "rejected",
+    "ignored",
+    "not wanted",
+    "worth",
+    "identity",
+  ],
+},
+
+{
+  id: "burnout-1",
+  chapter: "Chapter 11",
+  page: "Page 145",
+  title: "Burnout Comes From Internal Pressure",
+  excerpt:
+    "Burnout is rarely caused by one event. It often comes from carrying pressure too long without recovery.",
+  searchPhrase: "Burnout Comes From Internal Pressure",
+  tags: ["burnout", "stress", "pressure"],
+  keywords: [
+    "burnout",
+    "burned out",
+    "stress",
+    "pressure",
+    "overwhelmed",
+    "tired",
+  ],
+},
+
+{
+  id: "comparison-1",
+  chapter: "Chapter 12",
+  page: "Page 158",
+  title: "Comparison Distorts Perspective",
+  excerpt:
+    "Comparison steals peace because it shifts focus from progress to competition.",
+  searchPhrase: "Comparison Distorts Perspective",
+  tags: ["comparison", "confidence", "peace"],
+  keywords: [
+    "comparison",
+    "behind",
+    "others",
+    "not enough",
+    "confidence",
+    "jealous",
+  ],
+},
+
+{
+  id: "failure-1",
+  chapter: "Chapter 13",
+  page: "Page 171",
+  title: "Failure Does Not Mean Finished",
+  excerpt:
+    "Failure is often information, not identity. Growth begins when setbacks become lessons instead of labels.",
+  searchPhrase: "Failure Does Not Mean Finished",
+  tags: ["failure", "growth", "hope"],
+  keywords: [
+    "failure",
+    "failed",
+    "mistake",
+    "starting over",
+    "growth",
+    "hope",
+  ],
+},
+
+{
+  id: "starting-over-1",
+  chapter: "Chapter 14",
+  page: "Page 183",
+  title: "Starting Over Requires Courage",
+  excerpt:
+    "Beginning again is difficult because it asks people to trust growth before seeing results.",
+  searchPhrase: "Starting Over Requires Courage",
+  tags: ["courage", "growth", "hope"],
+  keywords: [
+    "starting over",
+    "restart",
+    "begin again",
+    "courage",
+    "hope",
+    "future",
+  ],
+},
+
+{
+  id: "trust-1",
+  chapter: "Chapter 15",
+  page: "Page 196",
+  title: "Trust Builds Slowly",
+  excerpt:
+    "Trust grows through consistency, honesty, and repeated alignment between words and actions.",
+  searchPhrase: "Trust Builds Slowly",
+  tags: ["trust", "relationships", "integrity"],
+  keywords: [
+    "trust",
+    "betrayal",
+    "relationships",
+    "honesty",
+    "integrity",
+    "healing",
+  ],
+},
+
+{
+  id: "purpose-pressure-1",
+  chapter: "Chapter 16",
+  page: "Page 209",
+  title: "Purpose Survives Pressure",
+  excerpt:
+    "Pressure does not erase purpose. It often reveals what matters most.",
+  searchPhrase: "Purpose Survives Pressure",
+  tags: ["purpose", "pressure", "meaning"],
+  keywords: [
+    "purpose",
+    "pressure",
+    "stress",
+    "meaning",
+    "calling",
+    "direction",
+  ],
+},
+
+{
+  id: "self-worth-1",
+  chapter: "Chapter 17",
+  page: "Page 221",
+  title: "Self-Worth Must Be Rooted Internally",
+  excerpt:
+    "When worth depends on approval, confidence becomes fragile.",
+  searchPhrase: "Self-Worth Must Be Rooted Internally",
+  tags: ["worth", "confidence", "identity"],
+  keywords: [
+    "worth",
+    "self worth",
+    "confidence",
+    "approval",
+    "identity",
+    "value",
+  ],
+},
+
+{
+  id: "overlooked-1",
+  chapter: "Chapter 18",
+  page: "Page 234",
+  title: "Being Overlooked Does Not Mean Invisible",
+  excerpt:
+    "Many people confuse delayed recognition with lack of value.",
+  searchPhrase: "Being Overlooked Does Not Mean Invisible",
+  tags: ["respect", "worth", "identity"],
+  keywords: [
+    "overlooked",
+    "ignored",
+    "respect",
+    "value",
+    "recognition",
+    "invisible",
+  ],
+},
+
+{
+  id: "difficult-people-1",
+  chapter: "Chapter 19",
+  page: "Page 247",
+  title: "Difficult People Reveal Inner Strength",
+  excerpt:
+    "Challenging relationships often expose patience, boundaries, and emotional maturity.",
+  searchPhrase: "Difficult People Reveal Inner Strength",
+  tags: ["relationships", "patience", "growth"],
+  keywords: [
+    "difficult people",
+    "boss",
+    "relationships",
+    "anger",
+    "patience",
+    "boundaries",
+  ],
+}
 ];
