@@ -3,6 +3,7 @@
 export type BookEntry = {
   id: string;
   chapter: string;
+  page: string;
   title: string;
   excerpt: string;
   searchPhrase: string;
@@ -14,6 +15,7 @@ export const BOOK_INDEX: BookEntry[] = [
   {
     id: "confidence-1",
     chapter: "Chapter 1",
+    page: "Page 12",
     title: "Confidence Begins Internally",
     excerpt:
       "Confidence is not something you wait to receive from the world. It begins when you agree internally with who you are becoming.",
@@ -32,6 +34,7 @@ export const BOOK_INDEX: BookEntry[] = [
   {
     id: "purpose-1",
     chapter: "Chapter 2",
+    page: "Page 24",
     title: "Purpose Creates Direction",
     excerpt:
       "People drift when they lack direction. Purpose gives meaning to struggle and creates forward movement.",
@@ -50,6 +53,7 @@ export const BOOK_INDEX: BookEntry[] = [
   {
     id: "fear-1",
     chapter: "Chapter 3",
+    page: "Page 37",
     title: "Fear Shrinks Potential",
     excerpt:
       "Fear rarely announces itself loudly. Often it disguises itself as hesitation, delay, or second guessing.",
@@ -68,6 +72,7 @@ export const BOOK_INDEX: BookEntry[] = [
   {
     id: "success-1",
     chapter: "Chapter 4",
+    page: "Page 51",
     title: "Success Is Built Slowly",
     excerpt:
       "Most success is not dramatic. It comes through repeated discipline and small consistent choices.",
@@ -86,6 +91,7 @@ export const BOOK_INDEX: BookEntry[] = [
   {
     id: "leadership-1",
     chapter: "Chapter 5",
+    page: "Page 66",
     title: "Leadership Starts Within",
     excerpt:
       "Leadership is not title first. It is influence, responsibility, and internal alignment.",
@@ -104,6 +110,7 @@ export const BOOK_INDEX: BookEntry[] = [
   {
     id: "overwhelmed-1",
     chapter: "Chapter 6",
+    page: "Page 78",
     title: "Overwhelm Comes From Compression",
     excerpt:
       "Overwhelm often comes from carrying too much mentally without releasing pressure.",
@@ -122,6 +129,7 @@ export const BOOK_INDEX: BookEntry[] = [
   {
     id: "respect-1",
     chapter: "Chapter 7",
+    page: "Page 92",
     title: "Respect Is Earned Through Consistency",
     excerpt:
       "Respect grows when words, actions, and identity align over time.",
@@ -140,6 +148,7 @@ export const BOOK_INDEX: BookEntry[] = [
   {
     id: "lonely-1",
     chapter: "Chapter 8",
+    page: "Page 105",
     title: "Loneliness Does Not Mean You Are Forgotten",
     excerpt:
       "Loneliness is not proof of abandonment. Often it is a season of preparation and internal rebuilding.",
