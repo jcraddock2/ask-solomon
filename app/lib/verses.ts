@@ -1,3 +1,5 @@
+import { BOOK_INDEX } from "./bookIndex";
+
 export type Mode = "encouragement" | "wisdom" | "success";
 export type Sub = "peace" | "strength" | "direction" | "confidence" | "hope";
 
