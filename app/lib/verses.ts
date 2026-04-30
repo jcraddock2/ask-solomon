@@ -294,6 +294,11 @@ export function findBookMatches(q: string): BookMatch[] {
   const query = q.toLowerCase().trim();
   if (!query) return [];
 
+  const queryWords = query
+    .split(/[^a-z0-9]+/i)
+    .map((word) => word.trim())
+    .filter(Boolean);
+
   const matches: BookMatch[] = [];
 
   const TOPIC_MAP: Record<string, BookMatch> = {
@@ -373,19 +378,18 @@ export function findBookMatches(q: string): BookMatch[] {
   for (const topic of Object.keys(TOPIC_MAP)) {
     const match = TOPIC_MAP[topic];
 
-    if (query.includes(topic)) {
-      matches.push(match);
-      continue;
-    }
+    const keywordHit = match.keywords.some((k) => {
+      const keyword = k.toLowerCase();
+      return query.includes(keyword) || queryWords.includes(keyword);
+    });
 
-    if (match.keywords.some((k) => query.includes(k.toLowerCase()))) {
+    if (query.includes(topic) || keywordHit) {
       matches.push(match);
     }
   }
 
   return matches.slice(0, 4);
 }
-
 export const SMART_TOPIC_SUGGESTIONS: Record<string, string[]> = {
   fear: ["peace", "direction", "faith", "courage"],
   anxiety: ["peace", "trust", "direction"],
