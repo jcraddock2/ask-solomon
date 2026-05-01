@@ -942,8 +942,7 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     why: Array.from(new Set(why)),
   };
 }
-  }
-
+ 
   return {
     item,
     score,
