@@ -291,7 +291,10 @@ export type BookMatch = {
   chapters: string[];
   keywords: string[];
 };
-
+const TOPIC_MAP = {
+  ...
+};
+ 
 export function findBookMatches(q: string): BookMatch[] {
   const query = q.toLowerCase().trim();
   if (!query) return [];
