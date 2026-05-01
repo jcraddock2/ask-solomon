@@ -26,6 +26,50 @@ const GENERIC_TOKENS = new Set([
   "right",
 ]);
 
+const STOPWORDS = new Set([
+  "i",
+  "am",
+  "im",
+  "ive",
+  "me",
+  "my",
+  "the",
+  "a",
+  "an",
+  "and",
+  "or",
+  "to",
+  "for",
+  "of",
+  "in",
+  "on",
+  "at",
+  "is",
+  "are",
+  "be",
+  "feel",
+  "feeling",
+  "need",
+  "want",
+  "right",
+  "now",
+  "with",
+  "about",
+  "that",
+  "this",
+  "it",
+  "do",
+  "how",
+  "can",
+  "should",
+  "would",
+  "just",
+  "really",
+  "keep",
+  "stop",
+  "myself",
+]);
+
 const INTENT_EXPANSIONS: Record<string, string[]> = {
   hurting: [
     "hurting",
@@ -57,8 +101,6 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "unseen",
     "forgotten",
     "left out",
-    "nobody sees me",
-    "nobody understands me",
     "invisible",
     "ignored",
   ],
@@ -100,7 +142,6 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "confused",
     "lost",
     "discernment",
-    "what should i do",
     "bad decisions",
     "good judgment",
   ],
@@ -139,8 +180,6 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "stress",
     "uneasy",
     "pressure",
-    "peace of mind",
-    "peace in my mind",
   ],
   anger: [
     "anger",
@@ -275,6 +314,9 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "second guess",
     "unsure",
     "uncertain",
+    "identity",
+    "purpose",
+    "hope",
   ],
   respect: [
     "respect",
@@ -289,6 +331,57 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "overlooked",
     "ignored",
     "dishonored",
+  ],
+  purpose: [
+    "purpose",
+    "calling",
+    "meaning",
+    "direction",
+    "future",
+    "path",
+    "steps",
+    "plans",
+    "wisdom",
+    "identity",
+    "growth",
+  ],
+  hope: [
+    "hope",
+    "future",
+    "encouragement",
+    "strength",
+    "healing",
+    "endure",
+    "rise",
+    "light",
+    "keep going",
+    "discouraged",
+  ],
+  identity: [
+    "identity",
+    "worth",
+    "self worth",
+    "confidence",
+    "dignity",
+    "honor",
+    "rejected",
+    "overlooked",
+    "invisible",
+    "not enough",
+    "secure",
+  ],
+  progress: [
+    "progress",
+    "waiting",
+    "patience",
+    "growth",
+    "diligence",
+    "future",
+    "steps",
+    "season",
+    "delay",
+    "stuck",
+    "slow",
   ],
 };
 
@@ -325,12 +418,12 @@ const WORD_ALIASES: Record<string, string[]> = {
   decisions: ["decision", "wisdom", "guidance", "clarity"],
   decision: ["decisions", "wisdom", "guidance", "clarity"],
 
-  invisible: ["lonely", "rejected", "unseen", "ignored", "confidence"],
-  rejected: ["lonely", "invisible", "unseen", "confidence"],
+  invisible: ["lonely", "rejected", "unseen", "ignored", "confidence", "identity"],
+  rejected: ["lonely", "invisible", "unseen", "confidence", "identity"],
   confidence: ["courage", "boldness", "strength", "secure"],
   courage: ["confidence", "boldness", "strength"],
 
-  behind: ["progress", "delay", "comparison", "discouraged", "success"],
+  behind: ["progress", "delay", "comparison", "discouraged", "success", "purpose", "hope"],
   comparing: ["comparison", "behind", "self-doubt", "progress"],
   comparison: ["comparing", "behind", "self-doubt", "progress"],
   unsure: ["self-doubt", "confidence", "direction", "clarity"],
@@ -338,6 +431,13 @@ const WORD_ALIASES: Record<string, string[]> = {
   hesitant: ["self-doubt", "confidence", "fear"],
   guessing: ["second guessing", "self-doubt", "uncertain"],
   second: ["second guessing", "self-doubt"],
+
+  purpose: ["calling", "meaning", "direction", "future", "identity"],
+  calling: ["purpose", "meaning", "direction", "future"],
+  hope: ["future", "encouragement", "strength", "healing"],
+  hopeless: ["hope", "discouraged", "healing", "strength"],
+  waiting: ["patience", "progress", "season", "growth"],
+  stuck: ["progress", "discouraged", "direction", "growth"],
 
   boss: ["leadership", "manager", "supervisor", "authority", "workplace"],
   manager: ["leadership", "boss", "supervisor", "authority", "workplace"],
@@ -362,29 +462,29 @@ const LANE_PHRASE_BOOSTS: Array<{
       "uncertain",
       "hesitant",
     ],
-    intents: ["comparison", "confidence", "direction"],
+    intents: ["comparison", "confidence", "direction", "identity"],
     moods: ["uncertain", "insecure", "hesitant"],
     bonus: 36,
     label: "self doubt lane",
   },
-{
-  phrases: [
-    "behind in life",
-    "falling behind",
-    "i feel behind",
-    "i am behind",
-    "feel behind",
-    "behind everyone",
-    "everyone else is ahead",
-    "not enough",
-    "late in life",
-    "too late",
-  ],
-  intents: ["discouraged", "direction", "hope", "purpose"],
-  moods: ["discouraged", "stuck", "uncertain", "weary"],
-  bonus: 48,
-  label: "behind in life lane",
-},
+  {
+    phrases: [
+      "behind in life",
+      "falling behind",
+      "i feel behind",
+      "i am behind",
+      "feel behind",
+      "behind everyone",
+      "everyone else is ahead",
+      "not enough",
+      "late in life",
+      "too late",
+    ],
+    intents: ["comparison", "discouraged", "direction", "hope", "purpose", "progress"],
+    moods: ["discouraged", "stuck", "uncertain", "weary"],
+    bonus: 48,
+    label: "behind in life lane",
+  },
   {
     phrases: [
       "confidence",
@@ -396,7 +496,7 @@ const LANE_PHRASE_BOOSTS: Array<{
       "small",
       "approval",
     ],
-    intents: ["confidence"],
+    intents: ["confidence", "identity"],
     moods: ["insecure", "rejected", "unseen"],
     bonus: 30,
     label: "confidence lane",
@@ -416,56 +516,12 @@ const LANE_PHRASE_BOOSTS: Array<{
       "people do not respect me",
       "not respected",
     ],
-    intents: ["respect", "confidence", "leadership"],
+    intents: ["respect", "confidence", "leadership", "identity"],
     moods: ["ignored", "overlooked", "disrespected"],
     bonus: 40,
     label: "respect lane",
   },
 ];
-
-  const STOPWORDS = new Set([
-    "i",
-    "am",
-    "im",
-    "ive",
-    "me",
-    "my",
-    "the",
-    "a",
-    "an",
-    "and",
-    "or",
-    "to",
-    "for",
-    "of",
-    "in",
-    "on",
-    "at",
-    "is",
-    "are",
-    "be",
-    "feel",
-    "feeling",
-    "need",
-    "want",
-    "right",
-    "now",
-    "with",
-    "about",
-    "that",
-    "this",
-    "it",
-    "do",
-    "how",
-    "can",
-    "should",
-    "would",
-    "just",
-    "really",
-    "keep",
-    "stop",
-    "myself",
-  ]);
 
 function tokenizeQuery(query: string): string[] {
   return normalizeText(query)
@@ -488,7 +544,7 @@ function expandQuery(query: string): string[] {
     }
   }
 
-  const phraseRules: Array<[string[], keyof typeof INTENT_EXPANSIONS]> = [
+  const phraseRules: Array<[string[], string]> = [
     [["money stress", "worried about bills", "financial stress", "broke", "unpaid bills"], "money"],
     [["need direction", "need clarity", "what should i do", "next step", "feel lost", "need wisdom"], "direction"],
     [["i am hurting", "im hurting", "heartbroken", "in pain", "grieving", "deep pain"], "hurting"],
@@ -512,7 +568,8 @@ function expandQuery(query: string): string[] {
 
   for (const [phrases, lane] of phraseRules) {
     if (phrases.some((phrase) => normalized.includes(phrase))) {
-      INTENT_EXPANSIONS[lane].forEach((x) => expanded.add(x));
+      const related = INTENT_EXPANSIONS[lane] || [];
+      related.forEach((x) => expanded.add(x));
       expanded.add(lane);
     }
   }
@@ -554,7 +611,7 @@ export function getRelatedProverbs(
 function countMatches(source: string[], targets: string[]): number {
   let hits = 0;
 
-  for (const target of targets) {
+  for (const target of targets || []) {
     if (source.includes(normalizeText(target))) hits += 1;
   }
 
@@ -563,6 +620,53 @@ function countMatches(source: string[], targets: string[]): number {
 
 function hasAny(source: string[], targets: string[]): boolean {
   return countMatches(source, targets) > 0;
+}
+
+function scoreTokenHit(
+  token: string,
+  kind: "title" | "keyword" | "topic" | "intent" | "mood" | "text" | "ref"
+): number {
+  const generic = GENERIC_TOKENS.has(token);
+
+  if (kind === "intent") return generic ? 6 : 14;
+  if (kind === "keyword") return generic ? 4 : 10;
+  if (kind === "topic") return generic ? 4 : 8;
+  if (kind === "title") return generic ? 3 : 8;
+  if (kind === "mood") return generic ? 3 : 6;
+  if (kind === "text") return generic ? 1 : 4;
+
+  return generic ? 1 : 4;
+}
+
+function applySituationBoosts(
+  topicHits: number,
+  intentHits: number,
+  moodHits: number,
+  why: string[]
+): number {
+  let bonus = 0;
+
+  if (topicHits > 0) {
+    bonus += topicHits * 6;
+    why.push("situation topics");
+  }
+
+  if (intentHits > 0) {
+    bonus += intentHits * 10;
+    why.push("situation intent");
+  }
+
+  if (moodHits > 0) {
+    bonus += moodHits * 5;
+    why.push("situation mood");
+  }
+
+  if (intentHits > 0 && moodHits > 0) {
+    bonus += 8;
+    why.push("situation alignment");
+  }
+
+  return bonus;
 }
 
 function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResult {
@@ -637,7 +741,7 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
   boostLane(
     "behind in life",
     ["behind in life", "feel behind", "falling behind", "i am behind", "too late", "missed my chance", "second guessing myself", "comparison"],
-    ["comparison", "identity", "purpose", "direction", "wisdom"],
+    ["comparison", "identity", "purpose", "direction", "wisdom", "hope", "progress"],
     ["discouraged", "uncertain", "ashamed", "overlooked", "weary"],
     ["contentment", "patience", "purpose", "wisdom", "direction", "growth"],
     ["path", "steps", "season", "wait", "wisdom", "future", "hope", "heart"],
@@ -697,7 +801,7 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
   boostLane(
     "waiting / progress",
     ["waiting", "still waiting", "taking too long", "not making progress", "progress", "stuck", "delayed", "slow", "nothing is happening"],
-    ["patience", "growth", "purpose", "direction", "diligence", "hope"],
+    ["patience", "growth", "purpose", "direction", "diligence", "hope", "progress"],
     ["discouraged", "weary", "restless", "uncertain"],
     ["patience", "growth", "diligence", "wisdom", "future"],
     ["path", "steps", "diligent", "wait", "season", "growth", "future", "hope"],
