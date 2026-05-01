@@ -291,10 +291,11 @@ export type BookMatch = {
   chapters: string[];
   keywords: string[];
 };
-const TOPIC_MAP = {
-  ...
+
+const TOPIC_MAP: Record<string, BookMatch> = {
+  // KEEP YOUR EXISTING TOPIC_MAP ENTRIES HERE
 };
- 
+
 export function findBookMatches(q: string): BookMatch[] {
   const query = q.toLowerCase().trim();
   if (!query) return [];
@@ -306,7 +307,110 @@ export function findBookMatches(q: string): BookMatch[] {
 
   const matches: BookMatch[] = [];
 
-  const TOPIC_MAP: Record<string, BookMatch> = {
+  for (const topic of Object.keys(TOPIC_MAP)) {
+    const match = TOPIC_MAP[topic];
+
+    const keywordHit = match.keywords.some((k) => {
+      const keyword = k.toLowerCase();
+      return query.includes(keyword) || queryWords.includes(keyword);
+    });
+
+    if (query.includes(topic.toLowerCase()) || keywordHit) {
+      matches.push(match);
+    }
+  }
+
+  const isDifficultPeopleQuery =
+    query.includes("boss") ||
+    query.includes("manager") ||
+    query.includes("supervisor") ||
+    query.includes("leader") ||
+    query.includes("difficult") ||
+    query.includes("toxic") ||
+    query.includes("conflict") ||
+    query.includes("frustrated") ||
+    query.includes("disrespected");
+
+  const bookIndexMatches = BOOK_INDEX.map((entry) => {
+    const title = entry.title.toLowerCase();
+    const excerpt = entry.excerpt.toLowerCase();
+    const tags = entry.tags.map((t) => t.toLowerCase());
+    const keywords = entry.keywords.map((k) => k.toLowerCase());
+    const searchPhrase = entry.searchPhrase.toLowerCase();
+
+    const searchable = [
+      title,
+      excerpt,
+      searchPhrase,
+      ...tags,
+      ...keywords,
+    ].join(" ");
+
+    let score = 0;
+
+    for (const word of queryWords) {
+      if (title.includes(word)) score += 10;
+      if (searchPhrase.includes(word)) score += 12;
+      if (tags.some((tag) => tag.includes(word))) score += 8;
+      if (keywords.some((keyword) => keyword.includes(word))) score += 7;
+      if (excerpt.includes(word)) score += 3;
+      if (searchable.includes(word)) score += 1;
+    }
+
+    if (searchable.includes(query)) score += 35;
+
+    if (isDifficultPeopleQuery) {
+      if (
+        keywords.includes("difficult boss") ||
+        keywords.includes("boss") ||
+        keywords.includes("conflict") ||
+        keywords.includes("toxic people") ||
+        tags.includes("difficult people") ||
+        tags.includes("relationships")
+      ) {
+        score += 45;
+      }
+
+      if (
+        tags.includes("leadership") ||
+        keywords.includes("leader") ||
+        keywords.includes("manager")
+      ) {
+        score += 18;
+      }
+
+      if (
+        tags.includes("confidence") ||
+        tags.includes("success") ||
+        tags.includes("fear")
+      ) {
+        score -= 15;
+      }
+    }
+
+    return {
+      topic: entry.id,
+      label: entry.title,
+      pages: entry.page,
+      chapters: [entry.chapter],
+      blurb: entry.excerpt,
+      keywords: entry.keywords,
+      score,
+    };
+  })
+    .filter((match) => match.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map(({ score, ...match }) => match);
+
+  const combined = [...matches, ...bookIndexMatches];
+
+  const deduped = combined.filter(
+    (item, index, arr) =>
+      index === arr.findIndex((x) => x.label === item.label)
+  );
+
+  return deduped.slice(0, 6);
+}
     counsel: {
       topic: "counsel",
       label: "Seeking Counsel",
