@@ -62,7 +62,6 @@ export const TOPICS: Topic[] = [
 ];
 
 export const DATA: VerseItem[] = [
-  // ENCOURAGEMENT — Peace
   {
     mode: "encouragement",
     sub: "peace",
@@ -90,8 +89,6 @@ export const DATA: VerseItem[] = [
     tags: ["anger", "relationships", "leadership", "gentle", "speech", "conflict"],
     keywords: ["gentle", "words", "speech", "anger", "conflict", "relationship conflict"],
   },
-
-  // ENCOURAGEMENT — Strength
   {
     mode: "encouragement",
     sub: "strength",
@@ -119,8 +116,6 @@ export const DATA: VerseItem[] = [
     tags: ["discipline", "direction", "strength", "consistency"],
     keywords: ["footing", "steady", "steps", "consistent", "discipline", "direction"],
   },
-
-  // ENCOURAGEMENT — Direction
   {
     mode: "encouragement",
     sub: "direction",
@@ -148,8 +143,6 @@ export const DATA: VerseItem[] = [
     tags: ["work", "discipline", "success", "plans", "direction"],
     keywords: ["plans", "commit", "work", "discipline", "momentum", "obedience"],
   },
-
-  // ENCOURAGEMENT — Confidence
   {
     mode: "encouragement",
     sub: "confidence",
@@ -168,8 +161,6 @@ export const DATA: VerseItem[] = [
     tags: ["relationships", "leadership", "integrity", "confidence", "speech"],
     keywords: ["clarity", "words", "speak", "communication", "confidence", "simplicity"],
   },
-
-  // ENCOURAGEMENT — Hope
   {
     mode: "encouragement",
     sub: "hope",
@@ -227,8 +218,6 @@ export const DATA: VerseItem[] = [
       "friendship",
     ],
   },
-
-  // WISDOM
   {
     mode: "wisdom",
     title: "Wisdom is the main thing",
@@ -253,8 +242,6 @@ export const DATA: VerseItem[] = [
     tags: ["relationships", "leadership", "integrity", "speech"],
     keywords: ["listen", "speaking", "quick answers", "mistakes", "communication", "wisdom"],
   },
-
-  // SUCCESS
   {
     mode: "success",
     title: "Diligent hands bring wealth",
@@ -280,6 +267,7 @@ export const DATA: VerseItem[] = [
     keywords: ["skill", "opportunity", "prepared", "excellence", "work", "promotion"],
   },
 ];
+
 // -------------------------
 // BOOK INDEX (Pro feature)
 // -------------------------
@@ -302,7 +290,6 @@ const TOPIC_MAP: Record<string, BookMatch> = {
       "Confidence grows when you stop letting fear, insecurity, and other people’s opinions define your value.",
     keywords: ["confidence", "self doubt", "insecure", "fear", "boldness"],
   },
-
   counsel: {
     topic: "counsel",
     label: "Seeking Counsel",
@@ -311,7 +298,6 @@ const TOPIC_MAP: Record<string, BookMatch> = {
     blurb: "Wise leaders seek many counselors before major decisions.",
     keywords: ["counsel", "advice", "guidance", "wisdom"],
   },
-
   leadership: {
     topic: "leadership",
     label: "Leadership Starts Within",
@@ -329,7 +315,6 @@ const TOPIC_MAP: Record<string, BookMatch> = {
       "influence",
     ],
   },
-
   relationships: {
     topic: "relationships",
     label: "Wisdom With Difficult People",
@@ -349,7 +334,6 @@ const TOPIC_MAP: Record<string, BookMatch> = {
       "boundaries",
     ],
   },
-
   direction: {
     topic: "direction",
     label: "Clarity Comes One Step at a Time",
@@ -359,7 +343,6 @@ const TOPIC_MAP: Record<string, BookMatch> = {
       "When you do not know what to do, wisdom helps you take the next clean step instead of freezing in confusion.",
     keywords: ["direction", "clarity", "confused", "lost", "decision", "purpose"],
   },
-
   resilience: {
     topic: "resilience",
     label: "Failure Becomes Wisdom",
@@ -369,7 +352,6 @@ const TOPIC_MAP: Record<string, BookMatch> = {
       "Failure is not the end of your story. It becomes wisdom when you learn, adjust, and keep moving.",
     keywords: ["failure", "failing", "discouraged", "setback", "resilience"],
   },
-
   discipline: {
     topic: "discipline",
     label: "Discipline",
@@ -378,7 +360,6 @@ const TOPIC_MAP: Record<string, BookMatch> = {
     blurb: "Discipline builds the structure that produces success.",
     keywords: ["discipline", "self-control", "consistency", "training"],
   },
-
   fear: {
     topic: "fear",
     label: "Overcoming Fear",
@@ -387,7 +368,6 @@ const TOPIC_MAP: Record<string, BookMatch> = {
     blurb: "Fear loses power when wisdom and faith guide decisions.",
     keywords: ["fear", "afraid", "anxiety", "courage"],
   },
-
   speech: {
     topic: "speech",
     label: "The Power of Words",
@@ -396,7 +376,6 @@ const TOPIC_MAP: Record<string, BookMatch> = {
     blurb: "Words can build life or destroy it.",
     keywords: ["speech", "words", "tongue", "communication"],
   },
-
   wealth: {
     topic: "wealth",
     label: "Money & Wealth",
@@ -405,7 +384,6 @@ const TOPIC_MAP: Record<string, BookMatch> = {
     blurb: "Wealth grows through diligence, stewardship, and wisdom.",
     keywords: ["wealth", "money", "riches", "prosperity", "finances"],
   },
-
   integrity: {
     topic: "integrity",
     label: "Integrity",
@@ -414,7 +392,6 @@ const TOPIC_MAP: Record<string, BookMatch> = {
     blurb: "Integrity protects reputation and long-term success.",
     keywords: ["integrity", "character", "honesty", "truth"],
   },
-
   diligence: {
     topic: "diligence",
     label: "Diligence",
@@ -532,122 +509,6 @@ export function findBookMatches(q: string): BookMatch[] {
     .map(({ score, ...match }) => match);
 
   const combined = [...topicMatches, ...bookIndexMatches];
-
-  const deduped = combined.filter(
-    (item, index, arr) =>
-      index === arr.findIndex((x) => x.label === item.label)
-  );
-
-  return deduped.slice(0, 6);
-}
-
-export function findBookMatches(q: string): BookMatch[] {
-  const query = q.toLowerCase().trim();
-  if (!query) return [];
-
-  const queryWords = query
-    .split(/[^a-z0-9]+/i)
-    .map((word) => word.trim())
-    .filter(Boolean);
-
-  const matches: BookMatch[] = [];
-
-  for (const topic of Object.keys(TOPIC_MAP)) {
-    const match = TOPIC_MAP[topic];
-
-    const keywordHit = match.keywords.some((k) => {
-      const keyword = k.toLowerCase();
-      return query.includes(keyword) || queryWords.includes(keyword);
-    });
-
-    if (query.includes(topic) || keywordHit) {
-      matches.push(match);
-    }
-  }
-
-  const isDifficultPeopleQuery =
-    query.includes("boss") ||
-    query.includes("manager") ||
-    query.includes("supervisor") ||
-    query.includes("leader") ||
-    query.includes("difficult") ||
-    query.includes("toxic") ||
-    query.includes("conflict") ||
-    query.includes("frustrated") ||
-    query.includes("disrespected");
-
-  const bookIndexMatches: BookMatch[] = BOOK_INDEX.map((entry) => {
-    const title = entry.title.toLowerCase();
-    const excerpt = entry.excerpt.toLowerCase();
-    const tags = entry.tags.map((t) => t.toLowerCase());
-    const keywords = entry.keywords.map((k) => k.toLowerCase());
-    const searchPhrase = entry.searchPhrase.toLowerCase();
-
-    const searchable = [
-      title,
-      excerpt,
-      searchPhrase,
-      ...tags,
-      ...keywords,
-    ].join(" ");
-
-    let score = 0;
-
-    for (const word of queryWords) {
-      if (title.includes(word)) score += 10;
-      if (searchPhrase.includes(word)) score += 12;
-      if (tags.some((tag) => tag.includes(word))) score += 8;
-      if (keywords.some((keyword) => keyword.includes(word))) score += 7;
-      if (excerpt.includes(word)) score += 3;
-      if (searchable.includes(word)) score += 1;
-    }
-
-    if (searchable.includes(query)) score += 35;
-
-    if (isDifficultPeopleQuery) {
-      if (
-        keywords.includes("difficult boss") ||
-        keywords.includes("boss") ||
-        keywords.includes("conflict") ||
-        keywords.includes("toxic people") ||
-        tags.includes("difficult people") ||
-        tags.includes("relationships")
-      ) {
-        score += 45;
-      }
-
-      if (
-        tags.includes("leadership") ||
-        keywords.includes("leader") ||
-        keywords.includes("manager")
-      ) {
-        score += 18;
-      }
-
-      if (
-        tags.includes("confidence") ||
-        tags.includes("success") ||
-        tags.includes("fear")
-      ) {
-        score -= 15;
-      }
-    }
-
-    return {
-      topic: entry.id,
-      label: entry.title,
-      pages: entry.page,
-      chapters: [entry.chapter],
-      blurb: entry.excerpt,
-      keywords: entry.keywords,
-      score,
-    };
-  })
-    .filter((match) => match.score > 0)
-    .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
-    .map(({ score, ...match }) => match);
-
-  const combined = [...matches, ...bookIndexMatches];
 
   const deduped = combined.filter(
     (item, index, arr) =>
