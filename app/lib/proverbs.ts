@@ -939,13 +939,6 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
   return {
     item,
     score,
-    why: Array.from(new Set(why)),
-  };
-}
- 
-  return {
-    item,
-    score,
     why: uniq(why).slice(0, 6),
   };
 }
@@ -969,5 +962,3 @@ export function searchProverbs(
 ): ProverbEntry[] {
   return searchProverbsScored(query, limit).map((x) => x.item);
 }
-
-export type { ProverbEntry };
