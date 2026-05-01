@@ -850,8 +850,24 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     why.push("text phrase");
   }
 
-  score += applyLanePhraseBoosts(normalizedQuery, intentTags, moodTags, why);
+   for (const rule of LANE_PHRASE_BOOSTS) {
+    const matchedPhrase = rule.phrases.some((phrase) =>
+      normalizedQuery.includes(normalizeText(phrase))
+    );
 
+    if (!matchedPhrase) continue;
+
+    const intentMatch = hasAny(intentTags, rule.intents);
+    const moodMatch = rule.moods ? hasAny(moodTags, rule.moods) : false;
+
+    if (intentMatch) {
+      score += rule.bonus;
+      why.push(rule.label);
+    } else if (moodMatch) {
+      score += Math.round(rule.bonus * 0.55);
+      why.push(`${rule.label} mood`);
+    }
+  }
   for (const token of tokens) {
     if (title.includes(token)) {
       score += scoreTokenHit(token, "title");
