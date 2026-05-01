@@ -423,7 +423,6 @@ const LANE_PHRASE_BOOSTS: Array<{
   },
 ];
 
-function tokenizeQuery(query: string): string[] {
   const STOPWORDS = new Set([
     "i",
     "am",
