@@ -468,6 +468,7 @@ function tokenizeQuery(query: string): string[] {
     "myself",
   ]);
 
+function tokenizeQuery(query: string): string[] {
   return normalizeText(query)
     .split(" ")
     .filter((token) => token.length > 1 && !STOPWORDS.has(token));
@@ -499,70 +500,15 @@ function expandQuery(query: string): string[] {
     [["angry", "frustrated", "bitter", "resentful", "offended"], "anger"],
     [["leadership pressure", "leading people", "team pressure", "as a leader", "boss", "manager", "supervisor", "under pressure"], "leadership"],
     [["unfair treatment", "treated unfairly", "not respected", "work conflict", "talks down to me"], "relationships"],
-    [
-      [
-        "i want to be respected",
-        "i want respect",
-        "people do not respect me",
-        "i feel disrespected",
-        "i feel overlooked",
-        "i feel ignored",
-      ],
-      "respect",
-    ],
-    [
-      [
-        "want to be successful",
-        "want success",
-        "how do i succeed",
-        "how to succeed",
-        "i want to grow",
-        "i want to improve my life",
-        "i need motivation",
-        "i feel lazy",
-        "i want discipline",
-        "i want to advance",
-        "i want to do better",
-        "i want progress",
-        "stop procrastinating",
-        "tired of failing",
-      ],
-      "success",
-    ],
-    [
-      [
-        "i need confidence",
-        "i feel invisible",
-        "i feel rejected",
-        "i need courage",
-        "i need boldness",
-        "i feel small",
-        "i feel insecure",
-      ],
-      "confidence",
-    ],
-    [
-      [
-        "bad decisions",
-        "keep making bad decisions",
-        "i keep making bad decisions",
-        "need good judgment",
-      ],
-      "direction",
-    ],
-    [
-      [
-        "i feel behind in life",
-        "behind in life",
-        "falling behind",
-        "i feel behind",
-        "i am behind",
-        "i keep second guessing myself",
-        "second guessing myself",
-        "i second guess myself",
-      ],
-      "comparison",
-    ],
+    [["i want to be respected", "i want respect", "people do not respect me", "i feel disrespected", "i feel overlooked", "i feel ignored"], "respect"],
+    [["want to be successful", "want success", "how do i succeed", "how to succeed", "i want to grow", "i want to improve my life", "i need motivation", "i feel lazy", "i want discipline", "i want to advance", "i want to do better", "i want progress", "stop procrastinating", "tired of failing"], "success"],
+    [["i need confidence", "i feel invisible", "i feel rejected", "i need courage", "i need boldness", "i feel small", "i feel insecure"], "confidence"],
+    [["bad decisions", "keep making bad decisions", "i keep making bad decisions", "need good judgment"], "direction"],
+    [["i feel behind in life", "behind in life", "falling behind", "i feel behind", "i am behind", "second guessing myself", "i second guess myself"], "comparison"],
+    [["purpose", "my purpose", "calling", "why am i here", "what am i here for", "meaning", "lost in life"], "purpose"],
+    [["hope", "need hope", "hopeless", "no hope", "will it get better", "keep going"], "hope"],
+    [["identity", "who am i", "self worth", "not enough", "worthless", "overlooked", "unwanted"], "identity"],
+    [["waiting", "still waiting", "taking too long", "not making progress", "progress", "stuck", "delayed"], "progress"],
   ];
 
   for (const [phrases, lane] of phraseRules) {
@@ -650,8 +596,8 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     ...moodTags,
   ].join(" ");
 
-  const hasQueryPhrase = (phrases: string[]) =>
-    phrases.some((phrase) => normalizedQuery.includes(phrase));
+  const queryIncludesAny = (phrases: string[]) =>
+    phrases.some((phrase) => normalizedQuery.includes(normalizeText(phrase)));
 
   const itemHasAny = (terms: string[]) =>
     terms.some((term) => haystack.includes(normalizeText(term)));
@@ -665,7 +611,7 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
   const itemHasTopic = (terms: string[]) =>
     terms.some((term) => topics.includes(normalizeText(term)));
 
-  const applyEmotionalLane = (
+  const boostLane = (
     label: string,
     queryPhrases: string[],
     preferredIntents: string[],
@@ -674,14 +620,14 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     preferredTerms: string[],
     bonus: number
   ) => {
-    if (!hasQueryPhrase(queryPhrases)) return;
+    if (!queryIncludesAny(queryPhrases)) return;
 
     let laneScore = 0;
 
     if (itemHasIntent(preferredIntents)) laneScore += bonus;
-    if (itemHasMood(preferredMoods)) laneScore += Math.round(bonus * 0.75);
-    if (itemHasTopic(preferredTopics)) laneScore += Math.round(bonus * 0.65);
-    if (itemHasAny(preferredTerms)) laneScore += Math.round(bonus * 0.55);
+    if (itemHasMood(preferredMoods)) laneScore += Math.round(bonus * 0.7);
+    if (itemHasTopic(preferredTopics)) laneScore += Math.round(bonus * 0.6);
+    if (itemHasAny(preferredTerms)) laneScore += Math.round(bonus * 0.5);
 
     if (laneScore > 0) {
       score += laneScore;
@@ -689,65 +635,29 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     }
   };
 
-  applyEmotionalLane(
-    "behind in life / comparison",
-    [
-      "behind in life",
-      "feel behind",
-      "falling behind",
-      "everyone is ahead",
-      "not where i should be",
-      "not where i thought",
-      "too late",
-      "missed my chance",
-      "life passed me by",
-      "comparison",
-      "comparing myself",
-    ],
+  boostLane(
+    "behind in life",
+    ["behind in life", "feel behind", "falling behind", "i am behind", "too late", "missed my chance", "second guessing myself", "comparison"],
     ["comparison", "identity", "purpose", "direction", "wisdom"],
     ["discouraged", "uncertain", "ashamed", "overlooked", "weary"],
     ["contentment", "patience", "purpose", "wisdom", "direction", "growth"],
-    ["path", "steps", "season", "wait", "wisdom", "diligent", "future", "hope", "heart"],
+    ["path", "steps", "season", "wait", "wisdom", "future", "hope", "heart"],
     34
   );
 
-  applyEmotionalLane(
-    "discouragement / heaviness",
-    [
-      "discouraged",
-      "discouraging",
-      "down",
-      "heavy",
-      "heavy heart",
-      "tired",
-      "weary",
-      "worn out",
-      "burned out",
-      "losing hope",
-      "feel defeated",
-      "defeated",
-      "giving up",
-    ],
+  boostLane(
+    "discouragement",
+    ["discouraged", "down", "heavy", "tired", "weary", "worn out", "burned out", "losing hope", "defeated", "giving up"],
     ["hope", "encouragement", "strength", "healing", "direction", "wisdom"],
     ["discouraged", "weary", "hurting", "overwhelmed", "afraid"],
     ["hope", "strength", "peace", "healing", "encouragement"],
-    ["hope", "heart", "life", "strength", "healing", "upright", "path", "trust"],
+    ["hope", "heart", "life", "strength", "healing", "path", "trust"],
     32
   );
 
-  applyEmotionalLane(
-    "purpose / calling",
-    [
-      "purpose",
-      "my purpose",
-      "calling",
-      "what am i here for",
-      "why am i here",
-      "meaning",
-      "direction in life",
-      "what should i do with my life",
-      "lost in life",
-    ],
+  boostLane(
+    "purpose",
+    ["purpose", "my purpose", "calling", "what am i here for", "why am i here", "meaning", "direction in life", "lost in life"],
     ["purpose", "direction", "wisdom", "identity", "calling"],
     ["uncertain", "seeking", "discouraged", "restless"],
     ["purpose", "direction", "wisdom", "calling", "growth"],
@@ -755,20 +665,9 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     34
   );
 
-  applyEmotionalLane(
-    "direction / decision",
-    [
-      "need direction",
-      "need guidance",
-      "what should i do",
-      "which way",
-      "decision",
-      "decide",
-      "confused",
-      "uncertain",
-      "clarity",
-      "lost",
-    ],
+  boostLane(
+    "direction",
+    ["need direction", "need guidance", "what should i do", "which way", "decision", "decide", "confused", "uncertain", "clarity", "lost"],
     ["direction", "wisdom", "guidance", "discernment"],
     ["uncertain", "seeking", "confused", "anxious"],
     ["direction", "wisdom", "instruction", "understanding"],
@@ -776,19 +675,9 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     30
   );
 
-  applyEmotionalLane(
-    "hope / future",
-    [
-      "hope",
-      "need hope",
-      "no hope",
-      "hopeless",
-      "future",
-      "will it get better",
-      "things will get better",
-      "better days",
-      "keep going",
-    ],
+  boostLane(
+    "hope",
+    ["hope", "need hope", "no hope", "hopeless", "future", "will it get better", "better days", "keep going"],
     ["hope", "encouragement", "strength", "healing", "purpose"],
     ["discouraged", "weary", "hurting", "afraid", "overwhelmed"],
     ["hope", "future", "strength", "peace", "healing"],
@@ -796,22 +685,9 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     32
   );
 
-  applyEmotionalLane(
-    "identity / self-worth",
-    [
-      "identity",
-      "who am i",
-      "self worth",
-      "worthless",
-      "not enough",
-      "i am not enough",
-      "feel invisible",
-      "invisible",
-      "rejected",
-      "overlooked",
-      "unwanted",
-      "second guessing myself",
-    ],
+  boostLane(
+    "identity",
+    ["identity", "who am i", "self worth", "worthless", "not enough", "i am not enough", "feel invisible", "invisible", "rejected", "overlooked", "unwanted"],
     ["identity", "confidence", "wisdom", "purpose", "healing"],
     ["rejected", "ashamed", "discouraged", "overlooked", "uncertain"],
     ["identity", "confidence", "wisdom", "healing", "purpose"],
@@ -819,20 +695,9 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     34
   );
 
-  applyEmotionalLane(
+  boostLane(
     "waiting / progress",
-    [
-      "waiting",
-      "still waiting",
-      "taking too long",
-      "not making progress",
-      "progress",
-      "stuck",
-      "delayed",
-      "slow",
-      "nothing is happening",
-      "when will it happen",
-    ],
+    ["waiting", "still waiting", "taking too long", "not making progress", "progress", "stuck", "delayed", "slow", "nothing is happening"],
     ["patience", "growth", "purpose", "direction", "diligence", "hope"],
     ["discouraged", "weary", "restless", "uncertain"],
     ["patience", "growth", "diligence", "wisdom", "future"],
@@ -850,7 +715,7 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     why.push("text phrase");
   }
 
-   for (const rule of LANE_PHRASE_BOOSTS) {
+  for (const rule of LANE_PHRASE_BOOSTS) {
     const matchedPhrase = rule.phrases.some((phrase) =>
       normalizedQuery.includes(normalizeText(phrase))
     );
@@ -868,6 +733,7 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
       why.push(`${rule.label} mood`);
     }
   }
+
   for (const token of tokens) {
     if (title.includes(token)) {
       score += scoreTokenHit(token, "title");
