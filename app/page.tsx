@@ -935,8 +935,31 @@ const topResult = useMemo(() => {
       const title = item.title.toLowerCase();
       const body = item.body.toLowerCase();
       const ref = item.ref.toLowerCase();
-      const tags = (item.tags ?? []).map((t) => t.toLowerCase());
-      const keywords = (item.keywords ?? []).map((k) => k.toLowerCase());
+
+      const tags =
+        "tags" in item && Array.isArray(item.tags)
+          ? item.tags.map((t) => t.toLowerCase())
+          : [];
+
+      const keywords =
+        "keywords" in item && Array.isArray(item.keywords)
+          ? item.keywords.map((k) => k.toLowerCase())
+          : [];
+
+      const topics =
+        "topics" in item && Array.isArray(item.topics)
+          ? item.topics.map((t) => t.toLowerCase())
+          : [];
+
+      const intentTags =
+        "intentTags" in item && Array.isArray(item.intentTags)
+          ? item.intentTags.map((t) => t.toLowerCase())
+          : [];
+
+      const moodTags =
+        "moodTags" in item && Array.isArray(item.moodTags)
+          ? item.moodTags.map((t) => t.toLowerCase())
+          : [];
 
       const searchable = [
         title,
@@ -944,6 +967,9 @@ const topResult = useMemo(() => {
         ref,
         ...tags,
         ...keywords,
+        ...topics,
+        ...intentTags,
+        ...moodTags,
       ].join(" ");
 
       let score = 0;
@@ -952,6 +978,9 @@ const topResult = useMemo(() => {
         if (title.includes(word)) score += 10;
         if (keywords.some((k) => k.includes(word))) score += 8;
         if (tags.some((t) => t.includes(word))) score += 6;
+        if (topics.some((t) => t.includes(word))) score += 6;
+        if (intentTags.some((t) => t.includes(word))) score += 8;
+        if (moodTags.some((t) => t.includes(word))) score += 8;
         if (body.includes(word)) score += 3;
         if (searchable.includes(word)) score += 1;
       }
@@ -961,6 +990,12 @@ const topResult = useMemo(() => {
           tags.includes("discouraged") ||
           tags.includes("hope") ||
           tags.includes("direction") ||
+          topics.includes("discouraged") ||
+          topics.includes("hope") ||
+          topics.includes("direction") ||
+          intentTags.includes("discouraged") ||
+          intentTags.includes("direction") ||
+          moodTags.includes("discouraged") ||
           keywords.includes("discouraged") ||
           keywords.includes("keep going") ||
           keywords.includes("future") ||
@@ -983,6 +1018,11 @@ const topResult = useMemo(() => {
           tags.includes("relationships") ||
           tags.includes("anger") ||
           tags.includes("leadership") ||
+          topics.includes("relationships") ||
+          topics.includes("anger") ||
+          topics.includes("leadership") ||
+          intentTags.includes("relationships") ||
+          intentTags.includes("leadership") ||
           keywords.includes("conflict") ||
           keywords.includes("relationship conflict") ||
           keywords.includes("anger")
