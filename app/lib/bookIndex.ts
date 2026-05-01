@@ -373,9 +373,10 @@ export const BOOK_INDEX: BookEntry[] = [
   ],
 },
   {
+{
   id: "identity-worth-1",
   chapter: "Identity",
-  page: 41,
+  page: "41",
   title: "Your value is not determined by how others treat you",
   excerpt:
     "When people overlook you, ignore you, or fail to recognize your contribution, it is easy to question your worth. But your value existed before their opinion and remains after their rejection.",
@@ -389,13 +390,13 @@ export const BOOK_INDEX: BookEntry[] = [
     "rejected",
     "worth",
     "value",
-    "identity"
-  ]
+    "identity",
+  ],
 },
 {
   id: "comparison-1",
   chapter: "Comparison",
-  page: 52,
+  page: "52",
   title: "Comparison steals peace faster than failure",
   excerpt:
     "The more you measure your life against someone else's timeline, the harder it becomes to appreciate the growth already happening inside your own story.",
@@ -408,13 +409,13 @@ export const BOOK_INDEX: BookEntry[] = [
     "life timeline",
     "not enough",
     "late",
-    "falling behind"
-  ]
+    "falling behind",
+  ],
 },
 {
   id: "confidence-1",
   chapter: "Confidence",
-  page: 67,
+  page: "67",
   title: "Confidence grows when you stop asking permission",
   excerpt:
     "Many people wait for external validation before moving forward. Confidence often begins when you decide to trust what you already know instead of waiting for approval.",
@@ -427,13 +428,13 @@ export const BOOK_INDEX: BookEntry[] = [
     "unsure",
     "fear",
     "hesitation",
-    "approval"
-  ]
+    "approval",
+  ],
 },
 {
   id: "burnout-1",
   chapter: "Burnout",
-  page: 81,
+  page: "81",
   title: "Exhaustion can disguise itself as failure",
   excerpt:
     "Sometimes you are not failing. You are simply depleted. Exhaustion changes perception and makes progress look invisible.",
@@ -446,13 +447,13 @@ export const BOOK_INDEX: BookEntry[] = [
     "depleted",
     "overwhelmed",
     "stress",
-    "fatigue"
-  ]
+    "fatigue",
+  ],
 },
 {
   id: "leadership-1",
   chapter: "Leadership",
-  page: 97,
+  page: "97",
   title: "Leadership becomes harder when approval becomes the goal",
   excerpt:
     "Strong leadership often requires disappointing people in the short term so you can protect the long-term mission.",
@@ -465,13 +466,13 @@ export const BOOK_INDEX: BookEntry[] = [
     "approval",
     "leadership",
     "team",
-    "responsibility"
-  ]
+    "responsibility",
+  ],
 },
 {
   id: "difficult-people-1",
   chapter: "Relationships",
-  page: 108,
+  page: "108",
   title: "Difficult people often reveal what still controls your emotions",
   excerpt:
     "You cannot always change the people around you, but you can learn what their behavior is exposing inside your reactions.",
@@ -484,13 +485,13 @@ export const BOOK_INDEX: BookEntry[] = [
     "anger",
     "boss",
     "hard people",
-    "conflict"
-  ]
+    "conflict",
+  ],
 },
 {
   id: "purpose-1",
   chapter: "Purpose",
-  page: 121,
+  page: "121",
   title: "Confusion often appears before clarity",
   excerpt:
     "Many people assume uncertainty means they are lost. In reality, uncertainty often means you are standing at the edge of growth.",
@@ -503,13 +504,13 @@ export const BOOK_INDEX: BookEntry[] = [
     "what should i do",
     "purpose",
     "clarity",
-    "decision"
-  ]
+    "decision",
+  ],
 },
 {
   id: "rejection-1",
   chapter: "Rejection",
-  page: 133,
+  page: "133",
   title: "Rejection does not mean you were wrong",
   excerpt:
     "Some doors close because they are not aligned with where you are going. Rejection may feel personal, but it is often directional.",
@@ -522,13 +523,13 @@ export const BOOK_INDEX: BookEntry[] = [
     "not wanted",
     "ignored",
     "left out",
-    "dismissed"
-  ]
+    "dismissed",
+  ],
 },
 {
   id: "fear-1",
   chapter: "Fear",
-  page: 145,
+  page: "145",
   title: "Fear sounds convincing when you are about to grow",
   excerpt:
     "Fear becomes loudest when you are approaching change. Many people mistake fear as a stop sign when it is often a sign that growth is near.",
@@ -541,13 +542,13 @@ export const BOOK_INDEX: BookEntry[] = [
     "hesitation",
     "courage",
     "uncertain",
-    "stuck"
-  ]
+    "stuck",
+  ],
 },
 {
   id: "resilience-1",
   chapter: "Resilience",
-  page: 159,
+  page: "159",
   title: "Failure becomes wisdom when you stay in the process",
   excerpt:
     "Setbacks are not always signs that you should stop. Sometimes they are proof that you are learning something necessary.",
@@ -560,7 +561,6 @@ export const BOOK_INDEX: BookEntry[] = [
     "discouraged",
     "resilience",
     "keep going",
-    "learning"
-  ]
-},
-];
+    "learning",
+  ],
+}, 
