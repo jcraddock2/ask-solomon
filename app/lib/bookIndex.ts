@@ -372,4 +372,195 @@ export const BOOK_INDEX: BookEntry[] = [
     "boundaries",
   ],
 }
+  {
+  id: "identity-worth-1",
+  chapter: "Identity",
+  page: 41,
+  title: "Your value is not determined by how others treat you",
+  excerpt:
+    "When people overlook you, ignore you, or fail to recognize your contribution, it is easy to question your worth. But your value existed before their opinion and remains after their rejection.",
+  searchPhrase: "I feel invisible or overlooked",
+  tags: ["identity", "self-worth", "rejection", "value"],
+  keywords: [
+    "invisible",
+    "overlooked",
+    "not seen",
+    "ignored",
+    "rejected",
+    "worth",
+    "value",
+    "identity"
+  ]
+},
+{
+  id: "comparison-1",
+  chapter: "Comparison",
+  page: 52,
+  title: "Comparison steals peace faster than failure",
+  excerpt:
+    "The more you measure your life against someone else's timeline, the harder it becomes to appreciate the growth already happening inside your own story.",
+  searchPhrase: "I feel behind in life",
+  tags: ["comparison", "discouragement", "purpose", "identity"],
+  keywords: [
+    "behind",
+    "comparison",
+    "everyone else",
+    "life timeline",
+    "not enough",
+    "late",
+    "falling behind"
+  ]
+},
+{
+  id: "confidence-1",
+  chapter: "Confidence",
+  page: 67,
+  title: "Confidence grows when you stop asking permission",
+  excerpt:
+    "Many people wait for external validation before moving forward. Confidence often begins when you decide to trust what you already know instead of waiting for approval.",
+  searchPhrase: "I second guess myself",
+  tags: ["confidence", "fear", "direction", "growth"],
+  keywords: [
+    "second guessing",
+    "confidence",
+    "self doubt",
+    "unsure",
+    "fear",
+    "hesitation",
+    "approval"
+  ]
+},
+{
+  id: "burnout-1",
+  chapter: "Burnout",
+  page: 81,
+  title: "Exhaustion can disguise itself as failure",
+  excerpt:
+    "Sometimes you are not failing. You are simply depleted. Exhaustion changes perception and makes progress look invisible.",
+  searchPhrase: "I feel burned out",
+  tags: ["burnout", "stress", "pressure", "recovery"],
+  keywords: [
+    "burned out",
+    "exhausted",
+    "tired",
+    "depleted",
+    "overwhelmed",
+    "stress",
+    "fatigue"
+  ]
+},
+{
+  id: "leadership-1",
+  chapter: "Leadership",
+  page: 97,
+  title: "Leadership becomes harder when approval becomes the goal",
+  excerpt:
+    "Strong leadership often requires disappointing people in the short term so you can protect the long-term mission.",
+  searchPhrase: "Leadership pressure",
+  tags: ["leadership", "pressure", "decision making", "responsibility"],
+  keywords: [
+    "leader",
+    "manager",
+    "pressure",
+    "approval",
+    "leadership",
+    "team",
+    "responsibility"
+  ]
+},
+{
+  id: "difficult-people-1",
+  chapter: "Relationships",
+  page: 108,
+  title: "Difficult people often reveal what still controls your emotions",
+  excerpt:
+    "You cannot always change the people around you, but you can learn what their behavior is exposing inside your reactions.",
+  searchPhrase: "My boss is difficult",
+  tags: ["relationships", "leadership", "anger", "difficult people"],
+  keywords: [
+    "difficult boss",
+    "toxic people",
+    "frustration",
+    "anger",
+    "boss",
+    "hard people",
+    "conflict"
+  ]
+},
+{
+  id: "purpose-1",
+  chapter: "Purpose",
+  page: 121,
+  title: "Confusion often appears before clarity",
+  excerpt:
+    "Many people assume uncertainty means they are lost. In reality, uncertainty often means you are standing at the edge of growth.",
+  searchPhrase: "I don't know what to do",
+  tags: ["purpose", "direction", "clarity", "decision"],
+  keywords: [
+    "direction",
+    "confused",
+    "lost",
+    "what should i do",
+    "purpose",
+    "clarity",
+    "decision"
+  ]
+},
+{
+  id: "rejection-1",
+  chapter: "Rejection",
+  page: 133,
+  title: "Rejection does not mean you were wrong",
+  excerpt:
+    "Some doors close because they are not aligned with where you are going. Rejection may feel personal, but it is often directional.",
+  searchPhrase: "I feel rejected",
+  tags: ["rejection", "identity", "pain", "direction"],
+  keywords: [
+    "rejected",
+    "hurt",
+    "pain",
+    "not wanted",
+    "ignored",
+    "left out",
+    "dismissed"
+  ]
+},
+{
+  id: "fear-1",
+  chapter: "Fear",
+  page: 145,
+  title: "Fear sounds convincing when you are about to grow",
+  excerpt:
+    "Fear becomes loudest when you are approaching change. Many people mistake fear as a stop sign when it is often a sign that growth is near.",
+  searchPhrase: "I am afraid to move forward",
+  tags: ["fear", "growth", "courage", "confidence"],
+  keywords: [
+    "fear",
+    "afraid",
+    "move forward",
+    "hesitation",
+    "courage",
+    "uncertain",
+    "stuck"
+  ]
+},
+{
+  id: "resilience-1",
+  chapter: "Resilience",
+  page: 159,
+  title: "Failure becomes wisdom when you stay in the process",
+  excerpt:
+    "Setbacks are not always signs that you should stop. Sometimes they are proof that you are learning something necessary.",
+  searchPhrase: "I keep failing",
+  tags: ["resilience", "failure", "growth", "perseverance"],
+  keywords: [
+    "failure",
+    "keep failing",
+    "mistakes",
+    "discouraged",
+    "resilience",
+    "keep going",
+    "learning"
+  ]
+},
 ];
