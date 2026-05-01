@@ -302,6 +302,16 @@ const TOPIC_MAP: Record<string, BookMatch> = {
       "Confidence grows when you stop letting fear, insecurity, and other people’s opinions define your value.",
     keywords: ["confidence", "self doubt", "insecure", "fear", "boldness"],
   },
+
+  counsel: {
+    topic: "counsel",
+    label: "Seeking Counsel",
+    pages: "42–46",
+    chapters: ["The Power of Counsel"],
+    blurb: "Wise leaders seek many counselors before major decisions.",
+    keywords: ["counsel", "advice", "guidance", "wisdom"],
+  },
+
   leadership: {
     topic: "leadership",
     label: "Leadership Starts Within",
@@ -309,8 +319,17 @@ const TOPIC_MAP: Record<string, BookMatch> = {
     chapters: ["Leadership"],
     blurb:
       "Leadership requires emotional control, clear judgment, and the discipline to respond instead of react.",
-    keywords: ["leadership", "leader", "manager", "boss", "responsibility"],
+    keywords: [
+      "leadership",
+      "leader",
+      "manager",
+      "boss",
+      "responsibility",
+      "authority",
+      "influence",
+    ],
   },
+
   relationships: {
     topic: "relationships",
     label: "Wisdom With Difficult People",
@@ -330,6 +349,7 @@ const TOPIC_MAP: Record<string, BookMatch> = {
       "boundaries",
     ],
   },
+
   direction: {
     topic: "direction",
     label: "Clarity Comes One Step at a Time",
@@ -339,6 +359,7 @@ const TOPIC_MAP: Record<string, BookMatch> = {
       "When you do not know what to do, wisdom helps you take the next clean step instead of freezing in confusion.",
     keywords: ["direction", "clarity", "confused", "lost", "decision", "purpose"],
   },
+
   resilience: {
     topic: "resilience",
     label: "Failure Becomes Wisdom",
@@ -347,6 +368,60 @@ const TOPIC_MAP: Record<string, BookMatch> = {
     blurb:
       "Failure is not the end of your story. It becomes wisdom when you learn, adjust, and keep moving.",
     keywords: ["failure", "failing", "discouraged", "setback", "resilience"],
+  },
+
+  discipline: {
+    topic: "discipline",
+    label: "Discipline",
+    pages: "54–58",
+    chapters: ["The Path of Discipline"],
+    blurb: "Discipline builds the structure that produces success.",
+    keywords: ["discipline", "self-control", "consistency", "training"],
+  },
+
+  fear: {
+    topic: "fear",
+    label: "Overcoming Fear",
+    pages: "77–80",
+    chapters: ["Courage Over Fear"],
+    blurb: "Fear loses power when wisdom and faith guide decisions.",
+    keywords: ["fear", "afraid", "anxiety", "courage"],
+  },
+
+  speech: {
+    topic: "speech",
+    label: "The Power of Words",
+    pages: "120–124",
+    chapters: ["The Power of Words"],
+    blurb: "Words can build life or destroy it.",
+    keywords: ["speech", "words", "tongue", "communication"],
+  },
+
+  wealth: {
+    topic: "wealth",
+    label: "Money & Wealth",
+    pages: "88–92",
+    chapters: ["Wealth and Stewardship"],
+    blurb: "Wealth grows through diligence, stewardship, and wisdom.",
+    keywords: ["wealth", "money", "riches", "prosperity", "finances"],
+  },
+
+  integrity: {
+    topic: "integrity",
+    label: "Integrity",
+    pages: "66–70",
+    chapters: ["The Integrity Advantage"],
+    blurb: "Integrity protects reputation and long-term success.",
+    keywords: ["integrity", "character", "honesty", "truth"],
+  },
+
+  diligence: {
+    topic: "diligence",
+    label: "Diligence",
+    pages: "72–76",
+    chapters: ["The Diligent Path"],
+    blurb: "Consistent effort produces lasting success.",
+    keywords: ["diligence", "hard work", "effort", "work ethic"],
   },
 };
 
@@ -359,7 +434,7 @@ export function findBookMatches(q: string): BookMatch[] {
     .map((word) => word.trim())
     .filter(Boolean);
 
-  const matches: BookMatch[] = [];
+  const topicMatches: BookMatch[] = [];
 
   for (const topic of Object.keys(TOPIC_MAP)) {
     const match = TOPIC_MAP[topic];
@@ -370,7 +445,7 @@ export function findBookMatches(q: string): BookMatch[] {
     });
 
     if (query.includes(topic.toLowerCase()) || keywordHit) {
-      matches.push(match);
+      topicMatches.push(match);
     }
   }
 
@@ -385,7 +460,7 @@ export function findBookMatches(q: string): BookMatch[] {
     query.includes("frustrated") ||
     query.includes("disrespected");
 
-  const bookIndexMatches = BOOK_INDEX.map((entry) => {
+  const bookIndexMatches: BookMatch[] = BOOK_INDEX.map((entry) => {
     const title = entry.title.toLowerCase();
     const excerpt = entry.excerpt.toLowerCase();
     const tags = entry.tags.map((t) => t.toLowerCase());
@@ -456,7 +531,7 @@ export function findBookMatches(q: string): BookMatch[] {
     .sort((a, b) => b.score - a.score)
     .map(({ score, ...match }) => match);
 
-  const combined = [...matches, ...bookIndexMatches];
+  const combined = [...topicMatches, ...bookIndexMatches];
 
   const deduped = combined.filter(
     (item, index, arr) =>
