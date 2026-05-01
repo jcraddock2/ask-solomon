@@ -620,79 +620,6 @@ function hasAny(source: string[], targets: string[]): boolean {
   return countMatches(source, targets) > 0;
 }
 
-function scoreTokenHit(
-  token: string,
-  kind: "title" | "keyword" | "topic" | "intent" | "mood" | "text" | "ref"
-): number {
-  const generic = GENERIC_TOKENS.has(token);
-
-  if (kind === "intent") return generic ? 6 : 14;
-  if (kind === "keyword") return generic ? 4 : 10;
-  if (kind === "topic") return generic ? 4 : 8;
-  if (kind === "title") return generic ? 3 : 8;
-  if (kind === "mood") return generic ? 3 : 6;
-  if (kind === "text") return generic ? 1 : 4;
-  return generic ? 1 : 4;
-}
-
-function applyLanePhraseBoosts(
-  normalizedQuery: string,
-  intentTags: string[],
-  moodTags: string[],
-  why: string[]
-): number {
-  let bonus = 0;
-
-  for (const rule of LANE_PHRASE_BOOSTS) {
-    const matchedPhrase = rule.phrases.some((phrase) => normalizedQuery.includes(phrase));
-    if (!matchedPhrase) continue;
-
-    const intentMatch = hasAny(intentTags, rule.intents);
-    const moodMatch = rule.moods ? hasAny(moodTags, rule.moods) : false;
-
-    if (intentMatch) {
-      bonus += rule.bonus;
-      why.push(rule.label);
-    } else if (moodMatch) {
-      bonus += Math.round(rule.bonus * 0.55);
-      why.push(`${rule.label} mood`);
-    }
-  }
-
-  return bonus;
-}
-
-function applySituationBoosts(
-  topicHits: number,
-  intentHits: number,
-  moodHits: number,
-  why: string[]
-): number {
-  let bonus = 0;
-
-  if (topicHits > 0) {
-    bonus += topicHits * 6;
-    why.push("situation topics");
-  }
-
-  if (intentHits > 0) {
-    bonus += intentHits * 10;
-    why.push("situation intent");
-  }
-
-  if (moodHits > 0) {
-    bonus += moodHits * 5;
-    why.push("situation mood");
-  }
-
-  if (intentHits > 0 && moodHits > 0) {
-    bonus += 8;
-    why.push("situation alignment");
-  }
-
-  return bonus;
-}
-
 function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResult {
   const normalizedQuery = normalizeText(query);
   const tokens = expandQuery(query);
@@ -712,6 +639,206 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
   if (!normalizedQuery.trim()) {
     return { item, score: 0, why: [] };
   }
+
+  const haystack = [
+    title,
+    text,
+    ref,
+    ...topics,
+    ...keywords,
+    ...intentTags,
+    ...moodTags,
+  ].join(" ");
+
+  const hasQueryPhrase = (phrases: string[]) =>
+    phrases.some((phrase) => normalizedQuery.includes(phrase));
+
+  const itemHasAny = (terms: string[]) =>
+    terms.some((term) => haystack.includes(normalizeText(term)));
+
+  const itemHasIntent = (terms: string[]) =>
+    terms.some((term) => intentTags.includes(normalizeText(term)));
+
+  const itemHasMood = (terms: string[]) =>
+    terms.some((term) => moodTags.includes(normalizeText(term)));
+
+  const itemHasTopic = (terms: string[]) =>
+    terms.some((term) => topics.includes(normalizeText(term)));
+
+  const applyEmotionalLane = (
+    label: string,
+    queryPhrases: string[],
+    preferredIntents: string[],
+    preferredMoods: string[],
+    preferredTopics: string[],
+    preferredTerms: string[],
+    bonus: number
+  ) => {
+    if (!hasQueryPhrase(queryPhrases)) return;
+
+    let laneScore = 0;
+
+    if (itemHasIntent(preferredIntents)) laneScore += bonus;
+    if (itemHasMood(preferredMoods)) laneScore += Math.round(bonus * 0.75);
+    if (itemHasTopic(preferredTopics)) laneScore += Math.round(bonus * 0.65);
+    if (itemHasAny(preferredTerms)) laneScore += Math.round(bonus * 0.55);
+
+    if (laneScore > 0) {
+      score += laneScore;
+      why.push(label);
+    }
+  };
+
+  applyEmotionalLane(
+    "behind in life / comparison",
+    [
+      "behind in life",
+      "feel behind",
+      "falling behind",
+      "everyone is ahead",
+      "not where i should be",
+      "not where i thought",
+      "too late",
+      "missed my chance",
+      "life passed me by",
+      "comparison",
+      "comparing myself",
+    ],
+    ["comparison", "identity", "purpose", "direction", "wisdom"],
+    ["discouraged", "uncertain", "ashamed", "overlooked", "weary"],
+    ["contentment", "patience", "purpose", "wisdom", "direction", "growth"],
+    ["path", "steps", "season", "wait", "wisdom", "diligent", "future", "hope", "heart"],
+    34
+  );
+
+  applyEmotionalLane(
+    "discouragement / heaviness",
+    [
+      "discouraged",
+      "discouraging",
+      "down",
+      "heavy",
+      "heavy heart",
+      "tired",
+      "weary",
+      "worn out",
+      "burned out",
+      "losing hope",
+      "feel defeated",
+      "defeated",
+      "giving up",
+    ],
+    ["hope", "encouragement", "strength", "healing", "direction", "wisdom"],
+    ["discouraged", "weary", "hurting", "overwhelmed", "afraid"],
+    ["hope", "strength", "peace", "healing", "encouragement"],
+    ["hope", "heart", "life", "strength", "healing", "upright", "path", "trust"],
+    32
+  );
+
+  applyEmotionalLane(
+    "purpose / calling",
+    [
+      "purpose",
+      "my purpose",
+      "calling",
+      "what am i here for",
+      "why am i here",
+      "meaning",
+      "direction in life",
+      "what should i do with my life",
+      "lost in life",
+    ],
+    ["purpose", "direction", "wisdom", "identity", "calling"],
+    ["uncertain", "seeking", "discouraged", "restless"],
+    ["purpose", "direction", "wisdom", "calling", "growth"],
+    ["path", "steps", "plan", "wisdom", "understanding", "heart", "future"],
+    34
+  );
+
+  applyEmotionalLane(
+    "direction / decision",
+    [
+      "need direction",
+      "need guidance",
+      "what should i do",
+      "which way",
+      "decision",
+      "decide",
+      "confused",
+      "uncertain",
+      "clarity",
+      "lost",
+    ],
+    ["direction", "wisdom", "guidance", "discernment"],
+    ["uncertain", "seeking", "confused", "anxious"],
+    ["direction", "wisdom", "instruction", "understanding"],
+    ["path", "way", "steps", "wisdom", "instruction", "understanding", "counsel"],
+    30
+  );
+
+  applyEmotionalLane(
+    "hope / future",
+    [
+      "hope",
+      "need hope",
+      "no hope",
+      "hopeless",
+      "future",
+      "will it get better",
+      "things will get better",
+      "better days",
+      "keep going",
+    ],
+    ["hope", "encouragement", "strength", "healing", "purpose"],
+    ["discouraged", "weary", "hurting", "afraid", "overwhelmed"],
+    ["hope", "future", "strength", "peace", "healing"],
+    ["hope", "future", "life", "heart", "healing", "strength", "trust"],
+    32
+  );
+
+  applyEmotionalLane(
+    "identity / self-worth",
+    [
+      "identity",
+      "who am i",
+      "self worth",
+      "worthless",
+      "not enough",
+      "i am not enough",
+      "feel invisible",
+      "invisible",
+      "rejected",
+      "overlooked",
+      "unwanted",
+      "second guessing myself",
+    ],
+    ["identity", "confidence", "wisdom", "purpose", "healing"],
+    ["rejected", "ashamed", "discouraged", "overlooked", "uncertain"],
+    ["identity", "confidence", "wisdom", "healing", "purpose"],
+    ["heart", "upright", "honor", "wisdom", "confidence", "life", "favor"],
+    34
+  );
+
+  applyEmotionalLane(
+    "waiting / progress",
+    [
+      "waiting",
+      "still waiting",
+      "taking too long",
+      "not making progress",
+      "progress",
+      "stuck",
+      "delayed",
+      "slow",
+      "nothing is happening",
+      "when will it happen",
+    ],
+    ["patience", "growth", "purpose", "direction", "diligence", "hope"],
+    ["discouraged", "weary", "restless", "uncertain"],
+    ["patience", "growth", "diligence", "wisdom", "future"],
+    ["path", "steps", "diligent", "wait", "season", "growth", "future", "hope"],
+    32
+  );
 
   if (title.includes(normalizedQuery)) {
     score += 20;
@@ -807,6 +934,14 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
       score += 6;
       why.push("soft match");
     }
+  }
+
+  return {
+    item,
+    score,
+    why: Array.from(new Set(why)),
+  };
+}
   }
 
   return {
