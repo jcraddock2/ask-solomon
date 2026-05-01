@@ -371,7 +371,7 @@ export const BOOK_INDEX: BookEntry[] = [
     "patience",
     "boundaries",
   ],
-}
+},
   {
   id: "identity-worth-1",
   chapter: "Identity",
