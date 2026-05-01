@@ -293,7 +293,61 @@ export type BookMatch = {
 };
 
 const TOPIC_MAP: Record<string, BookMatch> = {
-  // KEEP YOUR EXISTING TOPIC_MAP ENTRIES HERE
+  confidence: {
+    topic: "confidence",
+    label: "Confidence Begins Internally",
+    pages: "41–44",
+    chapters: ["Identity", "Confidence"],
+    blurb:
+      "Confidence grows when you stop letting fear, insecurity, and other people’s opinions define your value.",
+    keywords: ["confidence", "self doubt", "insecure", "fear", "boldness"],
+  },
+  leadership: {
+    topic: "leadership",
+    label: "Leadership Starts Within",
+    pages: "90–98",
+    chapters: ["Leadership"],
+    blurb:
+      "Leadership requires emotional control, clear judgment, and the discipline to respond instead of react.",
+    keywords: ["leadership", "leader", "manager", "boss", "responsibility"],
+  },
+  relationships: {
+    topic: "relationships",
+    label: "Wisdom With Difficult People",
+    pages: "105–110",
+    chapters: ["Relationships"],
+    blurb:
+      "Difficult people test your peace, your patience, and your ability to stay wise under pressure.",
+    keywords: [
+      "relationships",
+      "conflict",
+      "difficult people",
+      "boss",
+      "manager",
+      "toxic",
+      "frustrated",
+      "anger",
+      "boundaries",
+    ],
+  },
+  direction: {
+    topic: "direction",
+    label: "Clarity Comes One Step at a Time",
+    pages: "118–123",
+    chapters: ["Purpose", "Direction"],
+    blurb:
+      "When you do not know what to do, wisdom helps you take the next clean step instead of freezing in confusion.",
+    keywords: ["direction", "clarity", "confused", "lost", "decision", "purpose"],
+  },
+  resilience: {
+    topic: "resilience",
+    label: "Failure Becomes Wisdom",
+    pages: "155–160",
+    chapters: ["Resilience"],
+    blurb:
+      "Failure is not the end of your story. It becomes wisdom when you learn, adjust, and keep moving.",
+    keywords: ["failure", "failing", "discouraged", "setback", "resilience"],
+  },
 };
 
 export function findBookMatches(q: string): BookMatch[] {
