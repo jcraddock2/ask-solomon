@@ -231,13 +231,7 @@ function scoreProverbMatch(
   };
 }
 
-const wisdomResponse = getWisdomResponse(q);
-  const pageStyle: React.CSSProperties = {
-    maxWidth: 920,
-    margin: "0 auto",
-    fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
-  };
-
+const wisdomResponse = getWisdomResponse(urlQ || "");
   const headerRow: React.CSSProperties = {
     display: "flex",
     justifyContent: "space-between",
