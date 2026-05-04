@@ -5,9 +5,6 @@ import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isProUser } from "./lib/access";
 import { searchProverbsScored } from "./lib/proverbs";
-
-import { getWisdomResponse } from "./lib/wisdomResponse";
-
 import {
   smartSearch,
   interpretQueryAdvanced,
@@ -231,7 +228,48 @@ function scoreProverbMatch(
   };
 }
 
-const wisdomResponse = getWisdomResponse(urlQ || "");
+function PageInner() {
+  const router = useRouter();
+  const sp = useSearchParams();
+
+  const rawUrlMode = (sp.get("mode") as Mode) || "encouragement";
+  const rawUrlSub = (sp.get("sub") as Sub | "all") || "all";
+  const urlQ = sp.get("q") || "";
+
+  const [mode, setMode] = useState<Mode>(rawUrlMode);
+  const [sub, setSub] = useState<Sub | "all">(rawUrlSub);
+  const [q, setQ] = useState<string>(urlQ);
+
+  const [isPro, setIsPro] = useState(false);
+
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [favoriteKeys, setFavoriteKeys] = useState<Record<string, boolean>>({});
+
+  const [copiedKey, setCopiedKey] = useState<string>("");
+  const [savedKey, setSavedKey] = useState<string>("");
+  const [favPulse, setFavPulse] = useState(false);
+
+  const [todayFocusOn, setTodayFocusOn] = useState(false);
+  const [todayFocusKey, setTodayFocusKey] = useState<string>("");
+
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [promotedProverbRef, setPromotedProverbRef] = useState<string>("");
+
+  const [shareTemplate, setShareTemplate] =
+    useState<ShareTemplate>("gradientModern");
+
+  const outerStyle: React.CSSProperties = {
+    minHeight: "100vh",
+    background:
+      "radial-gradient(1200px 600px at 20% 10%, rgba(99,102,241,0.14), rgba(255,255,255,0)), radial-gradient(900px 500px at 80% 0%, rgba(16,185,129,0.12), rgba(255,255,255,0)), #f8fafc",
+    padding: 18,
+  };
+  const pageStyle: React.CSSProperties = {
+    maxWidth: 920,
+    margin: "0 auto",
+    fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+  };
+
   const headerRow: React.CSSProperties = {
     display: "flex",
     justifyContent: "space-between",
@@ -390,18 +428,13 @@ const wisdomResponse = getWisdomResponse(urlQ || "");
     router.replace(qs ? `/?${qs}` : "/");
   };
 
-useEffect(() => {
-  setMode(rawUrlMode);
-  setSub(rawUrlSub);
-  setQ(urlQ);
-}, [rawUrlMode, rawUrlSub, urlQ]);
+  useEffect(() => {
+    setMode(rawUrlMode);
+    setSub(rawUrlSub);
+    setQ(urlQ);
+  }, [rawUrlMode, rawUrlSub, urlQ]);
 
-const wisdomResponse = useMemo(() => {
-  if (!q.trim()) return null;
-  return getWisdomResponse(q);
-}, [q]);
-
-const favoritesCount = useMemo(
+  const favoritesCount = useMemo(
     () => Object.keys(favoriteKeys).filter((k) => favoriteKeys[k]).length,
     [favoriteKeys]
   );
@@ -870,14 +903,142 @@ const baseResults = useMemo(() => {
 
   return found;
 }, [q, mode, sub, favoritesOnly, favoriteKeys]);
-
   const results = useMemo(() => {
     if (!todayFocusOn) return baseResults;
     if (!todayFocusKey) return [];
     return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
   }, [baseResults, todayFocusOn, todayFocusKey]);
+const topResult = useMemo(() => {
+  const query = q.toLowerCase().trim();
 
+  if (query.length === 0) return null;
+  if (!results || results.length === 0) return null;
+
+  const isBehindQuery =
+    query.includes("behind") ||
+    query.includes("falling behind") ||
+    query.includes("comparison") ||
+    query.includes("comparing") ||
+    query.includes("everyone else") ||
+    query.includes("not enough");
+
+  const isDifficultPeopleQuery =
+    query.includes("boss") ||
+    query.includes("manager") ||
+    query.includes("supervisor") ||
+    query.includes("difficult") ||
+    query.includes("toxic") ||
+    query.includes("conflict");
+
+  const scored = results
+    .map((item) => {
+      const title = item.title.toLowerCase();
+      const body = item.body.toLowerCase();
+      const ref = item.ref.toLowerCase();
+
+      const tags =
+        "tags" in item && Array.isArray(item.tags)
+          ? item.tags.map((t) => t.toLowerCase())
+          : [];
+
+      const keywords =
+        "keywords" in item && Array.isArray(item.keywords)
+          ? item.keywords.map((k) => k.toLowerCase())
+          : [];
+
+      const topics =
+        "topics" in item && Array.isArray(item.topics)
+          ? item.topics.map((t) => t.toLowerCase())
+          : [];
+
+      const intentTags =
+        "intentTags" in item && Array.isArray(item.intentTags)
+          ? item.intentTags.map((t) => t.toLowerCase())
+          : [];
+
+      const moodTags =
+        "moodTags" in item && Array.isArray(item.moodTags)
+          ? item.moodTags.map((t) => t.toLowerCase())
+          : [];
+
+      const searchable = [
+        title,
+        body,
+        ref,
+        ...tags,
+        ...keywords,
+        ...topics,
+        ...intentTags,
+        ...moodTags,
+      ].join(" ");
+
+      let score = 0;
+
+      for (const word of query.split(/[^a-z0-9]+/i).filter(Boolean)) {
+        if (title.includes(word)) score += 10;
+        if (keywords.some((k) => k.includes(word))) score += 8;
+        if (tags.some((t) => t.includes(word))) score += 6;
+        if (topics.some((t) => t.includes(word))) score += 6;
+        if (intentTags.some((t) => t.includes(word))) score += 8;
+        if (moodTags.some((t) => t.includes(word))) score += 8;
+        if (body.includes(word)) score += 3;
+        if (searchable.includes(word)) score += 1;
+      }
+
+      if (isBehindQuery) {
+        if (
+          tags.includes("discouraged") ||
+          tags.includes("hope") ||
+          tags.includes("direction") ||
+          topics.includes("discouraged") ||
+          topics.includes("hope") ||
+          topics.includes("direction") ||
+          intentTags.includes("discouraged") ||
+          intentTags.includes("direction") ||
+          moodTags.includes("discouraged") ||
+          keywords.includes("discouraged") ||
+          keywords.includes("keep going") ||
+          keywords.includes("future") ||
+          keywords.includes("not enough")
+        ) {
+          score += 40;
+        }
+
+        if (
+          title.includes("compare") ||
+          title.includes("comparison") ||
+          body.includes("compare")
+        ) {
+          score -= 20;
+        }
+      }
+
+      if (isDifficultPeopleQuery) {
+        if (
+          tags.includes("relationships") ||
+          tags.includes("anger") ||
+          tags.includes("leadership") ||
+          topics.includes("relationships") ||
+          topics.includes("anger") ||
+          topics.includes("leadership") ||
+          intentTags.includes("relationships") ||
+          intentTags.includes("leadership") ||
+          keywords.includes("conflict") ||
+          keywords.includes("relationship conflict") ||
+          keywords.includes("anger")
+        ) {
+          score += 35;
+        }
+      }
+
+      return { item, score };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  return scored[0]?.item ?? results[0];
+}, [q, results]);
 const smartExpandedTerms = useMemo(() => {
+  if (q.trim().length === 0) return [];
 
   const advanced = interpretQueryAdvanced(q);
   const expanded = expandSmartTerms(q);
@@ -1031,7 +1192,81 @@ const applySituation = (situationQuery: string) => {
       );
     }
 
- 
+    return (
+      <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
+        No matches. Try a different keyword.
+      </div>
+    );
+  };
+
+  return (
+    <div style={outerStyle}>
+      <main style={pageStyle}>
+        <header style={{ marginBottom: 18 }}>
+          <div style={headerRow}>
+            <div>
+              <div
+                style={{
+                  fontSize: 12,
+                  fontWeight: 900,
+                  letterSpacing: 0.6,
+                  color: "#64748b",
+                  textTransform: "uppercase",
+                }}
+              >
+                Ask Solomon
+              </div>
+              <h1
+                style={{
+                  margin: "6px 0 0 0",
+                  fontSize: 34,
+                  lineHeight: 1.05,
+                  color: "#111827",
+                }}
+              >
+                Wisdom for what you’re facing right now
+              </h1>
+              <p
+                style={{
+                  marginTop: 8,
+                  marginBottom: 0,
+                  color: "#334155",
+                  fontWeight: 800,
+                }}
+              >
+                Encouragement first—wisdom from Proverbs for what you’re facing right now.
+              </p>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              <span style={badgeStyle(isPro)}>{isPro ? "PRO" : "FREE"}</span>
+              <button
+                type="button"
+                onClick={() => router.push("/book")}
+                style={headerBtn}
+              >
+                Book
+              </button>
+              {!isPro && (
+                <button
+                  type="button"
+                  onClick={() => router.push("/upgrade")}
+                  style={headerBtn}
+                >
+                  Upgrade (Lifetime)
+                </button>
+              )}
+            </div>
+          </div>
+        </header>
+
         <section style={cardStyle}>
           <div
             style={{
@@ -1331,7 +1566,7 @@ const applySituation = (situationQuery: string) => {
       Wisdom for this moment
     </div>
     <div style={{ fontWeight: 600 }}>
-      {wisdomResponse?.insight || interpretQueryAdvanced(q).message}
+      {interpretQueryAdvanced(q).message}
     </div>
   </div>
 )}
@@ -2034,6 +2269,280 @@ const applySituation = (situationQuery: string) => {
                             </div>
                           );
                         }
+
+                        return (
+                          <div
+                            key={p.ref}
+                            className="verseCard"
+                            style={softCardStyle}
+                          >
+                            <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+                              <div style={{ flex: 1 }}>
+                                <div style={{ fontWeight: 900, fontSize: 15, color: "#111" }}>
+                                  {proverbTitle}
+                                </div>
+                                <div
+                                  style={{
+                                    marginTop: 8,
+                                    color: "#334155",
+                                    fontWeight: 800,
+                                    fontSize: 14,
+                                    lineHeight: 1.6,
+                                  }}
+                                >
+                                  {p.text}
+                                </div>
+                                <div
+                                  style={{
+                                    marginTop: 8,
+                                    fontSize: 12,
+                                    color: "#64748b",
+                                    fontWeight: 900,
+                                  }}
+                                >
+                                  {p.ref}
+                                </div>
+
+                                {p.why?.length > 0 && (
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      gap: 6,
+                                      flexWrap: "wrap",
+                                      marginTop: 8,
+                                    }}
+                                  >
+                                    {p.why.slice(0, 3).map((reason) => (
+                                      <span
+                                        key={reason}
+                                        style={{
+                                          padding: "5px 8px",
+                                          borderRadius: 999,
+                                          background: "rgba(99,102,241,0.08)",
+                                          color: "#4338ca",
+                                          fontWeight: 800,
+                                          fontSize: 11,
+                                          border: "1px solid rgba(99,102,241,0.14)",
+                                        }}
+                                      >
+                                        {reason}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  gap: 8,
+                                  alignItems: "flex-end",
+                                }}
+                              >
+                                <button
+                                  type="button"
+                                  onClick={() => setPromotedProverbRef(p.ref)}
+                                  style={{
+                                    ...miniBtn,
+                                    background: "rgba(99,102,241,0.10)",
+                                    border: "1px solid rgba(99,102,241,0.18)",
+                                    color: "#4338ca",
+                                  }}
+                                  title="Open full card"
+                                >
+                                  Open
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => toggleFavorite(proverbKey)}
+                                  style={miniBtn}
+                                  title={isFav ? "Saved" : "Save this verse"}
+                                  aria-label={isFav ? "Saved" : "Save this verse"}
+                                >
+                                  {isFav ? "★" : "☆"}
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => handleCopy(proverbItem, proverbKey)}
+                                  style={{ ...miniBtn, fontSize: 12 }}
+                                  title="Copy verse"
+                                >
+                                  {isCopied ? "Copied" : "Copy"}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+            <div style={{ display: "grid", gap: 12 }}>
+              {results.length === 0
+                ? renderEmptyState()
+                : results.map((item) => {
+                    const key = `${item.ref}-${item.title}`;
+                    const isFav = !!favoriteKeys[key];
+                    const isCopied = copiedKey === key;
+                    const isSavedFlash = savedKey === key;
+
+                    return (
+                      <div
+                        key={key}
+                        className="verseCard"
+                        style={{
+                          ...softCardStyle,
+                          transform: isSavedFlash ? "scale(1.01)" : "scale(1)",
+                        }}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontWeight: 900, fontSize: 18, color: "#111" }}>
+                              {item.title}
+                            </div>
+
+                            <div
+                              style={{
+                                marginTop: 8,
+                                fontSize: 15,
+                                lineHeight: 1.65,
+                                color: "#111827",
+                                fontWeight: 650,
+                              }}
+                            >
+                              {item.body}
+                            </div>
+
+                            <div
+                              style={{
+                                marginTop: 10,
+                                fontSize: 12,
+                                color: "#64748b",
+                                fontWeight: 700,
+                              }}
+                            >
+                              Save this. Sit with it. Apply it today.
+                            </div>
+
+                            <div
+                              style={{
+                                marginTop: 10,
+                                fontSize: 12,
+                                color: "#64748b",
+                                fontWeight: 900,
+                              }}
+                            >
+                              {item.ref}
+                            </div>
+
+                            {Array.isArray((item as any).topics) &&
+                              (item as any).topics.length > 0 && (
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    gap: 8,
+                                    flexWrap: "wrap",
+                                    marginTop: 10,
+                                  }}
+                                >
+                                  {(item as any).topics.slice(0, 6).map((topic: string) => (
+                                    <button
+                                      key={topic}
+                                      type="button"
+                                      onClick={() => applyTopic(topic)}
+                                      style={{
+                                        padding: "6px 10px",
+                                        borderRadius: 999,
+                                        border: "1px solid rgba(0,0,0,0.08)",
+                                        background: "rgba(255,255,255,0.92)",
+                                        fontWeight: 800,
+                                        fontSize: 11,
+                                        color: "#334155",
+                                        cursor: "pointer",
+                                      }}
+                                    >
+                                      {topic}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                          </div>
+
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: 8,
+                              alignItems: "flex-end",
+                            }}
+                          >
+                            <button
+                              type="button"
+                              onClick={() => toggleFavorite(key)}
+                              style={miniBtn}
+                              title={isFav ? "Saved" : "Save this verse"}
+                            >
+                              {isFav ? "★" : "☆"}
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleCopy(item, key)}
+                              style={{ ...miniBtn, fontSize: 12 }}
+                              title="Copy verse"
+                            >
+                              {isCopied ? "Copied" : "Copy"}
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleShare(item, key)}
+                              style={{ ...miniBtn, fontSize: 12 }}
+                              title="Share this verse"
+                            >
+                              Share
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleImage(item)}
+                              style={{
+                                ...miniBtn,
+                                fontSize: 12,
+                                background: "rgba(99,102,241,0.10)",
+                                border: "1px solid rgba(99,102,241,0.18)",
+                              }}
+                              title="Create a share image"
+                            >
+                              Image
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+            </div>
+          </div>
+        </section>
+
+        <style jsx global>{`
+          @keyframes pulseGlow {
+            0% {
+              box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
+            }
+            50% {
+              box-shadow: 0 18px 44px rgba(99, 102, 241, 0.18);
+            }
+            100% {
+              box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
+            }
+          }
 
           .verseCard {
             animation: fadeInUp 180ms ease both;
