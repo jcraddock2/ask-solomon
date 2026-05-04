@@ -396,7 +396,10 @@ useEffect(() => {
   setQ(urlQ);
 }, [rawUrlMode, rawUrlSub, urlQ]);
 
-const wisdomResponse = getWisdomResponse(q);
+const wisdomResponse = useMemo(() => {
+  if (!q.trim()) return null;
+  return getWisdomResponse(q);
+}, [q]);
 
 const favoritesCount = useMemo(
     () => Object.keys(favoriteKeys).filter((k) => favoriteKeys[k]).length,
