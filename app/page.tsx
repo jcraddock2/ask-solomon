@@ -1530,7 +1530,7 @@ const applySituation = (situationQuery: string) => {
       Wisdom for this moment
     </div>
     <div style={{ fontWeight: 600 }}>
-      {interpretQueryAdvanced(q).message}
+      {wisdomResponse?.insight || interpretQueryAdvanced(q).message}
     </div>
   </div>
 )}
