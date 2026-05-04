@@ -5,6 +5,9 @@ import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isProUser } from "./lib/access";
 import { searchProverbsScored } from "./lib/proverbs";
+
+import { getWisdomResponse } from "./lib/wisdomResponse";
+
 import {
   smartSearch,
   interpretQueryAdvanced,
@@ -228,42 +231,7 @@ function scoreProverbMatch(
   };
 }
 
-function PageInner() {
-  const router = useRouter();
-  const sp = useSearchParams();
-
-  const rawUrlMode = (sp.get("mode") as Mode) || "encouragement";
-  const rawUrlSub = (sp.get("sub") as Sub | "all") || "all";
-  const urlQ = sp.get("q") || "";
-
-  const [mode, setMode] = useState<Mode>(rawUrlMode);
-  const [sub, setSub] = useState<Sub | "all">(rawUrlSub);
-  const [q, setQ] = useState<string>(urlQ);
-
-  const [isPro, setIsPro] = useState(false);
-
-  const [favoritesOnly, setFavoritesOnly] = useState(false);
-  const [favoriteKeys, setFavoriteKeys] = useState<Record<string, boolean>>({});
-
-  const [copiedKey, setCopiedKey] = useState<string>("");
-  const [savedKey, setSavedKey] = useState<string>("");
-  const [favPulse, setFavPulse] = useState(false);
-
-  const [todayFocusOn, setTodayFocusOn] = useState(false);
-  const [todayFocusKey, setTodayFocusKey] = useState<string>("");
-
-  const [searchFocused, setSearchFocused] = useState(false);
-  const [promotedProverbRef, setPromotedProverbRef] = useState<string>("");
-
-  const [shareTemplate, setShareTemplate] =
-    useState<ShareTemplate>("gradientModern");
-
-  const outerStyle: React.CSSProperties = {
-    minHeight: "100vh",
-    background:
-      "radial-gradient(1200px 600px at 20% 10%, rgba(99,102,241,0.14), rgba(255,255,255,0)), radial-gradient(900px 500px at 80% 0%, rgba(16,185,129,0.12), rgba(255,255,255,0)), #f8fafc",
-    padding: 18,
-  };
+const wisdomResponse = getWisdomResponse(q);
   const pageStyle: React.CSSProperties = {
     maxWidth: 920,
     margin: "0 auto",
@@ -428,13 +396,15 @@ function PageInner() {
     router.replace(qs ? `/?${qs}` : "/");
   };
 
-  useEffect(() => {
-    setMode(rawUrlMode);
-    setSub(rawUrlSub);
-    setQ(urlQ);
-  }, [rawUrlMode, rawUrlSub, urlQ]);
+useEffect(() => {
+  setMode(rawUrlMode);
+  setSub(rawUrlSub);
+  setQ(urlQ);
+}, [rawUrlMode, rawUrlSub, urlQ]);
 
-  const favoritesCount = useMemo(
+const wisdomResponse = getWisdomResponse(q);
+
+const favoritesCount = useMemo(
     () => Object.keys(favoriteKeys).filter((k) => favoriteKeys[k]).length,
     [favoriteKeys]
   );
