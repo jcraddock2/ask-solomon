@@ -870,142 +870,14 @@ const baseResults = useMemo(() => {
 
   return found;
 }, [q, mode, sub, favoritesOnly, favoriteKeys]);
+
   const results = useMemo(() => {
     if (!todayFocusOn) return baseResults;
     if (!todayFocusKey) return [];
     return baseResults.filter((item) => `${item.ref}-${item.title}` === todayFocusKey);
   }, [baseResults, todayFocusOn, todayFocusKey]);
-const topResult = useMemo(() => {
-  const query = q.toLowerCase().trim();
 
-  if (query.length === 0) return null;
-  if (!results || results.length === 0) return null;
-
-  const isBehindQuery =
-    query.includes("behind") ||
-    query.includes("falling behind") ||
-    query.includes("comparison") ||
-    query.includes("comparing") ||
-    query.includes("everyone else") ||
-    query.includes("not enough");
-
-  const isDifficultPeopleQuery =
-    query.includes("boss") ||
-    query.includes("manager") ||
-    query.includes("supervisor") ||
-    query.includes("difficult") ||
-    query.includes("toxic") ||
-    query.includes("conflict");
-
-  const scored = results
-    .map((item) => {
-      const title = item.title.toLowerCase();
-      const body = item.body.toLowerCase();
-      const ref = item.ref.toLowerCase();
-
-      const tags =
-        "tags" in item && Array.isArray(item.tags)
-          ? item.tags.map((t) => t.toLowerCase())
-          : [];
-
-      const keywords =
-        "keywords" in item && Array.isArray(item.keywords)
-          ? item.keywords.map((k) => k.toLowerCase())
-          : [];
-
-      const topics =
-        "topics" in item && Array.isArray(item.topics)
-          ? item.topics.map((t) => t.toLowerCase())
-          : [];
-
-      const intentTags =
-        "intentTags" in item && Array.isArray(item.intentTags)
-          ? item.intentTags.map((t) => t.toLowerCase())
-          : [];
-
-      const moodTags =
-        "moodTags" in item && Array.isArray(item.moodTags)
-          ? item.moodTags.map((t) => t.toLowerCase())
-          : [];
-
-      const searchable = [
-        title,
-        body,
-        ref,
-        ...tags,
-        ...keywords,
-        ...topics,
-        ...intentTags,
-        ...moodTags,
-      ].join(" ");
-
-      let score = 0;
-
-      for (const word of query.split(/[^a-z0-9]+/i).filter(Boolean)) {
-        if (title.includes(word)) score += 10;
-        if (keywords.some((k) => k.includes(word))) score += 8;
-        if (tags.some((t) => t.includes(word))) score += 6;
-        if (topics.some((t) => t.includes(word))) score += 6;
-        if (intentTags.some((t) => t.includes(word))) score += 8;
-        if (moodTags.some((t) => t.includes(word))) score += 8;
-        if (body.includes(word)) score += 3;
-        if (searchable.includes(word)) score += 1;
-      }
-
-      if (isBehindQuery) {
-        if (
-          tags.includes("discouraged") ||
-          tags.includes("hope") ||
-          tags.includes("direction") ||
-          topics.includes("discouraged") ||
-          topics.includes("hope") ||
-          topics.includes("direction") ||
-          intentTags.includes("discouraged") ||
-          intentTags.includes("direction") ||
-          moodTags.includes("discouraged") ||
-          keywords.includes("discouraged") ||
-          keywords.includes("keep going") ||
-          keywords.includes("future") ||
-          keywords.includes("not enough")
-        ) {
-          score += 40;
-        }
-
-        if (
-          title.includes("compare") ||
-          title.includes("comparison") ||
-          body.includes("compare")
-        ) {
-          score -= 20;
-        }
-      }
-
-      if (isDifficultPeopleQuery) {
-        if (
-          tags.includes("relationships") ||
-          tags.includes("anger") ||
-          tags.includes("leadership") ||
-          topics.includes("relationships") ||
-          topics.includes("anger") ||
-          topics.includes("leadership") ||
-          intentTags.includes("relationships") ||
-          intentTags.includes("leadership") ||
-          keywords.includes("conflict") ||
-          keywords.includes("relationship conflict") ||
-          keywords.includes("anger")
-        ) {
-          score += 35;
-        }
-      }
-
-      return { item, score };
-    })
-    .sort((a, b) => b.score - a.score);
-
-  return scored[0]?.item ?? results[0];
-}, [q, results]);
 const smartExpandedTerms = useMemo(() => {
-  if (q.trim().length === 0) return [];
 
   const advanced = interpretQueryAdvanced(q);
   const expanded = expandSmartTerms(q);
