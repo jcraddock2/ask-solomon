@@ -1236,6 +1236,13 @@ const applySituation = (situationQuery: string) => {
               >
                 Book
               </button>
+              <button
+                type="button"
+                onClick={() => router.push("/book-index")}
+                style={headerBtn}
+              >
+                Book Index
+              </button>
               {!isPro && (
                 <button
                   type="button"
