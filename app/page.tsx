@@ -138,31 +138,6 @@ function renderBookMatchMeta(match: any): string {
   return parts.join(" • ");
 }
 
-const SMART_TOPIC_MAP: Record<string, string[]> = {
-  fear: ["fear", "afraid", "anxiety", "anxious", "worry", "worried", "courage", "confidence", "trust"],
-  anxiety: ["anxiety", "anxious", "fear", "worry", "peace", "trust", "rest"],
-  peace: ["peace", "calm", "rest", "quiet", "stillness", "trust"],
-  stress: ["stress", "pressure", "burden", "anxiety", "peace", "rest", "strength"],
-  direction: ["direction", "guidance", "counsel", "planning", "understanding", "wisdom", "discernment"],
-  wisdom: ["wisdom", "understanding", "discernment", "knowledge", "instruction", "insight"],
-  discipline: ["discipline", "self-control", "instruction", "correction", "training", "diligence"],
-  diligence: ["diligence", "hard work", "work", "lazy", "sluggard", "effort", "discipline"],
-  laziness: ["lazy", "sluggard", "diligence", "work", "effort"],
-  money: ["money", "wealth", "riches", "poverty", "stewardship", "generosity", "gain", "finance"],
-  finances: ["money", "wealth", "riches", "poverty", "stewardship", "generosity", "gain", "finance"],
-  anger: ["anger", "wrath", "temper", "self-control", "gentle", "patience"],
-  relationships: ["friend", "friends", "relationships", "love", "kindness", "speech", "conflict"],
-  speech: ["speech", "words", "tongue", "mouth", "gentle", "truth", "answer"],
-  leadership: ["leadership", "king", "ruler", "justice", "wisdom", "counsel", "integrity"],
-  integrity: ["integrity", "upright", "righteous", "honesty", "truth", "character"],
-  temptation: ["temptation", "lust", "adultery", "folly", "wisdom", "purity"],
-  success: ["success", "prosper", "wisdom", "diligence", "planning", "favor"],
-  confidence: ["confidence", "boldness", "fear", "trust", "strength", "courage"],
-  hope: ["hope", "future", "waiting", "trust", "joy", "faithfulness"],
-  strength: ["strength", "courage", "endurance", "perseverance", "trust"],
-  patience: ["patience", "waiting", "slow to anger", "endurance", "self-control"],
-};
-
 function tokenizeQuery(q: string): string[] {
   return q
     .toLowerCase()
