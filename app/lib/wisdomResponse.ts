@@ -5,720 +5,957 @@
 // getWisdomForMoment.ts has been absorbed into this file and is no longer needed.
 
 export type WisdomResponse = {
-    emotionalState: string;
-    deeperMeaning: string;
-    searchLanes: string[];
-    headline: string;
-    insight: string;
-    reflection: string;
-    nextStep: string;
-    bookConnection?: string;
+  emotionalState: string;
+  deeperMeaning: string;
+  searchLanes: string[];
+  headline: string;
+  insight: string;
+  reflection: string;
+  nextStep: string;
+  bookConnection?: string;
 };
 
 function clean(value: string): string {
-    return value.toLowerCase().trim();
+  return value.toLowerCase().trim();
 }
 
 function includesAny(query: string, phrases: string[]): boolean {
-    return phrases.some((phrase) => query.includes(phrase));
+  return phrases.some((phrase) => query.includes(phrase));
 }
 
 export function getWisdomResponse(query: string): WisdomResponse | null {
-    const q = clean(query);
+  const q = clean(query);
 
   if (!q) return null;
 
   // --- FALLING BEHIND / COMPARISON / TOO LATE ---
   if (
-        includesAny(q, [
-                "behind in life",
-                "falling behind",
-                "feel behind",
-                "i am behind",
-                "too late",
-                "missed my chance",
-                "second guessing",
-                "everyone else",
-                "behind everyone",
-                "not where i should be",
-                "supposed to be further",
-              ])
-      ) {
-        return {
-                emotionalState: "discouraged, delayed, and comparing yourself to others",
-                deeperMeaning:
-                          "You are not just asking about progress. You are asking whether delay means failure — and whether you still have a chance.",
-                searchLanes: ["comparison", "discouraged", "purpose", "hope", "progress"],
-                headline: "Wisdom has something to say about this",
-                insight:
-                          "Your life is not measured by someone else's timeline. Wisdom does not reward the fastest — it rewards the faithful. The growth happening beneath the surface right now is real, even when it is not yet visible.",
-                reflection:
-                          "Where are you judging yourself by speed instead of faithfulness?",
-                nextStep:
-                          "Take one small, honest step today. Stop trying to solve your whole future at once.",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Confidence (p. 80) and Discipline (p. 54)",
-        };
+    includesAny(q, [
+      "behind in life",
+      "falling behind",
+      "feel behind",
+      "i am behind",
+      "too late",
+      "missed my chance",
+      "second guessing",
+      "everyone else",
+      "behind everyone",
+      "not where i should be",
+      "supposed to be further",
+      "late bloomer",
+      "should be further along",
+      "comparing myself",
+      "compare myself",
+      "not enough progress",
+      "wasted years",
+      "wasted time",
+      "starting over",
+      "it's too late",
+    ])
+  ) {
+    return {
+      emotionalState: "discouraged, delayed, and comparing yourself to others",
+      deeperMeaning:
+        "You are not just asking about progress. You are asking whether delay means failure — and whether you still have a chance.",
+      searchLanes: ["comparison", "discouraged", "purpose", "hope", "progress"],
+      headline: "Wisdom has something to say about this",
+      insight:
+        "Your life is not measured by someone else's timeline. Wisdom does not reward the fastest — it rewards the faithful. The growth happening beneath the surface right now is real, even when it is not yet visible.",
+      reflection:
+        "Where are you judging yourself by speed instead of faithfulness?",
+      nextStep:
+        "Take one small, honest step today. Stop trying to solve your whole future at once.",
+      bookConnection:
+        "Success Secrets of Solomon — Confidence (pp. 80–82) and Discipline (pp. 54–58)",
+    };
   }
 
   // --- DISCOURAGED / BURNED OUT / WEARY ---
   if (
-        includesAny(q, [
-                "discouraged",
-                "hopeless",
-                "giving up",
-                "want to give up",
-                "defeated",
-                "worn out",
-                "burned out",
-                "burnt out",
-                "tired",
-                "weary",
-                "heavy",
-                "exhausted",
-                "drained",
-                "running on empty",
-                "can't keep going",
-                "done trying",
-              ])
-      ) {
-        return {
-                emotionalState: "weary, discouraged, and emotionally heavy",
-                deeperMeaning:
-                          "You may not only need an answer. You may need permission to rest, and the strength to take one more step.",
-                searchLanes: ["hope", "strength", "healing", "encouragement"],
-                headline: "Wisdom meets you exactly here",
-                insight:
-                          "A low moment is not the same thing as a final outcome. You may be tired, but you are not finished. Wisdom does not ask you to feel strong before you move — it asks you to move anyway.",
-                reflection:
-                          "What burden are you carrying today that wisdom is asking you to release or face differently?",
-                nextStep:
-                          "Pause, breathe, and do the next right thing — without demanding that you feel strong first.",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Diligence (p. 72) and Patience (p. 140)",
-        };
+    includesAny(q, [
+      "discouraged",
+      "hopeless",
+      "giving up",
+      "want to give up",
+      "defeated",
+      "worn out",
+      "burned out",
+      "burnt out",
+      "tired of trying",
+      "weary",
+      "heavy heart",
+      "exhausted",
+      "drained",
+      "running on empty",
+      "can't keep going",
+      "done trying",
+      "no energy",
+      "feel empty",
+      "nothing left",
+      "can't do this anymore",
+      "hitting a wall",
+      "emotionally drained",
+      "mentally drained",
+      "so tired",
+      "ready to quit",
+    ])
+  ) {
+    return {
+      emotionalState: "weary, discouraged, and emotionally heavy",
+      deeperMeaning:
+        "You may not only need an answer. You may need permission to rest, and the strength to take one more step.",
+      searchLanes: ["hope", "strength", "healing", "encouragement"],
+      headline: "Wisdom meets you exactly here",
+      insight:
+        "A low moment is not the same thing as a final outcome. You may be tired, but you are not finished. Wisdom does not ask you to feel strong before you move — it asks you to move anyway.",
+      reflection:
+        "What burden are you carrying today that wisdom is asking you to release or face differently?",
+      nextStep:
+        "Pause, breathe, and do the next right thing — without demanding that you feel strong first.",
+      bookConnection:
+        "Success Secrets of Solomon — Diligence (pp. 72–76) and Patience (pp. 140–142)",
+    };
   }
 
   // --- PURPOSE / CALLING / MEANING ---
   if (
-        includesAny(q, [
-                "purpose",
-                "calling",
-                "why am i here",
-                "what am i here for",
-                "meaning",
-                "lost in life",
-                "direction in life",
-                "what is my purpose",
-                "what should i do with my life",
-                "feel like i have no purpose",
-                "no direction",
-              ])
-      ) {
-        return {
-                emotionalState: "searching, uncertain, and hungry for meaning",
-                deeperMeaning:
-                          "You are not only asking what to do next. You are asking who you are becoming — and whether your life is adding up to something.",
-                searchLanes: ["purpose", "direction", "identity", "wisdom"],
-                headline: "Wisdom speaks to purpose",
-                insight:
-                          "Wisdom rarely gives you a full map. It usually gives you the next faithful step. Purpose is not discovered all at once — it is built through obedience, character, and showing up. Clarity grows as you walk.",
-                reflection:
-                          "What responsibility, gift, or burden keeps returning to your heart no matter how many times you push it away?",
-                nextStep:
-                          "Write down one small action that aligns with the person you believe God is shaping you to become.",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Purpose (p. 146) and Wisdom (p. 1)",
-        };
+    includesAny(q, [
+      "purpose",
+      "calling",
+      "why am i here",
+      "what am i here for",
+      "meaning",
+      "lost in life",
+      "direction in life",
+      "what is my purpose",
+      "what should i do with my life",
+      "feel like i have no purpose",
+      "no direction",
+      "feel lost",
+      "don't know what i want",
+      "don't know my calling",
+      "searching for meaning",
+      "life feels meaningless",
+      "what am i doing",
+      "what's the point",
+      "don't know my path",
+      "walking in circles",
+    ])
+  ) {
+    return {
+      emotionalState: "searching, uncertain, and hungry for meaning",
+      deeperMeaning:
+        "You are not just lacking a career plan. You are longing for a reason — something that makes the sacrifice feel worth it.",
+      searchLanes: ["purpose", "direction", "wisdom", "calling", "guidance"],
+      headline: "Wisdom was made for this question",
+      insight:
+        "Purpose is not found by thinking harder — it is revealed by walking faithfully in the direction you already sense. Wisdom lights the next step, not the whole staircase.",
+      reflection: "What do you already know you should do that you have been avoiding?",
+      nextStep:
+        "Ask wisdom to show you one step, not the whole path. Then take it.",
+      bookConnection:
+        "Success Secrets of Solomon — Purpose (pp. 146–150) and Wisdom (pp. 1–10)",
+    };
   }
 
-  // --- NEED DIRECTION / DECISION / CONFUSED ---
+  // --- FEAR / ANXIETY / AFRAID TO TRY ---
   if (
-        includesAny(q, [
-                "need direction",
-                "need guidance",
-                "what should i do",
-                "decision",
-                "decide",
-                "confused",
-                "clarity",
-                "lost",
-                "next step",
-                "which way",
-                "don't know what to do",
-                "stuck on a decision",
-                "crossroads",
-              ])
-      ) {
-        return {
-                emotionalState: "uncertain and looking for clarity on your next move",
-                deeperMeaning:
-                          "You may not only need options. You may need the kind of wisdom that cuts through noise and pressure so you can see clearly.",
-                searchLanes: ["direction", "wisdom", "discernment", "counsel"],
-                headline: "Wisdom is a better guide than pressure",
-                insight:
-                          "Wisdom does not always give every detail at once. It often begins by separating fear from truth, and noise from what actually matters. The right path usually comes with a quiet kind of peace — not the loudest voice in the room.",
-                reflection:
-                          "Which choice gives you peace because it is right — not merely because it is easy or popular?",
-                nextStep:
-                          "Name the decision clearly. Remove the emotional noise around it. Then ask: what is the wisest next step — not the perfect one?",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Decision Making (p. 60) and Seeking Counsel (p. 42)",
-        };
+    includesAny(q, [
+      "afraid",
+      "fear",
+      "scared",
+      "anxiety",
+      "anxious",
+      "worried",
+      "worry",
+      "terrified",
+      "panic",
+      "nervous",
+      "what if it goes wrong",
+      "scared to fail",
+      "fear of failure",
+      "fear of rejection",
+      "what if i fail",
+      "too scared",
+      "afraid to try",
+      "paralyzed",
+      "can't move forward",
+      "afraid of the future",
+      "dread",
+      "overthinking",
+      "what if",
+      "can't stop worrying",
+      "anxious all the time",
+    ])
+  ) {
+    return {
+      emotionalState: "fearful, anxious, and held back by what might go wrong",
+      deeperMeaning:
+        "Fear rarely announces itself loudly. Often it disguises itself as hesitation, over-analysis, or waiting for the perfect moment that never arrives.",
+      searchLanes: ["fear", "confidence", "courage", "trust", "wisdom"],
+      headline: "Fear shrinks when wisdom grows",
+      insight:
+        "Wisdom does not guarantee a risk-free path — it gives you the clarity to move forward anyway. Courage is not the absence of fear; it is moving despite it.",
+      reflection: "What is fear costing you right now by keeping you in place?",
+      nextStep:
+        "Name the specific fear. Then ask: what is the wisest response to it — not the safest, the wisest.",
+      bookConnection:
+        "Success Secrets of Solomon — Overcoming Fear (pp. 77–80) and Confidence (pp. 80–82)",
+    };
   }
 
-  // --- HOPE / WILL IT GET BETTER ---
+  // --- ANGER / TEMPER / CONFLICT ---
   if (
-        includesAny(q, [
-                "need hope",
-                "hopeless",
-                "no hope",
-                "future",
-                "will it get better",
-                "keep going",
-                "better days",
-                "is there hope",
-                "can things change",
-                "i don't see a way out",
-                "things will never change",
-              ])
-      ) {
-        return {
-                emotionalState: "longing for hope and reassurance that your future is still good",
-                deeperMeaning:
-                          "You are asking whether your future can still be good — or whether this season is the whole story.",
-                searchLanes: ["hope", "future", "strength", "healing"],
-                headline: "Your story is not over",
-                insight:
-                          "Wisdom does not deny hardship — it refuses to let hardship have the final word. Hope is not a feeling you wait for. It is a decision you make to keep sowing, even when harvest feels far away.",
-                reflection:
-                          "What would change if you truly believed this season was not the end of your story?",
-                nextStep:
-                          "Choose one life-giving action today that agrees with hope — something small that points your feet forward.",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Purpose (p. 146) and Character (p. 162)",
-        };
+    includesAny(q, [
+      "angry",
+      "anger",
+      "furious",
+      "rage",
+      "mad",
+      "frustrated",
+      "want to explode",
+      "can't control my temper",
+      "losing my temper",
+      "i snapped",
+      "blew up",
+      "blew up at someone",
+      "said things i regret",
+      "can't let it go",
+      "bitter",
+      "resentment",
+      "resentful",
+      "seething",
+      "irritated",
+      "outraged",
+      "livid",
+      "so angry",
+    ])
+  ) {
+    return {
+      emotionalState: "angry, frustrated, and struggling to control your response",
+      deeperMeaning:
+        "Anger often signals that something you value — fairness, respect, safety — has been threatened. The question wisdom asks is not whether you feel it, but what you do with it.",
+      searchLanes: ["anger", "self-control", "wisdom", "peace", "patience"],
+      headline: "Wisdom speaks directly to anger",
+      insight:
+        "Solomon wrote more about anger than almost any other emotion. A slow response to anger is not weakness — it is one of the clearest marks of wisdom. The person who controls their temper controls their future.",
+      reflection:
+        "Is your anger pointing at a real injustice — or at unmet expectations?",
+      nextStep:
+        "Before you respond, pause. Ask yourself: will this response build or destroy?",
+      bookConnection:
+        "Success Secrets of Solomon — Managing Anger (pp. 126–128) and Patience (pp. 140–142)",
+    };
   }
 
-  // --- IDENTITY / WORTH / REJECTED / OVERLOOKED ---
+  // --- RELATIONSHIP CONFLICT / HURT BY SOMEONE ---
   if (
-        includesAny(q, [
-                "identity",
-                "who am i",
-                "self worth",
-                "worthless",
-                "not enough",
-                "invisible",
-                "rejected",
-                "overlooked",
-                "unwanted",
-                "don't matter",
-                "nobody sees me",
-                "feel like a failure",
-                "i'm a failure",
-                "insignificant",
-              ])
-      ) {
-        return {
-                emotionalState: "questioning your worth, identity, and whether you matter",
-                deeperMeaning:
-                          "You may not only be asking for confidence. You may be asking whether you still have value after being passed over, let down, or unseen.",
-                searchLanes: ["identity", "confidence", "healing", "purpose"],
-                headline: "Your value is not determined by their response",
-                insight:
-                          "Wisdom says your worth is not created by applause, approval, or attention. Being overlooked by people does not mean you have been overlooked by God. Your value is established — it does not need to be earned again.",
-                reflection:
-                          "Where have you allowed someone else's response to define your worth?",
-                nextStep:
-                          "Act today from dignity, not desperation. Let your next move agree with who you are becoming — not who someone decided you were.",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Confidence (p. 80) and Reputation (p. 166)",
-        };
-  }
-
-  // --- WAITING / STUCK / SLOW PROGRESS ---
-  if (
-        includesAny(q, [
-                "waiting",
-                "still waiting",
-                "taking too long",
-                "not making progress",
-                "stuck",
-                "delayed",
-                "slow",
-                "nothing is happening",
-                "nothing is changing",
-                "when will things change",
-                "feels like forever",
-                "been waiting so long",
-              ])
-      ) {
-        return {
-                emotionalState: "restless, delayed, and frustrated that things are not moving",
-                deeperMeaning:
-                          "You are asking whether waiting means nothing is happening — or whether you have been forgotten.",
-                searchLanes: ["progress", "patience", "diligence", "hope"],
-                headline: "Waiting is not wasted time",
-                insight:
-                          "Wisdom treats waiting as preparation, not punishment. Some of the most important growth is invisible before it becomes visible. The tree forms roots long before it produces fruit. You are not behind — you may be in the most important part of the process.",
-                reflection:
-                          "What is this season forming in you that speed or shortcuts could not?",
-                nextStep:
-                          "Do the faithful work that is in your hands today — even if the outcome is not visible yet.",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Patience (p. 140) and Diligence (p. 72)",
-        };
-  }
-
-  // --- ANGER / FRUSTRATION ---
-  if (
-        includesAny(q, [
-                "angry",
-                "anger",
-                "furious",
-                "frustrated",
-                "fed up",
-                "mad",
-                "rage",
-                "irritated",
-                "can't control my anger",
-                "losing my temper",
-                "so angry",
-                "i'm so mad",
-              ])
-      ) {
-        return {
-                emotionalState: "angry, frustrated, and fighting to hold it together",
-                deeperMeaning:
-                          "Anger is rarely just about the surface issue. Underneath it is usually a wound, an unmet expectation, or something important that feels threatened.",
-                searchLanes: ["anger", "self-control", "peace", "wisdom"],
-                headline: "Wisdom speaks directly to anger",
-                insight:
-                          "Wisdom does not tell you that your anger is wrong — it asks you what your anger is protecting. A slow response and a soft word have more power to change a situation than a fast reaction ever will. You cannot control what others do, but you can control what you do next.",
-                reflection:
-                          "What is your anger really protecting — and is the way you are expressing it getting you closer to what you actually want?",
-                nextStep:
-                          "Before responding, take thirty seconds. Ask yourself: what is the wisest response, not the fastest one?",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Managing Anger (p. 126) and Power of Words (p. 120)",
-        };
-  }
-
-  // --- ANXIETY / FEAR / WORRY ---
-  if (
-        includesAny(q, [
-                "anxiety",
-                "anxious",
-                "afraid",
-                "fear",
-                "scared",
-                "worried",
-                "worry",
-                "panic",
-                "overwhelming fear",
-                "can't stop worrying",
-                "what if",
-                "terrified",
-                "nervous",
-              ])
-      ) {
-        return {
-                emotionalState: "anxious, afraid, and fighting worry about what might happen",
-                deeperMeaning:
-                          "Fear often lives in the gap between what you know and what you cannot control. Anxiety is not weakness — it is a signal that something matters deeply to you.",
-                searchLanes: ["fear", "peace", "trust", "strength"],
-                headline: "Wisdom meets fear with steadiness",
-                insight:
-                          "Wisdom does not promise that nothing will go wrong. It promises that you do not have to face it alone, and that a steady mind is more powerful than a frightened one. Peace is not the absence of trouble — it is the presence of wisdom in the middle of it.",
-                reflection:
-                          "What specifically are you most afraid of — and what would it look like to act wisely in spite of it?",
-                nextStep:
-                          "Name the fear clearly. Then ask: what is the one next step I can take that is wise, regardless of the outcome?",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Overcoming Fear (p. 77) and Confidence (p. 80)",
-        };
+    includesAny(q, [
+      "relationship",
+      "relationship conflict",
+      "conflict",
+      "fight",
+      "argument",
+      "can't get along",
+      "difficult person",
+      "toxic person",
+      "hurt by someone",
+      "betrayed",
+      "trust was broken",
+      "people are draining me",
+      "dealing with someone",
+      "someone hurt me",
+      "feeling used",
+      "being taken advantage of",
+      "broken friendship",
+      "falling out",
+      "people pleaser",
+      "hard to trust",
+      "hard to forgive",
+      "can't forgive",
+      "someone wronged me",
+      "toxic relationship",
+    ])
+  ) {
+    return {
+      emotionalState: "hurt, frustrated, or drained by a difficult relationship",
+      deeperMeaning:
+        "Relationship pain cuts deeply because connection matters deeply. You were made for meaningful relationships — and when they fracture, the wound is real.",
+      searchLanes: ["relationships", "speech", "wisdom", "peace"],
+      headline: "Wisdom gives you power in conflict",
+      insight:
+        "Wisdom does not ask you to absorb every wound in silence. But it does ask you to respond with discernment rather than reaction. Some relationships need boundaries, some need forgiveness, some need both.",
+      reflection: "Are you trying to change this person — or to respond wisely regardless of what they do?",
+      nextStep:
+        "Decide what a wise, not just a hurt, response looks like. Then act from that place.",
+      bookConnection:
+        "Success Secrets of Solomon — Relationships (pp. 130–134) and Conflict Resolution (pp. 138–140)",
+    };
   }
 
   // --- MONEY / FINANCIAL STRESS ---
   if (
-        includesAny(q, [
-                "money",
-                "bills",
-                "debt",
-                "financial",
-                "broke",
-                "can't pay",
-                "struggling financially",
-                "not enough money",
-                "money stress",
-                "financial pressure",
-                "behind on bills",
-                "in debt",
-              ])
-      ) {
-        return {
-                emotionalState: "stressed, pressured, and anxious about money",
-                deeperMeaning:
-                          "Financial pressure does not stay in your bank account — it bleeds into your relationships, your sleep, and your sense of worth. This is real, and wisdom takes it seriously.",
-                searchLanes: ["money", "discipline", "wisdom", "stewardship"],
-                headline: "Wisdom has a lot to say about money",
-                insight:
-                          "Wisdom does not ignore financial reality. It addresses it with discipline, clear thinking, and long-term perspective. The way out of financial pressure is almost never one big move — it is usually a series of disciplined small ones, made with a clear head instead of a panicked one.",
-                reflection:
-                          "Where is fear driving your financial decisions instead of wisdom?",
-                nextStep:
-                          "Write down your actual situation clearly — without exaggerating or minimizing. Clarity is the first tool wisdom uses.",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Money & Wealth (p. 88) and Stewardship (p. 92)",
-        };
+    includesAny(q, [
+      "money",
+      "financial",
+      "finances",
+      "broke",
+      "debt",
+      "in debt",
+      "bills",
+      "can't pay bills",
+      "can't afford",
+      "struggling financially",
+      "money stress",
+      "worried about money",
+      "financial pressure",
+      "not enough money",
+      "living paycheck to paycheck",
+      "poor",
+      "wealth",
+      "spending too much",
+      "overspending",
+      "need more money",
+      "financial freedom",
+      "get out of debt",
+      "money problems",
+      "financial anxiety",
+    ])
+  ) {
+    return {
+      emotionalState: "stressed, pressured, or anxious about your finances",
+      deeperMeaning:
+        "Money pressure rarely stays in the bank account. It seeps into your sleep, your relationships, and your sense of worth. Wisdom does not ignore the practical — it speaks to it directly.",
+      searchLanes: ["money", "stewardship", "diligence", "wisdom", "planning"],
+      headline: "Solomon had a lot to say about money",
+      insight:
+        "Financial wisdom is not about having more — it is about managing what you have with intention. Diligence and stewardship are the foundations of financial stability, not luck or income alone.",
+      reflection:
+        "Write down your actual situation clearly — without exaggerating or minimizing. What does wisdom say about the first honest step?",
+      nextStep:
+        "Address the most urgent financial issue first. Wisdom handles one thing at a time.",
+      bookConnection:
+        "Success Secrets of Solomon — Money & Wealth (pp. 88–92) and Stewardship (pp. 92–96)",
+    };
   }
 
-  // --- RELATIONSHIP CONFLICT ---
+  // --- WISDOM / GUIDANCE / DECISION MAKING ---
   if (
-        includesAny(q, [
-                "relationship",
-                "relationship conflict",
-                "conflict",
-                "fight",
-                "argument",
-                "can't get along",
-                "difficult person",
-                "toxic person",
-                "hurt by someone",
-                "betrayed",
-                "trust was broken",
-                "people are draining me",
-                "dealing with someone",
-              ])
-      ) {
-        return {
-                emotionalState: "hurt, frustrated, or drained by a difficult relationship",
-                deeperMeaning:
-                          "Relationship pain cuts deeply because connection matters deeply. Whether it is conflict, betrayal, or just a hard person — wisdom gives you tools that force does not.",
-                searchLanes: ["relationships", "speech", "wisdom", "peace"],
-                headline: "Wisdom gives you power in conflict",
-                insight:
-                          "You cannot control the other person. But wisdom gives you something more powerful — the ability to control your own words, your own response, and your own next move. A soft answer, well-timed, can do what an argument never could.",
-                reflection:
-                          "In this relationship, are you responding to what is actually happening — or to what you fear might happen?",
-                nextStep:
-                          "Choose the wisest response, not the most satisfying one. They are rarely the same thing.",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Relationships (p. 130) and Conflict Resolution (p. 138)",
-        };
+    includesAny(q, [
+      "wisdom",
+      "guidance",
+      "need advice",
+      "what should i do",
+      "don't know what to do",
+      "confused",
+      "need direction",
+      "seeking wisdom",
+      "need clarity",
+      "making a decision",
+      "big decision",
+      "hard decision",
+      "life decision",
+      "which path",
+      "which choice",
+      "help me decide",
+      "can't decide",
+      "torn between",
+      "not sure what to do",
+      "seeking guidance",
+      "need counsel",
+    ])
+  ) {
+    return {
+      emotionalState: "seeking clarity, direction, or counsel for a difficult decision",
+      deeperMeaning:
+        "You are not just looking for an answer. You are looking for a trustworthy voice that will tell you the truth.",
+      searchLanes: ["wisdom", "guidance", "counsel", "decision", "clarity"],
+      headline: "You came to the right place",
+      insight:
+        "Wisdom is the principle thing — and getting it is the beginning of all good outcomes. Solomon says wisdom is available to anyone who sincerely seeks it. The question is not whether wisdom is accessible, but whether you are willing to follow it.",
+      reflection: "What decision have you been delaying? What is wisdom already telling you?",
+      nextStep:
+        "Seek counsel from someone wiser than you. Then compare what they say against what wisdom confirms internally.",
+      bookConnection:
+        "Success Secrets of Solomon — Wisdom (pp. 1–10) and Seeking Counsel (pp. 42–46)",
+    };
   }
 
-  // --- LONELINESS / ISOLATION ---
+  // --- PRIDE / HUMILITY ---
   if (
-        includesAny(q, [
-                "lonely",
-                "alone",
-                "isolated",
-                "no one understands",
-                "nobody cares",
-                "feel invisible",
-                "no real friends",
-                "left out",
-                "abandoned",
-                "by myself",
-                "no community",
-              ])
-      ) {
-        return {
-                emotionalState: "lonely, unseen, and longing for real connection",
-                deeperMeaning:
-                          "Loneliness is not just a social problem — it is a spiritual one. You were not designed to carry your life alone. The ache you feel is pointing you toward something real.",
-                searchLanes: ["loneliness", "friendship", "encouragement", "community"],
-                headline: "You were not meant to do this alone",
-                insight:
-                          "Wisdom values loyal friendship as one of the highest goods. The people near you shape your future. You may need to be the one who reaches — but reaching is not weakness. It is wisdom.",
-                reflection:
-                          "Is there one person in your life who could be a safe, steady presence — and have you actually let them in?",
-                nextStep:
-                          "Reach out to one person this week — not with a long explanation, just a genuine connection. Start there.",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Friendship (p. 134) and Mentorship (p. 158)",
-        };
+    includesAny(q, [
+      "pride",
+      "prideful",
+      "arrogant",
+      "humble",
+      "humility",
+      "too proud",
+      "hard to apologize",
+      "hard to admit i'm wrong",
+      "ego",
+      "think i'm always right",
+      "no one listens to me",
+      "i know better",
+      "stubborn",
+      "won't back down",
+      "i was wrong",
+      "need to be humble",
+      "learned humility",
+    ])
+  ) {
+    return {
+      emotionalState: "wrestling with pride, ego, or the difficulty of humility",
+      deeperMeaning:
+        "Pride rarely shows up as obvious arrogance. Often it hides in the difficulty of saying 'I was wrong,' 'I need help,' or 'you were right.'",
+      searchLanes: ["humility", "pride", "wisdom", "character"],
+      headline: "Wisdom and pride cannot occupy the same space",
+      insight:
+        "Solomon is direct: pride goes before a fall, and a haughty spirit before destruction. Humility is not weakness — it is the posture that allows wisdom to enter and favor to flow.",
+      reflection: "Where is pride currently costing you a relationship, an opportunity, or peace?",
+      nextStep:
+        "Do the humble thing you have been avoiding. The relief on the other side is real.",
+      bookConnection:
+        "Success Secrets of Solomon — Pride vs Humility (pp. 106–114)",
+    };
   }
 
-  // --- WORKPLACE / BOSS / COWORKER ---
+  // --- STRESS / OVERWHELM ---
   if (
-        includesAny(q, [
-                "boss",
-                "coworker",
-                "manager",
-                "work environment",
-                "toxic workplace",
-                "job",
-                "fired",
-                "laid off",
-                "work stress",
-                "difficult boss",
-                "unfair at work",
-                "workplace",
-              ])
-      ) {
-        return {
-                emotionalState: "frustrated, undervalued, or stressed in your work environment",
-                deeperMeaning:
-                          "Work is where wisdom gets tested most practically. How you respond to unfair, difficult, or toxic situations at work reveals — and builds — your actual character.",
-                searchLanes: ["work", "wisdom", "self-control", "leadership"],
-                headline: "Wisdom gives you an edge at work",
-                insight:
-                          "You may not be able to change your environment immediately. But you can control your response, your reputation, and the quality of your work. Wisdom says that consistent excellence and measured speech are more powerful over time than any reaction you could make today.",
-                reflection:
-                          "What response in this situation would you be proud of in six months — regardless of what the other person does?",
-                nextStep:
-                          "Focus on what is in your control: your work quality, your words, and your character. Those are the things no one can take from you.",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Work Ethic (p. 96) and Leadership (p. 42)",
-        };
-  }
-
-  // --- CONFIDENCE / INSECURITY ---
-  if (
-        includesAny(q, [
-                "confidence",
-                "insecure",
-                "self doubt",
-                "don't believe in myself",
-                "not confident",
-                "feel weak",
-                "low self esteem",
-                "don't feel good enough",
-                "imposter",
-                "second-guessing myself",
-              ])
-      ) {
-        return {
-                emotionalState: "struggling with confidence and doubting yourself",
-                deeperMeaning:
-                          "Self-doubt is not the same as humility. True confidence is not arrogance — it is doing the right thing with your shoulders back, even when you are unsure of the outcome.",
-                searchLanes: ["confidence", "identity", "strength", "wisdom"],
-                headline: "Wisdom-based confidence does not depend on feelings",
-                insight:
-                          "Confidence that comes from wisdom is different from confidence that comes from hype. It is quieter, steadier, and harder to shake. You do not need to feel confident before you act wisely — you just need to act wisely. The confidence follows.",
-                reflection:
-                          "Where are you waiting to feel ready before you move — and what would it look like to move wisely anyway?",
-                nextStep:
-                          "Do one thing today that requires courage — not perfection. Start moving and let the confidence grow as you go.",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Confidence (p. 80) and Character (p. 162)",
-        };
-  }
-
-  // --- GRIEF / LOSS ---
-  if (
-        includesAny(q, [
-                "grief",
-                "grieving",
-                "loss",
-                "lost someone",
-                "someone died",
-                "death",
-                "mourning",
-                "heartbroken",
-                "heartbreak",
-                "broken heart",
-                "can't get over it",
-                "still hurting",
-              ])
-      ) {
-        return {
-                emotionalState: "grieving, heartbroken, and carrying real pain",
-                deeperMeaning:
-                          "Grief is not a problem to be solved — it is love with nowhere to go. Wisdom does not rush you through it. It walks with you inside it.",
-                searchLanes: ["healing", "comfort", "hope", "strength"],
-                headline: "Wisdom does not dismiss your pain",
-                insight:
-                          "A crushed spirit is real, and it must be handled with tenderness. You do not have to perform strength right now. Wisdom makes room for honest pain — and it also holds a quiet promise that healing is still possible, even when it feels far away.",
-                reflection:
-                          "What do you need most right now — permission to grieve, or the courage to take one small step toward healing?",
-                nextStep:
-                          "Give yourself grace today. Let one trusted person in. You were not designed to carry this alone.",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Character (p. 162) and Patience (p. 140)",
-        };
-  }
-
-  // --- PRIDE / HUMILITY / FAILURE ---
-  if (
-        includesAny(q, [
-                "failure",
-                "failed",
-                "i failed",
-                "made a mistake",
-                "bad decision",
-                "messed up",
-                "regret",
-                "ashamed",
-                "embarrassed",
-                "too proud",
-                "humbled",
-                "knocked down",
-              ])
-      ) {
-        return {
-                emotionalState: "dealing with failure, regret, or a hard lesson",
-                deeperMeaning:
-                          "Failure is one of wisdom's most effective teachers — but only if you let it teach you instead of define you. The question is not whether you fell. It is what you do next.",
-                searchLanes: ["humility", "resilience", "wisdom", "direction"],
-                headline: "Falling is not the end — staying down is",
-                insight:
-                          "Wisdom does not say you will never fall. It says you can rise again. The person who learns from a hard fall and moves forward with greater wisdom is stronger than someone who never fell at all. Shame wants to keep you down. Wisdom says get up.",
-                reflection:
-                          "What is the one honest lesson this failure or mistake is trying to teach you?",
-                nextStep:
-                          "Acknowledge what happened clearly, without excuses. Then ask: what does wisdom say I should do next?",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Pride vs Humility (p. 106) and Character (p. 162)",
-        };
-  }
-
-  // --- SUCCESS / GOALS / AMBITION ---
-  if (
-        includesAny(q, [
-                "success",
-                "goals",
-                "achieve",
-                "how do i succeed",
-                "want to be successful",
-                "build something",
-                "make it",
-                "ambition",
-                "reach my goals",
-                "level up",
-                "get to the next level",
-              ])
-      ) {
-        return {
-                emotionalState: "motivated, ambitious, and ready to build something",
-                deeperMeaning:
-                          "Ambition is not wrong — it is powerful. The question wisdom asks is whether your ambition is rooted in character, or just in achievement.",
-                searchLanes: ["success", "discipline", "wisdom", "diligence"],
-                headline: "Wisdom-built success lasts",
-                insight:
-                          "Most lasting success is not dramatic. It comes through repeated discipline, small consistent choices, and the kind of integrity that protects what you build. Wisdom says: do not chase success — build the person who success naturally follows.",
-                reflection:
-                          "Are you building success, or building the character that produces it? There is a difference.",
-                nextStep:
-                          "Identify the one habit or discipline that, if you practiced it consistently for six months, would change your trajectory.",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Success Principles (p. 170) and Discipline (p. 54)",
-        };
+    includesAny(q, [
+      "overwhelmed",
+      "stressed",
+      "stress",
+      "too much",
+      "too much on my plate",
+      "can't handle it",
+      "juggling too much",
+      "overloaded",
+      "pressure",
+      "under pressure",
+      "can't breathe",
+      "drowning",
+      "buried",
+      "can't keep up",
+      "everything at once",
+      "falling apart",
+      "stretched too thin",
+      "maxed out",
+      "no margin",
+      "no rest",
+      "can't sleep",
+      "insomnia",
+      "mind won't stop",
+      "racing thoughts",
+    ])
+  ) {
+    return {
+      emotionalState: "overwhelmed, overstretched, and carrying too much at once",
+      deeperMeaning:
+        "Overwhelm often comes from carrying too much mentally without releasing pressure. You may be saying yes to everything and yes to nothing that truly matters.",
+      searchLanes: ["peace", "rest", "wisdom", "focus", "strength"],
+      headline: "Wisdom helps you carry only what is yours",
+      insight:
+        "Not every burden on your plate was given to you by God. Some were volunteered. Wisdom helps you discern the difference between responsibility and overload — and gives you permission to set some things down.",
+      reflection: "What on your list could be removed, delegated, or delayed without real consequence?",
+      nextStep:
+        "Write everything you are carrying. Circle the top three that matter most. Let wisdom guide the rest.",
+      bookConnection:
+        "Success Secrets of Solomon — Focus (pp. 144–146) and Patience (pp. 140–142)",
+    };
   }
 
   // --- LEADERSHIP / INFLUENCE ---
   if (
-        includesAny(q, [
-                "leadership",
-                "lead",
-                "leading",
-                "influence",
-                "how to lead",
-                "become a leader",
-                "my team",
-                "managing people",
-                "lead well",
-                "earn respect",
-              ])
-      ) {
-        return {
-                emotionalState: "stepping into leadership and looking for wisdom on how to lead well",
-                deeperMeaning:
-                          "Leadership is not about title or authority. It is about influence — and influence is built on character, wisdom, and the trust you earn over time.",
-                searchLanes: ["leadership", "wisdom", "integrity", "counsel"],
-                headline: "True leadership starts within",
-                insight:
-                          "Wisdom says that the leader who seeks counsel, speaks carefully, and acts with integrity will outlast and outperform the one who leads by force or volume. You lead best when you lead yourself first.",
-                reflection:
-                          "Are the people you lead growing because of your leadership — or just complying because of your position?",
-                nextStep:
-                          "Identify one area where your leadership needs to grow — then seek one wise voice who can speak honestly into it.",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Leadership (p. 42) and Influence (p. 154)",
-        };
+    includesAny(q, [
+      "leadership",
+      "leader",
+      "lead",
+      "leading",
+      "influence",
+      "how to lead",
+      "management",
+      "managing people",
+      "team",
+      "authority",
+      "being in charge",
+      "people don't respect me",
+      "losing respect",
+      "earn respect",
+      "how to get respect",
+      "can't lead",
+      "struggling to lead",
+      "leadership skills",
+      "become a leader",
+      "want to lead",
+    ])
+  ) {
+    return {
+      emotionalState: "carrying the weight and responsibility of leading others",
+      deeperMeaning:
+        "Leadership is not a title — it is the responsibility of influence. And influence multiplies whatever wisdom or foolishness lives in the leader.",
+      searchLanes: ["leadership", "wisdom", "influence", "integrity", "counsel"],
+      headline: "Solomon was the greatest leadership teacher of his era",
+      insight:
+        "True leadership starts from the inside out. Before you can lead people effectively, wisdom must govern your own decisions. Those who lead with integrity attract trust; those who lead with ego eventually lose it.",
+      reflection: "Are you leading from strength and wisdom — or from insecurity and control?",
+      nextStep:
+        "Identify the one area of your leadership that needs the most honesty. Address it first.",
+      bookConnection:
+        "Success Secrets of Solomon — Leadership (pp. 42–46) and Integrity (pp. 66–70)",
+    };
   }
 
-  // --- OVERWHELMED / TOO MUCH ---
+  // --- DISCIPLINE / LAZINESS / PROCRASTINATION ---
   if (
-        includesAny(q, [
-                "overwhelmed",
-                "too much",
-                "too many things",
-                "can't handle it",
-                "spinning plates",
-                "drowning",
-                "buried",
-                "pressure is too much",
-                "stretched too thin",
-                "no margin",
-              ])
-      ) {
-        return {
-                emotionalState: "overwhelmed, stretched too thin, and carrying more than you can hold",
-                deeperMeaning:
-                          "Overwhelm often comes from carrying too much mentally without releasing pressure — and sometimes from saying yes to too many things without discernment.",
-                searchLanes: ["peace", "wisdom", "discipline", "strength"],
-                headline: "Wisdom brings order to chaos",
-                insight:
-                          "You cannot do everything well at once. Wisdom requires ruthless clarity about what actually matters. Peace is not the absence of activity — it is the presence of order. You may need to eliminate before you can accelerate.",
-                reflection:
-                          "What are you carrying right now that wisdom would tell you to put down or delegate?",
-                nextStep:
-                          "Write down everything you are carrying. Circle the three that matter most. Let wisdom guide what happens to the rest.",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Focus (p. 144) and Planning (p. 102)",
-        };
+    includesAny(q, [
+      "discipline",
+      "lazy",
+      "laziness",
+      "procrastinating",
+      "procrastination",
+      "can't stay focused",
+      "no motivation",
+      "lack of discipline",
+      "unmotivated",
+      "keep putting it off",
+      "can't get started",
+      "distracted",
+      "wasting time",
+      "not productive",
+      "lack of consistency",
+      "can't stick to it",
+      "no follow through",
+      "give up too easily",
+      "need more self-control",
+      "no willpower",
+      "bad habits",
+    ])
+  ) {
+    return {
+      emotionalState: "frustrated with your own lack of discipline or follow-through",
+      deeperMeaning:
+        "You are not just dealing with laziness. You are dealing with the gap between who you want to be and who you are showing up as daily. That gap is painful.",
+      searchLanes: ["discipline", "diligence", "work", "focus", "success"],
+      headline: "Discipline is the path wisdom walks on",
+      insight:
+        "Solomon writes with intensity about the sluggard — the person who wants the harvest but avoids the work. Discipline is not punishment; it is the structure that allows your potential to become reality.",
+      reflection: "What one habit, if built consistently, would change the most about your life?",
+      nextStep:
+        "Start smaller than you think you need to. Consistency with something small beats intensity with something unsustainable.",
+      bookConnection:
+        "Success Secrets of Solomon — Discipline (pp. 54–58) and Work Ethic (pp. 96–100)",
+    };
   }
 
-  // --- FORGIVENESS / BITTERNESS ---
+  // --- SUCCESS / AMBITION / GOALS ---
   if (
-        includesAny(q, [
-                "forgiveness",
-                "forgive",
-                "can't forgive",
-                "bitterness",
-                "bitter",
-                "resentment",
-                "holding a grudge",
-                "still angry at them",
-                "hurt by",
-                "they hurt me",
-                "won't let it go",
-              ])
-      ) {
-        return {
-                emotionalState: "struggling with bitterness, hurt, or the cost of forgiveness",
-                deeperMeaning:
-                          "Unforgiveness feels like power, but it works against the person holding it. Wisdom does not ask you to excuse what was done — it asks you to choose freedom over bitterness.",
-                searchLanes: ["forgiveness", "healing", "peace", "wisdom"],
-                headline: "Forgiveness is a wisdom issue, not just an emotional one",
-                insight:
-                          "Bitterness is a weight that only you carry. The other person may have moved on completely — while you are still paying the price. Wisdom says: release this, not for their sake, but for yours. Forgiveness does not mean trust is restored. It means you are no longer anchored to what they did.",
-                reflection:
-                          "What would your life look and feel like if you were no longer carrying the weight of this?",
-                nextStep:
-                          "Name the offense honestly. Then make a decision — not a feeling — to release it. Feelings follow decisions over time.",
-                bookConnection:
-                          "Success Secrets of Solomon — Chapter on Conflict Resolution (p. 138) and Character (p. 162)",
-        };
+    includesAny(q, [
+      "success",
+      "successful",
+      "want to succeed",
+      "how to be successful",
+      "achieve my goals",
+      "reach my goals",
+      "ambition",
+      "ambitious",
+      "level up",
+      "grow",
+      "get ahead",
+      "make it",
+      "reach my potential",
+      "fulfill my potential",
+      "become great",
+      "be great",
+      "want more",
+      "bigger future",
+      "build something",
+      "accomplish something",
+    ])
+  ) {
+    return {
+      emotionalState: "driven, ambitious, and hungry to build something meaningful",
+      deeperMeaning:
+        "Ambition is not the enemy of wisdom — but ambition without wisdom is a fast car with no steering wheel.",
+      searchLanes: ["success", "diligence", "wisdom", "planning", "integrity"],
+      headline: "Solomon built an empire — here is what he learned",
+      insight:
+        "Success built on wisdom lasts. Success built on shortcuts, ego, or compromise eventually collapses. Solomon's secrets are not about working harder — they are about working with clarity, integrity, and divine alignment.",
+      reflection: "Is your pursuit of success built on wisdom — or are you cutting corners you hope no one notices?",
+      nextStep:
+        "Define what real success looks like for you — not society's version. Then evaluate your current path against it.",
+      bookConnection:
+        "Success Secrets of Solomon — Success Principles (pp. 170–176) and Diligence (pp. 72–76)",
+    };
   }
 
-  // --- DEFAULT / GENERAL WISDOM ---
-  return {
-        emotionalState: "seeking wisdom for what you are facing right now",
-        deeperMeaning:
-                "You may be asking for more than information. You may be looking for a wiser way to see what you are going through.",
-        searchLanes: ["wisdom", "direction", "strength", "hope"],
-        headline: "Wisdom meets you where you are",
-        insight:
-                "Whatever you are facing, wisdom starts by slowing the moment down, naming what is really happening, and choosing the next right action — not the fastest, not the easiest, but the wisest.",
-        reflection:
-                "What is the deeper issue underneath the question you just typed?",
-        nextStep:
-                "Take one honest step toward wisdom today, even if the whole path is not clear yet.",
-        bookConnection:
-                "Success Secrets of Solomon — Chapter on Wisdom (p. 1)",
-  };
+  // --- SPEECH / WORDS / TONGUE ---
+  if (
+    includesAny(q, [
+      "words",
+      "speech",
+      "tongue",
+      "said something i regret",
+      "can't control my mouth",
+      "gossip",
+      "talk too much",
+      "say the wrong thing",
+      "what i say",
+      "power of words",
+      "speaking life",
+      "negative talk",
+      "negative words",
+      "words hurt",
+      "what i said",
+      "i said something",
+      "sharp tongue",
+      "sarcasm",
+      "critical",
+      "harsh words",
+    ])
+  ) {
+    return {
+      emotionalState: "aware that your words have power and sometimes cause damage",
+      deeperMeaning:
+        "Solomon devoted more of Proverbs to speech than to almost any other topic. Words are not neutral — they build lives or erode them.",
+      searchLanes: ["speech", "wisdom", "relationships", "character"],
+      headline: "Life and death are in the power of the tongue",
+      insight:
+        "Wisdom teaches that the person who guards their mouth guards their life. You cannot unsay a word — but you can choose the next word wisely. The tongue reveals what the heart contains.",
+      reflection: "What would change in your relationships if you spoke more intentionally for 30 days?",
+      nextStep:
+        "Before your next difficult conversation, pause and ask: is this true, is this kind, is this necessary?",
+      bookConnection:
+        "Success Secrets of Solomon — Power of Words (pp. 120–124)",
+    };
+  }
+
+  // --- INTEGRITY / CHARACTER / HONESTY ---
+  if (
+    includesAny(q, [
+      "integrity",
+      "honest",
+      "honesty",
+      "character",
+      "tempted to lie",
+      "telling the truth",
+      "ethical",
+      "ethics",
+      "doing the right thing",
+      "compromise",
+      "shortcuts",
+      "taking shortcuts",
+      "cutting corners",
+      "being fake",
+      "wearing a mask",
+      "two-faced",
+      "reputation",
+      "what people think of me",
+      "trust",
+      "trustworthy",
+      "moral",
+    ])
+  ) {
+    return {
+      emotionalState: "wrestling with the tension between who you appear to be and who you truly are",
+      deeperMeaning:
+        "Integrity is the alignment between your private choices and your public image. When those two things are out of sync, you carry a weight that no success can lift.",
+      searchLanes: ["integrity", "character", "wisdom", "reputation"],
+      headline: "A good name is more valuable than riches",
+      insight:
+        "Solomon is clear: integrity protects you. It may cost you short-term — a deal, a friendship, a shortcut — but it builds something no one can take from you. Character is the foundation everything else rests on.",
+      reflection: "Is there anywhere in your life where your private choices contradict your public values?",
+      nextStep:
+        "Close the gap between who you are privately and who you want to be publicly. Start with one honest act today.",
+      bookConnection:
+        "Success Secrets of Solomon — Integrity (pp. 66–70) and Character (pp. 162–166)",
+    };
+  }
+
+  // --- CONFIDENCE / SELF DOUBT ---
+  if (
+    includesAny(q, [
+      "confidence",
+      "self-confidence",
+      "self doubt",
+      "doubt myself",
+      "insecure",
+      "insecurity",
+      "not good enough",
+      "feel worthless",
+      "low self esteem",
+      "self esteem",
+      "imposter syndrome",
+      "feel like a fraud",
+      "don't believe in myself",
+      "can't do it",
+      "not smart enough",
+      "not talented enough",
+      "who am i to",
+      "i'm not qualified",
+      "afraid of what people think",
+      "need validation",
+      "feel invisible",
+    ])
+  ) {
+    return {
+      emotionalState: "struggling with self-doubt and a shaky sense of your own worth",
+      deeperMeaning:
+        "Self-doubt is rarely about facts — it is about the story running beneath the facts. Wisdom challenges that story with a different truth.",
+      searchLanes: ["confidence", "wisdom", "identity", "courage", "strength"],
+      headline: "Confidence begins internally — Solomon knew this",
+      insight:
+        "Confidence is not something you wait to receive from the world. It grows from wisdom, from repeated faithful action, and from knowing who made you and why. You do not need to feel confident before you act — you act, and confidence follows.",
+      reflection: "Whose voice are you believing about yourself — and is that voice aligned with wisdom?",
+      nextStep:
+        "Do one thing today that the confident version of you would do. Act from who you are becoming, not who you fear you are.",
+      bookConnection:
+        "Success Secrets of Solomon — Confidence (pp. 80–82) and Character (pp. 162–166)",
+    };
+  }
+
+  // --- HOPE / FUTURE / WAITING ---
+  if (
+    includesAny(q, [
+      "hope",
+      "hopeful",
+      "future",
+      "waiting",
+      "waiting on god",
+      "waiting for something",
+      "patience",
+      "things will get better",
+      "better days",
+      "trust the process",
+      "not giving up",
+      "keep going",
+      "hold on",
+      "don't lose hope",
+      "praying for a breakthrough",
+      "breakthrough",
+      "season of waiting",
+      "feels like nothing is moving",
+      "trust god",
+    ])
+  ) {
+    return {
+      emotionalState: "holding on to hope while things feel slow or uncertain",
+      deeperMeaning:
+        "Waiting is not the same as being forgotten. The season between the promise and the fulfillment is where character is built.",
+      searchLanes: ["hope", "patience", "faith", "trust", "encouragement"],
+      headline: "Wisdom was built for seasons of waiting",
+      insight:
+        "Solomon describes hope as a tree of life. Waiting with wisdom is not passive — it is purposeful. It is preparation meeting patience. The breakthrough you are waiting for is being preceded by the growth you are currently in.",
+      reflection: "What is this waiting season developing in you that success alone could not?",
+      nextStep:
+        "Trust the process by continuing the last thing wisdom told you to do — before you saw results.",
+      bookConnection:
+        "Success Secrets of Solomon — Patience (pp. 140–142) and Purpose (pp. 146–150)",
+    };
+  }
+
+  // --- WORK / CAREER / JOB ---
+  if (
+    includesAny(q, [
+      "work",
+      "job",
+      "career",
+      "workplace",
+      "boss",
+      "coworker",
+      "fired",
+      "laid off",
+      "unemployed",
+      "job loss",
+      "lost my job",
+      "looking for work",
+      "job search",
+      "hate my job",
+      "career change",
+      "new career",
+      "career path",
+      "work stress",
+      "work life balance",
+      "overworked",
+      "underpaid",
+      "undervalued at work",
+      "promotion",
+      "passed over for promotion",
+    ])
+  ) {
+    return {
+      emotionalState: "navigating challenge, frustration, or uncertainty in your work life",
+      deeperMeaning:
+        "Work is not just how you earn money — it is how you exercise the gifts and capacities you were built with. When work is broken, something deeper feels broken too.",
+      searchLanes: ["work", "diligence", "wisdom", "purpose", "planning"],
+      headline: "Solomon understood the dignity of work",
+      insight:
+        "Wisdom says that diligent work leads to abundance, but scattered effort produces nothing. Whether you are losing a job, grinding in one you hate, or trying to find your path — wisdom calls you to show up with excellence in this moment, not just the next one.",
+      reflection: "Are you giving your current work your best — or are you saving your best for something that isn't here yet?",
+      nextStep:
+        "Do excellent work today, regardless of whether you plan to stay. Wisdom seen in small things opens the door to greater things.",
+      bookConnection:
+        "Success Secrets of Solomon — Work Ethic (pp. 96–100) and Diligence (pp. 72–76)",
+    };
+  }
+
+  // --- PLANNING / DECISIONS / PREPARATION ---
+  if (
+    includesAny(q, [
+      "planning",
+      "plan",
+      "prepare",
+      "preparation",
+      "getting ready",
+      "strategy",
+      "strategic",
+      "think ahead",
+      "future planning",
+      "life plan",
+      "business plan",
+      "goal setting",
+      "goals",
+      "setting goals",
+      "how to plan",
+      "organize my life",
+      "get organized",
+      "next steps",
+      "roadmap",
+    ])
+  ) {
+    return {
+      emotionalState: "wanting to be more strategic, prepared, and intentional",
+      deeperMeaning:
+        "Planning is an act of faith — it says you believe your future is worth preparing for. Wisdom gives planning both direction and humility.",
+      searchLanes: ["planning", "wisdom", "counsel", "diligence", "purpose"],
+      headline: "Wisdom plans. Foolishness drifts.",
+      insight:
+        "Solomon says plans succeed when they are bathed in wise counsel and aligned with truth. A good plan does not eliminate uncertainty — it gives you a framework to respond to uncertainty wisely.",
+      reflection: "What area of your life has been running on reaction rather than intention?",
+      nextStep:
+        "Write a clear, one-paragraph description of what you want in 12 months. Then work backward to today.",
+      bookConnection:
+        "Success Secrets of Solomon — Planning (pp. 102–104) and Seeking Counsel (pp. 42–46)",
+    };
+  }
+
+  // --- FORGIVENESS / LETTING GO ---
+  if (
+    includesAny(q, [
+      "forgiveness",
+      "forgive",
+      "can't forgive",
+      "won't forgive",
+      "holding a grudge",
+      "grudge",
+      "letting go",
+      "can't let it go",
+      "still angry about",
+      "can't move on",
+      "bitterness",
+      "bitter",
+      "resentment",
+      "resentful",
+      "never forgetting",
+      "they don't deserve forgiveness",
+      "hurt too deep",
+      "how do i forgive",
+      "move past it",
+    ])
+  ) {
+    return {
+      emotionalState: "carrying a wound and wrestling with whether to forgive",
+      deeperMeaning:
+        "Unforgiveness is one of the heaviest weights a person can carry. It rarely hurts the other person — it mostly poisons the one holding it.",
+      searchLanes: ["forgiveness", "peace", "healing", "wisdom", "relationships"],
+      headline: "Wisdom knows the cost of bitterness",
+      insight:
+        "Forgiveness is not saying what happened was okay. It is releasing yourself from the prison of carrying it forever. Solomon understood that a wise person overlooks offenses — not out of weakness, but because peace is more valuable than being right.",
+      reflection: "Who or what are you carrying that is costing you more than it costs them?",
+      nextStep:
+        "Forgiveness starts as a decision, not a feeling. Make the decision. The feelings will follow.",
+      bookConnection:
+        "Success Secrets of Solomon — Conflict Resolution (pp. 138–140) and Character (pp. 162–166)",
+    };
+  }
+
+  // --- IDENTITY / WHO AM I ---
+  if (
+    includesAny(q, [
+      "who am i",
+      "identity",
+      "don't know who i am",
+      "lost my identity",
+      "feel like a different person",
+      "not myself",
+      "don't recognize myself",
+      "feel like i'm becoming someone i'm not",
+      "who have i become",
+      "define myself",
+      "what defines me",
+      "my true self",
+      "authentic",
+      "authenticity",
+      "living someone else's life",
+      "people pleasing",
+      "pleasing everyone",
+    ])
+  ) {
+    return {
+      emotionalState: "uncertain about who you are, what defines you, or who you are becoming",
+      deeperMeaning:
+        "Identity confusion is rarely a philosophical problem — it is usually the result of living too long for other people's expectations.",
+      searchLanes: ["identity", "wisdom", "character", "purpose", "confidence"],
+      headline: "Wisdom knows who made you — and why",
+      insight:
+        "Your identity is not found in your achievements, your roles, or other people's opinions of you. Solomon anchored identity in the fear of the Lord — a deep reverence that aligns you with truth and frees you from performance.",
+      reflection: "Which parts of your current life reflect who you truly are — and which parts are for someone else's approval?",
+      nextStep:
+        "Do one thing today that comes from your truest self, not from what you think is expected of you.",
+      bookConnection:
+        "Success Secrets of Solomon — Character (pp. 162–166) and Confidence (pp. 80–82)",
+    };
+  }
+
+  // --- SPIRITUAL / FAITH / SEEKING GOD ---
+  if (
+    includesAny(q, [
+      "faith",
+      "god",
+      "spiritual",
+      "spirituality",
+      "prayer",
+      "praying",
+      "seeking god",
+      "feel far from god",
+      "doubt my faith",
+      "questioning god",
+      "where is god",
+      "god feels distant",
+      "why did god allow",
+      "trust god",
+      "hear from god",
+      "what does god want",
+      "will of god",
+      "bible",
+      "scripture",
+      "proverbs",
+    ])
+  ) {
+    return {
+      emotionalState: "seeking spiritual depth, clarity, or closeness with God",
+      deeperMeaning:
+        "The search for God is never a detour from real life — it is the most direct path through it. Wisdom begins where the fear of the Lord begins.",
+      searchLanes: ["faith", "wisdom", "trust", "guidance", "hope"],
+      headline: "The fear of the Lord is the beginning of wisdom",
+      insight:
+        "Solomon, with all his wealth, wisdom, and power, concluded that a life without reverence for God is empty. Not because God needs your attention — but because you were designed to operate best in alignment with Him.",
+      reflection: "What would your life look like if you genuinely invited wisdom into every decision?",
+      nextStep:
+        "Spend five minutes in silence today. Ask for wisdom — Solomon says God gives it generously to those who ask.",
+      bookConnection:
+        "Success Secrets of Solomon — Wisdom (pp. 1–10) and Purpose (pp. 146–150)",
+    };
+  }
+
+  return null;
 }
