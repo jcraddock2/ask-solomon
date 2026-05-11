@@ -258,6 +258,7 @@ function PageInner() {
 
   const [shareTemplate, setShareTemplate] =
     useState<ShareTemplate>("gradientModern");
+  const [wisdomCard, setWisdomCard] = useState<WisdomResponse | null>(null);
 
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
@@ -377,6 +378,11 @@ function PageInner() {
       setIsPro(false);
     }
   }, []);
+
+  // Update wisdom response whenever q changes
+  useEffect(() => {
+    setWisdomCard(q.trim() ? getWisdomResponse(q) : null);
+  }, [q]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -1571,6 +1577,55 @@ const applySituation = (situationQuery: string) => {
     </div>
   </div>
 )}
+
+            {wisdomCard && (
+              <div
+                style={{
+                  marginBottom: 20,
+                  padding: "20px 22px",
+                  borderRadius: 18,
+                  background: "linear-gradient(135deg, rgba(99,102,241,0.07) 0%, rgba(16,185,129,0.06) 100%)",
+                  border: "1px solid rgba(99,102,241,0.18)",
+                  boxShadow: "0 4px 18px rgba(99,102,241,0.08)",
+                }}
+              >
+                <div style={{ fontSize: 11, fontWeight: 900, letterSpacing: 0.8, color: "#6366f1", textTransform: "uppercase", marginBottom: 10 }}>
+                  What wisdom hears
+                </div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#1e1b4b", marginBottom: 8 }}>
+                  {wisdomCard.headline}
+                </div>
+                <div style={{ fontSize: 13, color: "#374151", marginBottom: 12, lineHeight: 1.6 }}>
+                  <span style={{ fontWeight: 700, color: "#4338ca" }}>What I hear: </span>
+                  {wisdomCard.emotionalState}
+                </div>
+                <div style={{ fontSize: 14, color: "#1f2937", marginBottom: 12, lineHeight: 1.7, fontStyle: "italic" }}>
+                  {wisdomCard.insight}
+                </div>
+                <div style={{ fontSize: 13, color: "#374151", marginBottom: 10, lineHeight: 1.6 }}>
+                  <span style={{ fontWeight: 700 }}>Reflect: </span>
+                  {wisdomCard.reflection}
+                </div>
+                <div style={{ fontSize: 13, color: "#374151", marginBottom: wisdomCard.bookConnection ? 12 : 0, lineHeight: 1.6 }}>
+                  <span style={{ fontWeight: 700 }}>One step: </span>
+                  {wisdomCard.nextStep}
+                </div>
+                {wisdomCard.bookConnection && (
+                  <div
+                    style={{
+                      marginTop: 10,
+                      paddingTop: 10,
+                      borderTop: "1px solid rgba(99,102,241,0.15)",
+                      fontSize: 12,
+                      color: "#6366f1",
+                      fontWeight: 700,
+                    }}
+                  >
+                    📖 {wisdomCard.bookConnection}
+                  </div>
+                )}
+              </div>
+            )}
 
 {q.trim().length > 0 && smartExpandedTerms.length > 1 && (
   <div style={{ marginTop: 10 }}>
