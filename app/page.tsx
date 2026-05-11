@@ -1585,20 +1585,38 @@ const applySituation = (situationQuery: string) => {
                   <span style={{ fontWeight: 700 }}>One step: </span>
                   {wisdomCard.nextStep}
                 </div>
-                {wisdomCard.bookConnection && (
-                  <div
-                    style={{
-                      marginTop: 10,
-                      paddingTop: 10,
-                      borderTop: "1px solid rgba(99,102,241,0.15)",
-                      fontSize: 12,
-                      color: "#6366f1",
-                      fontWeight: 700,
-                    }}
-                  >
-                    📖 {wisdomCard.bookConnection}
-                  </div>
-                )}
+{wisdomCard.bookConnection && (
+              <div
+                style={{
+                  marginTop: 14,
+                  paddingTop: 14,
+                  borderTop: "1px solid rgba(99,102,241,0.15)",
+                }}
+              >
+                <div style={{ fontSize: 11, fontWeight: 900, color: "#6366f1", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 }}>
+                  📖 In the Book
+                </div>
+                <div style={{ fontSize: 13, color: "#374151", marginBottom: 10, lineHeight: 1.5 }}>
+                  {wisdomCard.bookConnection}
+                </div>
+                <a
+                  href="/book-index"
+                  style={{
+                    display: "inline-block",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: "#6366f1",
+                    background: "rgba(99,102,241,0.08)",
+                    border: "1px solid rgba(99,102,241,0.2)",
+                    borderRadius: 8,
+                    padding: "6px 12px",
+                    textDecoration: "none",
+                  }}
+                >
+                  Explore Topic in Book Index →
+                </a>
+              </div>
+            )}
               </div>
             )}
 
