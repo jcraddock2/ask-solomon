@@ -1545,17 +1545,19 @@ const applySituation = (situationQuery: string) => {
       marginBottom: 16,
       padding: "12px 14px",
       borderRadius: 12,
-      background: "rgba(99,102,241,0.08)",
+      background: wisdomCard ? "rgba(99,102,241,0.12)" : "rgba(99,102,241,0.08)",
       border: "1px solid rgba(99,102,241,0.15)",
       fontSize: 14,
       color: "#4338ca",
     }}
   >
     <div style={{ fontWeight: 800, marginBottom: 4 }}>
-      Wisdom for this moment
+      {wisdomCard ? "What wisdom hears in your search" : "Wisdom for this moment"}
     </div>
     <div style={{ fontWeight: 600 }}>
-      {interpretQueryAdvanced(q).message}
+      {wisdomCard
+        ? `I hear that you\'re feeling ${wisdomCard.emotionalState}.`
+        : interpretQueryAdvanced(q).message}
     </div>
   </div>
 )}
