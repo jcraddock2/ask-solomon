@@ -89,7 +89,7 @@
         - [x] **Add search/filter to `book-index/page.tsx`** — live search input filters 30 topics by label, summary, and chapter in real time ✅ May 11, 2026
 
         ### Medium Impact
-        - [ ] **Add more emotional scenarios** to `wisdomResponse.ts`:
+        - [x] **Add more emotional scenarios** to `wisdomResponse.ts` ✅ May 12, 2026:
           - Job loss / unemployment
             - Betrayal / broken trust
               - Grief / loss of loved one
@@ -150,5 +150,5 @@
 
                       ---
 
-                      *Last updated: May 11, 2026 — High-impact tasks complete. wisdomResponse.ts now 961 lines / 21 scenarios. book-index has live search.*
+                      *Last updated: May 12, 2026 — wisdomResponse.ts now 1285 lines / 28 scenarios. 7 new emotional scenarios added (job loss, betrayal, grief, parenting, marriage, debt, addiction).
                       
