@@ -957,5 +957,329 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     };
   }
 
+
+  // --- JOB LOSS / UNEMPLOYMENT ---
+  if (
+    includesAny(q, [
+      "lost my job",
+      "lost job",
+      "got fired",
+      "laid off",
+      "layoff",
+      "unemployed",
+      "unemployment",
+      "job loss",
+      "no job",
+      "out of work",
+      "can't find work",
+      "can't find a job",
+      "job hunting",
+      "looking for work",
+      "searching for a job",
+      "rejected from job",
+      "application rejected",
+      "job rejected",
+      "no income",
+      "lost income",
+      "terminated",
+      "position eliminated",
+      "downsized",
+      "company let me go",
+    ])
+  ) {
+    return {
+      emotionalState: "shaken, uncertain, and searching for ground beneath your feet",
+      deeperMeaning:
+        "Losing a job is not just about money — it can strip your identity, your routine, and your sense of worth all at once. Wisdom addresses that deeper wound.",
+      searchLanes: ["work", "purpose", "provision", "diligence", "hope"],
+      headline: "Your value was never your job title",
+      insight:
+        "Solomon understood that diligence opens doors, but no door that closes is your final answer. The hand of the diligent rises again. Your circumstances changed — your character and your calling did not.",
+      reflection:
+        "What have you learned about yourself through this disruption that you could not have learned any other way?",
+      nextStep:
+        "Tend to your integrity and your effort today. Provision does not always come from where you expect — but it follows those who remain faithful.",
+      bookConnection:
+        "Success Secrets of Solomon — Work Ethic (pp. 96–100) and Diligence (pp. 72–76)",
+    };
+  }
+
+  // --- BETRAYAL / BROKEN TRUST ---
+  if (
+    includesAny(q, [
+      "betrayed",
+      "betrayal",
+      "stabbed in the back",
+      "lied to",
+      "someone lied",
+      "trust broken",
+      "broken trust",
+      "can't trust anyone",
+      "can't trust people",
+      "hurt by a friend",
+      "friend betrayed me",
+      "backstabbed",
+      "backstab",
+      "gossip about me",
+      "talked about behind my back",
+      "false accusation",
+      "falsely accused",
+      "used by someone",
+      "taken advantage of",
+      "felt used",
+      "double crossed",
+      "abandoned by friend",
+      "people disappoint",
+      "trust issues",
+    ])
+  ) {
+    return {
+      emotionalState: "wounded, guarded, and struggling to trust again",
+      deeperMeaning:
+        "Betrayal does not just break a relationship — it challenges your ability to be open again. Wisdom speaks directly into the tension between protecting yourself and remaining whole.",
+      searchLanes: ["trust", "relationships", "integrity", "forgiveness", "healing"],
+      headline: "Wisdom guards the heart without hardening it",
+      insight:
+        "Solomon knew that a person of poor character eventually reveals themselves. Your trust was not foolish — it was good. The failure belonged to the one who broke it. Wisdom now asks you to guard your heart without closing it entirely.",
+      reflection:
+        "Is there a difference between healthy discernment and fear-based isolation in how you are responding to this?",
+      nextStep:
+        "Give yourself permission to grieve the loss of that trust. Then ask wisdom to show you what healthy boundaries — not walls — look like moving forward.",
+      bookConnection:
+        "Success Secrets of Solomon — Relationships (pp. 130–134) and Character (pp. 162–166)",
+    };
+  }
+
+  // --- GRIEF / LOSS OF A LOVED ONE ---
+  if (
+    includesAny(q, [
+      "grief",
+      "grieving",
+      "lost someone",
+      "someone died",
+      "death of",
+      "passed away",
+      "my loved one",
+      "loved one died",
+      "can't stop crying",
+      "miss them so much",
+      "i miss them",
+      "missing someone",
+      "heartbroken",
+      "heart is broken",
+      "mourning",
+      "funeral",
+      "loss of a loved one",
+      "lost my parent",
+      "lost my mom",
+      "lost my dad",
+      "lost my spouse",
+      "lost my child",
+      "how do i grieve",
+      "will it get better",
+      "never gets easier",
+    ])
+  ) {
+    return {
+      emotionalState: "deep in grief, raw, and aching with loss",
+      deeperMeaning:
+        "Grief is not a problem to solve. It is love with nowhere to go. Wisdom does not rush you through it — it sits with you inside it.",
+      searchLanes: ["healing", "hope", "patience", "comfort", "purpose"],
+      headline: "There is a wisdom that holds you when words fail",
+      insight:
+        "Solomon wrote about the mystery of sorrow and joy coexisting. He knew that grief is one of the most honest human experiences — it proves that love was real. Mourning is not weakness. It is the soul honoring what mattered.",
+      reflection:
+        "What do you most want to remember or honor about the person or season you have lost?",
+      nextStep:
+        "Do not run from the grief. Let yourself feel it fully today — even if for just a few minutes. Healing does not skip over loss. It moves through it.",
+      bookConnection:
+        "Success Secrets of Solomon — Patience (pp. 140–142) and Purpose (pp. 146–150)",
+    };
+  }
+
+  // --- PARENTING STRUGGLES ---
+  if (
+    includesAny(q, [
+      "parenting",
+      "struggling with my kids",
+      "my child",
+      "my teenager",
+      "rebellious child",
+      "rebellious teen",
+      "prodigal son",
+      "prodigal child",
+      "child won't listen",
+      "kid won't listen",
+      "raising children",
+      "how to raise kids",
+      "hard to parent",
+      "exhausted as a parent",
+      "failing as a parent",
+      "bad parent",
+      "worried about my child",
+      "my son",
+      "my daughter",
+      "children are struggling",
+      "discipline my child",
+      "how do i discipline",
+      "my kid is out of control",
+      "troubled teen",
+    ])
+  ) {
+    return {
+      emotionalState: "burdened, uncertain, and deeply invested in someone you love",
+      deeperMeaning:
+        "Parenting tests everything — your patience, your identity, your faith, and your love. Wisdom honors the weight of that responsibility and speaks directly into it.",
+      searchLanes: ["discipline", "wisdom", "guidance", "patience", "relationships"],
+      headline: "Train up a child in the way he should go",
+      insight:
+        "Solomon's most tender writings are about guiding the next generation. He understood that influence takes time, love takes consistency, and some lessons cannot be rushed or forced. Your presence and your character matter more than your perfection.",
+      reflection:
+        "Are you parenting from fear of failure, or from a vision of who this child can become?",
+      nextStep:
+        "Choose one moment today to listen more than you speak. Understanding your child's heart is the foundation of any real influence.",
+      bookConnection:
+        "Success Secrets of Solomon — Discipline (pp. 54–58) and Wisdom (pp. 1–10)",
+    };
+  }
+
+  // --- MARRIAGE / DIVORCE / RELATIONSHIP CRISIS ---
+  if (
+    includesAny(q, [
+      "marriage",
+      "married",
+      "divorce",
+      "divorcing",
+      "separated",
+      "separation",
+      "spouse",
+      "husband",
+      "wife",
+      "my partner",
+      "relationship falling apart",
+      "marriage falling apart",
+      "marriage in trouble",
+      "considering divorce",
+      "thinking about divorce",
+      "marriage problems",
+      "unhappy in my marriage",
+      "infidelity",
+      "cheating spouse",
+      "affair",
+      "broken marriage",
+      "rebuilding marriage",
+      "reconciliation",
+      "relationship broken",
+    ])
+  ) {
+    return {
+      emotionalState: "torn between love and pain, and searching for what comes next",
+      deeperMeaning:
+        "A marriage in crisis touches every part of who you are. Wisdom does not offer quick fixes — but it speaks profound truth about covenant, character, and the courage required for any real restoration.",
+      searchLanes: ["relationships", "conflict", "patience", "integrity", "healing"],
+      headline: "Wisdom speaks into the hardest relationship questions",
+      insight:
+        "Solomon wrote more about the quality of character in relationships than about romantic feelings. He understood that trust, honesty, and consistency are what hold people together — and that their absence is what pulls them apart. Whatever you are facing, wisdom begins with honest self-reflection.",
+      reflection:
+        "What does wisdom ask of you in this relationship — not of the other person, but of you?",
+      nextStep:
+        "Before making any major decisions, seek counsel from someone wise and trusted. Do not navigate this alone.",
+      bookConnection:
+        "Success Secrets of Solomon — Relationships (pp. 130–134) and Conflict (pp. 138–140)",
+    };
+  }
+
+  // --- FINANCIAL DEBT / BANKRUPTCY ---
+  if (
+    includesAny(q, [
+      "debt",
+      "in debt",
+      "drowning in debt",
+      "can't pay bills",
+      "bills are piling up",
+      "bankruptcy",
+      "filing bankruptcy",
+      "financial ruin",
+      "financial disaster",
+      "credit card debt",
+      "loan payments",
+      "owe money",
+      "broke",
+      "no money",
+      "financial stress",
+      "can't afford",
+      "can't make ends meet",
+      "living paycheck to paycheck",
+      "behind on payments",
+      "debt collectors",
+      "garnished wages",
+      "overwhelmed by debt",
+      "money problems",
+    ])
+  ) {
+    return {
+      emotionalState: "pressured, ashamed, and desperate to find a way out",
+      deeperMeaning:
+        "Financial pressure does not just drain your bank account — it drains your confidence and your peace. Wisdom understands money deeply and speaks truth into both the practical and the emotional weight of debt.",
+      searchLanes: ["money", "stewardship", "discipline", "planning", "wisdom"],
+      headline: "Wisdom is the most underused financial tool",
+      insight:
+        "Solomon spoke more about money than almost any other topic in Proverbs. He understood that debt is a form of bondage and that financial freedom is built through patient, disciplined decisions — not desperation. Shame will paralyze you. Wisdom will move you forward.",
+      reflection:
+        "What financial habit or belief brought you here — and what would a wise, disciplined version of you do differently starting today?",
+      nextStep:
+        "Write down your full financial picture, honestly. You cannot steward what you will not face. Wisdom begins with truth.",
+      bookConnection:
+        "Success Secrets of Solomon — Money & Wealth (pp. 88–92) and Stewardship (pp. 92–96)",
+    };
+  }
+
+  // --- ADDICTION / BAD HABITS ---
+  if (
+    includesAny(q, [
+      "addiction",
+      "addicted",
+      "addicted to",
+      "substance abuse",
+      "drinking too much",
+      "alcohol problem",
+      "drug problem",
+      "drugs",
+      "can't stop",
+      "can't quit",
+      "bad habit",
+      "bad habits",
+      "stuck in a habit",
+      "breaking habits",
+      "pornography",
+      "porn addiction",
+      "gambling",
+      "gambling problem",
+      "overeating",
+      "compulsive behavior",
+      "out of control behavior",
+      "self destructive",
+      "self-destructive",
+      "no self control",
+      "lack of self control",
+    ])
+  ) {
+    return {
+      emotionalState: "trapped, ashamed, and wanting freedom but struggling to find it",
+      deeperMeaning:
+        "Addiction is not a character flaw — it is a wound seeking relief in the wrong place. Wisdom speaks to the deep need beneath the behavior and points toward real freedom, not just willpower.",
+      searchLanes: ["discipline", "wisdom", "healing", "self-control", "freedom"],
+      headline: "The path to freedom begins with honest sight",
+      insight:
+        "Solomon warned that what looks like pleasure often leads to chains — and that the wise person sees the end of a path before walking it. But wisdom is also deeply merciful. It does not mock the person who is caught. It offers a way out through discipline, community, and truth.",
+      reflection:
+        "What is the real need — the pain, loneliness, or fear — that this habit has been trying to meet?",
+      nextStep:
+        "Reach out to one trustworthy person today. Shame thrives in silence. Real healing almost always requires another person walking with you.",
+      bookConnection:
+        "Success Secrets of Solomon — Discipline (pp. 54–58) and Confidence (pp. 80–82)",
+    };
+  }
+
   return null;
 }
