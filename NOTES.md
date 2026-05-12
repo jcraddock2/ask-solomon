@@ -84,9 +84,9 @@
         ## What Still Needs Work (Priority Order)
 
         ### High Impact (do these first)
-        - [ ] **Improve `wisdomResponse.ts` book connection strings** — use exact page ranges (e.g. "pp. 80–82") matching `book-index/page.tsx` data instead of approximate page numbers
-        - [ ] **Add more keyword triggers** to existing wisdomResponse scenarios so more searches match (e.g. "stressed", "can't sleep", "lonely", "failure")
-        - [ ] **Add search/filter to `book-index/page.tsx`** — currently just a static list with no way to search topics
+        - [x] **Improve `wisdomResponse.ts` book connection strings** — exact page ranges added (e.g. "pp. 80–82"), matching `book-index/page.tsx` data ✅ May 11, 2026
+        - [x] **Add more keyword triggers** — expanded to 20–25 triggers per scenario (stressed, insomnia, can't sleep, job loss, layoff, etc.) ✅ May 11, 2026
+        - [x] **Add search/filter to `book-index/page.tsx`** — live search input filters 30 topics by label, summary, and chapter in real time ✅ May 11, 2026
 
         ### Medium Impact
         - [ ] **Add more emotional scenarios** to `wisdomResponse.ts`:
@@ -150,5 +150,5 @@
 
                       ---
 
-                      *Last updated: May 11, 2026*
+                      *Last updated: May 11, 2026 — High-impact tasks complete. wisdomResponse.ts now 961 lines / 21 scenarios. book-index has live search.*
                       
