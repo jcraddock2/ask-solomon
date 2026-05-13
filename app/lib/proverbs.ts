@@ -68,6 +68,12 @@ const STOPWORDS = new Set([
   "keep",
   "stop",
   "myself",
+  "help",
+  "please",
+  "trying",
+  "getting",
+  "going",
+  "being",
 ]);
 
 const INTENT_EXPANSIONS: Record<string, string[]> = {
@@ -383,6 +389,20 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "stuck",
     "slow",
   ],
+  addiction: ["discipline", "self-control", "temptation", "freedom", "bondage", "strength", "healing", "recovery"],
+  addict: ["discipline", "self-control", "temptation", "freedom", "bondage", "healing"],
+  habit: ["discipline", "self-control", "diligence", "character", "wisdom"],
+  grief: ["patience", "comfort", "hope", "healing", "trust", "sorrow", "mourning"],
+  grieving: ["patience", "comfort", "hope", "healing", "sorrow"],
+  betrayal: ["trust", "integrity", "character", "relationships", "forgiveness", "wisdom"],
+  betrayed: ["trust", "integrity", "character", "forgiveness", "relationships"],
+  debt: ["stewardship", "money", "discipline", "wisdom", "diligence", "planning"],
+  divorce: ["relationships", "conflict", "integrity", "wisdom", "patience", "counsel"],
+  marriage: ["relationships", "integrity", "covenant", "wisdom", "conflict"],
+  parenting: ["discipline", "wisdom", "instruction", "guidance", "patience"],
+  unemployed: ["diligence", "work", "provision", "hope", "trust", "patience"],
+  fired: ["diligence", "character", "hope", "wisdom", "integrity"],
+  jobless: ["diligence", "provision", "hope", "purpose", "trust"],
 };
 
 const WORD_ALIASES: Record<string, string[]> = {
