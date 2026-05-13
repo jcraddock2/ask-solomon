@@ -399,3 +399,5 @@ export function findBookMatchIds(query: string): string[] {
     )
     .map((entry) => entry.id);
 }
+
+export const BOOK_INDEX = BOOK_ENTRIES;
