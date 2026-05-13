@@ -859,7 +859,7 @@ const buildFilteredPool = () => {
 const baseResults = useMemo(() => {
   // Smart Proverbs search when user types
   if (q.trim().length > 0) {
-    let found = searchProverbsScored(q).map((r) => ({
+    let found = searchProverbsScored(expandSmartTerms(q).join(" ")).map((r) => ({
       ...r.item,
       score: r.score,
       why: r.why,
@@ -1097,7 +1097,7 @@ const proverbMatches = useMemo<ProverbMatch[]>(() => {
   }, [promotedProverb, proverbMatches]);
 
   const bookMatches = useMemo<BookMatch[]>(() => {
-    const query = q.trim();
+    const query = expandSmartTerms(q).join(" ");
     if (!query) return [];
 
     try {
