@@ -149,6 +149,200 @@
                       Claude will read this file, then read the current state of the code, and be ready to work immediately.
 
                       ---
+*Last updated: May 13, 2026 — 100-search test completed. See SESSION NOTES below for full fix plan.*
 
-                      *Last updated: May 12, 2026 — wisdomResponse.ts now 1285 lines / 28 scenarios. 7 new emotional scenarios added (job loss, betrayal, grief, parenting, marriage, debt, addiction).
-                      
+---
+
+## SESSION NOTES — May 13, 2026
+
+### What Was Done This Session
+- Fixed Vercel build error: BOOK_INDEX not exported from bookIndex.ts (commit 87363b3)
+- Ran 100 live test searches using Next.js router client-side navigation
+- Scored 80/100 fully working (specific banner + 5+ proverb results + book matches)
+
+### 100-Search Test Results — Score: 80/100
+
+#### CRITICAL (1) — Complete failure
+- DEBT | "i have no savings" — nothing shown, "savings" maps to no lane
+
+#### HIGH — Generic Banner (14 queries — no emotional wisdom card)
+- ADDICTION: "i cant stop drinking", "i want to get sober", "i am in bondage to sin"
+- GRIEF: "i cant stop crying", "i am dealing with loss"
+- FEAR: "i dont feel safe"
+- ANGER: "i cant control my temper", "i want to hurt someone"
+- DEBT: "i have no savings"
+- PARENTING: "i dont know how to raise my kids", "i am a single parent struggling"
+- BETRAYAL: "my best friend stabbed me in the back"
+- PRIDE: "i think i am better than others"
+- SPEECH: "i speak before i think"
+
+#### HIGH — Zero Proverb Results but Wisdom Card OK (4 queries)
+- FEAR: "i am terrified"
+- PARENTING: "my child is rebelling"
+- PARENTING: "i feel like a bad parent"
+- PRIDE: "i need to be humble"
+
+#### HIGH — Wrong Intent / False Positive Lane Matches (4 queries)
+- "i cant stop crying" -> "cant stop" triggers ADDICTION lane -> gets Discipline books not Grief
+- "i am a single parent struggling" -> "struggling" triggers TEMPTATION lane -> gets lust/sin topics
+- "i struggle with pride" -> "struggle" triggers ADDICTION lane -> gets addiction topics
+- "i want to hurt someone" -> "hurting/hurt" triggers GRIEF lane -> gets Grief books not Anger
+
+#### MEDIUM — Emotion/Book Mismatch
+- "my husband died" -> "husband" triggers MARRIAGE scenario -> gets love/pain response not grief
+- "i am stressed about money" -> "stressed" pulls fear -> gets Confidence books not Money books
+- "i owe people money" -> "owe" not in debt lane -> gets Leadership books
+- "i cant find work" -> gets Leadership books not Work/Diligence books
+- "i feel called by God" -> gets Rejection/Trust books not Purpose/Calling books
+- All 10 JOB_LOSS queries -> same emotional state (not differentiated by situation)
+
+---
+
+### NEXT SESSION FIX PLAN — Execute These 5 Phases In Order
+
+#### PHASE 1 — app/lib/wisdomResponse.ts — Add missing triggers to existing scenarios
+Find each scenario's triggers array and ADD these new trigger strings:
+
+ADDICTION scenario triggers — ADD:
+"cant stop drinking", "i cant stop drinking", "drinking", "alcohol", "i drink too much",
+"i want to get sober", "want to get sober", "sober", "sobriety", "get sober",
+"bondage to sin", "in bondage", "i am in bondage"
+
+GRIEF scenario triggers — ADD:
+"i cant stop crying", "cant stop crying", "i keep crying", "i cry all the time",
+"dealing with loss", "i am dealing with loss", "trying to deal with loss",
+"dealing with grief", "lost and grieving"
+
+FEAR scenario triggers — ADD:
+"i dont feel safe", "dont feel safe", "i do not feel safe", "not safe", "unsafe", "i feel unsafe"
+
+ANGER scenario triggers — ADD:
+"i cant control my temper", "cant control my temper", "temper", "lose my temper",
+"lost my temper", "i want to hurt someone", "want to hurt someone", "hurt someone"
+
+DEBT scenario triggers — ADD:
+"i have no savings", "no savings", "have no savings", "spent all my savings"
+
+PARENTING scenario triggers — ADD:
+"i dont know how to raise my kids", "dont know how to raise", "raise my kids",
+"raising kids", "i am a single parent struggling", "single parent struggling",
+"single parent", "raising my kids alone"
+
+BETRAYAL scenario triggers — ADD:
+"my best friend stabbed me in the back", "stabbed me in the back", "best friend betrayed me",
+"friend stabbed me", "best friend lied"
+
+PRIDE scenario triggers — ADD:
+"i think i am better than others", "think i am better", "better than everyone",
+"act like i am better", "i am better than others"
+
+SPEECH scenario triggers — ADD:
+"i speak before i think", "speak before i think", "i say things without thinking",
+"blurt things out", "think before i speak"
+
+#### PHASE 2 — app/lib/intent.ts — Fix false positive lane matches
+FIND the addiction lane terms array. REMOVE these standalone terms:
+- "cant stop" (too generic — catches "cant stop crying")
+- "can't stop" (same)
+- "struggle" (too generic — catches "struggle with pride")
+- "struggling" (too generic — catches "single parent struggling")
+REPLACE with multi-word versions:
+- "cant stop using", "cant stop drinking", "cant stop using drugs"
+
+FIND the temptation lane terms array. REMOVE:
+- "struggling" (catches "single parent struggling")
+
+FIND the grief lane terms array. CHECK if "hurt" or "hurting" is there.
+If yes, REMOVE bare "hurt" and "hurting" (too generic — catches "i want to hurt someone")
+Keep: "heartbroken", "heartbreak", "broken heart"
+
+ADD to anger lane terms:
+"temper", "my temper", "lose my temper", "want to hurt", "hurt someone"
+
+ADD to fear lane terms:
+"terrified", "feel safe", "not safe", "unsafe", "dont feel safe"
+
+ADD to debt lane terms:
+"no savings", "savings", "no money saved", "spent everything i had"
+
+ADD to grief lane terms (for "my husband died" type queries):
+"my husband died", "my wife died", "my spouse died", "death of my", "passed away recently"
+
+#### PHASE 3 — app/lib/proverbs.ts — Fix zero-result queries
+FIND the INTENT_EXPANSIONS object closing brace. INSERT before it:
+  terrified: ["fear", "afraid", "terror", "dread", "paralyzed", "scared", "courage", "trust", "strength", "safety"],
+  rebelling: ["rebellion", "wayward", "prodigal", "discipline", "correction", "instruction", "consequences", "training"],
+  "bad parent": ["parenting", "discipline", "correction", "instruction", "train", "child", "wisdom", "patient", "guidance"],
+  humble: ["humility", "pride", "arrogance", "lowly", "servant", "meek", "exalt", "honor", "teachable", "selfless"],
+  humility: ["humble", "pride", "arrogance", "lowly", "servant", "meek", "exalt", "honor", "teachable", "selfless"],
+  "feel safe": ["safety", "refuge", "protect", "shield", "trust", "fortress", "shelter", "peace", "secure"],
+  savings: ["money", "wealth", "stewardship", "debt", "diligence", "planning", "future", "provision", "financial"],
+  "no savings": ["money", "wealth", "stewardship", "debt", "diligence", "planning", "provision", "financial"],
+
+#### PHASE 4 — app/lib/wisdomResponse.ts — Add 2 differentiated job-loss scenarios
+INSERT two new scenario objects. Each needs: id, triggers[], emotionalState, headline, whatIHear, insight, reflect, nextStep, bookRef.
+
+Scenario A — SUDDEN JOB LOSS (shock):
+- id: "job-loss-sudden"
+- triggers: ["fired today", "was fired", "got fired", "laid off today", "lost my job today", "they let me go", "i was let go", "just got fired", "just got laid off"]
+- emotionalState: "shocked, blindsided, and unsure what comes next"
+- headline: "Wisdom Meets You in the Blindside"
+- whatIHear: "You didn't see this coming — and the ground feels unsteady right now."
+- insight: "Proverbs does not define your identity by your employment. Your worth precedes your work. Sudden loss can become sudden clarity about what you were meant for next."
+- reflect: "What does this loss reveal about what you truly want — and what you were tolerating?"
+- nextStep: "Give yourself 24 hours before making any major decisions. Then take one practical step: update a resume, call one trusted person, or sit quietly and ask what is next."
+- bookRef: "Success Secrets of Solomon — Work Ethic (pp. 96–100) and Purpose (pp. 146–150)"
+
+Scenario B — STUCK AT WORK:
+- id: "job-stuck"
+- triggers: ["hate my job", "stuck in my job", "feel stuck at work", "no purpose at work", "dread going to work", "i dread work", "going to work is torture", "my job drains me"]
+- emotionalState: "trapped, purposeless, and wondering if this is all there is"
+- headline: "Wisdom Speaks to the Stuck Place"
+- whatIHear: "You're not lazy — you're misaligned. Something in you knows you were made for more than this."
+- insight: "Proverbs connects diligence to meaning, not just output. When your work stops feeding your soul, it may be calling you toward something God is preparing. Wisdom does not say stay stuck — it says use this season to build and discern."
+- reflect: "If fear were not a factor, what kind of work would you pursue? What gifts are you leaving unused right now?"
+- nextStep: "Do not quit in frustration — plan in wisdom. Spend 15 minutes this week writing down what you are actually good at and what work feels alive to you."
+- bookRef: "Success Secrets of Solomon — Purpose (pp. 146–150) and Diligence (pp. 72–76)"
+
+#### PHASE 5 — app/lib/bookIndex.ts — Fix keyword mismatches
+FIND these entries and ADD keywords:
+
+Money & Wealth entry (id: "money-1") keywords — ADD:
+"savings", "save money", "no savings", "owe", "owed", "owing", "borrowed money",
+"financially ruined", "money stress", "stressed about money", "spending problem",
+"in debt", "debt free", "cant pay", "bills"
+
+Diligence / Work entries keywords — ADD:
+"cant find work", "find work", "finding work", "job search", "unemployed",
+"no job", "looking for work", "need a job"
+
+Purpose/Direction entry keywords — ADD:
+"called by God", "calling", "Gods calling", "Gods plan", "called to serve",
+"my calling", "spiritual calling"
+
+Addiction entry (id: "addiction-1") keywords — REMOVE:
+"struggle", "struggling" (too broad — causes false matches for pride, parenting)
+
+Confidence/Fear entries keywords — ADD:
+"terrified", "feel safe", "not safe", "unsafe", "safety", "security"
+
+Parenting entry (id: "parenting-1") keywords — ADD:
+"rebelling", "rebel", "bad parent", "dont know how to raise", "single parent",
+"raise kids", "raise children", "child wont listen"
+
+Pride/Humility entry (id: "integrity-1" or relevant) keywords — ADD:
+"humble", "humility", "arrogant", "better than others", "need to be humble",
+"arrogance", "think i am better"
+
+Speech/Words entry (id: "speech-1") keywords — ADD:
+"speak before i think", "think before speaking", "blurt out", "say things impulsively",
+"words hurt people", "hurt people with words"
+
+---
+
+### Resume Instructions for Next Session
+Say: "I want to continue working on my GitHub project jcraddock2/ask-solomon. Please read NOTES.md first."
+Then say: "Execute the 5-phase fix plan from the May 13 session notes."
+Claude will know exactly what to do without re-testing.
+
+Test URL: https://ask-solomon-pne8fjiwv-john-craddocks-projects.vercel.app/
