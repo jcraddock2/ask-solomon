@@ -140,6 +140,15 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       "what's the point",
       "don't know my path",
       "walking in circles",
+      "called by god",
+      "feel called by god",
+      "i feel called",
+      "called to",
+      "gods plan for me",
+      "gods purpose",
+      "my calling",
+      "spiritual calling",
+      "called to serve",
     ])
   ) {
     return {
