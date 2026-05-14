@@ -702,6 +702,14 @@ export function interpretQuery(query: string): string {
       "can't pay",
       "cannot pay",
       "expenses",
+      "owe money",
+      "i owe",
+      "owe people",
+      "about money",
+      "worried about money",
+      "stressed about money",
+      "money problems",
+      "no savings",
     ])
   ) {
     return "You may be feeling pressure around money, provision, or stability.";
@@ -954,6 +962,14 @@ export function interpretQueryAdvanced(query: string): Interpretation {
       "can't pay",
       "cannot pay",
       "expenses",
+      "owe money",
+      "i owe",
+      "owe people",
+      "about money",
+      "worried about money",
+      "stressed about money",
+      "money problems",
+      "no savings",
     ])
   ) {
     return {
