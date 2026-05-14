@@ -403,6 +403,15 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
   unemployed: ["diligence", "work", "provision", "hope", "trust", "patience"],
   fired: ["diligence", "character", "hope", "wisdom", "integrity"],
   jobless: ["diligence", "provision", "hope", "purpose", "trust"],
+
+  terrified: ["fear", "afraid", "terror", "dread", "paralyzed", "scared", "courage", "trust", "strength", "safety"],
+  rebelling: ["rebellion", "wayward", "prodigal", "discipline", "correction", "instruction", "consequences", "training"],
+  "bad parent": ["parenting", "discipline", "correction", "instruction", "train", "child", "wisdom", "patient", "guidance"],
+  humble: ["humility", "pride", "arrogance", "lowly", "servant", "meek", "exalt", "honor", "teachable", "selfless"],
+  humility: ["humble", "pride", "arrogance", "lowly", "servant", "meek", "exalt", "honor", "teachable", "selfless"],
+  "feel safe": ["safety", "refuge", "protect", "shield", "trust", "fortress", "shelter", "peace", "secure"],
+  savings: ["money", "wealth", "stewardship", "debt", "diligence", "planning", "future", "provision", "financial"],
+  "no savings": ["money", "wealth", "stewardship", "debt", "diligence", "planning", "provision", "financial"],
 };
 
 const WORD_ALIASES: Record<string, string[]> = {
