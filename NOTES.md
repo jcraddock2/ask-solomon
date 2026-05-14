@@ -149,7 +149,7 @@
                       Claude will read this file, then read the current state of the code, and be ready to work immediately.
 
                       ---
-*Last updated: May 14, 2026 — All todos COMPLETE. asksolomon.app live, Plausible verified, README updated. See SESSION NOTES below.*
+*Last updated: May 14, 2026 — Hero landing section added. Pre-launch roadmap in SESSION NOTES below. See SESSION NOTES below.*
 
 ---
 
@@ -166,12 +166,51 @@ What Was Done This Session
 Search Score: ~95/100 (up from 80/100)
 
 - Fixed email capture form placement: was nested inside Smart Topic Mapping label div (bug from prior commit), moved to standalone block shown after search results for free users
+- Added hero landing section to page.tsx: shows for cold traffic on empty search state, dark navy/gold, 6 emotional example chips, proof bar, collapses when user types
 What Still Needs Doing
 - ✅ Email capture: Formspree form added and placement fixed — shows after search results for free users (endpoint: https://formspree.io/f/xzdolzzl)
 - ✅ GitHub README: updated with correct URL (asksolomon.app), badges, 25+ scenarios, email capture, Formspree
 - ✅ Plausible.io: asksolomon.app registered and verified on Plausible (reconnected May 14 — old Vercel domain was deleted, new site added for asksolomon.app)
 - ✅ OG image: og-image.png exists in /public folder
 - ✅ Custom domain: asksolomon.app connected in Vercel, all URLs in layout.tsx updated (canonical, OG images, Plausible data-domain)
+
+## PRE-LAUNCH ROADMAP (added May 14, 2026)
+
+### What Was Assessed
+The app is technically solid (~95/100 search score, paywall working, analytics live).
+The main gaps before launch are: onboarding/first-impression, social proof, upgrade clarity, and email nurture.
+
+### Phase A — Conversion & First Impression (DO NEXT)
+- ✅ Hero section: dark navy/gold landing panel for cold traffic with 6 emotional chips (done May 14)
+- [ ] **Upgrade prompt improvement**: Make the "$29 lifetime" offer more compelling on the upgrade page — add benefits list, what Pro unlocks, social proof
+- [ ] **Share a wisdom result**: Add a "Share this wisdom" button on wisdom cards so users can share their response to social media — organic word-of-mouth
+
+### Phase B — Social Proof & Trust
+- [ ] **Testimonials**: Add 3–5 real quotes from early users on the home page/hero area. Ask family, friends, book readers first.
+- [ ] **Usage counter**: Add a small "X wisdom searches today" or "Join X people who've found wisdom here" stat (can start with a realistic static number)
+- [ ] **Featured in book**: Add a small callout connecting the app to the physical book more explicitly for book readers landing on the app
+
+### Phase C — Email Nurture Loop
+- [ ] **Welcome email**: Set up a Formspree redirect or webhook to trigger a welcome email when someone subscribes (currently subscribers hear nothing)
+- [ ] **Weekly email content**: Start sending actual weekly wisdom verses to the email list (can be manual at first — one verse + insight + link back to app)
+- [ ] **Email sequence**: 3-email drip: (1) Welcome + what Ask Solomon is, (2) Favorite scenario highlight, (3) Soft pitch for $29 Pro
+
+### Phase D — Marketing Channels
+- [ ] **Book audience first**: Email/message existing book readers about the app — they are the warmest audience
+- [ ] **Short-form video**: Record 2–3 TikTok/Instagram Reels showing a real emotional search + response (e.g., "I typed 'I feel like a failure' and got this…")
+- [ ] **SEO landing pages**: Create simple dedicated pages for high-intent searches: "proverbs for anxiety", "biblical wisdom for job loss", etc.
+- [ ] **Pinterest/Instagram**: Scripture graphic cards (the app's share image feature) posted regularly with link to asksolomon.app
+
+### Phase E — Product Polish (Lower Priority)
+- [ ] **Wisdom result share image**: Improve the shareable image card (already exists) — make it more beautiful/brandable for Instagram
+- [ ] **Pro upgrade page polish**: Current upgrade page may be minimal — add screenshots, feature list, guarantee language
+- [ ] **Mobile first-visit experience**: Test cold landing on iPhone — does the hero + search feel good? Is the CTA clear?
+
+### Key Metrics to Watch (once live)
+- Plausible: pageviews, bounce rate, session length
+- Formspree: email signups per week
+- Stripe: Pro conversions (target: 1-2% of visitors)
+- Most-used scenarios (tells you what content to amplify in marketing)
 
 SESSION NOTES — May 13, 2026
 
