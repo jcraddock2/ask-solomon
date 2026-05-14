@@ -149,7 +149,7 @@
                       Claude will read this file, then read the current state of the code, and be ready to work immediately.
 
                       ---
-*Last updated: May 14, 2026 — Search score ~95/100, paywall fixed, SEO + analytics added, email capture fixed. See SESSION NOTES below.*
+*Last updated: May 14, 2026 — Search score ~95/100, asksolomon.app live, Plausible verified, all major todos COMPLETE. See SESSION NOTES below.*
 
 ---
 
@@ -169,12 +169,9 @@ Search Score: ~95/100 (up from 80/100)
 What Still Needs Doing
 - ✅ Email capture: Formspree form added and placement fixed — shows after search results for free users (endpoint: https://formspree.io/f/xzdolzzl)
 - GitHub README: add project description
-- Plausible.io: John needs to register the domain to activate analytics tracking
-  Go to plausible.io → Add site → enter domain → analytics will start working
-- OG image: create a 1200x630 image named og-image.png and add to /public folder
-  Currently og:image tag points to /og-image.png which doesn't exist yet
-- Custom domain: if John connects a custom domain in Vercel, update the canonical URL
-  and Plausible data-domain in layout.tsx to match
+- ✅ Plausible.io: asksolomon.app registered and verified on Plausible (reconnected May 14 — old Vercel domain was deleted, new site added for asksolomon.app)
+- ✅ OG image: og-image.png exists in /public folder
+- ✅ Custom domain: asksolomon.app connected in Vercel, all URLs in layout.tsx updated (canonical, OG images, Plausible data-domain)
 
 SESSION NOTES — May 13, 2026
 
