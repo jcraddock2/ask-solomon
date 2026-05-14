@@ -1319,10 +1319,10 @@ const applySituation = (situationQuery: string) => {
             }}>
               {[
                 { label: '😔 I feel like a failure', q: 'I feel like a failure' },
-                { label: '😤 I can't control my anger', q: 'I can't control my anger' },
-                { label: '💸 I'm stressed about money', q: 'I'm stressed about money' },
+                { label: "😤 I can't control my anger", q: "I can't control my anger" },
+                { label: "💸 I'm stressed about money", q: "I'm stressed about money" },
                 { label: '💔 My marriage is struggling', q: 'My marriage is struggling' },
-                { label: '😰 I'm overwhelmed', q: 'I'm overwhelmed' },
+                { label: "😰 I'm overwhelmed", q: "I'm overwhelmed" },
                 { label: '🙏 I need direction from God', q: 'I need direction from God' },
               ].map(({ label, q: chipQ }) => (
                 <button
