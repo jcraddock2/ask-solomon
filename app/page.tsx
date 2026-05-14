@@ -2014,46 +2014,130 @@ const applySituation = (situationQuery: string) => {
                     </div>
                   )
                 ) : (
-                  <div
-                    style={{
-                      background: "rgba(255,255,255,0.85)",
-                      border: "1px solid rgba(0,0,0,0.08)",
-                      borderRadius: 16,
-                      padding: 14,
-                      boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
-                    }}
-                  >
-                    <div style={{ fontWeight: 900, fontSize: 14, color: "#111" }}>
-                      🔒 Book Matches are a Lifetime feature
-                    </div>
-                    <div
-                      style={{
-                        marginTop: 6,
-                        color: "#334155",
-                        fontWeight: 800,
-                        fontSize: 13,
-                      }}
-                    >
-                      Upgrade to see exactly where to read this in the book.
-                    </div>
-                    <div style={{ marginTop: 10 }}>
-                      <button
-                        type="button"
-                        onClick={() => router.push("/upgrade")}
+                  /* Free user: tease the book match — show title/chapter/excerpt blurred, then CTA */
+                  <div style={{ display: "grid", gap: 10 }}>
+                    {bookMatches.length === 0 ? (
+                      <div style={{
+                        background: "rgba(255,255,255,0.85)",
+                        border: "1px solid rgba(212,175,55,0.25)",
+                        borderRadius: 16,
+                        padding: 18,
+                        boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
+                        textAlign: "center",
+                      }}>
+                        <div style={{ fontSize: 22, marginBottom: 8 }}>📚</div>
+                        <div style={{ fontWeight: 900, fontSize: 14, color: "#111", marginBottom: 6 }}>
+                          Solomon wrote about this
+                        </div>
+                        <div style={{ fontSize: 13, color: "#475569", fontWeight: 600, marginBottom: 14, lineHeight: 1.5 }}>
+                          Unlock <em>Success Secrets of Solomon</em> to read the exact chapters that speak to what you&apos;re facing.
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => router.push("/upgrade")}
+                          style={{
+                            background: "linear-gradient(135deg, #1a1040 0%, #0d1b2a 100%)",
+                            border: "1px solid rgba(212,175,55,0.4)",
+                            color: "#f5e06e",
+                            borderRadius: 12,
+                            padding: "11px 20px",
+                            cursor: "pointer",
+                            fontWeight: 900,
+                            fontSize: 13,
+                            letterSpacing: 0.3,
+                          }}
+                        >
+                          📖 Unlock the Book — $29 Lifetime
+                        </button>
+                      </div>
+                    ) : bookMatches.slice(0, 2).map((m: any, idx: number) => (
+                      <div
+                        key={idx}
                         style={{
-                          border: "1px solid rgba(0,0,0,0.10)",
-                          background: "rgba(17,24,39,0.92)",
-                          color: "#fff",
-                          borderRadius: 14,
-                          padding: "10px 12px",
-                          cursor: "pointer",
-                          fontWeight: 900,
-                          fontSize: 13,
+                          background: "rgba(255,255,255,0.92)",
+                          border: "1px solid rgba(212,175,55,0.3)",
+                          borderRadius: 16,
+                          overflow: "hidden",
+                          boxShadow: "0 10px 26px rgba(0,0,0,0.07)",
+                          position: "relative",
                         }}
                       >
-                        Upgrade (Lifetime)
-                      </button>
-                    </div>
+                        {/* Visible header — chapter + title */}
+                        <div style={{ padding: "14px 14px 10px" }}>
+                          <div style={{
+                            fontSize: 11, fontWeight: 900, color: "#d4af37",
+                            textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 4,
+                          }}>
+                            📖 {renderBookMatchMeta(m) || "In the Book"}
+                          </div>
+                          <div style={{ fontWeight: 900, fontSize: 15, color: "#111", marginBottom: 8 }}>
+                            {renderBookMatchTitle(m)}
+                          </div>
+
+                          {/* Blurred excerpt tease */}
+                          {renderBookMatchLine(m) && (
+                            <div style={{ position: "relative" }}>
+                              <div style={{
+                                fontSize: 13, color: "#334155", lineHeight: 1.6,
+                                fontStyle: "italic", fontWeight: 600,
+                                filter: "blur(4px)",
+                                userSelect: "none",
+                                pointerEvents: "none",
+                              }}>
+                                {renderBookMatchLine(m)}
+                              </div>
+                              <div style={{
+                                position: "absolute", inset: 0,
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                              }}>
+                                <span style={{
+                                  background: "rgba(255,255,255,0.9)",
+                                  border: "1px solid rgba(212,175,55,0.35)",
+                                  borderRadius: 8,
+                                  padding: "3px 10px",
+                                  fontSize: 11, fontWeight: 900, color: "#92400e",
+                                  letterSpacing: 0.5,
+                                }}>
+                                  🔒 Unlock to read
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* CTA strip */}
+                        <div style={{
+                          background: "linear-gradient(135deg, #1a1040 0%, #0d1b2a 100%)",
+                          padding: "12px 14px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          gap: 10,
+                          flexWrap: "wrap",
+                        }}>
+                          <div style={{ fontSize: 12, color: "rgba(245,224,110,0.85)", fontWeight: 700, lineHeight: 1.4 }}>
+                            Read the full chapter inside the book
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => router.push("/upgrade")}
+                            style={{
+                              background: "#d4af37",
+                              border: "none",
+                              color: "#1a1040",
+                              borderRadius: 10,
+                              padding: "8px 14px",
+                              cursor: "pointer",
+                              fontWeight: 900,
+                              fontSize: 12,
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            Unlock — $29 Lifetime
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
