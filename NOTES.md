@@ -149,7 +149,7 @@
                       Claude will read this file, then read the current state of the code, and be ready to work immediately.
 
                       ---
-*Last updated: May 14, 2026 — Hero landing section added. Pre-launch roadmap in SESSION NOTES below. See SESSION NOTES below.*
+*Last updated: May 14, 2026 — Hero + upgrade page rewritten + Book Matches tease card live. See PRE-LAUNCH ROADMAP in SESSION NOTES.*
 
 ---
 
@@ -182,7 +182,7 @@ The main gaps before launch are: onboarding/first-impression, social proof, upgr
 
 ### Phase A — Conversion & First Impression (DO NEXT)
 - ✅ Hero section: dark navy/gold landing panel for cold traffic with 6 emotional chips (done May 14)
-- [ ] **Upgrade prompt improvement**: Make the "$29 lifetime" offer more compelling on the upgrade page — add benefits list, what Pro unlocks, social proof
+- ✅ **Upgrade page rewritten**: Dark gold hero, honest book story, "$29 = same as hardcover" anchor, blurred excerpt tease on Book Matches card, gold CTA buttons
 - [ ] **Share a wisdom result**: Add a "Share this wisdom" button on wisdom cards so users can share their response to social media — organic word-of-mouth
 
 ### Phase B — Social Proof & Trust
