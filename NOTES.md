@@ -1,37 +1,50 @@
 # Ask Solomon — Project Notes for AI Sessions
 
-> **For Claude:** Read this file first at the start of every session to orient yourself before touching any code.
+> **FOR CLAUDE: Read this file FIRST at the start of every session before touching any code.**
+> Then read the key source files listed below to orient yourself fully.
 
 ---
 
 ## What This App Is
 
-**Ask Solomon** is a Next.js web app that lets users search for biblical wisdom from Proverbs based on what they are feeling or facing in life. It is paired with a book called **"Success Secrets of Solomon"** by the owner (John / jcraddock2).
+Ask Solomon is a Next.js web app where users search for biblical wisdom from Proverbs based on what they are feeling or facing in life. It is paired with the book **"Success Secrets of Solomon"** by the owner (John / jcraddock2).
 
-**Live URL:** Deployed on Vercel (auto-deploys from main branch)
-**Repo:** github.com/jcraddock2/ask-solomon
-**Owner:** jcraddock2 (John) — self-described novice, wants Claude to do as much as possible
+- **Live URL:** https://asksolomon.app
+- **Repo:** https://github.com/jcraddock2/ask-solomon
+- **Owner:** jcraddock2 (John) — self-described novice. Do as much as possible for him.
+- **Deployment:** Vercel — auto-deploys from main branch on every push
 
 ---
 
 ## Core Product Goals
 
-1. **Feel AI-like** without using any paid AI/API (zero cost constraint — NO OpenAI, Anthropic API, etc.)
-2. **Biblically accurate** — all wisdom content grounded in Proverbs
-3. **Emotionally intelligent** — user should feel heard and understood, not just given a Bible verse
-4. **Book connections** — every response should connect to the "Success Secrets of Solomon" book (chapters + page numbers)
-5. **No paid external services** — Stripe for $29 lifetime purchase is already in place and is the only allowed paid integration
+1. Feel AI-like without using any paid AI/API (zero cost — NO OpenAI, Anthropic, etc.)
+2. Biblically accurate — all wisdom grounded in Proverbs
+3. Emotionally intelligent — user feels heard, not just given a verse
+4. Book connections — every response connects to the book (chapters + pages)
+5. Revenue model: $29 lifetime unlock via Stripe (one-time, no subscription)
 
 ---
 
 ## Tech Stack
 
-- **Framework:** Next.js 14 (App Router), TypeScript, React 18
-- **Styling:** Inline styles (no Tailwind, no CSS modules)
-- **Deployment:** Vercel (500+ deployments, auto-deploy on push to main)
-- **Database:** None — all content lives in TypeScript files
-- **Payment:** Stripe ($29 lifetime unlock)
-- **Editor note:** GitHub web editor uses CodeMirror 6 — use CM6 API (`document.querySelector('.cm-content').cmTile.view`) for surgical edits on large files
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 14 (App Router), TypeScript, React 18 |
+| Styling | Inline styles only — NO Tailwind, NO CSS modules |
+| Deployment | Vercel (500+ deployments, green on main) |
+| Database | None — all content in TypeScript files |
+| Payment | Stripe ($29 lifetime unlock) |
+| Analytics | Plausible (asksolomon.app — privacy-first, no cookies) |
+| Email | Formspree (endpoint: https://formspree.io/f/xzdolzzl) |
+| Editor | GitHub web editor uses CodeMirror 6 |
+
+**CM6 API for large file edits:**
+```js
+const view = document.querySelector('.cm-content').cmTile.view;
+// Read: view.state.doc.toString()
+// Write: view.dispatch({ changes: [{ from, to, insert }] })
+```
 
 ---
 
@@ -39,369 +52,268 @@
 
 ### App Pages
 | File | Purpose |
-|------|---------|
-| `app/page.tsx` | Main search page (~2630 lines) — the core of the app |
-| `app/book/page.tsx` | Shows the full book PDF (Pro users) or preview (free) |
-| `app/book-index/page.tsx` | Topic index for the book — lists chapters/pages by topic |
-| `app/upgrade/page.tsx` | Stripe upgrade/purchase page |
-| `app/success/page.tsx` | Post-purchase success page |
-| `app/layout.tsx` | Root layout |
+|---|---|
+| app/page.tsx | Main search page (~2700+ lines) — core of the app |
+| app/book/page.tsx | Full book PDF (Pro users) or preview (free) |
+| app/book-index/page.tsx | Topic index for the book — 30 topics, searchable |
+| app/upgrade/page.tsx | Stripe upgrade/purchase page (rewritten May 14) |
+| app/success/page.tsx | Post-purchase page — sets localStorage Pro unlock |
+| app/layout.tsx | Root layout — SEO, OG tags, Plausible script |
 
-### Library Files (`app/lib/`)
+### Library Files (app/lib/)
 | File | Purpose |
-|------|---------|
-| `wisdomResponse.ts` | **CORE** — Emotional intelligence layer. 21 scenarios with AI-like responses, book connections. Returns `WisdomResponse` object. |
-| `intent.ts` | Smart query interpretation — `expandSmartTerms()`, `interpretQueryAdvanced()`, `smartSearch()` |
-| `proverbs.ts` | Proverb search — `searchProverbsScored(query)` returns scored proverb matches |
-| `verses.ts` | Bible verse data, modes, topics, `findBookMatches()`, `searchVerseItemsScored()` |
-| `bookIndex.ts` | Structured book entries with chapters, pages, excerpts, keywords |
-| `situations.ts` | Situation presets |
-| `access.ts` | `isProUser()` — currently hardcoded to `true` during development |
-| `proverbs/` | Subfolder with core.ts, index.ts, shared.ts — proverb data |
+|---|---|
+| wisdomResponse.ts | CORE — 21+ emotional scenarios, AI-like responses, book connections |
+| intent.ts | Query interpretation — expandSmartTerms(), interpretQueryAdvanced(), smartSearch() |
+| proverbs.ts | Proverb search — searchProverbsScored(query) |
+| verses.ts | Bible verse data, findBookMatches(), searchVerseItemsScored() |
+| bookIndex.ts | 31 structured book entries — chapters, pages, excerpts, keywords |
+| situations.ts | Situation presets (chips shown on empty state) |
+| access.ts | isProUser() — reads localStorage("asksolomon_pro") === "1" |
 
 ---
 
-## What Has Been Completed (as of May 2026)
+## Critical Rules for Claude (ALWAYS FOLLOW)
 
-### Session 1 (prior — details lost)
-- Initial project setup and review
-
-### Session 2 (May 11, 2026)
-- ✅ **Rewrote `wisdomResponse.ts`** — 724 lines, 21 emotional scenarios, AI-like language, book connections for every scenario, absorbed `getWisdomForMoment.ts`
-- ✅ **Deleted `getWisdomForMoment.ts`** — redundant file, absorbed into wisdomResponse.ts
-- ✅ **Updated `app/page.tsx`** with:
-  - Import: `import { getWisdomResponse, type WisdomResponse } from "./lib/wisdomResponse"`
-    - State: `const [wisdomCard, setWisdomCard] = useState<WisdomResponse | null>(null)`
-      - useEffect: calls `getWisdomResponse(q)` whenever query `q` changes
-        - Full wisdom card UI JSX rendered above proverb results
-        - ✅ **Removed `SMART_TOPIC_MAP`** from page.tsx — was dead code (never referenced), 25 lines deleted
-        - ✅ **Kept `scoreProverbMatch`** in page.tsx — it IS used as a fallback scorer inside `proverbMatches` useMemo (different role from imported `searchProverbsScored`)
-        - ✅ **Enhanced book connection UI** in wisdom card — now shows "📖 IN THE BOOK" label + connection text + clickable "Explore Topic in Book Index →" button linking to `/book-index`
-        - ✅ **Added "Book Index" header button** — navigates to `/book-index`, sits between "Book" and "Upgrade (Lifetime)" in the header nav
-
-        ---
-
-        ## What Still Needs Work (Priority Order)
-
-        ### High Impact (do these first)
-        - [x] **Improve `wisdomResponse.ts` book connection strings** — exact page ranges added (e.g. "pp. 80–82"), matching `book-index/page.tsx` data ✅ May 11, 2026
-        - [x] **Add more keyword triggers** — expanded to 20–25 triggers per scenario (stressed, insomnia, can't sleep, job loss, layoff, etc.) ✅ May 11, 2026
-        - [x] **Add search/filter to `book-index/page.tsx`** — live search input filters 30 topics by label, summary, and chapter in real time ✅ May 11, 2026
-
-        ### Medium Impact
-        - [x] **Add more emotional scenarios** to `wisdomResponse.ts` ✅ May 12, 2026:
-          - Job loss / unemployment
-            - Betrayal / broken trust
-              - Grief / loss of loved one
-                - Parenting struggles
-                  - Marriage / divorce
-                    - Financial debt / bankruptcy
-                      - Addiction / bad habits
-                      - [ ] **Improve Smart Topic Mapping chips** in search results display
-
-                      ### Lower Priority
-                      - [ ] Review `verses.ts` content for richness and accuracy
-                      - [ ] Review `situations.ts` presets — currently: Angry, Overwhelmed, Need Direction, Money Stress, Relationship Conflict, Feeling Discouraged
-
-                      ---
-
-                      ## Critical Rules for Claude
-
-                      1. **NO paid services** — zero external AI API costs. Simulate AI behavior through comprehensive keyword matching.
-                      2. **Read all relevant files before coding** — never make changes without understanding context.
-                      3. **No hunt-and-peck coding** — do complete, coherent edits. Don't add small snippets that conflict with existing code.
-                      4. **Do as much as possible for John** — he is a novice and prone to errors. Minimize what he has to do manually.
-                      5. **Commit directly to main** — always select "Commit directly to the main branch" in GitHub commit dialog.
-                      6. **`isProUser()` returns `true`** — this is intentional during development. Do not change it.
-                      7. **CM6 editor API** — for surgical edits in large files, access CodeMirror 6 via `document.querySelector('.cm-content').cmTile.view` in javascript_tool.
-                      8. **Vercel auto-deploys** — every commit to main triggers a Vercel build. Orange dot = building, green checkmark = deployed.
-
-                      ---
-
-                      ## Page Numbers Reference (book-index/page.tsx)
-
-                      | Topic | Pages |
-                      |-------|-------|
-                      | Leadership | 42–46 |
-                      | Discipline | 54–58 |
-                      | Integrity | 66–70 |
-                      | Diligence | 72–76 |
-                      | Fear | 77–80 |
-                      | Confidence | 80–82 |
-                      | Money & Wealth | 88–92 |
-                      | Work Ethic | 96–100 |
-                      | Pride/Humility | 106–114 |
-                      | Speech/Words | 120–124 |
-                      | Anger | 126–128 |
-                      | Relationships | 130–134 |
-                      | Conflict | 138–140 |
-                      | Patience | 140–142 |
-                      | Purpose | 146–150 |
-                      | Success Principles | 170–176 |
-
-                      ---
-
-                      ## How to Resume a Session
-
-                      Start a new Claude chat and say:
-                      > "I want to continue working on my GitHub project jcraddock2/ask-solomon. Please read the NOTES.md file and all key source files to orient yourself, then we can pick up where we left off."
-
-                      Claude will read this file, then read the current state of the code, and be ready to work immediately.
-
-                      ---
-*Last updated: May 14, 2026 — Hero + upgrade page rewritten + Book Matches tease card live. See PRE-LAUNCH ROADMAP in SESSION NOTES.*
+1. **NO paid services** — zero external AI API costs. Simulate AI through keyword matching.
+2. **Commit directly to main** — always select "Commit directly to the main branch" in the GitHub commit dialog. Never create a PR.
+3. **Read relevant files before coding** — never make changes without understanding context.
+4. **Do as much as possible for John** — minimize what he has to do manually.
+5. **isProUser() reads localStorage** — `localStorage.getItem("asksolomon_pro") === "1"`. Do NOT change this logic.
+6. **Inline styles only** — never add Tailwind classes or CSS modules.
+7. **No apostrophes in single-quoted JSX strings** — causes build errors. Use double-quoted strings or `&apos;` for labels containing apostrophes.
+8. **Vercel auto-deploys** — orange dot = building, green checkmark = deployed.
 
 ---
 
-## SESSION NOTES — May 14, 2026
-What Was Done This Session
-- Executed 5-phase fix plan from May 13 (Phases 1–5, all committed to main)
-- Fixed paywall: isProUser() now reads localStorage("asksolomon_pro") instead of hardcoded true
-- Stripe flow confirmed correct: checkout → payment → /success sets localStorage → Pro unlocks
-- Fixed 3 remaining medium-priority failures: "owe people money", "stressed about money", "feel called by God"
-- Added full SEO metadata to layout.tsx: title, description, keywords, Open Graph, Twitter Card, canonical URL
-- Added Plausible analytics script to layout.tsx (privacy-first, no cookies)
-- Mobile QA: confirmed looks good on phone
+## Pro/Free Paywall (what is gated)
 
-Search Score: ~95/100 (up from 80/100)
+**FREE (everyone):**
+- Full Proverbs search
+- Wisdom cards (emotional response + insight)
+- Smart Topic Mapping
+- Email capture
 
-- Fixed email capture form placement: was nested inside Smart Topic Mapping label div (bug from prior commit), moved to standalone block shown after search results for free users
-- Added hero landing section to page.tsx: shows for cold traffic on empty search state, dark navy/gold, 6 emotional example chips, proof bar, collapses when user types
-What Still Needs Doing
-- ✅ Email capture: Formspree form added and placement fixed — shows after search results for free users (endpoint: https://formspree.io/f/xzdolzzl)
-- ✅ GitHub README: updated with correct URL (asksolomon.app), badges, 25+ scenarios, email capture, Formspree
-- ✅ Plausible.io: asksolomon.app registered and verified on Plausible (reconnected May 14 — old Vercel domain was deleted, new site added for asksolomon.app)
-- ✅ OG image: og-image.png exists in /public folder
-- ✅ Custom domain: asksolomon.app connected in Vercel, all URLs in layout.tsx updated (canonical, OG images, Plausible data-domain)
+**PRO ($29 lifetime — gated by isProUser()):**
+- Book Matches section (shows chapter + page for each search result)
+- Full book reader at /book (PDF)
+- Book Index at /book-index (all 30 topics)
 
-## PRE-LAUNCH ROADMAP (added May 14, 2026)
+The search and wisdom response are intentionally FREE — this is the marketing funnel.
 
-### What Was Assessed
-The app is technically solid (~95/100 search score, paywall working, analytics live).
-The main gaps before launch are: onboarding/first-impression, social proof, upgrade clarity, and email nurture.
+---
 
-### Phase A — Conversion & First Impression (DO NEXT)
-- ✅ Hero section: dark navy/gold landing panel for cold traffic with 6 emotional chips (done May 14)
-- ✅ **Upgrade page rewritten**: Dark gold hero, honest book story, "$29 = same as hardcover" anchor, blurred excerpt tease on Book Matches card, gold CTA buttons
-- [ ] **Share a wisdom result**: Add a "Share this wisdom" button on wisdom cards so users can share their response to social media — organic word-of-mouth
+## Book Facts (Success Secrets of Solomon by John Craddock)
+
+- **247 pages** total (last entry in bookIndex.ts is Page 247)
+- **30 devotionals** (not traditional chapters — it is a devotional format)
+- **Hardcover price:** $29 retail
+- **App price:** $29 lifetime (same anchor — digital + searchable app)
+- The book connects every major life challenge to principles Solomon actually lived
+
+### Page Reference Table
+| Topic | Pages |
+|---|---|
+| Leadership | 42–46 |
+| Discipline | 54–58 |
+| Integrity | 66–70 |
+| Diligence | 72–76 |
+| Fear | 77–80 |
+| Confidence | 80–82 |
+| Money & Wealth | 88–92 |
+| Work Ethic | 96–100 |
+| Pride/Humility | 106–114 |
+| Speech/Words | 120–124 |
+| Anger | 126–128 |
+| Relationships | 130–134 |
+| Conflict | 138–140 |
+| Patience | 140–142 |
+| Purpose | 146–150 |
+| Success Principles | 170–176 |
+
+---
+
+## Current App State (as of May 14, 2026)
+
+### What Is Live and Working ✅
+- Hero landing section (dark navy/gold, 6 emotional chips, collapses on search)
+- Book Matches tease card (shows chapter title + blurred excerpt + gold CTA for free users)
+- Upgrade page (dark navy/gold hero, honest copy, 247-page devotional, $29 anchor)
+- Email capture form (Formspree, shown after search results for free users)
+- Plausible analytics (asksolomon.app — verified and active)
+- OG image (og-image.png in /public)
+- Custom domain (asksolomon.app — Vercel + layout.tsx updated)
+- isProUser() reads localStorage correctly (not hardcoded)
+- Stripe checkout → /success → localStorage Pro unlock — full flow confirmed
+- SEO metadata in layout.tsx (title, description, OG, Twitter Card, canonical)
+- 21+ emotional scenarios in wisdomResponse.ts
+- Search score: ~95/100
+
+### Vercel Deployments (both green ✅)
+- ask-solomon (production)
+- ask-solomon-icd1 (production)
+
+---
+
+## PRE-LAUNCH ROADMAP
+
+### Phase A — Conversion & First Impression
+- ✅ Hero section (dark navy/gold, 6 emotional chips)
+- ✅ Book Matches tease card (chapter title + blurred excerpt)
+- ✅ Upgrade page rewritten (honest copy, 247-page devotional, $29 anchor)
+- ⬜ **"Share this wisdom" button** — NEXT PRIORITY (see below)
 
 ### Phase B — Social Proof & Trust
-- [ ] **Testimonials**: Add 3–5 real quotes from early users on the home page/hero area. Ask family, friends, book readers first.
-- [ ] **Usage counter**: Add a small "X wisdom searches today" or "Join X people who've found wisdom here" stat (can start with a realistic static number)
-- [ ] **Featured in book**: Add a small callout connecting the app to the physical book more explicitly for book readers landing on the app
+- ⬜ Testimonials: 3–5 real quotes from early readers on hero/home area
+- ⬜ Usage counter: "Join X people who found wisdom here" (can start static)
+- ⬜ Book callout: explicit connection for book readers landing on the app
 
 ### Phase C — Email Nurture Loop
-- [ ] **Welcome email**: Set up a Formspree redirect or webhook to trigger a welcome email when someone subscribes (currently subscribers hear nothing)
-- [ ] **Weekly email content**: Start sending actual weekly wisdom verses to the email list (can be manual at first — one verse + insight + link back to app)
-- [ ] **Email sequence**: 3-email drip: (1) Welcome + what Ask Solomon is, (2) Favorite scenario highlight, (3) Soft pitch for $29 Pro
+- ⬜ Welcome email: set up Formspree redirect/webhook to send auto-welcome
+- ⬜ Weekly wisdom: start sending one verse + insight + link (manual is fine at first)
+- ⬜ 3-email drip: (1) Welcome + what it is, (2) Scenario highlight, (3) Soft $29 pitch
 
 ### Phase D — Marketing Channels
-- [ ] **Book audience first**: Email/message existing book readers about the app — they are the warmest audience
-- [ ] **Short-form video**: Record 2–3 TikTok/Instagram Reels showing a real emotional search + response (e.g., "I typed 'I feel like a failure' and got this…")
-- [ ] **SEO landing pages**: Create simple dedicated pages for high-intent searches: "proverbs for anxiety", "biblical wisdom for job loss", etc.
-- [ ] **Pinterest/Instagram**: Scripture graphic cards (the app's share image feature) posted regularly with link to asksolomon.app
+- ⬜ Email existing book readers first — warmest audience
+- ⬜ Short-form video: TikTok/Instagram Reels of real emotional search + response
+- ⬜ SEO pages: dedicated pages for "proverbs for anxiety", "biblical wisdom for job loss", etc.
+- ⬜ Scripture graphic cards on Pinterest/Instagram (use share card feature)
 
-### Phase E — Product Polish (Lower Priority)
-- [ ] **Wisdom result share image**: Improve the shareable image card (already exists) — make it more beautiful/brandable for Instagram
-- [ ] **Pro upgrade page polish**: Current upgrade page may be minimal — add screenshots, feature list, guarantee language
-- [ ] **Mobile first-visit experience**: Test cold landing on iPhone — does the hero + search feel good? Is the CTA clear?
-
-### Key Metrics to Watch (once live)
-- Plausible: pageviews, bounce rate, session length
-- Formspree: email signups per week
-- Stripe: Pro conversions (target: 1-2% of visitors)
-- Most-used scenarios (tells you what content to amplify in marketing)
-
-SESSION NOTES — May 13, 2026
-
-### What Was Done This Session
-- Fixed Vercel build error: BOOK_INDEX not exported from bookIndex.ts (commit 87363b3)
-- Ran 100 live test searches using Next.js router client-side navigation
-- Scored 80/100 fully working (specific banner + 5+ proverb results + book matches)
-
-### 100-Search Test Results — Score: 80/100
-
-#### CRITICAL (1) — Complete failure
-- DEBT | "i have no savings" — nothing shown, "savings" maps to no lane
-
-#### HIGH — Generic Banner (14 queries — no emotional wisdom card)
-- ADDICTION: "i cant stop drinking", "i want to get sober", "i am in bondage to sin"
-- GRIEF: "i cant stop crying", "i am dealing with loss"
-- FEAR: "i dont feel safe"
-- ANGER: "i cant control my temper", "i want to hurt someone"
-- DEBT: "i have no savings"
-- PARENTING: "i dont know how to raise my kids", "i am a single parent struggling"
-- BETRAYAL: "my best friend stabbed me in the back"
-- PRIDE: "i think i am better than others"
-- SPEECH: "i speak before i think"
-
-#### HIGH — Zero Proverb Results but Wisdom Card OK (4 queries)
-- FEAR: "i am terrified"
-- PARENTING: "my child is rebelling"
-- PARENTING: "i feel like a bad parent"
-- PRIDE: "i need to be humble"
-
-#### HIGH — Wrong Intent / False Positive Lane Matches (4 queries)
-- "i cant stop crying" -> "cant stop" triggers ADDICTION lane -> gets Discipline books not Grief
-- "i am a single parent struggling" -> "struggling" triggers TEMPTATION lane -> gets lust/sin topics
-- "i struggle with pride" -> "struggle" triggers ADDICTION lane -> gets addiction topics
-- "i want to hurt someone" -> "hurting/hurt" triggers GRIEF lane -> gets Grief books not Anger
-
-#### MEDIUM — Emotion/Book Mismatch
-- "my husband died" -> "husband" triggers MARRIAGE scenario -> gets love/pain response not grief
-- "i am stressed about money" -> "stressed" pulls fear -> gets Confidence books not Money books
-- "i owe people money" -> "owe" not in debt lane -> gets Leadership books
-- "i cant find work" -> gets Leadership books not Work/Diligence books
-- "i feel called by God" -> gets Rejection/Trust books not Purpose/Calling books
-- All 10 JOB_LOSS queries -> same emotional state (not differentiated by situation)
+### Phase E — Product Polish
+- ⬜ Share image card: make more beautiful/brandable for Instagram
+- ⬜ Mobile cold-visit QA: test hero + search on iPhone as cold visitor
+- ⬜ Wisdom card improvements (see Overnight Audit below)
 
 ---
 
-### 5-PHASE FIX PLAN — COMPLETED May 14, 2026
+## NEXT SESSION — START HERE
 
-#### PHASE 1 — app/lib/wisdomResponse.ts — Add missing triggers to existing scenarios
-Find each scenario's triggers array and ADD these new trigger strings:
+**The immediate next task is Phase A: "Share this wisdom" button.**
 
-ADDICTION scenario triggers — ADD:
-"cant stop drinking", "i cant stop drinking", "drinking", "alcohol", "i drink too much",
-"i want to get sober", "want to get sober", "sober", "sobriety", "get sober",
-"bondage to sin", "in bondage", "i am in bondage"
+### Share Button Spec
+Add a share button to the wisdom card (`wisdomCard` block in `app/page.tsx`).
 
-GRIEF scenario triggers — ADD:
-"i cant stop crying", "cant stop crying", "i keep crying", "i cry all the time",
-"dealing with loss", "i am dealing with loss", "trying to deal with loss",
-"dealing with grief", "lost and grieving"
+**Behavior:**
+- On mobile: use native Web Share API (`navigator.share`) — opens native share sheet
+- On desktop: copy formatted text to clipboard, show "Copied!" confirmation toast
+- Available to ALL users (free and Pro) — this is organic word-of-mouth growth
 
-FEAR scenario triggers — ADD:
-"i dont feel safe", "dont feel safe", "i do not feel safe", "not safe", "unsafe", "i feel unsafe"
+**Share text format:**
+```
+[Headline from wisdom card]
 
-ANGER scenario triggers — ADD:
-"i cant control my temper", "cant control my temper", "temper", "lose my temper",
-"lost my temper", "i want to hurt someone", "want to hurt someone", "hurt someone"
+[Insight text — 1-2 sentences]
 
-DEBT scenario triggers — ADD:
-"i have no savings", "no savings", "have no savings", "spent all my savings"
+— Ask Solomon · asksolomon.app
+```
 
-PARENTING scenario triggers — ADD:
-"i dont know how to raise my kids", "dont know how to raise", "raise my kids",
-"raising kids", "i am a single parent struggling", "single parent struggling",
-"single parent", "raising my kids alone"
+**Button design:**
+- Small, subtle — sits below the wisdom card content, right-aligned or centered
+- Icon: share icon or 📤
+- Label: "Share this wisdom"
+- On desktop after copy: briefly shows "✓ Copied!" then resets
+- Style: matches app — dark navy or gold accent, rounded, lightweight
 
-BETRAYAL scenario triggers — ADD:
-"my best friend stabbed me in the back", "stabbed me in the back", "best friend betrayed me",
-"friend stabbed me", "best friend lied"
-
-PRIDE scenario triggers — ADD:
-"i think i am better than others", "think i am better", "better than everyone",
-"act like i am better", "i am better than others"
-
-SPEECH scenario triggers — ADD:
-"i speak before i think", "speak before i think", "i say things without thinking",
-"blurt things out", "think before i speak"
-
-#### PHASE 2 — app/lib/intent.ts — Fix false positive lane matches
-FIND the addiction lane terms array. REMOVE these standalone terms:
-- "cant stop" (too generic — catches "cant stop crying")
-- "can't stop" (same)
-- "struggle" (too generic — catches "struggle with pride")
-- "struggling" (too generic — catches "single parent struggling")
-REPLACE with multi-word versions:
-- "cant stop using", "cant stop drinking", "cant stop using drugs"
-
-FIND the temptation lane terms array. REMOVE:
-- "struggling" (catches "single parent struggling")
-
-FIND the grief lane terms array. CHECK if "hurt" or "hurting" is there.
-If yes, REMOVE bare "hurt" and "hurting" (too generic — catches "i want to hurt someone")
-Keep: "heartbroken", "heartbreak", "broken heart"
-
-ADD to anger lane terms:
-"temper", "my temper", "lose my temper", "want to hurt", "hurt someone"
-
-ADD to fear lane terms:
-"terrified", "feel safe", "not safe", "unsafe", "dont feel safe"
-
-ADD to debt lane terms:
-"no savings", "savings", "no money saved", "spent everything i had"
-
-ADD to grief lane terms (for "my husband died" type queries):
-"my husband died", "my wife died", "my spouse died", "death of my", "passed away recently"
-
-#### PHASE 3 — app/lib/proverbs.ts — Fix zero-result queries
-FIND the INTENT_EXPANSIONS object closing brace. INSERT before it:
-  terrified: ["fear", "afraid", "terror", "dread", "paralyzed", "scared", "courage", "trust", "strength", "safety"],
-  rebelling: ["rebellion", "wayward", "prodigal", "discipline", "correction", "instruction", "consequences", "training"],
-  "bad parent": ["parenting", "discipline", "correction", "instruction", "train", "child", "wisdom", "patient", "guidance"],
-  humble: ["humility", "pride", "arrogance", "lowly", "servant", "meek", "exalt", "honor", "teachable", "selfless"],
-  humility: ["humble", "pride", "arrogance", "lowly", "servant", "meek", "exalt", "honor", "teachable", "selfless"],
-  "feel safe": ["safety", "refuge", "protect", "shield", "trust", "fortress", "shelter", "peace", "secure"],
-  savings: ["money", "wealth", "stewardship", "debt", "diligence", "planning", "future", "provision", "financial"],
-  "no savings": ["money", "wealth", "stewardship", "debt", "diligence", "planning", "provision", "financial"],
-
-#### PHASE 4 — app/lib/wisdomResponse.ts — Add 2 differentiated job-loss scenarios
-INSERT two new scenario objects. Each needs: id, triggers[], emotionalState, headline, whatIHear, insight, reflect, nextStep, bookRef.
-
-Scenario A — SUDDEN JOB LOSS (shock):
-- id: "job-loss-sudden"
-- triggers: ["fired today", "was fired", "got fired", "laid off today", "lost my job today", "they let me go", "i was let go", "just got fired", "just got laid off"]
-- emotionalState: "shocked, blindsided, and unsure what comes next"
-- headline: "Wisdom Meets You in the Blindside"
-- whatIHear: "You didn't see this coming — and the ground feels unsteady right now."
-- insight: "Proverbs does not define your identity by your employment. Your worth precedes your work. Sudden loss can become sudden clarity about what you were meant for next."
-- reflect: "What does this loss reveal about what you truly want — and what you were tolerating?"
-- nextStep: "Give yourself 24 hours before making any major decisions. Then take one practical step: update a resume, call one trusted person, or sit quietly and ask what is next."
-- bookRef: "Success Secrets of Solomon — Work Ethic (pp. 96–100) and Purpose (pp. 146–150)"
-
-Scenario B — STUCK AT WORK:
-- id: "job-stuck"
-- triggers: ["hate my job", "stuck in my job", "feel stuck at work", "no purpose at work", "dread going to work", "i dread work", "going to work is torture", "my job drains me"]
-- emotionalState: "trapped, purposeless, and wondering if this is all there is"
-- headline: "Wisdom Speaks to the Stuck Place"
-- whatIHear: "You're not lazy — you're misaligned. Something in you knows you were made for more than this."
-- insight: "Proverbs connects diligence to meaning, not just output. When your work stops feeding your soul, it may be calling you toward something God is preparing. Wisdom does not say stay stuck — it says use this season to build and discern."
-- reflect: "If fear were not a factor, what kind of work would you pursue? What gifts are you leaving unused right now?"
-- nextStep: "Do not quit in frustration — plan in wisdom. Spend 15 minutes this week writing down what you are actually good at and what work feels alive to you."
-- bookRef: "Success Secrets of Solomon — Purpose (pp. 146–150) and Diligence (pp. 72–76)"
-
-#### PHASE 5 — app/lib/bookIndex.ts — Fix keyword mismatches
-FIND these entries and ADD keywords:
-
-Money & Wealth entry (id: "money-1") keywords — ADD:
-"savings", "save money", "no savings", "owe", "owed", "owing", "borrowed money",
-"financially ruined", "money stress", "stressed about money", "spending problem",
-"in debt", "debt free", "cant pay", "bills"
-
-Diligence / Work entries keywords — ADD:
-"cant find work", "find work", "finding work", "job search", "unemployed",
-"no job", "looking for work", "need a job"
-
-Purpose/Direction entry keywords — ADD:
-"called by God", "calling", "Gods calling", "Gods plan", "called to serve",
-"my calling", "spiritual calling"
-
-Addiction entry (id: "addiction-1") keywords — REMOVE:
-"struggle", "struggling" (too broad — causes false matches for pride, parenting)
-
-Confidence/Fear entries keywords — ADD:
-"terrified", "feel safe", "not safe", "unsafe", "safety", "security"
-
-Parenting entry (id: "parenting-1") keywords — ADD:
-"rebelling", "rebel", "bad parent", "dont know how to raise", "single parent",
-"raise kids", "raise children", "child wont listen"
-
-Pride/Humility entry (id: "integrity-1" or relevant) keywords — ADD:
-"humble", "humility", "arrogant", "better than others", "need to be humble",
-"arrogance", "think i am better"
-
-Speech/Words entry (id: "speech-1") keywords — ADD:
-"speak before i think", "think before speaking", "blurt out", "say things impulsively",
-"words hurt people", "hurt people with words"
+**Implementation notes:**
+- Detect mobile via `typeof navigator.share !== "undefined"`
+- wisdomCard state is `wisdomCard: WisdomResponse | null` — fields available: headline, insight, reflect, nextStep, bookRef
+- Build share text from `wisdomCard.headline` + `wisdomCard.insight`
+- This is purely client-side, no API needed
 
 ---
 
-### Resume Instructions for Next Session
-Say: "I want to continue working on my GitHub project jcraddock2/ask-solomon. Please read NOTES.md first."
-Then say: "Execute the 5-phase fix plan from the May 13 session notes."
-Claude will know exactly what to do without re-testing.
+## OVERNIGHT AUDIT — Areas for Improvement
 
-Test URL: https://ask-solomon-pne8fjiwv-john-craddocks-projects.vercel.app/
+*These were identified on May 14, 2026 during session review. Prioritize after the Share button.*
+
+### 1. Upgrade Page — "All future features" bullet is weak
+**Current:** "Founding members receive every premium feature added to Ask Solomon going forward — at no extra cost."
+**Problem:** Vague — doesn't tell the buyer what future features might actually be.
+**Fix idea:** Replace with something concrete: "Pro members receive the Share Card feature, any new book chapters added, and all future app tools — no extra charge, ever."
+
+### 2. Book Matches tease card — no blurred text fallback if excerpt is empty
+**Current:** The blur overlay assumes `entry.excerpt` exists. If it is empty/undefined, the blur div renders empty.
+**Fix:** Add a fallback — if no excerpt, show a decorative placeholder like "This chapter speaks directly to what you are facing..."
+
+### 3. Hero chips — could be more search-connected
+**Current:** Chips show but do not trigger a search when clicked (they are just visual).
+**Check in code:** Verify whether hero chips onClick calls the search handler. If not, wire them up so clicking a chip actually runs the search with that phrase. This would dramatically improve cold-traffic conversion.
+
+### 4. Email capture — no confirmation message after submit
+**Current:** Formspree handles submission, but there is no in-app "Thank you, you are on the list!" message shown to the user.
+**Fix:** Add a `[emailSubmitted, setEmailSubmitted]` state boolean. On form submit success, replace the form with a thank-you message.
+
+### 5. Upgrade page — "All 247 pages" repeated twice
+**Current:** The hero description says "247-page devotional" and the What You Unlock bullet says "All 247 pages of...". Slightly redundant.
+**Fix:** The bullet can say "The complete book — 247 pages, readable on any device. No PDF download required." (already says this — just note to not add more 247 references).
+
+### 6. isProUser() — dev vs production flag
+**Current:** `isProUser()` reads `localStorage("asksolomon_pro") === "1"`. This is correct for production.
+**Check:** Confirm there is no leftover `return true` hardcode anywhere in access.ts. If there is, remove it before launch.
+
+### 7. Share URL in wisdom card build text
+**Fixed this session:** The `buildShareText` function had `https://ask-solomon.app` (with hyphen) — corrected to `https://asksolomon.app`. Verify this is live.
+
+### 8. Mobile hero — chip font size
+**Check:** On small screens (375px iPhone SE), the 6 hero chips may wrap awkwardly. Open Chrome DevTools mobile emulator and check the hero section at 375px wide.
+
+### 9. Book Matches "Unlock — $29 Lifetime" CTA button
+**Current:** Redirects to /upgrade. 
+**Improvement:** Pass a query param so the upgrade page knows the user came from a book match (for future analytics): `/upgrade?ref=book-match`
+
+### 10. Wisdom card — "reflect" and "nextStep" fields
+**Check in code:** Are both the `reflect` question and `nextStep` text being rendered in the wisdom card UI? These are the highest-value differentiating features (makes it feel like a coach, not just a verse). If either is hidden or missing from the UI, surface them.
+
+---
+
+## Session History
+
+### Session — May 14, 2026 (current)
+**What was done:**
+- Fixed email capture form placement (was nested inside Smart Topic Mapping label div)
+- Reconnected Plausible for asksolomon.app (old Vercel domain was deleted)
+- Updated README.md (correct URL, badges, 25+ scenarios, Formspree)
+- Added hero landing section (dark navy/gold, 6 emotional chips, collapses on search)
+- Fixed Vercel build error: apostrophes in single-quoted JSX chip labels — switched to double quotes
+- Strategic analysis: decided to keep search FREE, fix upgrade page copy instead of adding 30-day trial
+- Replaced locked Book Matches card with tease card (chapter title + blurred excerpt + gold CTA)
+- Rewrote upgrade page (dark navy/gold hero, honest copy, $29 anchor, honest benefit list)
+- Updated upgrade page copy: "247-page devotional" (from bookIndex.ts data), "gives you the principles for success" (tagline)
+
+**Commits this session:**
+1. Fix email capture form placement
+2. README.md: Update URL to asksolomon.app, add email capture + 25 scenarios
+3. Add hero landing section for cold traffic + fix share URL to asksolomon.app
+4. Fix syntax error: escape apostrophes in hero chip labels with double quotes
+5. Improve Book Matches paywall: tease chapter title + blurred excerpt, gold CTA
+6. Rewrite upgrade page: honest copy, book story, $29 anchor, gold CTA
+7. Upgrade page: 247-page devotional, updated tagline to principles for success
+
+### Session — May 13, 2026
+- Ran 100 live test searches, scored 80/100
+- Created 5-phase fix plan (all completed May 14)
+- Fixed Vercel build error (BOOK_INDEX export)
+
+### Session — May 12, 2026
+- Added 7 new emotional scenarios to wisdomResponse.ts
+- Executed all 5 phases of fix plan from May 13 session
+
+### Session — May 11, 2026
+- Rewrote wisdomResponse.ts (724 lines, 21 scenarios)
+- Added book connection UI to wisdom card
+- Added Book Index header button
+- Removed dead SMART_TOPIC_MAP code
+
+---
+
+## How to Resume a Session
+
+Start a new Claude chat and say:
+
+> "I want to continue working on my GitHub project jcraddock2/ask-solomon. Please read NOTES.md first, then we can pick up where we left off."
+
+Claude will read this file and be ready immediately. The next task is the **Share this wisdom button** (Phase A).
+
+---
+
+*Last updated: May 14, 2026 — End of session. Next: Share button (Phase A) → Testimonials (Phase B).*
