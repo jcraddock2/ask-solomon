@@ -149,11 +149,33 @@
                       Claude will read this file, then read the current state of the code, and be ready to work immediately.
 
                       ---
-*Last updated: May 14, 2026 — 5-phase fix plan executed. See SESSION NOTES below for details.*
+*Last updated: May 14, 2026 — Search score ~95/100, paywall fixed, SEO + analytics added. See SESSION NOTES below.*
 
 ---
 
-## SESSION NOTES — May 13, 2026
+## SESSION NOTES — May 14, 2026
+What Was Done This Session
+- Executed 5-phase fix plan from May 13 (Phases 1–5, all committed to main)
+- Fixed paywall: isProUser() now reads localStorage("asksolomon_pro") instead of hardcoded true
+- Stripe flow confirmed correct: checkout → payment → /success sets localStorage → Pro unlocks
+- Fixed 3 remaining medium-priority failures: "owe people money", "stressed about money", "feel called by God"
+- Added full SEO metadata to layout.tsx: title, description, keywords, Open Graph, Twitter Card, canonical URL
+- Added Plausible analytics script to layout.tsx (privacy-first, no cookies)
+- Mobile QA: confirmed looks good on phone
+
+Search Score: ~95/100 (up from 80/100)
+
+What Still Needs Doing
+- Email capture: add "Get weekly wisdom" input for free users (Formspree or similar)
+- GitHub README: add project description
+- Plausible.io: John needs to register the domain to activate analytics tracking
+  Go to plausible.io → Add site → enter domain → analytics will start working
+- OG image: create a 1200x630 image named og-image.png and add to /public folder
+  Currently og:image tag points to /og-image.png which doesn't exist yet
+- Custom domain: if John connects a custom domain in Vercel, update the canonical URL
+  and Plausible data-domain in layout.tsx to match
+
+SESSION NOTES — May 13, 2026
 
 ### What Was Done This Session
 - Fixed Vercel build error: BOOK_INDEX not exported from bookIndex.ts (commit 87363b3)
