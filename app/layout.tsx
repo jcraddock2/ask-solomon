@@ -21,12 +21,12 @@ export const metadata: Metadata = {
     title: "Ask Solomon — Biblical Wisdom for What You're Facing Right Now",
     description:
       "Search Proverbs for wisdom based on what you're feeling. Personalized, emotionally intelligent responses rooted in Scripture.",
-    url: "https://ask-solomon-ten.vercel.app",
+    url: "https://asksolomon.app",
     siteName: "Ask Solomon",
     type: "website",
     images: [
       {
-        url: "https://ask-solomon-ten.vercel.app/og-image.png",
+        url: "https://asksolomon.app/og-image.png",
         width: 1200,
         height: 630,
         alt: "Ask Solomon — Biblical Wisdom App",
@@ -38,14 +38,14 @@ export const metadata: Metadata = {
     title: "Ask Solomon — Biblical Wisdom for What You're Facing Right Now",
     description:
       "Search Proverbs for wisdom based on what you're feeling. Personalized responses rooted in Scripture.",
-    images: ["https://ask-solomon-ten.vercel.app/og-image.png"],
+    images: ["https://asksolomon.app/og-image.png"],
   },
   robots: {
     index: true,
     follow: true,
   },
   alternates: {
-    canonical: "https://ask-solomon-ten.vercel.app",
+    canonical: "https://asksolomon.app",
   },
 };
 
@@ -57,7 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Register your domain at plausible.io to activate tracking */}
         <Script
           defer
-          data-domain="ask-solomon-ten.vercel.app"
+          data-domain="asksolomon.app"
           src="https://plausible.io/js/script.js"
           strategy="afterInteractive"
         />
