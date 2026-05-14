@@ -149,7 +149,7 @@
                       Claude will read this file, then read the current state of the code, and be ready to work immediately.
 
                       ---
-*Last updated: May 14, 2026 — Search score ~95/100, paywall fixed, SEO + analytics added. See SESSION NOTES below.*
+*Last updated: May 14, 2026 — Search score ~95/100, paywall fixed, SEO + analytics added, email capture fixed. See SESSION NOTES below.*
 
 ---
 
@@ -165,8 +165,9 @@ What Was Done This Session
 
 Search Score: ~95/100 (up from 80/100)
 
+- Fixed email capture form placement: was nested inside Smart Topic Mapping label div (bug from prior commit), moved to standalone block shown after search results for free users
 What Still Needs Doing
-- Email capture: add "Get weekly wisdom" input for free users (Formspree or similar)
+- ✅ Email capture: Formspree form added and placement fixed — shows after search results for free users (endpoint: https://formspree.io/f/xzdolzzl)
 - GitHub README: add project description
 - Plausible.io: John needs to register the domain to activate analytics tracking
   Go to plausible.io → Add site → enter domain → analytics will start working
