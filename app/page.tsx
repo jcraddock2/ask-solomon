@@ -1631,90 +1631,92 @@ const applySituation = (situationQuery: string) => {
               </div>
             )}
 
+{/* Email Capture — show for free users, after search results */}
+{!isProUser() && q.trim().length > 0 && (
+  <div style={{
+    background: 'linear-gradient(135deg, #1a1040 0%, #0d1b2a 100%)',
+    border: '1px solid rgba(212,175,55,0.3)',
+    borderRadius: '12px',
+    padding: '24px 28px',
+    marginTop: '20px',
+    marginBottom: '24px',
+    textAlign: 'center',
+  }}>
+    <div style={{ fontSize: '20px', marginBottom: '6px' }}>📖</div>
+    <div style={{ color: '#f5e06e', fontWeight: 700, fontSize: '16px', marginBottom: '6px' }}>
+      Get a free weekly wisdom verse
+    </div>
+    <div style={{ color: 'rgba(220,200,140,0.8)', fontSize: '13px', marginBottom: '16px' }}>
+      One verse. One insight. Delivered every week from Proverbs.
+    </div>
+    {emailStatus === 'success' ? (
+      <div style={{ color: '#6ee7b7', fontWeight: 600, fontSize: '15px' }}>
+        ✓ You're on the list! Check your inbox.
+      </div>
+    ) : (
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault()
+          setEmailStatus('sending')
+          try {
+            const res = await fetch('https://formspree.io/f/xzdolzzl', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+              body: JSON.stringify({ email: emailInput }),
+            })
+            if (res.ok) { setEmailStatus('success') }
+            else { setEmailStatus('error') }
+          } catch { setEmailStatus('error') }
+        }}
+        style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}
+      >
+        <input
+          type="email"
+          required
+          placeholder="your@email.com"
+          value={emailInput}
+          onChange={(e) => setEmailInput(e.target.value)}
+          style={{
+            padding: '10px 16px',
+            borderRadius: '8px',
+            border: '1px solid rgba(212,175,55,0.4)',
+            background: 'rgba(255,255,255,0.08)',
+            color: '#fff',
+            fontSize: '14px',
+            minWidth: '220px',
+            outline: 'none',
+          }}
+        />
+        <button
+          type="submit"
+          disabled={emailStatus === 'sending'}
+          style={{
+            padding: '10px 20px',
+            borderRadius: '8px',
+            background: emailStatus === 'sending' ? '#888' : '#d4af37',
+            color: '#1a1040',
+            fontWeight: 700,
+            fontSize: '14px',
+            border: 'none',
+            cursor: emailStatus === 'sending' ? 'not-allowed' : 'pointer',
+          }}
+        >
+          {emailStatus === 'sending' ? 'Sending…' : 'Subscribe Free'}
+        </button>
+      </form>
+    )}
+    {emailStatus === 'error' && (
+      <div style={{ color: '#f87171', fontSize: '13px', marginTop: '8px' }}>
+        Something went wrong. Please try again.
+      </div>
+    )}
+  </div>
+)}
+
 {q.trim().length > 0 && smartExpandedTerms.length > 1 && (
   <div style={{ marginTop: 10 }}>
     <div style={{ fontSize: 11, fontWeight: 900, color: "#64748b", marginBottom: 6 }}>
-      {/* Email Capture — show for free users */}
-      {!isProUser() && (
-        <div style={{
-          background: 'linear-gradient(135deg, #1a1040 0%, #0d1b2a 100%)',
-          border: '1px solid rgba(212,175,55,0.3)',
-          borderRadius: '12px',
-          padding: '24px 28px',
-          marginBottom: '24px',
-          textAlign: 'center',
-        }}>
-          <div style={{ fontSize: '20px', marginBottom: '6px' }}>📖</div>
-          <div style={{ color: '#f5e06e', fontWeight: 700, fontSize: '16px', marginBottom: '6px' }}>
-            Get a free weekly wisdom verse
-          </div>
-          <div style={{ color: 'rgba(220,200,140,0.8)', fontSize: '13px', marginBottom: '16px' }}>
-            One verse. One insight. Delivered every week from Proverbs.
-          </div>
-          {emailStatus === 'success' ? (
-            <div style={{ color: '#6ee7b7', fontWeight: 600, fontSize: '15px' }}>
-              ✓ You're on the list! Check your inbox.
-            </div>
-          ) : (
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault()
-                setEmailStatus('sending')
-                try {
-                  const res = await fetch('https://formspree.io/f/xzdolzzl', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-                    body: JSON.stringify({ email: emailInput }),
-                  })
-                  if (res.ok) { setEmailStatus('success') }
-                  else { setEmailStatus('error') }
-                } catch { setEmailStatus('error') }
-              }}
-              style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}
-            >
-              <input
-                type="email"
-                required
-                placeholder="your@email.com"
-                value={emailInput}
-                onChange={(e) => setEmailInput(e.target.value)}
-                style={{
-                  padding: '10px 16px',
-                  borderRadius: '8px',
-                  border: '1px solid rgba(212,175,55,0.4)',
-                  background: 'rgba(255,255,255,0.08)',
-                  color: '#fff',
-                  fontSize: '14px',
-                  minWidth: '220px',
-                  outline: 'none',
-                }}
-              />
-              <button
-                type="submit"
-                disabled={emailStatus === 'sending'}
-                style={{
-                  padding: '10px 20px',
-                  borderRadius: '8px',
-                  background: emailStatus === 'sending' ? '#888' : '#d4af37',
-                  color: '#1a1040',
-                  fontWeight: 700,
-                  fontSize: '14px',
-                  border: 'none',
-                  cursor: emailStatus === 'sending' ? 'not-allowed' : 'pointer',
-                }}
-              >
-                {emailStatus === 'sending' ? 'Sending…' : 'Subscribe Free'}
-              </button>
-            </form>
-          )}
-          {emailStatus === 'error' && (
-            <div style={{ color: '#f87171', fontSize: '13px', marginTop: '8px' }}>
-              Something went wrong. Please try again.
-            </div>
-          )}
-        </div>
-      )}
-      Smart Topic Mapping
+            Smart Topic Mapping
     </div>
     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
       {smartExpandedTerms.slice(0, 8).map((term) => (
