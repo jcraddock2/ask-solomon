@@ -186,6 +186,12 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       "what if",
       "can't stop worrying",
       "anxious all the time",
+      "i dont feel safe",
+      "dont feel safe",
+      "i do not feel safe",
+      "not safe",
+      "unsafe",
+      "i feel unsafe",
     ])
   ) {
     return {
@@ -229,6 +235,14 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       "outraged",
       "livid",
       "so angry",
+      "i cant control my temper",
+      "cant control my temper",
+      "temper",
+      "lose my temper",
+      "lost my temper",
+      "i want to hurt someone",
+      "want to hurt someone",
+      "hurt someone",
     ])
   ) {
     return {
@@ -401,6 +415,11 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       "i was wrong",
       "need to be humble",
       "learned humility",
+      "i think i am better than others",
+      "think i am better",
+      "better than everyone",
+      "act like i am better",
+      "i am better than others",
     ])
   ) {
     return {
@@ -611,6 +630,11 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       "sarcasm",
       "critical",
       "harsh words",
+      "i speak before i think",
+      "speak before i think",
+      "i say things without thinking",
+      "blurt things out",
+      "think before i speak",
     ])
   ) {
     return {
@@ -958,6 +982,67 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
   }
 
 
+  // --- JOB LOSS SUDDEN (shock/blindside) ---
+  if (
+    includesAny(q, [
+      "fired today",
+      "was fired",
+      "got fired",
+      "laid off today",
+      "lost my job today",
+      "they let me go",
+      "i was let go",
+      "just got fired",
+      "just got laid off",
+    ])
+  ) {
+    return {
+      emotionalState: "shocked, blindsided, and unsure what comes next",
+      deeperMeaning:
+        "You didn\'t see this coming — and right now the ground feels unsteady. That is a completely honest response to sudden loss.",
+      searchLanes: ["work", "purpose", "provision", "hope", "identity"],
+      headline: "Wisdom Meets You in the Blindside",
+      insight:
+        "Proverbs does not define your identity by your employment. Your worth precedes your work. Sudden loss can become sudden clarity about what you were meant for next.",
+      reflection:
+        "What does this loss reveal about what you truly want — and what you were tolerating?",
+      nextStep:
+        "Give yourself 24 hours before making any major decisions. Then take one practical step: update a resume, call one trusted person, or sit quietly and ask what is next.",
+      bookConnection:
+        "Success Secrets of Solomon — Work Ethic (pp. 96–100) and Purpose (pp. 146–150)",
+    };
+  }
+
+  // --- JOB STUCK (trapped/purposeless at work) ---
+  if (
+    includesAny(q, [
+      "hate my job",
+      "stuck in my job",
+      "feel stuck at work",
+      "no purpose at work",
+      "dread going to work",
+      "i dread work",
+      "going to work is torture",
+      "my job drains me",
+    ])
+  ) {
+    return {
+      emotionalState: "trapped, purposeless, and wondering if this is all there is",
+      deeperMeaning:
+        "You\'re not lazy — you\'re misaligned. Something in you knows you were made for more than this.",
+      searchLanes: ["purpose", "work", "diligence", "calling", "direction"],
+      headline: "Wisdom Speaks to the Stuck Place",
+      insight:
+        "Proverbs connects diligence to meaning, not just output. When your work stops feeding your soul, it may be calling you toward something God is preparing. Wisdom does not say stay stuck — it says use this season to build and discern.",
+      reflection:
+        "If fear were not a factor, what kind of work would you pursue? What gifts are you leaving unused right now?",
+      nextStep:
+        "Do not quit in frustration — plan in wisdom. Spend 15 minutes this week writing down what you are actually good at and what work feels alive to you.",
+      bookConnection:
+        "Success Secrets of Solomon — Purpose (pp. 146–150) and Diligence (pp. 72–76)",
+    };
+  }
+
   // --- JOB LOSS / UNEMPLOYMENT ---
   if (
     includesAny(q, [
@@ -1031,6 +1116,11 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       "abandoned by friend",
       "people disappoint",
       "trust issues",
+      "my best friend stabbed me in the back",
+      "stabbed me in the back",
+      "best friend betrayed me",
+      "friend stabbed me",
+      "best friend lied",
     ])
   ) {
     return {
@@ -1078,6 +1168,15 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       "how do i grieve",
       "will it get better",
       "never gets easier",
+      "i cant stop crying",
+      "cant stop crying",
+      "i keep crying",
+      "i cry all the time",
+      "dealing with loss",
+      "i am dealing with loss",
+      "trying to deal with loss",
+      "dealing with grief",
+      "lost and grieving",
     ])
   ) {
     return {
@@ -1124,6 +1223,14 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       "how do i discipline",
       "my kid is out of control",
       "troubled teen",
+      "i dont know how to raise my kids",
+      "dont know how to raise",
+      "raise my kids",
+      "raising kids",
+      "i am a single parent struggling",
+      "single parent struggling",
+      "single parent",
+      "raising my kids alone",
     ])
   ) {
     return {
@@ -1215,6 +1322,10 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       "garnished wages",
       "overwhelmed by debt",
       "money problems",
+      "i have no savings",
+      "no savings",
+      "have no savings",
+      "spent all my savings",
     ])
   ) {
     return {
@@ -1262,6 +1373,19 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       "self-destructive",
       "no self control",
       "lack of self control",
+      "cant stop drinking",
+      "i cant stop drinking",
+      "drinking",
+      "alcohol",
+      "i drink too much",
+      "i want to get sober",
+      "want to get sober",
+      "sober",
+      "sobriety",
+      "get sober",
+      "bondage to sin",
+      "in bondage",
+      "i am in bondage",
     ])
   ) {
     return {
