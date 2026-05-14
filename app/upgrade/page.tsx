@@ -59,7 +59,7 @@ export default function UpgradePage() {
           fontWeight: 900, lineHeight: 1.1, color: "#fff",
         }}>
           The app shows you what Proverbs says.<br />
-          <span style={{ color: "#f5e06e" }}>The book shows you how Solomon lived it.</span>
+          <span style={{ color: "#f5e06e" }}>The book gives you the principles for success.</span>
         </h1>
         <p style={{
           margin: "0 auto 28px",
@@ -68,7 +68,7 @@ export default function UpgradePage() {
           color: "rgba(220,220,240,0.78)",
           lineHeight: 1.65,
         }}>
-          <em>Success Secrets of Solomon</em> is a 30-chapter book connecting
+          <em>Success Secrets of Solomon</em> is a 247-page devotional connecting
           every major life challenge — money, fear, anger, purpose, relationships —
           to the principles Solomon actually lived by. Written by John Craddock.
         </p>
@@ -139,7 +139,7 @@ export default function UpgradePage() {
           {
             icon: "📖",
             title: "The full book — inside the app",
-            body: "All 30 chapters of Success Secrets of Solomon, readable anytime on any device. No PDF download required.",
+            body: "All 247 pages of Success Secrets of Solomon, readable anytime on any device. No PDF download required.",
           },
           {
             icon: "🔍",
