@@ -468,7 +468,7 @@ function PageInner() {
   };
 
   const buildShareText = (item: Pick<VerseItem, "title" | "body" | "ref">) => {
-    const link = "https://ask-solomon.app";
+    const link = "https://asksolomon.app";
 
     return `Ask Solomon
 
@@ -1257,6 +1257,121 @@ const applySituation = (situationQuery: string) => {
             </div>
           </div>
         </header>
+
+        {/* ── HERO SECTION — shows only on empty search state ── */}
+        {q.trim() === "" && (
+          <div style={{
+            background: 'linear-gradient(160deg, #0f0c29 0%, #1a1040 50%, #0d1b2a 100%)',
+            borderRadius: 22,
+            padding: '44px 32px 36px',
+            marginBottom: 18,
+            textAlign: 'center',
+            position: 'relative',
+            overflow: 'hidden',
+            boxShadow: '0 30px 80px rgba(15,12,41,0.35)',
+          }}>
+            {/* Subtle glow accent */}
+            <div style={{
+              position: 'absolute', top: -60, left: '50%', transform: 'translateX(-50%)',
+              width: 500, height: 200,
+              background: 'radial-gradient(ellipse, rgba(212,175,55,0.18) 0%, transparent 70%)',
+              pointerEvents: 'none',
+            }} />
+
+            {/* Eyebrow */}
+            <div style={{
+              fontSize: 11, fontWeight: 900, letterSpacing: 2.5,
+              color: '#d4af37', textTransform: 'uppercase', marginBottom: 14,
+            }}>
+              Biblical Wisdom · Proverbs · Book of Solomon
+            </div>
+
+            {/* Headline */}
+            <h2 style={{
+              margin: '0 0 14px',
+              fontSize: 'clamp(26px, 5vw, 42px)',
+              fontWeight: 900,
+              lineHeight: 1.1,
+              color: '#ffffff',
+              letterSpacing: -0.5,
+            }}>
+              Whatever you're facing right now —<br />
+              <span style={{ color: '#f5e06e' }}>Proverbs has something to say about it.</span>
+            </h2>
+
+            {/* Subheadline */}
+            <p style={{
+              margin: '0 auto 28px',
+              maxWidth: 540,
+              fontSize: 16,
+              fontWeight: 600,
+              color: 'rgba(220,220,240,0.78)',
+              lineHeight: 1.65,
+            }}>
+              Type what you're feeling or going through. Ask Solomon responds with
+              emotionally intelligent wisdom — rooted in Scripture, connected to real life.
+            </p>
+
+            {/* Example chips */}
+            <div style={{
+              display: 'flex', flexWrap: 'wrap', gap: 10,
+              justifyContent: 'center', marginBottom: 28,
+            }}>
+              {[
+                { label: '😔 I feel like a failure', q: 'I feel like a failure' },
+                { label: '😤 I can't control my anger', q: 'I can't control my anger' },
+                { label: '💸 I'm stressed about money', q: 'I'm stressed about money' },
+                { label: '💔 My marriage is struggling', q: 'My marriage is struggling' },
+                { label: '😰 I'm overwhelmed', q: 'I'm overwhelmed' },
+                { label: '🙏 I need direction from God', q: 'I need direction from God' },
+              ].map(({ label, q: chipQ }) => (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => {
+                    router.push('/?q=' + encodeURIComponent(chipQ));
+                  }}
+                  style={{
+                    background: 'rgba(255,255,255,0.09)',
+                    border: '1px solid rgba(212,175,55,0.35)',
+                    borderRadius: 999,
+                    padding: '9px 16px',
+                    color: 'rgba(255,255,255,0.90)',
+                    fontSize: 13,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    transition: 'background 150ms',
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {/* Proof bar */}
+            <div style={{
+              display: 'flex', justifyContent: 'center', gap: 28, flexWrap: 'wrap',
+              marginBottom: 24,
+              fontSize: 12, fontWeight: 800,
+              color: 'rgba(212,175,55,0.75)',
+              letterSpacing: 0.4,
+            }}>
+              <span>📖 25+ life scenarios</span>
+              <span>✦ Rooted in Proverbs</span>
+              <span>📚 Connected to the book</span>
+              <span>⚡ Free to use</span>
+            </div>
+
+            {/* CTA arrow */}
+            <div style={{
+              fontSize: 13, fontWeight: 800,
+              color: 'rgba(255,255,255,0.45)',
+              letterSpacing: 1,
+            }}>
+              ↓ Type what you're facing in the search below
+            </div>
+          </div>
+        )}
 
         <section style={cardStyle}>
           <div
