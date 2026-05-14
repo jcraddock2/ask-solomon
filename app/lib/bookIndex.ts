@@ -37,7 +37,7 @@ export const BOOK_ENTRIES: BookEntry[] = [
     excerpt: "Without a sense of purpose, even great effort feels directionless. Purpose is not found — it is built through faithful action.",
     searchPhrase: "How do I find my purpose?",
     tags: ["purpose", "direction", "calling"],
-    keywords: ["purpose", "direction", "clarity", "lost", "confused", "future", "calling", "meaning", "what should i do", "no direction", "life purpose", "what am i supposed to do", "feel lost", "searching for meaning"],
+    keywords: ["purpose", "direction", "clarity", "lost", "confused", "future", "calling", "meaning", "what should i do", "no direction", "life purpose", "what am i supposed to do", "feel lost", "searching for meaning", "called by God", "Gods calling", "Gods plan", "called to serve", "my calling", "spiritual calling"],
   },
 
   // --- FEAR / COURAGE ---
@@ -49,7 +49,7 @@ export const BOOK_ENTRIES: BookEntry[] = [
     excerpt: "Fear does not protect you from failure. It protects failure from ever being attempted. Courage does not mean fear is absent.",
     searchPhrase: "How do I overcome fear?",
     tags: ["fear", "courage", "growth"],
-    keywords: ["fear", "hesitation", "second guessing", "afraid", "confidence", "risk", "scared", "anxiety", "worried", "worry", "nervous", "what if", "afraid to try", "terrified", "anxious", "panic"],
+    keywords: ["fear", "hesitation", "second guessing", "afraid", "confidence", "risk", "scared", "anxiety", "worried", "worry", "nervous", "what if", "afraid to try", "terrified", "anxious", "panic", "feel safe", "not safe", "unsafe", "safety", "security", "dont feel safe", "i dont feel safe"],
   },
 
   // --- SUCCESS / DISCIPLINE / GOALS ---
@@ -265,7 +265,7 @@ export const BOOK_ENTRIES: BookEntry[] = [
     excerpt: "Every habit is either building your life or draining it. Wisdom calls you to choose your chains carefully — because you will live in what you repeatedly choose.",
     searchPhrase: "How do I break a bad habit or addiction?",
     tags: ["addiction", "discipline", "freedom"],
-    keywords: ["addiction", "addict", "addicted", "bad habit", "bad habits", "can't stop", "cant stop", "compulsive", "substance abuse", "drinking too much", "alcohol problem", "drug problem", "drugs", "gambling", "pornography", "porn", "self control", "no self control", "breaking habits", "freedom", "chains", "bondage", "recovery", "sober", "sobriety", "struggle with", "trapped"],
+    keywords: ["addiction", "addict", "addicted", "bad habit", "bad habits", "can't stop", "cant stop", "compulsive", "substance abuse", "drinking too much", "alcohol problem", "drug problem", "drugs", "gambling", "pornography", "porn", "self control", "no self control", "breaking habits", "freedom", "chains", "bondage", "recovery", "sober", "sobriety", "trapped"],
   },
 
   // --- GRIEF / LOSS ---
@@ -289,7 +289,7 @@ export const BOOK_ENTRIES: BookEntry[] = [
     excerpt: "Children remember who you were more than what you said. Your presence and character are the most powerful curriculum you will ever teach.",
     searchPhrase: "How do I influence my children well?",
     tags: ["parenting", "discipline", "wisdom"],
-    keywords: ["parenting", "parent", "my child", "my kids", "my teenager", "rebellious child", "rebellious teen", "prodigal", "child won't listen", "raising children", "how to raise kids", "discipline my child", "my son", "my daughter", "children struggling", "troubled teen", "exhausted as a parent", "failing as a parent", "worried about my child"],
+    keywords: ["parenting", "parent", "my child", "my kids", "my teenager", "rebellious child", "rebellious teen", "prodigal", "child won't listen", "raising children", "how to raise kids", "discipline my child", "my son", "my daughter", "children struggling", "troubled teen", "exhausted as a parent", "failing as a parent", "worried about my child", "rebelling", "rebel", "bad parent", "dont know how to raise", "single parent", "raise kids", "raise children", "child wont listen"],
   },
 
   // --- MARRIAGE / DIVORCE / RELATIONSHIP CRISIS ---
@@ -313,7 +313,7 @@ export const BOOK_ENTRIES: BookEntry[] = [
     excerpt: "You cannot manage what you will not face. Financial freedom always begins with an honest accounting of where you are.",
     searchPhrase: "How do I get free from debt and financial stress?",
     tags: ["money", "debt", "stewardship"],
-    keywords: ["debt", "in debt", "drowning in debt", "can't pay bills", "bills", "bankruptcy", "financial ruin", "credit card debt", "loan payments", "owe money", "broke", "no money", "financial stress", "can't afford", "money problems", "paycheck to paycheck", "behind on payments", "debt collectors", "stewardship", "money", "wealth", "finances", "budgeting", "provision", "poverty"],
+    keywords: ["debt", "in debt", "drowning in debt", "can't pay bills", "bills", "bankruptcy", "financial ruin", "credit card debt", "loan payments", "owe money", "broke", "no money", "financial stress", "can't afford", "money problems", "paycheck to paycheck", "behind on payments", "debt collectors", "stewardship", "money", "wealth", "finances", "budgeting", "provision", "poverty", "savings", "save money", "no savings", "owe", "owed", "owing", "borrowed money", "financially ruined", "money stress", "stressed about money", "spending problem", "cant pay", "debt free"],
   },
 
   // --- JOB LOSS / UNEMPLOYMENT / CAREER ---
@@ -325,7 +325,7 @@ export const BOOK_ENTRIES: BookEntry[] = [
     excerpt: "The person who shows up faithfully, even when unseen, is building something that cannot be taken away. Your next chapter is not determined by your last position.",
     searchPhrase: "How do I move forward after losing my job?",
     tags: ["work", "diligence", "provision"],
-    keywords: ["lost my job", "lost job", "fired", "laid off", "layoff", "unemployed", "unemployment", "job loss", "out of work", "can't find work", "looking for work", "job hunting", "rejected from job", "no income", "terminated", "downsized", "position eliminated", "career", "work ethic", "diligence", "job search", "new job", "provision"],
+    keywords: ["lost my job", "lost job", "fired", "laid off", "layoff", "unemployed", "unemployment", "job loss", "out of work", "can't find work", "looking for work", "job hunting", "rejected from job", "no income", "terminated", "downsized", "position eliminated", "career", "work ethic", "diligence", "job search", "new job", "provision", "cant find work", "find work", "finding work", "no job", "need a job"],
   },
 
   // --- ANGER / TEMPER ---
@@ -349,7 +349,7 @@ export const BOOK_ENTRIES: BookEntry[] = [
     excerpt: "Every word you speak is either adding life or removing it. Solomon understood that the tongue is the smallest member with the largest consequences.",
     searchPhrase: "How do I use my words more wisely?",
     tags: ["speech", "words", "relationships"],
-    keywords: ["words", "speech", "tongue", "what i say", "gossip", "talking too much", "saying the wrong thing", "communication", "words hurt", "how i speak", "silence", "listening", "speaking truth", "honesty", "brutal honesty", "toxic words"],
+    keywords: ["words", "speech", "tongue", "what i say", "gossip", "talking too much", "saying the wrong thing", "communication", "words hurt", "how i speak", "silence", "listening", "speaking truth", "honesty", "brutal honesty", "toxic words", "speak before i think", "think before speaking", "blurt out", "say things impulsively", "words hurt people", "hurt people with words"],
   },
 
   // --- INTEGRITY / HONESTY / CHARACTER ---
@@ -361,7 +361,7 @@ export const BOOK_ENTRIES: BookEntry[] = [
     excerpt: "Your character is not what you perform publicly. It is what remains when the audience disappears.",
     searchPhrase: "How do I build integrity and character?",
     tags: ["integrity", "character", "honesty"],
-    keywords: ["integrity", "character", "honesty", "honest", "ethics", "doing right", "moral", "values", "authentic", "hypocrisy", "double life", "what i really am", "who i am when alone", "reputation", "trustworthy"],
+    keywords: ["integrity", "character", "honesty", "honest", "ethics", "doing right", "moral", "values", "authentic", "hypocrisy", "double life", "what i really am", "who i am when alone", "reputation", "trustworthy", "humble", "humility", "arrogant", "better than others", "need to be humble", "arrogance", "think i am better"],
   },
 
   // --- WISDOM / DECISION MAKING ---
