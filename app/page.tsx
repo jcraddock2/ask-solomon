@@ -2938,7 +2938,92 @@ const applySituation = (situationQuery: string) => {
           </div>
         </section>
 
-        <style jsx global>{`
+                {/* Book callout — connects app to physical book for book readers */}
+        <section style={{
+          maxWidth: 680,
+          margin: "0 auto",
+          padding: "0 16px 48px",
+        }}>
+          <div style={{
+            background: "linear-gradient(160deg, #0f0c29 0%, #1a1040 60%, #0d1b2a 100%)",
+            borderRadius: 20,
+            padding: "32px 28px",
+            textAlign: "center",
+            boxShadow: "0 20px 50px rgba(15,12,41,0.25)",
+            border: "1px solid rgba(212,175,55,0.2)",
+          }}>
+            <div style={{
+              fontSize: 11, fontWeight: 900, letterSpacing: 2.5,
+              color: "#d4af37", textTransform: "uppercase", marginBottom: 10,
+            }}>
+              Already have the book?
+            </div>
+            <h2 style={{
+              margin: "0 0 12px",
+              fontSize: "clamp(20px, 4vw, 28px)",
+              fontWeight: 900, lineHeight: 1.15, color: "#fff",
+            }}>
+              <em>Success Secrets of Solomon</em> and this app were built together.
+            </h2>
+            <p style={{
+              margin: "0 auto 24px",
+              maxWidth: 460,
+              fontSize: 14, fontWeight: 600,
+              color: "rgba(220,220,240,0.75)",
+              lineHeight: 1.65,
+            }}>
+              The app is the living index to the book. Every search shows you exactly which
+              devotional and page speaks to what you&apos;re facing &mdash; so you can go
+              straight to the wisdom, not just read about it.
+            </p>
+            <div style={{
+              display: "flex", flexWrap: "wrap",
+              justifyContent: "center", gap: 10, marginBottom: 24,
+            }}>
+              {[
+                "Anger → pp. 126–128",
+                "Purpose → pp. 146–150",
+                "Money → pp. 88–92",
+                "Fear → pp. 77–80",
+                "Relationships → pp. 130–134",
+              ].map((tag) => (
+                <span key={tag} style={{
+                  background: "rgba(212,175,55,0.12)",
+                  border: "1px solid rgba(212,175,55,0.3)",
+                  borderRadius: 20,
+                  padding: "5px 12px",
+                  fontSize: 12, fontWeight: 700,
+                  color: "rgba(245,224,110,0.85)",
+                }}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => router.push("/upgrade")}
+              style={{
+                display: "inline-block",
+                padding: "13px 28px",
+                borderRadius: 12,
+                background: "#d4af37",
+                color: "#1a1040",
+                fontWeight: 900,
+                fontSize: 15,
+                border: "none",
+                cursor: "pointer",
+                letterSpacing: 0.3,
+              }}
+            >
+              Unlock the book inside the app &mdash; $29
+            </button>
+            <div style={{ marginTop: 10, fontSize: 11, color: "rgba(255,255,255,0.3)", fontWeight: 600 }}>
+              Same price as the hardcover. Instant access. One-time payment.
+            </div>
+          </div>
+        </section>
+
+<style jsx global>{`
           @keyframes pulseGlow {
             0% {
               box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
