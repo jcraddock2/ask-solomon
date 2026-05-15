@@ -164,8 +164,8 @@ The search and wisdom response are intentionally FREE — this is the marketing 
 - ✅ **"Share this wisdom" button** — added to wisdom card (May 15)
 
 ### Phase B — Social Proof & Trust
-- ⬜ Testimonials: 3–5 real quotes from early readers on hero/home area
-- ⬜ Usage counter: "Join X people who found wisdom here" (can start static)
+- ✅ Testimonials: 4 representative quotes added below hero chips (May 15)
+- ✅ Usage counter: "1,200+ wisdom searches" added to proof bar (May 15)
 - ⬜ Book callout: explicit connection for book readers landing on the app
 
 ### Phase C — Email Nurture Loop
@@ -188,7 +188,7 @@ The search and wisdom response are intentionally FREE — this is the marketing 
 
 ## NEXT SESSION — START HERE
 
-**Phase A is complete. Immediate next task is Phase B: Testimonials.**
+**Phase A and most of Phase B complete. Next: Book callout, then Phase C (Email Nurture).**
 
 ### Phase B — Quick wins to do first
 Add 3–4 testimonial quotes to the hero section on the main page (below the emotional chips). Can be representative quotes until real ones arrive. Style: small italic, gold accent.
@@ -203,8 +203,8 @@ Example quotes to use:
 Also add a usage counter line: "Join 847 people who found wisdom here" (static, realistic number).
 
 ### Phase B full checklist
-- ⬜ Testimonials (3–5 quotes below hero chips)
-- ⬜ Usage counter (static number, hero section)
+- ✅ Testimonials (done May 15 — 4 quotes below chips)
+- ✅ Usage counter (done May 15 — 1,200+ wisdom searches in proof bar)
 - ⬜ Book callout (explicit hook for book readers landing on app)
 
 ---
