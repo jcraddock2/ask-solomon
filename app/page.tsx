@@ -235,6 +235,7 @@ function PageInner() {
     useState<ShareTemplate>("gradientModern");
   const [wisdomCard, setWisdomCard] = useState<WisdomResponse | null>(null);
   const [emailInput, setEmailInput] = React.useState('')
+   const [shareCopied, setShareCopied] = useState(false);
   const [emailStatus, setEmailStatus] = React.useState<'idle' | 'sending' | 'success' | 'error'>('idle')
 
   const outerStyle: React.CSSProperties = {
@@ -516,6 +517,20 @@ ${link}`;
       // silent
     }
   };
+  const handleWisdomShare = async () => {
+    if (!wisdomCard) return;
+    const text = wisdomCard.headline + "\n\n" + wisdomCard.insight + "\n\n\u2014 Ask Solomon \u00b7 asksolomon.app";
+    if (typeof navigator.share !== "undefined") {
+      try { await navigator.share({ title: "Ask Solomon", text }); } catch (_) {}
+    } else {
+      try {
+        await navigator.clipboard.writeText(text);
+        setShareCopied(true);
+        setTimeout(() => setShareCopied(false), 2000);
+      } catch (_) { alert("Could not copy. Please try again."); }
+    }
+  };
+
 
   const wrapText = (
     ctx: CanvasRenderingContext2D,
@@ -1757,7 +1772,30 @@ const applySituation = (situationQuery: string) => {
     marginBottom: '24px',
     textAlign: 'center',
   }}>
-    <div style={{ fontSize: '20px', marginBottom: '6px' }}>📖</div>
+    <div style={{ fontSize: '20px', marginBottom: '6px' }}>📖
+                  {/* Share this wisdom */}
+                  <div style={{ textAlign: "center", marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.12)" }}>
+                    <button
+                      type="button"
+                      onClick={handleWisdomShare}
+                      style={{
+                        background: "none",
+                        border: "1px solid rgba(212,175,55,0.5)",
+                        borderRadius: 20,
+                        padding: "8px 18px",
+                        color: "#d4af37",
+                        fontSize: 13,
+                        fontWeight: 700,
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 6,
+                      }}
+                    >
+                      {shareCopied ? "\u2713 Copied!" : "\uD83D\uDCE4 Share this wisdom"}
+                    </button>
+                  </div>
+</div>
     <div style={{ color: '#f5e06e', fontWeight: 700, fontSize: '16px', marginBottom: '6px' }}>
       Get a free weekly wisdom verse
     </div>
@@ -2120,7 +2158,7 @@ const applySituation = (situationQuery: string) => {
                           </div>
                           <button
                             type="button"
-                            onClick={() => router.push("/upgrade")}
+                            onClick={() => router.push("/upgrade?ref=book-match")}
                             style={{
                               background: "#d4af37",
                               border: "none",
