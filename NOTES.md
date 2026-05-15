@@ -166,7 +166,7 @@ The search and wisdom response are intentionally FREE — this is the marketing 
 ### Phase B — Social Proof & Trust
 - ✅ Testimonials: 4 representative quotes added below hero chips (May 15)
 - ✅ Usage counter: "1,200+ wisdom searches" added to proof bar (May 15)
-- ⬜ Book callout: explicit connection for book readers landing on the app
+- ✅ Book callout: dark navy section at page bottom, 5 topic chips, $29 CTA (May 15)
 
 ### Phase C — Email Nurture Loop
 - ⬜ Welcome email: set up Formspree redirect/webhook to send auto-welcome
@@ -188,24 +188,30 @@ The search and wisdom response are intentionally FREE — this is the marketing 
 
 ## NEXT SESSION — START HERE
 
-**Phase A and most of Phase B complete. Next: Book callout, then Phase C (Email Nurture).**
+**Phases A and B complete. Next: Phase C — Email Nurture Loop.**
 
-### Phase B — Quick wins to do first
-Add 3–4 testimonial quotes to the hero section on the main page (below the emotional chips). Can be representative quotes until real ones arrive. Style: small italic, gold accent.
+### Phase C — Email Nurture Loop (do next)
 
-Example quotes to use:
-- "I typed 'I feel like a failure' and could not believe how seen I felt." — Marcus T.
-- "I have read a lot of devotionals. This one hits different." — Renee W.
-- "My marriage was struggling. The results were exactly what I needed." — James C.
+**Step 1 — Welcome email via Formspree**
+Formspree endpoint: https://formspree.io/f/xzdolzzl
+Go to formspree.io → open the xzdolzzl form → click "Integrations" → set up email notifications or a redirect URL so new subscribers get an automatic welcome email.
 
-**File to edit:** app/page.tsx — hero section (chips array around line 870 in GitHub viewer)
+**Welcome email content to send:**
+Subject: "Your first wisdom is waiting"
+Body: Welcome them, explain what Ask Solomon is, share one example search, link back to asksolomon.app.
 
-Also add a usage counter line: "Join 847 people who found wisdom here" (static, realistic number).
+**Step 2 — Build 3-email drip (content to write)**
+1. Welcome + what it is (send immediately on signup)
+2. Highlight your favorite scenario (e.g. "I feel like a failure") — show the response they'd get
+3. Soft $29 pitch — "The app shows you which page of the book to open"
 
+**These emails can be written manually at first — Formspree can forward to your inbox so you reply personally until you have a drip tool.**
+
+### Phase B full checklist (all done ✅)
 ### Phase B full checklist
 - ✅ Testimonials (done May 15 — 4 quotes below chips)
 - ✅ Usage counter (done May 15 — 1,200+ wisdom searches in proof bar)
-- ⬜ Book callout (explicit hook for book readers landing on app)
+- ✅ Book callout (done May 15 — dark navy section, topic chips, $29 CTA)
 
 ---
 
