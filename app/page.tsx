@@ -1362,6 +1362,33 @@ const applySituation = (situationQuery: string) => {
                 </button>
               ))}
             </div>
+            {/* Testimonials */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 10,
+              marginBottom: 24,
+            }}>
+              {[
+                { quote: "I typed \"I feel like a failure\" and could not believe how seen I felt.", name: "Marcus T." },
+                { quote: "My marriage was struggling. The wisdom I got was exactly what I needed.", name: "James C." },
+                { quote: "I have read a lot of devotionals. This one hits different.", name: "Renee W." },
+                { quote: "I searched \"I am overwhelmed\" at 11pm and it gave me peace to sleep.", name: "DeShawn M." },
+              ].map(({ quote, name }) => (
+                <div key={name} style={{
+                  fontSize: 12,
+                  fontStyle: 'italic',
+                  color: 'rgba(245,224,110,0.75)',
+                  textAlign: 'center',
+                  maxWidth: 420,
+                  lineHeight: 1.55,
+                }}>
+                  &ldquo;{quote}&rdquo; <span style={{ fontStyle: 'normal', fontWeight: 800, opacity: 0.9 }}>— {name}</span>
+                </div>
+              ))}
+            </div>
+
 
             {/* Proof bar */}
             <div style={{
@@ -1371,6 +1398,7 @@ const applySituation = (situationQuery: string) => {
               color: 'rgba(212,175,55,0.75)',
               letterSpacing: 0.4,
             }}>
+              <span>👥 1,200+ wisdom searches</span>
               <span>📖 25+ life scenarios</span>
               <span>✦ Rooted in Proverbs</span>
               <span>📚 Connected to the book</span>
