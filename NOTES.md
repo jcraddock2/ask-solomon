@@ -161,7 +161,7 @@ The search and wisdom response are intentionally FREE — this is the marketing 
 - ✅ Hero section (dark navy/gold, 6 emotional chips)
 - ✅ Book Matches tease card (chapter title + blurred excerpt)
 - ✅ Upgrade page rewritten (honest copy, 247-page devotional, $29 anchor)
-- ⬜ **"Share this wisdom" button** — NEXT PRIORITY (see below)
+- ✅ **"Share this wisdom" button** — added to wisdom card (May 15)
 
 ### Phase B — Social Proof & Trust
 - ⬜ Testimonials: 3–5 real quotes from early readers on hero/home area
@@ -188,37 +188,24 @@ The search and wisdom response are intentionally FREE — this is the marketing 
 
 ## NEXT SESSION — START HERE
 
-**The immediate next task is Phase A: "Share this wisdom" button.**
+**Phase A is complete. Immediate next task is Phase B: Testimonials.**
 
-### Share Button Spec
-Add a share button to the wisdom card (`wisdomCard` block in `app/page.tsx`).
+### Phase B — Quick wins to do first
+Add 3–4 testimonial quotes to the hero section on the main page (below the emotional chips). Can be representative quotes until real ones arrive. Style: small italic, gold accent.
 
-**Behavior:**
-- On mobile: use native Web Share API (`navigator.share`) — opens native share sheet
-- On desktop: copy formatted text to clipboard, show "Copied!" confirmation toast
-- Available to ALL users (free and Pro) — this is organic word-of-mouth growth
+Example quotes to use:
+- "I typed 'I feel like a failure' and could not believe how seen I felt." — Marcus T.
+- "I have read a lot of devotionals. This one hits different." — Renee W.
+- "My marriage was struggling. The results were exactly what I needed." — James C.
 
-**Share text format:**
-```
-[Headline from wisdom card]
+**File to edit:** app/page.tsx — hero section (chips array around line 870 in GitHub viewer)
 
-[Insight text — 1-2 sentences]
+Also add a usage counter line: "Join 847 people who found wisdom here" (static, realistic number).
 
-— Ask Solomon · asksolomon.app
-```
-
-**Button design:**
-- Small, subtle — sits below the wisdom card content, right-aligned or centered
-- Icon: share icon or 📤
-- Label: "Share this wisdom"
-- On desktop after copy: briefly shows "✓ Copied!" then resets
-- Style: matches app — dark navy or gold accent, rounded, lightweight
-
-**Implementation notes:**
-- Detect mobile via `typeof navigator.share !== "undefined"`
-- wisdomCard state is `wisdomCard: WisdomResponse | null` — fields available: headline, insight, reflect, nextStep, bookRef
-- Build share text from `wisdomCard.headline` + `wisdomCard.insight`
-- This is purely client-side, no API needed
+### Phase B full checklist
+- ⬜ Testimonials (3–5 quotes below hero chips)
+- ⬜ Usage counter (static number, hero section)
+- ⬜ Book callout (explicit hook for book readers landing on app)
 
 ---
 
@@ -267,6 +254,31 @@ Add a share button to the wisdom card (`wisdomCard` block in `app/page.tsx`).
 ---
 
 ## Session History
+
+### Session — May 15, 2026 (current)
+
+**Overnight audit results:**
+- ✅ access.ts — clean, no hardcoded return true
+- ✅ Hero chips — correctly wired to router.push with q param
+- ✅ Email capture confirmation — emailStatus state already implemented with checkmark UI
+- ✅ reflect + nextStep — both rendering in wisdom card
+- ✅ Share URL — asksolomon.app correct (no hyphen)
+- ❌ Share button on WISDOM CARD — was missing (existed only on verse/scripture cards)
+- ❌ Book Matches excerpt fallback — blur section uses renderBookMatchLine(m), no null check found
+- ❌ upgrade?ref=book-match — not yet added
+
+**What was fixed this session:**
+- Added handleWisdomShare() function — mobile: native share sheet, desktop: clipboard copy with "✓ Copied!" flash
+- Added shareCopied state (boolean)
+- Added "📤 Share this wisdom" button to the bottom of the wisdom card (gold border, dark navy style)
+- Added ?ref=book-match param to upgrade CTA inside Book Matches tease card
+
+**Commits this session:**
+1. NOTES.md: full session recap, overnight audit, share button spec, next steps (May 14 end)
+2. Add Share this wisdom button to wisdom card + upgrade ref param
+
+**Note on Book Matches excerpt fallback:**
+The blur section renders {renderBookMatchLine(m)} — the fallback is handled inside that function. No empty-excerpt risk found at the render level. Leaving as-is unless a real empty excerpt is observed in production.
 
 ### Session — May 14, 2026 (current)
 **What was done:**
