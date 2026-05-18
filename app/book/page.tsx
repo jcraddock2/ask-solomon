@@ -5,7 +5,7 @@ import { isProUser } from "../lib/access";
 export default function BookPage() {
 
   // ✅ Local hosted mobile-optimized PDF
-  const pdfUrl = "/successsecrets.pdf";
+  const pdfUrl = "/sss-wisdom-book-jc2024.pdf";
 
   const [isPro, setIsPro] = useState(false);
 
