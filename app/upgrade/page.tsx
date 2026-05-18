@@ -115,7 +115,6 @@ export default function UpgradePage() {
             fontWeight: 900,
             fontSize: 17,
             border: "none",
-            cursor: "pointer",
             letterSpacing: 0.3,
             opacity: isLoading ? 0.7 : 1,
             cursor: isLoading ? "not-allowed" : "pointer",
