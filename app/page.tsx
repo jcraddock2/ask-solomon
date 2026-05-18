@@ -519,16 +519,25 @@ ${link}`;
   };
   const handleWisdomShare = async () => {
     if (!wisdomCard) return;
-    const text = wisdomCard.headline + "\n\n" + wisdomCard.insight + "\n\n\u2014 Ask Solomon \u00b7 asksolomon.app";
-    if (typeof navigator.share !== "undefined") {
-      try { await navigator.share({ title: "Ask Solomon", text }); } catch (_) {}
-    } else {
+    const queryLine = q ? 'I searched "' + q + '" on Ask Solomon and got this:\n\n' : '';
+    const shareText = queryLine + wisdomCard.headline + "\n\n" + wisdomCard.insight + "\n\nasksolomon.app";
+    if (navigator.share) {
       try {
-        await navigator.clipboard.writeText(text);
-        setShareCopied(true);
-        setTimeout(() => setShareCopied(false), 2000);
-      } catch (_) { alert("Could not copy. Please try again."); }
+        await navigator.share({ title: "Ask Solomon", text: shareText });
+      } catch {}
+    } else {
+      await navigator.clipboard.writeText(shareText);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2500);
     }
+  };
+
+  const handleTwitterShare = () => {
+    if (!wisdomCard) return;
+    const queryLine = q ? 'I searched "' + q + '" and got this wisdom: ' : '';
+    const tweetText = queryLine + wisdomCard.headline + ' — asksolomon.app';
+    const twitterUrl = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(tweetText);
+    window.open(twitterUrl, '_blank', 'noopener,noreferrer');
   };
 
 
@@ -1822,6 +1831,27 @@ const applySituation = (situationQuery: string) => {
                     >
                       {shareCopied ? "\u2713 Copied!" : "\uD83D\uDCE4 Share this wisdom"}
                     </button>
+          {wisdomCard && (
+            <button
+              onClick={handleTwitterShare}
+              style={{
+                marginTop: "8px",
+                padding: "8px 18px",
+                background: "transparent",
+                color: "#1da1f2",
+                border: "1px solid #1da1f2",
+                borderRadius: "20px",
+                cursor: "pointer",
+                fontSize: "13px",
+                fontWeight: "600",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              𝕏 Share on X
+            </button>
+          )}
                   </div>
 </div>
     <div style={{ color: '#f5e06e', fontWeight: 700, fontSize: '16px', marginBottom: '6px' }}>
