@@ -49,12 +49,59 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "https://asksolomon.app/#app",
+      name: "Ask Solomon",
+      url: "https://asksolomon.app",
+      description:
+        "A biblical wisdom search tool built around the Book of Proverbs. Type what you are facing and receive personalized, Scripture-rooted guidance.",
+      applicationCategory: "LifestyleApplication",
+      operatingSystem: "Web",
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+        description: "Free to use. Optional lifetime unlock for $29.",
+      },
+      author: {
+        "@id": "https://asksolomon.app/#author",
+      },
+    },
+    {
+      "@type": "Person",
+      "@id": "https://asksolomon.app/#author",
+      name: "John Craddock",
+      url: "https://asksolomon.app",
+      knowsAbout: ["Biblical wisdom", "Proverbs", "Christian living", "Leadership"],
+    },
+    {
+      "@type": "Book",
+      name: "Success Secrets of Solomon",
+      author: {
+        "@id": "https://asksolomon.app/#author",
+      },
+      numberOfPages: 247,
+      description:
+        "A 247-page devotional connecting every major life challenge to the principles Solomon actually lived by.",
+      url: "https://asksolomon.app/book",
+    },
+  ],
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
+        {/* JSON-LD Structured Data for Google */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         {/* Plausible Analytics — privacy-first, no cookies, GDPR compliant */}
-        {/* Register your domain at plausible.io to activate tracking */}
         <Script
           defer
           data-domain="asksolomon.app"
