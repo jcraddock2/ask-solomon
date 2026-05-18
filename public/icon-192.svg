@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <!-- Background -->
+  <rect width="192" height="192" rx="32" fill="#0d1b2a"/>
+  <!-- Crown shape (3 points) -->
+  <polygon points="48,88 48,60 72,76 96,52 120,76 144,60 144,88" fill="#c9a227"/>
+  <!-- Letter S -->
+  <text x="96" y="148" font-family="Georgia, serif" font-size="80" font-weight="bold" text-anchor="middle" fill="#c9a227">S</text>
+</svg>
