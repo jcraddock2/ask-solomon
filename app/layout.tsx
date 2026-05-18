@@ -108,7 +108,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           src="https://plausible.io/js/script.js"
           strategy="afterInteractive"
         />
-      </head>
+              <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#0d1b2a" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Ask Solomon" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+</head>
       <body
         style={{
           margin: 0,
