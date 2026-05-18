@@ -518,3 +518,170 @@ Final P.S. reframes the purchase as an act of generosity — buyer feels good, n
 ---
 
 *Last updated: May 15, 2026 — Phase C emails complete. Next: Formspree autoresponder setup + Phase D marketing.*
+
+
+---
+
+## NEXT SESSION — READ THIS FIRST (May 15, 2026 end of session)
+
+Phase C is 100% COMPLETE. MailerLite email automation is LIVE.
+
+### What Phase C built (all done):
+- 3-email drip automation LIVE in MailerLite (activated)
+- Group: "Ask Solomon Subscribers" (ID: 187558192643835097)
+- API token: "Ask Solomon App" stored as MAILERLITE_API_KEY in Vercel
+- New file: app/api/subscribe/route.ts — Next.js API route that calls MailerLite
+- app/page.tsx email form now POSTs to /api/subscribe (was Formspree)
+- Vercel redeployed and confirmed LIVE (Status: Ready, 46s build)
+
+### Phase D — Marketing Channels (DO NEXT)
+
+Priority order (highest impact first):
+
+**D1 — SEO + Open Graph enhancement (build it)**
+- layout.tsx already has basic meta/OG but missing: sitemap.xml, robots.txt, JSON-LD structured data
+- Add app/sitemap.ts (Next.js 14 native) — auto-generates sitemap at /sitemap.xml
+- Add app/robots.ts — tells Google to crawl everything
+- Add JSON-LD structured data to layout.tsx (WebApplication schema)
+- Add per-page title templates so /upgrade and /book have unique titles
+- Expected result: Google indexes the site properly within 2-4 weeks
+
+**D2 — Viral share loop (build it)**
+- Share button exists on wisdom card (added Phase A)
+- Improvement: Make the share TEXT more viral — include the actual search phrase
+  e.g. "I searched 'I feel like a failure' on Ask Solomon and got this: [quote] — asksolomon.app"
+- Add share buttons for Twitter/X specifically (not just clipboard)
+- Expected result: Every shared wisdom card is a free ad
+
+**D3 — Google Search Console (John does this — 5 min)**
+- Go to search.google.com/search-console
+- Add property: asksolomon.app
+- Verify via DNS (Vercel makes this easy — add TXT record)
+- Submit sitemap: asksolomon.app/sitemap.xml
+- Expected result: Faster Google indexing, keyword data after 2-3 weeks
+
+**D4 — Email book readers (John does this — warmest audience)**
+- If John has an email list from the physical book sales, email them first
+- Subject: "I built something for your copy of Success Secrets of Solomon"
+- These are already buyers — easiest $29 upgrades
+
+**D5 — SEO landing pages (build it)**
+- Create dedicated pages for high-search queries:
+  - /proverbs-for-anxiety
+  - /biblical-wisdom-for-job-loss
+  - /proverbs-for-marriage
+  - /solomon-wisdom-for-fear
+- Each page has a pre-filled search and wisdom result + CTA
+- These are static pages — pure SEO juice, zero API cost
+
+**D6 — Pinterest/Instagram scripture cards (John does this)**
+- Use the Share button output as content
+- Post 1 wisdom card per day to Pinterest with keyword-rich description
+- Biblical wisdom is top-performing Pinterest content
+
+---
+
+## OVERNIGHT CODE AUDIT — May 15, 2026
+
+Read all key files: layout.tsx (76 lines), page.tsx (3065 lines), access.ts (9 lines), success/page.tsx (59 lines), upgrade/page.tsx (199 lines), book/page.tsx (194 lines), bookIndex.ts (403 lines), situations.ts (157 lines), wisdomResponse.ts (1418 lines), intent.ts (1144 lines), next.config.js (4 lines).
+
+### FINDING 1 — CRITICAL: next.config.js is completely empty
+**File:** next.config.js (4 lines — just `const nextConfig = {}; module.exports = nextConfig;`)
+**Problem:** No headers, no redirects, no image domains, no security headers. Missing:
+- X-Frame-Options header (clickjacking protection)
+- Content-Security-Policy (basic XSS protection)
+- X-Content-Type-Options
+- Cache-Control for static assets
+**Fix:** Add security headers and caching rules. I can build this next session — 20 lines.
+**Impact:** Security + performance + SEO (Core Web Vitals)
+
+### FINDING 2 — HIGH: success/page.tsx needs a full redesign
+**File:** app/success/page.tsx (59 lines, last updated 3 months ago)
+**Problem:** Post-purchase page is extremely plain — white background, gray text, generic "Thank you for supporting Ask Solomon." This is the HIGHEST emotional moment in the user journey (they just paid $29). The page completely misses the opportunity to:
+- Celebrate the purchase with brand colors (dark navy/gold)
+- Tell them exactly what to do next (search something specific)
+- Reinforce the value of what they bought
+- Upsell/cross-sell the physical book
+- Capture them into the email list if not already subscribed
+**Fix:** Full redesign matching the dark navy/gold brand. Add: celebration hero, "Here is what you unlocked" section, suggested first search, link to /book, email capture for those who skipped it.
+**Impact:** Retention, satisfaction, word-of-mouth
+
+### FINDING 3 — HIGH: book/page.tsx PDF is served from /public/successsecrets.pdf
+**File:** app/book/page.tsx (194 lines)
+**Problem:** The PDF is served as a static file from /public — meaning anyone who knows the URL (/successsecrets.pdf) can access it without paying. There is no auth check on the file itself, only on the React page that renders it.
+**Risk:** Free users could share the direct PDF link and bypass the $29 paywall entirely.
+**Fix:** Two options:
+  1. Serve the PDF through a Next.js API route that checks isProUser() server-side (requires a session/token system)
+  2. Obfuscate the filename to something random (e.g. /xk9q2m-book.pdf) so it is not guessable
+  Option 2 is fast and zero-cost. Option 1 is more secure but complex.
+**Recommendation:** Implement option 2 immediately (rename PDF, update book/page.tsx reference) — takes 5 minutes. Note this in NOTES.
+
+### FINDING 4 — MEDIUM: layout.tsx missing sitemap and robots
+**File:** app/layout.tsx (76 lines)
+**Problem:** No sitemap.xml or robots.txt. Google cannot crawl the site efficiently. The existing meta/OG tags are good but missing:
+- JSON-LD structured data (WebApplication + Book schema)
+- Canonical URL on inner pages (/upgrade, /book, /book-index)
+- Twitter card image (twitter:image is referenced but may not match OG image)
+**Fix:** Add app/sitemap.ts and app/robots.ts (Next.js 14 native — no external library needed). Add JSON-LD to layout.tsx.
+**Impact:** Google ranking, click-through rate from search results
+
+### FINDING 5 — MEDIUM: success/page.tsx does not redirect non-Pro users
+**File:** app/success/page.tsx
+**Problem:** The success page sets localStorage on mount and renders immediately. If someone navigates to /success directly without purchasing, they get Pro access for free (setItem runs regardless of whether a Stripe payment actually happened).
+**Fix:** Check for a Stripe session_id URL parameter before setting Pro. Stripe passes ?session_id=cs_xxx to the success URL. Verify it is present before granting access. Or use a server-side Stripe webhook to set a flag. The simplest fix: check the URL for session_id param — if absent, redirect to / without setting Pro.
+**Impact:** Revenue protection
+
+### FINDING 6 — MEDIUM: upgrade/page.tsx uses window.location.href for Stripe redirect
+**File:** app/upgrade/page.tsx (line 14)
+**Problem:** `window.location.href = data.url` works but is a full page reload. No loading state is shown between clicking "Unlock Now" and the Stripe checkout opening. Users may click multiple times thinking it did not work.
+**Fix:** Add a `[isLoading, setIsLoading]` state. On click: setIsLoading(true), disable the button, show "Taking you to checkout..." text. This prevents double-clicks and improves UX.
+**Impact:** Fewer failed checkout attempts, better UX
+
+### FINDING 7 — MEDIUM: situations.ts has 9 situation types but only 6 chips show
+**File:** app/lib/situations.ts (types: workplace_conflict, difficult_person, rejection, burnout, confusion, financial_pressure, fear_anxiety, loneliness, general)
+**Problem:** The hero chips in page.tsx only show 6 hardcoded situations (SITUATION_PRESETS constant). The situations.ts library has a much richer type system (with boostTopics, boostIntentTags, boostMoodTags) that appears to not be wired to the hero chips. The 6 chips are static labels, not dynamically pulled from situations.ts.
+**Fix/Check:** Verify if detectSituation() from situations.ts is actually being called anywhere in page.tsx. If not, it may be dead code. Also consider rotating chips or showing more on mobile scroll.
+**Impact:** Better topic coverage, richer search intent detection
+
+### FINDING 8 — LOW: bookIndex.ts starts at "Chapter 1 / Page 12" — not Chapter 0 / Page 1
+**File:** app/lib/bookIndex.ts (entry 1: chapter "Chapter 1", page "Page 12")
+**Problem:** If the book has a foreword, introduction, or content before page 12, those pages are not indexed. Users who search for topics like "introduction" or "foreword" get no book match.
+**Fix:** Check if pages 1-11 have any searchable content. If yes, add entries. If the book starts at page 12, add a note in NOTES.md.
+**Impact:** Minor — completeness of book coverage
+
+### FINDING 9 — LOW: wisdomResponse.ts and intent.ts may have scenario gaps
+**File:** wisdomResponse.ts (1418 lines, 21+ scenarios), intent.ts (1144 lines)
+**Problem:** From the email drips, the biggest user searches are: "I feel like a failure," "I am afraid to make a move," "my marriage is struggling," "I feel overwhelmed," "I need direction." These are covered. But likely gaps include:
+- Grief / death of a loved one (spouse, parent, child)
+- Addiction / substance abuse
+- Chronic illness / health fear  
+- Suicidal thoughts / dark night of the soul (needs careful handling)
+- Racial injustice / social burden
+- Job loss / fired
+**Fix:** Do a systematic gap audit — run 20 edge-case searches on the live app, note which ones return null (no wisdomResponse match) and get only generic Proverbs results. Fill the top 5 gaps.
+**Impact:** App quality, user retention
+
+### FINDING 10 — LOW: No PWA manifest (installable app)
+**File:** public/ directory
+**Problem:** No manifest.json and no service worker. The app cannot be "installed" on mobile home screens (Add to Home Screen). For a spiritual/devotional app, daily home screen access is very high value.
+**Fix:** Add public/manifest.json with app name, icons, theme_color (#0d1b2a navy), display: standalone. Add a `<link rel="manifest">` to layout.tsx.
+**Impact:** Engagement, retention, daily use habit
+
+---
+
+## PHASE D BUILD PRIORITY (next session — in order)
+
+1. Fix FINDING 5 (success page security — session_id check) — 15 min, revenue protection
+2. Fix FINDING 6 (upgrade loading state) — 10 min, prevents lost sales
+3. Fix FINDING 3 (PDF URL obfuscation) — 5 min, paywall protection  
+4. Build D1 (sitemap.ts + robots.ts + JSON-LD) — 30 min, SEO foundation
+5. Fix FINDING 1 (next.config.js security headers) — 20 min, security + SEO
+6. Redesign FINDING 2 (success page UX) — 45 min, retention
+7. Build D2 (better viral share text + Twitter button) — 20 min, growth
+8. Check FINDING 7 (situations.ts wiring) — 15 min, app quality
+9. Gap audit FINDING 9 (add 3-5 missing wisdomResponse scenarios) — 60 min, quality
+10. Build D5 (SEO landing pages) — 60 min, long-term traffic
+
+---
+
+Last updated: May 15, 2026 end of session — Phase C complete, Phase D plan written, full code audit done.
