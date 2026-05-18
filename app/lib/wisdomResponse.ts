@@ -28,6 +28,208 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
 
   if (!q) return null;
 
+  // --- PRIORITY ROUTING: specific high-signal scenarios checked before broad ones ---
+
+  // JOB LOSS - SUDDEN (fired/laid off today - must check before generic WORK)
+  if (
+    includesAny(q, [
+      "fired today",
+      "was fired",
+      "got fired",
+      "laid off today",
+      "lost my job today",
+      "they let me go",
+      "i was let go",
+      "just got fired",
+      "just got laid off",
+      "just lost my job",
+      "lost my job this week",
+    ])
+  ) {
+    return {
+      emotionalState: "shocked, blindsided, and unsure what comes next",
+      deeperMeaning:
+        "You did not see this coming — and right now the ground feels unsteady. That is a completely honest response to sudden loss.",
+      searchLanes: ["work", "purpose", "provision", "hope", "identity"],
+      headline: "Wisdom Meets You in the Blindside",
+      insight:
+        "Proverbs does not define your identity by your employment. Your worth precedes your work. Sudden loss can become sudden clarity about what you were meant for next.",
+      reflection:
+        "What does this loss reveal about what you truly want — and what you were tolerating?",
+      nextStep:
+        "Give yourself 24 hours before making any major decisions. Then, write down three things this door closing might be making room for.",
+      bookConnection:
+        "Success Secrets of Solomon — Work Ethic (pp. 96-100) and Purpose (pp. 146-150)",
+    };
+  }
+
+  // JOB STUCK (hate job / trapped / purposeless - must check before generic WORK)
+  if (
+    includesAny(q, [
+      "hate my job",
+      "stuck in my job",
+      "feel stuck at work",
+      "no purpose at work",
+      "dread going to work",
+      "i dread work",
+      "my job drains me",
+      "job drains me",
+      "hate going to work",
+      "miserable at work",
+      "my job is killing me",
+      "stuck in a dead end",
+      "dead end job",
+    ])
+  ) {
+    return {
+      emotionalState: "trapped, purposeless, and wondering if this is all there is",
+      deeperMeaning:
+        "You are not lazy — you are misaligned. Something in you knows you were made for more than this.",
+      searchLanes: ["purpose", "work", "diligence", "calling", "direction"],
+      headline: "Wisdom Speaks to the Stuck Place",
+      insight:
+        "Proverbs connects diligence to meaning, not just output. When your work stops feeding your soul, it may be calling you toward something God is preparing. Wisdom does not say stay stuck — it says stay faithful while you move.",
+      reflection:
+        "What would you do with your days if money were not the question? That answer matters.",
+      nextStep:
+        "This week, do one thing outside your job that uses the gift you feel is being wasted. It does not have to be big. It just has to be real.",
+      bookConnection:
+        "Success Secrets of Solomon — Purpose (pp. 146-150) and Diligence (pp. 72-76)",
+    };
+  }
+
+  // BETRAYAL (must check before generic RELATIONSHIP CONFLICT)
+  if (
+    includesAny(q, [
+      "betrayed me",
+      "betrayed by",
+      "stabbed in the back",
+      "lied to me",
+      "trust broken",
+      "broken trust",
+      "cant trust anyone",
+      "can't trust anyone",
+      "hurt by a friend",
+      "friend betrayed",
+      "backstabbed",
+      "false accusation",
+      "falsely accused",
+      "taken advantage of",
+      "double crossed",
+      "abandoned by friend",
+      "trust issues",
+      "used by someone",
+      "felt used",
+      "stabbed me in the back",
+      "talked about behind my back",
+      "gossip about me",
+    ])
+  ) {
+    return {
+      emotionalState: "wounded, guarded, and not sure who to trust anymore",
+      deeperMeaning:
+        "Betrayal does not just hurt — it rewires how you see people. Wisdom understands this wound and does not rush you past it.",
+      searchLanes: ["trust", "relationships", "healing", "wisdom", "discernment"],
+      headline: "Wisdom guards you without hardening you",
+      insight:
+        "Solomon wrote more about the danger of untrustworthy companions than almost any other topic. He knew that discernment — not suspicion — is what protects you. The goal is not to close your heart. It is to learn to read people more wisely.",
+      reflection:
+        "What did this betrayal teach you about what you need in a true friend — and what red flags you may have overlooked?",
+      nextStep:
+        "Name one boundary this situation has shown you that you need to hold in the future. Write it down as a decision, not a reaction.",
+      bookConnection:
+        "Success Secrets of Solomon — Relationships (pp. 130-134) and Integrity (pp. 66-70)",
+    };
+  }
+
+  // MARRIAGE / RELATIONSHIP CRISIS (must check before generic RELATIONSHIP CONFLICT)
+  if (
+    includesAny(q, [
+      "marriage falling apart",
+      "my marriage is",
+      "marriage is falling",
+      "marriage is in trouble",
+      "marriage problems",
+      "marriage struggling",
+      "divorce",
+      "divorcing",
+      "separated from",
+      "thinking about divorce",
+      "considering divorce",
+      "unhappy in my marriage",
+      "infidelity",
+      "cheating spouse",
+      "affair",
+      "broken marriage",
+      "rebuilding marriage",
+      "reconciliation",
+      "husband left",
+      "wife left",
+      "spouse left",
+    ])
+  ) {
+    return {
+      emotionalState: "torn between love and pain, and not sure what the right move is",
+      deeperMeaning:
+        "Few things carry more weight than a marriage in crisis. Wisdom does not minimize that — it meets you in the complexity of it.",
+      searchLanes: ["relationships", "healing", "wisdom", "conflict", "forgiveness"],
+      headline: "Wisdom holds both the pain and the hope",
+      insight:
+        "Solomon wrote more about the quality of character in relationships than about romantic feelings. He understood that trust, honesty, and consistency are what hold people together — and that their absence is what pulls them apart. Whatever you are facing, wisdom begins with honest self-reflection.",
+      reflection:
+        "What does wisdom ask of you in this relationship — not of the other person, but of you?",
+      nextStep:
+        "Before making any major decisions, seek counsel from someone wise and trusted. Do not navigate this alone.",
+      bookConnection:
+        "Success Secrets of Solomon — Relationships (pp. 130-134) and Conflict (pp. 138-140)",
+    };
+  }
+
+  // FINANCIAL DEBT / BANKRUPTCY (must check before generic MONEY/FINANCIAL STRESS)
+  if (
+    includesAny(q, [
+      "drowning in debt",
+      "deep in debt",
+      "buried in debt",
+      "bankruptcy",
+      "filing bankruptcy",
+      "financial ruin",
+      "financial disaster",
+      "credit card debt",
+      "debt collectors",
+      "garnished wages",
+      "overwhelmed by debt",
+      "behind on payments",
+      "cant pay my bills",
+      "can't pay my bills",
+      "bills are piling up",
+      "losing my house",
+      "about to lose my house",
+      "foreclosure",
+      "i owe money",
+      "living paycheck to paycheck",
+      "no savings",
+      "spent all my savings",
+    ])
+  ) {
+    return {
+      emotionalState: "pressured, ashamed, and desperate to find a way out",
+      deeperMeaning:
+        "Financial pressure does not just drain your bank account — it drains your confidence and your peace. Wisdom understands money deeply and speaks to the shame as much as the strategy.",
+      searchLanes: ["money", "wisdom", "discipline", "stewardship", "hope"],
+      headline: "Wisdom starts with what is true",
+      insight:
+        "Solomon built extraordinary wealth, but he also wrote extensively about the danger of debt and the trap of chasing money as an end. He understood that financial freedom begins in the mind and character before it shows up in the bank account.",
+      reflection:
+        "What financial habit or belief brought you here — and what would a wise, disciplined version of you do differently starting today?",
+      nextStep:
+        "Write down your full financial picture, honestly. You cannot steward what you will not face. Wisdom begins with truth.",
+      bookConnection:
+        "Success Secrets of Solomon — Money and Wealth (pp. 88-92) and Discipline (pp. 54-58)",
+    };
+  }
+
+
   // --- FALLING BEHIND / COMPARISON / TOO LATE ---
   if (
     includesAny(q, [
