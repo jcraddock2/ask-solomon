@@ -1,10 +1,13 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function UpgradePage() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCheckout = async () => {
+    setIsLoading(true);
     try {
       const res = await fetch("/api/stripe/checkout", { method: "POST" });
       const text = await res.text();
@@ -13,7 +16,8 @@ export default function UpgradePage() {
       if (!data?.url) { alert("Checkout created, but no URL returned."); return; }
       window.location.href = data.url;
     } catch (err: any) {
-      alert(err?.message || "Unexpected error starting checkout.");
+      setIsLoading(false);
+    alert(err?.message || "Unexpected error starting checkout.");
     }
   };
 
@@ -98,6 +102,7 @@ export default function UpgradePage() {
         <button
           type="button"
           onClick={handleCheckout}
+          disabled={isLoading}
           style={{
             display: "block",
             width: "100%",
@@ -112,9 +117,11 @@ export default function UpgradePage() {
             border: "none",
             cursor: "pointer",
             letterSpacing: 0.3,
+            opacity: isLoading ? 0.7 : 1,
+            cursor: isLoading ? "not-allowed" : "pointer",
           }}
         >
-          📖 Unlock Lifetime Access — $29
+          {isLoading ? "Taking you to checkout..." : "📖 Unlock Lifetime Access — $29"}
         </button>
 
         <p style={{ marginTop: 12, fontSize: 11, color: "rgba(255,255,255,0.35)", lineHeight: 1.5 }}>
