@@ -77,6 +77,30 @@ export default function UpgradePage() {
           to the principles Solomon actually lived by. Written by John Craddock.
         </p>
 
+        {/* Bonus book callout */}
+        <div style={{
+          background: "rgba(212,175,55,0.12)",
+          border: "1px solid rgba(212,175,55,0.4)",
+          borderRadius: 14,
+          padding: "16px 20px",
+          marginBottom: 20,
+          display: "flex",
+          alignItems: "center",
+          gap: 14,
+        }}>
+          <span style={{ fontSize: 32 }}>🎁</span>
+          <div>
+            <p style={{ margin: 0, fontWeight: 700, color: "#d4a017", fontSize: 15 }}>
+              BONUS INCLUDED FREE
+            </p>
+            <p style={{ margin: "4px 0 0", color: "rgba(255,255,255,0.85)", fontSize: 14, lineHeight: 1.5 }}>
+              Lessons from a Giant Killer — a second full book by John Craddock,
+              yours free when you unlock today. David defeated Goliath. Solomon built an empire.
+              Together they hand you the playbook.
+            </p>
+          </div>
+        </div>
+
         {/* Price block */}
         <div style={{
           background: "rgba(255,255,255,0.07)",
