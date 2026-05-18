@@ -1,37 +1,54 @@
-import { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://asksolomon.app";
   return [
     {
-      url: base,
+      url: "https://asksolomon.app",
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1.0,
     },
     {
-      url: base + "/upgrade",
+      url: "https://asksolomon.app/upgrade",
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
-      url: base + "/book",
+      url: "https://asksolomon.app/book",
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: base + "/giant",
+      url: "https://asksolomon.app/book-index",
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.7,
     },
     {
-      url: base + "/success",
+      url: "https://asksolomon.app/giant",
       lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.3,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
+      url: "https://asksolomon.app/proverbs-for-anxiety",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: "https://asksolomon.app/biblical-wisdom-for-job-loss",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: "https://asksolomon.app/proverbs-for-marriage",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
     },
   ];
 }
