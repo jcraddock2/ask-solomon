@@ -117,6 +117,23 @@ export default function BookPage() {
             </a>
           )}
 
+          {isPro && securePdfUrl && (
+            <a
+              href="/giant"
+              style={{
+                padding: "10px 12px",
+                borderRadius: 12,
+                border: "1px solid #d4a017",
+                background: "#d4a017",
+                textDecoration: "none",
+                color: "#fff",
+                fontWeight: 700,
+              }}
+            >
+              Bonus Book: Giant Killer
+            </a>
+          )}
+
           {isPro && tokenLoading && (
             <span style={{ padding: "10px 12px", color: "#888" }}>
               Loading secure link...
