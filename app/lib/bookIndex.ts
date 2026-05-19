@@ -389,7 +389,7 @@ export const BOOK_ENTRIES: BookEntry[] = [
   },
 
   {
-    page: 85,
+    page: "85",
     chapter: "The Lessons of the Ant",
     proverb: "Proverbs 6:6-11",
     theme: "Work Ethic and Diligence",
@@ -399,7 +399,7 @@ export const BOOK_ENTRIES: BookEntry[] = [
     keywords: ["lazy", "procrastination", "work hard", "motivation", "ant", "sluggard", "discipline", "productivity", "initiative", "self-motivated"],
   },
   {
-    page: 89,
+    page: "89",
     chapter: "The Characteristics of the Sluggard",
     proverb: "Proverbs 6:9, 13:4, 20:4, 24:30-34, 26:13-16",
     theme: "Overcoming Slothfulness",
@@ -409,7 +409,7 @@ export const BOOK_ENTRIES: BookEntry[] = [
     keywords: ["excuses", "procrastinate", "cant get started", "always tired", "nothing to show", "neglect", "putting it off", "slothful"],
   },
   {
-    page: 82,
+    page: "82",
     chapter: "Managing the Mouth Part Two",
     proverb: "Proverbs 16:21, 16:23, 14:23",
     theme: "Communication and Words",
@@ -419,7 +419,7 @@ export const BOOK_ENTRIES: BookEntry[] = [
     keywords: ["communication", "communicator", "how to speak", "words", "talk", "say things", "speak wisely"],
   },
   {
-    page: 166,
+    page: "166",
     chapter: "The Gift of True Friendship",
     proverb: "Proverbs 17:17, 27:9, 27:17",
     theme: "Relationships and Community",
@@ -429,7 +429,7 @@ export const BOOK_ENTRIES: BookEntry[] = [
     keywords: ["true friend", "toxic friends", "friends drag me down", "lonely", "wrong people", "iron sharpens", "who to trust", "real friends"],
   },
   {
-    page: 182,
+    page: "182",
     chapter: "Managing Conflict and Anger",
     proverb: "Proverbs 19:11, 19:19, 20:3, 29:11",
     theme: "Emotional Intelligence and Peace",
@@ -439,7 +439,7 @@ export const BOOK_ENTRIES: BookEntry[] = [
     keywords: ["anger", "conflict", "argument", "say things i regret", "lose my temper", "stop fighting", "self-control", "strife", "hot tempered"],
   },
   {
-    page: 236,
+    page: "236",
     chapter: "The Virtuous Partner",
     proverb: "Proverbs 31:10-31",
     theme: "Relationships and Partnership",
