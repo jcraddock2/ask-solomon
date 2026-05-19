@@ -34,12 +34,12 @@ function safeParse<T>(raw: string | null, fallback: T): T {
 }
 
 const SITUATION_PRESETS = [
-  { label: "⚡ I’m Angry", value: "anger" },
-  { label: "😟 I’m Overwhelmed", value: "overwhelmed" },
-  { label: "🧭 Need Direction", value: "guidance" },
-  { label: "💰 Money Stress", value: "money" },
-  { label: "💔 Relationship Conflict", value: "relationship conflict" },
-  { label: "🌧 Feeling Discouraged", value: "discouraged" },
+  { label: "⚡ I'm Angry", value: "I feel angry and I cannot control it" },
+  { label: "😟 I'm Overwhelmed", value: "I feel overwhelmed and I am carrying too much" },
+  { label: "🧭 Need Direction", value: "I need direction and I feel lost" },
+  { label: "💰 Money Stress", value: "I am stressed about money and finances" },
+  { label: "💔 Relationship Conflict", value: "I am struggling with a difficult relationship" },
+  { label: "🌧 Feeling Discouraged", value: "I feel discouraged and like a failure" },
 ] as const;
 
 type ShareTemplate = "classic" | "dark" | "gold" | "daily" | "gradientModern";
