@@ -511,7 +511,6 @@ const LANE_EXPANSIONS: Record<string, string[]> = {
     "stuck",
     "discouraged",
   ],
-}
   vision: [
     "no vision",
     "living by design",
@@ -522,7 +521,8 @@ const LANE_EXPANSIONS: Record<string, string[]> = {
     "direction",
     "wandering",
     "proverbs 29",
-  ],;
+  ],
+};
 function normalize(input: string): string {
   return input
     .toLowerCase()
@@ -727,7 +727,7 @@ export function interpretQuery(query: string): string {
     return "You may be living without a clear vision or direction for your life.";
   }
 
-  // // HIGH-SPECIFICITY: direction / lost
+  // HIGH-SPECIFICITY: direction / lost
   if (
     includesPhrase(q, [
       "i feel lost",
