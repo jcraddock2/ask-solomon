@@ -1908,5 +1908,96 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     };
   }
 
+  // VISION / NO CLEAR VISION / LIVING WITHOUT A PICTURE OF THE FUTURE
+  if (includesAny(q, [
+    "i have no vision", "no vision for my life", "cant see my future",
+    "i dont know where i am going", "no clear direction", "living day to day",
+    "just surviving", "no goals", "no plan for my life", "drifting",
+    "i drift from thing to thing", "unfocused life", "no focus",
+    "what is my vision", "how do i get a vision", "need a vision",
+    "living without a vision", "cant picture my future", "future feels blank",
+    "i have no idea what i want", "wandering", "going in circles"
+  ])) {
+    return {
+      emotionalState: "drifting without a clear picture of where you are going",
+      deeperMeaning: "Solomon wrote that where there is no vision the people perish. Not eventually. The drift starts immediately.",
+      searchLanes: ["purpose", "wisdom", "growth"],
+      headline: "Where There Is No Vision, the People Perish",
+      insight: "Solomon was precise: without a vision, people do not just stagnate. They perish. They lose ground. They give their days to whatever pulls hardest. A vision is not wishful thinking. It is a deliberate mental picture of the future you are building toward. People who live by design see that picture clearly and make daily decisions toward it. People who live by default wake up one day and realize life happened to them instead of through them. The vision does not have to be grand. It has to be real. It has to be yours. It has to be specific enough to pull you toward it on a hard day.",
+      reflection: "If you had to describe your life five years from now in three sentences, what would you say? If you cannot say it clearly, that is where to start.",
+      nextStep: "Ask Solomon to help you build a vision. Tell him where you are and what you want your life to look like.",
+      bookConnection: "Success Secrets of Solomon — Living by Design vs. Default (pp. 62-65) and Divine Purpose (pp. 156-158)",
+    };
+  }
+
+  // WHY PEOPLE FAIL / WHY AM I NOT SUCCEEDING / REPEATED FAILURE
+  if (includesAny(q, [
+    "why do i keep failing", "why do people fail", "why cant i succeed",
+    "i try but nothing works", "keep failing", "pattern of failure",
+    "why does success elude me", "i do everything right but still fail",
+    "why is my life not working", "what am i doing wrong",
+    "cycle of failure", "stuck in failure", "fail at everything",
+    "nothing ever works out for me", "why does life not work for me",
+    "i start things but never finish", "i sabotage myself",
+    "why do i self-sabotage", "why do i keep getting in my own way"
+  ])) {
+    return {
+      emotionalState: "exhausted by a pattern you cannot seem to break",
+      deeperMeaning: "Solomon identified the root causes of failure with surgical precision. Most of them are internal, not external.",
+      searchLanes: ["wisdom", "growth", "purpose"],
+      headline: "Solomon Identified Why People Fail — and Most of It Is Fixable",
+      insight: "Solomon watched people fail across every area of life and he identified the patterns. People fail because they lack a vision and drift. They fail because they have desire without diligence — they want the outcome but avoid the work. They fail because they refuse counsel and correction, insisting they already know best. They fail because they neglect small things until the neglect becomes overwhelming. They fail because their mouth keeps creating problems their life cannot absorb. They fail because fear keeps them from attempting what they were designed to do. The remarkable thing is that Solomon said every single one of these is correctable. Not easy. Correctable. The question is not whether failure can be reversed. The question is whether you are willing to hear which of these is yours.",
+      reflection: "Which of these is most true for you right now: no clear vision, desire without action, refusing correction, neglecting important things, or fear of attempting?",
+      nextStep: "Be honest with Solomon about the pattern. He has seen it before and he has the specific wisdom for it.",
+      bookConnection: "Success Secrets of Solomon — The Sluggard (pp. 89-104), Receiving Correction (pp. 114-117), and Managing the Mouth (pp. 66-84)",
+    };
+  }
+
+  // LACK / FEELING LIKE I NEVER HAVE ENOUGH / SCARCITY MINDSET
+  if (includesAny(q, [
+    "i never have enough", "always lacking", "feeling of lack", "scarcity",
+    "why do i always feel like i dont have enough", "living in lack",
+    "why am i always broke", "why do i always feel poor",
+    "never enough money", "never enough time", "never enough energy",
+    "why do i feel empty", "feel empty inside", "inner emptiness",
+    "i have things but still feel empty", "something is always missing",
+    "fill the emptiness", "void inside", "nothing satisfies",
+    "i get what i want and still feel empty", "why am i never satisfied"
+  ])) {
+    return {
+      emotionalState: "carrying a persistent sense that something is always missing",
+      deeperMeaning: "Solomon said the eyes of man are never satisfied. But he also said contentment is a choice that comes from the inside out.",
+      searchLanes: ["peace", "wisdom", "purpose"],
+      headline: "Solomon Said the Eyes Are Never Satisfied — But That Is Not the Whole Story",
+      insight: "Solomon was honest. He said the eye is never satisfied with seeing. The ear never full with hearing. He had more than anyone in history and described it as vanity. Not because having things is wrong. But because things alone cannot fill what only God and purpose were designed to fill. He also said a person who has learned contentment has found something that wealth cannot purchase. The emptiness you feel is not a flaw in you. It is a signal. It is pointing to something that possessions, achievement, and approval were never designed to provide. The question is not how to get more. The question is what the emptiness is actually pointing toward.",
+      reflection: "What have you been trying to fill the emptiness with? What is the one thing that, if you had it, you believe the emptiness would stop?",
+      nextStep: "Tell Solomon what feels empty. He has walked through every form of this and has specific wisdom for where you are.",
+      bookConnection: "Success Secrets of Solomon — Contentment and Balance (pp. 227-229) and Purpose (pp. 156-158)",
+    };
+  }
+
+  // NEEDS / UNMET NEEDS / WHAT DO I ACTUALLY NEED
+  if (includesAny(q, [
+    "what do i need", "i have unmet needs", "my needs are not being met",
+    "nobody meets my needs", "i need love", "i need acceptance",
+    "hungry for something", "hungry soul", "starving for",
+    "i need to be seen", "i need to be heard", "i need to be valued",
+    "desperate for connection", "desperate for approval",
+    "why do i need so much from people", "emotionally needy",
+    "why do i feel so needy", "my needs drive my bad decisions",
+    "i lower my standards when i need something", "need kills my discernment"
+  ])) {
+    return {
+      emotionalState: "driven by a need so strong it is affecting your judgment and decisions",
+      deeperMeaning: "Solomon said to the hungry soul every bitter thing is sweet. Unmet needs destroy discernment.",
+      searchLanes: ["peace", "relationships", "wisdom"],
+      headline: "A Hungry Soul Loses Its Discernment",
+      insight: "Solomon wrote one of the most psychologically precise verses in all of Proverbs: to the hungry soul, even bitter things taste sweet. When a person is starving for love, acceptance, or belonging, they will lower every standard to fill the hunger. They will accept what they know is wrong because the need is louder than the wisdom. Solomon is not condemning the need. He is warning about the danger of letting unmet need make the decisions. The need for love is real. The need to be seen and valued is real. Those needs are meant to be filled. But filled by the right source at the right time. Not by desperation.",
+      reflection: "What need is currently loudest in you right now? Is that need driving you toward something you know is not right for you?",
+      nextStep: "Ask Solomon about this specific need. He has wisdom for where that need came from and how it can actually be met.",
+      bookConnection: "Success Secrets of Solomon — The Hungry Soul (pp. 214-215) and Friendship and Counsel (pp. 114-118)",
+    };
+  }
+
 return null;
 }
