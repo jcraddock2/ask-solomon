@@ -1747,5 +1747,166 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     };
   }
 
+  // PROCRASTINATION / LAZINESS
+  if (includesAny(q, [
+    "procrastinat", "keep putting off", "cant seem to start", "always delay",
+    "lazy", "slothful", "sluggard", "no motivation to work", "i know what to do but",
+    "i put things off", "never finish what i start", "lack discipline",
+    "lack self discipline", "no self control", "too comfortable", "stuck doing nothing"
+  ])) {
+    return {
+      emotionalState: "stuck in a cycle of avoidance",
+      deeperMeaning: "You know what needs to be done. Something deeper is keeping you from doing it.",
+      searchLanes: ["wisdom", "growth", "purpose"],
+      headline: "Solomon Studied the Ant So You Would Not Have To",
+      insight: "Solomon watched the ant and saw everything we avoid. No manager. No overseer. No ruler. The ant simply does what it was made to do. The sluggard waits for the right feeling, the right moment, the right conditions. Those never come. Activity is the answer, not rest. The ant does not wait to feel motivated. It moves, and the motivation follows.",
+      reflection: "What one thing could you do today that your future self would thank you for? Start there. Just one thing.",
+      nextStep: "Ask Solomon what is keeping you stuck. Name the specific task you are avoiding.",
+      bookConnection: "Success Secrets of Solomon — The Ant (pp. 85-89) and The Sluggard (pp. 89-104)",
+    };
+  }
+
+  // DILIGENCE / HARD WORK / WANTING TO SUCCEED
+  if (includesAny(q, [
+    "diligent", "work harder", "want to succeed", "want to be excellent",
+    "how do i get ahead", "want to stand before kings", "want to be noticed",
+    "nobody sees my work", "giving my best", "i work hard but nothing changes",
+    "how do i get promoted", "want to be recognized", "dream but nothing happens",
+    "desire without action", "desire without results"
+  ])) {
+    return {
+      emotionalState: "hungry for more but unsure if effort is enough",
+      deeperMeaning: "You have the desire. Solomon says desire without diligence is just daydreaming.",
+      searchLanes: ["wisdom", "purpose", "growth"],
+      headline: "The Diligent Will Stand Before Kings",
+      insight: "Solomon was clear: the diligent person will eventually be recognized and rewarded. Not overnight. Not always on your timeline. But diligence creates an unstoppable momentum. The sluggard has desires too, and gets nothing. The difference is not the dream. It is the daily discipline behind the dream. Give your best at whatever is in front of you right now. That is how Joseph went from a prison to a palace.",
+      reflection: "Are you giving your best at your current level, or waiting until things improve before you do?",
+      nextStep: "Bring your question about work and purpose to Solomon. He has specific wisdom for where you are.",
+      bookConnection: "Success Secrets of Solomon — Diligence (pp. 108-113)",
+    };
+  }
+
+  // FEAR / ANXIETY / SCARED OF THE FUTURE
+  if (includesAny(q, [
+    "i am afraid", "i am scared", "living in fear", "fear of the future",
+    "fear of failure", "what if it goes wrong", "terrified", "paralyzed by fear",
+    "fear holds me back", "afraid to try", "fear of man", "what people think",
+    "too scared to", "anxiety about", "worried about what will happen",
+    "i keep worrying", "cant stop worrying"
+  ])) {
+    return {
+      emotionalState: "paralyzed by fear of what might happen",
+      deeperMeaning: "Fear is a creative force. It builds the very trap it warns you about.",
+      searchLanes: ["peace", "faith", "wisdom"],
+      headline: "The Fear of Man Is a Snare",
+      insight: "Solomon was direct: the fear of man brings a snare. Fear does not just warn you. It creates. What you continuously fear, you move toward. It limits your potential, shrinks your world, and keeps you from what God has for you. But there is a different force available. Trust. Solomon said the one who trusts in the Lord is safe. Not fearless. Safe. The boldness of the righteous is not the absence of fear. It is the presence of God.",
+      reflection: "What would you attempt if you truly believed God was working on your behalf right now?",
+      nextStep: "Tell Solomon what you are afraid of. He has walked through fear and come out the other side.",
+      bookConnection: "Success Secrets of Solomon — Fear vs. Faith (pp. 224-226)",
+    };
+  }
+
+  // TOXIC FRIENDSHIPS / BAD RELATIONSHIPS / PEOPLE DRAGGING YOU DOWN
+  if (includesAny(q, [
+    "toxic friend", "toxic relationship", "bad influence", "people dragging me down",
+    "friends are negative", "surrounded by negative people", "my friends are bad for me",
+    "wrong crowd", "people i hang around", "nobody supports me",
+    "my friends dont push me", "dull people", "iron sharpens iron",
+    "bad company", "friends pull me back", "people i trust hurt me"
+  ])) {
+    return {
+      emotionalState: "worn down by the people around you",
+      deeperMeaning: "The people closest to you are either sharpening you or dulling you. There is no neutral.",
+      searchLanes: ["relationships", "wisdom", "growth"],
+      headline: "Iron Sharpens Iron",
+      insight: "Solomon said it plainly. A friend should sharpen you, not dull you. The friction is the same, but the result is entirely different depending on who is doing the sharpening. Some friendships grind you down. They drain your energy, lower your faith, and make everything harder. You have to work harder to stay positive around them. That is the dull-axe effect. A true friend makes life better. They see the better version of you even on your worst day, and they call you toward it.",
+      reflection: "If you are honest, do the people closest to you make you better or worse? What is one relationship you need to invest more in, and one you need to step back from?",
+      nextStep: "Ask Solomon about finding the right people and what to do about the wrong ones.",
+      bookConnection: "Success Secrets of Solomon — Friendship (pp. 166-170)",
+    };
+  }
+
+  // REPUTATION / INTEGRITY / PEOPLE JUDGING ME
+  if (includesAny(q, [
+    "my reputation", "what people think of me", "people judge me", "bad reputation",
+    "want people to respect me", "nobody trusts me", "i want to be trusted",
+    "integrity", "walking the talk", "say one thing do another",
+    "i want to be known as", "want a good name", "my name", "what am i known for"
+  ])) {
+    return {
+      emotionalState: "concerned about how you are perceived and whether it matches who you are",
+      deeperMeaning: "Solomon valued a good name above silver and gold. Your reputation is built one day at a time.",
+      searchLanes: ["wisdom", "growth", "purpose"],
+      headline: "A Good Name Is Worth More Than Great Riches",
+      insight: "Solomon ranked a good reputation and loving favor above silver and gold. Not because wealth does not matter. But because reputation is what opens doors that money cannot. And integrity is what keeps them open. The person with integrity does not have to manage their image. Their walk manages it for them. Solomon watched people and said we all create our reputation whether we are conscious of it or not. The question is: is it working for you or against you?",
+      reflection: "What are you actually known for by the people who see you every day? Does that match who you want to be?",
+      nextStep: "Bring your questions about character and reputation to Solomon.",
+      bookConnection: "Success Secrets of Solomon — Reputation and Favor (pp. 199-200)",
+    };
+  }
+
+  // RECEIVING CORRECTION / HARD-HEADED / NOT GROWING
+  if (includesAny(q, [
+    "i dont take criticism well", "hard time receiving feedback", "hard headed",
+    "people say im stubborn", "i know best", "wont listen", "cant take advice",
+    "defensive when corrected", "hard to change", "i resist correction",
+    "i keep making the same mistake", "same mistake over and over",
+    "wont admit i am wrong", "dont like being told what to do",
+    "i never learn from mistakes"
+  ])) {
+    return {
+      emotionalState: "stuck in a pattern you recognize but cannot seem to break",
+      deeperMeaning: "The fool thinks he is right even when seven wise men disagree. The wise person goes looking for correction on purpose.",
+      searchLanes: ["wisdom", "growth", "relationships"],
+      headline: "The Wound of a Friend Is Better Than the Kiss of an Enemy",
+      insight: "Solomon said a wise person values the rebuke of someone who cares more than the flattery of someone who does not. The sting is real. But it is not destructive. It is productive. The person who refuses correction hardens their neck, and Solomon warned that path leads to sudden destruction. The wise person invites the discomfort because they know it produces growth. You can go through life or grow through life. The only variable is whether you are willing to be corrected.",
+      reflection: "Is there a correction you have been given repeatedly that you have been dismissing? What would change if you took it seriously?",
+      nextStep: "Tell Solomon the situation. He can help you see it from a different angle.",
+      bookConnection: "Success Secrets of Solomon — Receiving Correction (pp. 114-117) and Hard-Headedness (pp. 91)",
+    };
+  }
+
+  // CONFLICT / STRIFE / ARGUING
+  if (includesAny(q, [
+    "always arguing", "constant conflict", "fighting with", "strife", "contention",
+    "i keep getting in arguments", "anger gets me in trouble",
+    "i say things i regret when angry", "speak without thinking",
+    "mouth gets me in trouble", "i blow up", "i say hurtful things",
+    "react before i think", "lose my temper and say things",
+    "hot tempered", "cant control my anger in conversations"
+  ])) {
+    return {
+      emotionalState: "frustrated by the damage your words cause in the heat of the moment",
+      deeperMeaning: "Solomon said a fool utters all of his mind. A wise person keeps it in until afterwards.",
+      searchLanes: ["relationships", "peace", "wisdom"],
+      headline: "You Can Hit Pause But You Cannot Hit Rewind",
+      insight: "Solomon watched people destroy relationships with their mouths in a moment of anger. He said the wise person bridles themselves. They hit pause before they hit the accelerator. Once words are out, they are sown. They will grow something. Wise people are not people who have no reaction. They are people who know the pause button exists and use it on purpose. There is no rewind. There is only the choice, in this moment, to keep the fire small before it spreads.",
+      reflection: "What triggers you to speak before you think? What would it look like to practice the pause in that specific situation?",
+      nextStep: "Ask Solomon about managing conflict and the power of words. He wrote an entire chapter on it.",
+      bookConnection: "Success Secrets of Solomon — Managing the Mouth (pp. 66-84) and Conflict (pp. 182-186)",
+    };
+  }
+
+  // DESIRE MORE FROM LIFE / FEELING LIKE YOU WERE MADE FOR MORE
+  if (includesAny(q, [
+    "made for more", "feeling like there is more", "something is missing",
+    "want to find my purpose", "dont know my purpose", "living without purpose",
+    "feel like i have potential i am not using", "gifts going to waste",
+    "i have a gift but", "what am i here for", "why am i here",
+    "want to live on purpose", "life by design", "default life",
+    "want to be more than i am", "feel wasted", "feel like i am wasting my life"
+  ])) {
+    return {
+      emotionalState: "sensing that your life has not caught up with who you were created to be",
+      deeperMeaning: "Solomon said we are not random accidents. We are divine products made with deliberate design and specific purpose.",
+      searchLanes: ["purpose", "wisdom", "growth"],
+      headline: "You Were Made With Deliberate Divine Design",
+      insight: "Solomon wrote that every person is created for God and by God, with a unique purpose built in. Not assigned later. Built in. Your gifts are not an accident. Your passions are not a coincidence. Solomon also said a person who is diligent in their gifts will stand before kings. The world does not need another copy of someone else. It needs you operating in what God actually designed you for. Living by default is choosing someone else's story. Living by design starts with a single question: What did God put in me that I have been ignoring?",
+      reflection: "What gift or ability do you have that you have been underinvesting in? What would it look like to take it seriously for 90 days?",
+      nextStep: "Ask Solomon about purpose, gifts, and living by design instead of default.",
+      bookConnection: "Success Secrets of Solomon — Divine Design and Purpose (pp. 156-158) and Giftedness (pp. 178)",
+    };
+  }
+
 return null;
 }
