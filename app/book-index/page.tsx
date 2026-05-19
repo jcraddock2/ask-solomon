@@ -42,6 +42,10 @@ const TOPIC_INDEX: Topic[] = [
   { topic: "character", label: "Character", pages: "162–166", chapters: ["Building Character"], summary: "Character is the foundation everything else rests on — protect it." },
   { topic: "reputation", label: "Reputation", pages: "166–170", chapters: ["Guard Your Reputation"], summary: "A good name is more valuable than great riches." },
   { topic: "success", label: "Success Principles", pages: "170–176", chapters: ["Secrets of Success"], summary: "Success built on wisdom, diligence, and integrity is lasting." },
+  { topic: "vision", label: "Vision", pages: "58–68", chapters: ["Living by Design"], summary: "Without vision people drift. A deliberate picture of your future changes every decision you make." },
+  { topic: "why-people-fail", label: "Why People Fail", pages: "54–60", chapters: ["Why People Fail"], summary: "People fail because of drifting, desire without diligence, refusing correction, or fear. Every cause is fixable." },
+  { topic: "contentment", label: "Contentment and Lack", pages: "224–230", chapters: ["Contentment and Balance"], summary: "The eye is never satisfied with seeing. Emptiness is a signal pointing toward what possessions were never designed to fill." },
+  { topic: "unmet-needs", label: "Unmet Needs", pages: "210–218", chapters: ["The Hungry Soul"], summary: "To the hungry soul even bitter things are sweet. Unmet needs drive decisions that bypass wisdom." },
 ];
 
 export default function BookIndex() {
