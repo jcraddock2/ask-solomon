@@ -1616,5 +1616,136 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     };
   }
 
-  return null;
+  
+  // LONELINESS / ISOLATION
+  if (
+    includesAny(q, [
+      "i feel alone",
+      "so alone",
+      "feel lonely",
+      "feeling lonely",
+      "i am lonely",
+      "no one cares",
+      "nobody cares",
+      "no one understands",
+      "nobody understands",
+      "isolated",
+      "i feel invisible",
+      "feel invisible",
+      "no friends",
+      "i have no friends",
+      "forgotten by everyone",
+      "feel forgotten",
+      "i feel forgotten",
+      "no one sees me",
+      "nobody sees me",
+      "disconnected from everyone",
+      "left out",
+      "always alone",
+    ])
+  ) {
+    return {
+      emotionalState: "alone, unseen, and aching for connection",
+      deeperMeaning:
+        "Loneliness is one of the loudest lies. It tells you that your current season of isolation defines your worth and your future. Neither is true.",
+      searchLanes: ["loneliness", "identity", "hope", "peace", "community"],
+      headline: "Loneliness Does Not Mean You Are Forgotten",
+      insight:
+        "Solomon wrote that two are better than one — not because aloneness is weakness, but because we were built for witness. The season you are in right now is not your permanent address. Wisdom reminds you that the God who sees you is also the God who moves.",
+      reflection:
+        "Is your loneliness about circumstances — or about a story you are telling yourself about your worth?",
+      nextStep:
+        "Do one thing today that places you in proximity to people — even small proximity counts. A walk, a call, a chair at a coffee shop. Connection rarely comes all at once.",
+      bookConnection:
+        "Success Secrets of Solomon — Loneliness (pp. 105-118) and Identity (pp. 118-132)",
+    };
+  }
+
+  // CHRONIC ILLNESS / HEALTH FEAR
+  if (
+    includesAny(q, [
+      "chronic illness",
+      "chronic pain",
+      "sick all the time",
+      "always sick",
+      "health scare",
+      "i am sick",
+      "scared about my health",
+      "afraid of dying",
+      "fear of death",
+      "terminal",
+      "diagnosis",
+      "i was diagnosed",
+      "fighting illness",
+      "fighting disease",
+      "my body is failing",
+      "health is failing",
+      "i feel broken physically",
+      "living with pain",
+      "dealing with pain every day",
+      "suffering physically",
+      "my health is scaring me",
+    ])
+  ) {
+    return {
+      emotionalState: "physically weary, afraid, and wrestling with things beyond your control",
+      deeperMeaning:
+        "When your body becomes the battleground, everything else feels secondary. This is one of the rawest forms of vulnerability — and it deserves honesty, not platitudes.",
+      searchLanes: ["fear", "hope", "peace", "trust", "suffering"],
+      headline: "Wisdom Does Not Look Away From Suffering",
+      insight:
+        "Solomon wrote about the human condition with unflinching clarity. He understood that strength is not the absence of pain — it is what you choose to anchor to when pain is present. Proverbs does not promise easy lives. It promises a wisdom that outlasts what we face.",
+      reflection:
+        "What does this season of physical struggle reveal about what you are truly leaning on?",
+      nextStep:
+        "Give yourself permission to grieve what your body is going through — without guilt. Then ask: what is one thing still within my control today that I can do with intention?",
+      bookConnection:
+        "Success Secrets of Solomon — Resilience (pp. 159-171) and Fear (pp. 37-51)",
+    };
+  }
+
+  // SHAME / FEELING DIRTY / PAST MISTAKES HAUNTING
+  if (
+    includesAny(q, [
+      "i feel ashamed",
+      "so ashamed",
+      "i am ashamed",
+      "feel like a bad person",
+      "i am a bad person",
+      "past mistakes",
+      "my past haunts me",
+      "haunted by my past",
+      "i cannot forgive myself",
+      "cant forgive myself",
+      "what i did",
+      "guilty about my past",
+      "feel worthless because of what i did",
+      "i ruined everything",
+      "too broken to be fixed",
+      "too far gone",
+      "i am too damaged",
+      "damaged goods",
+      "feel dirty",
+      "disgusted with myself",
+      "cannot move past what i did",
+    ])
+  ) {
+    return {
+      emotionalState: "weighed down by shame, convinced that your past defines your future",
+      deeperMeaning:
+        "Shame tells you that what you did IS who you are. That is the lie at the center of it. What you did is real. But it is not your permanent identity — unless you let shame write the last chapter.",
+      searchLanes: ["identity", "forgiveness", "hope", "grace", "renewal"],
+      headline: "Wisdom Knows the Difference Between Guilt and Shame",
+      insight:
+        "Proverbs distinguishes between the fool who covers his sins and the wise person who confesses and finds mercy. Shame says hide. Wisdom says face it, name it, and move. A righteous person falls seven times and rises again — that is not an exception. That is the pattern.",
+      reflection:
+        "What would it look like to accept what happened without letting it become the story you tell about who you are?",
+      nextStep:
+        "Write down one true thing about who you are that exists independently of your worst moment. It does not need to be big. It just needs to be real.",
+      bookConnection:
+        "Success Secrets of Solomon — Integrity (pp. 66-70) and Starting Over (pp. 183-196)",
+    };
+  }
+
+return null;
 }
