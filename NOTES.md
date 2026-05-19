@@ -872,3 +872,34 @@ Last updated: May 19, 2026
 - /biblical-wisdom-for-laziness-and-procrastination ✅
 - /proverbs-for-relationships ✅
 - /proverbs-for-diligence ✅
+
+
+---
+
+## Session May 19, 2026 — Part 3 (intent.ts Vision Lane)
+
+### What was done this session:
+
+**intent.ts — Vision intent lane added (3 places updated):**
+
+1. **INTENT_LANES array** — new "vision" lane added with 17 terms: "vision", "no vision", "living by design", "living by default", "life by design", "no goals", "no plan", "drifting", "wandering", "future feels blank", "cant see my future", "where am i going", "what do i want", "proverbs 29:18", "purpose", "direction in life", "going in circles"
+
+2. **LANE_EXPANSIONS object** — new "vision" expansion added with synonyms: "no vision", "living by design", "drifting", "no goals", "purpose", "future", "direction", "wandering", "proverbs 29"
+
+3. **interpretQueryAdvanced HIGH-SPECIFICITY block** — added vision check BEFORE the direction block. Catches: "living by design", "living by default", "proverbs 29:18", "where there is no vision", "no goals for my life", "no plan for my life", "wandering", "going in circles", "future feels blank", "cant see my future", "i have no vision", "what do i want from life" → returns: "You may be living without a clear vision or direction for your life."
+
+**Why this matters:** Previously, searches like "Proverbs 29:18", "living by design", or "I have no vision" would fall through to the generic direction lane or return no wisdomResponse match. Now they route correctly to the VISION wisdomResponse scenario (added last session) and the bookIndex entry "Where There Is No Vision, the People Perish" (pp. 62–65, chapter "Living by Design vs. Default").
+
+### Commits this session:
+- intent.ts: Add vision intent lane for Proverbs 29:18, Living by Design, no vision searches
+
+### Status — intent.ts lanes (now 14 total):
+hurting, lonely, discouraged, direction, money, fear, conflict, anger, temptation, addiction, leadership, confidence, comparison, **vision** ✅ (new)
+
+### Next session priorities:
+- John: Set up Google Search Console (D3) — 5 min, see D3 instructions above
+- FINDING 8: Ask John if book has searchable content before page 12
+- D4: Email existing book readers — warmest audience
+- Possible new SEO pages: /proverbs-for-discipline, /solomon-wisdom-for-confidence, /biblical-wisdom-for-grief
+
+Last updated: May 19, 2026 — Part 3 complete. Vision intent lane live in intent.ts.
