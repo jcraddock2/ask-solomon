@@ -369,6 +369,28 @@ const INTENT_LANES: IntentLane[] = [
       "stuck behind",
     ],
   },
+  {
+    name: "vision",
+    terms: [
+      "vision",
+      "no vision",
+      "living by design",
+      "living by default",
+      "life by design",
+      "no goals",
+      "no plan",
+      "drifting",
+      "wandering",
+      "future feels blank",
+      "cant see my future",
+      "where am i going",
+      "what do i want",
+      "proverbs 29:18",
+      "purpose",
+      "direction in life",
+      "going in circles",
+    ],
+  },
 ];
 const LANE_EXPANSIONS: Record<string, string[]> = {
   hurting: [
@@ -489,7 +511,18 @@ const LANE_EXPANSIONS: Record<string, string[]> = {
     "stuck",
     "discouraged",
   ],
-};
+}
+  vision: [
+    "no vision",
+    "living by design",
+    "drifting",
+    "no goals",
+    "purpose",
+    "future",
+    "direction",
+    "wandering",
+    "proverbs 29",
+  ],;
 function normalize(input: string): string {
   return input
     .toLowerCase()
@@ -673,7 +706,28 @@ export function interpretQuery(query: string): string {
     return "You may be stuck in self-doubt and struggling to trust your decisions.";
   }
 
-  // HIGH-SPECIFICITY: direction / lost
+  // HIGH-SPECIFICITY: vision / living by design / Proverbs 29:18
+  if (
+    includesPhrase(q, [
+      "no vision",
+      "living by design",
+      "living by default",
+      "proverbs 29:18",
+      "where there is no vision",
+      "no goals for my life",
+      "no plan for my life",
+      "wandering",
+      "going in circles",
+      "future feels blank",
+      "cant see my future",
+      "i have no vision",
+      "what do i want from life",
+    ])
+  ) {
+    return "You may be living without a clear vision or direction for your life.";
+  }
+
+  // // HIGH-SPECIFICITY: direction / lost
   if (
     includesPhrase(q, [
       "i feel lost",
