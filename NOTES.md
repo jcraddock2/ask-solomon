@@ -742,3 +742,69 @@ Until this is done, the old URL /successsecrets.pdf still works. The new code in
 5. Phase D marketing: viral share improvements, SEO landing pages
 
 Last updated: May 18, 2026
+
+
+---
+
+## SESSION — May 19, 2026
+
+### What was done this session (all deployed ✅):
+
+**FINDING 7 ✅ FIXED** — Wired situation chips to full natural-language queries:
+- Hero chips now pass full sentences to applySituation() instead of single words
+- "anger" → "I feel angry and I cannot control it" (triggers wisdomResponse anger scenario)
+- "overwhelmed" → "I feel overwhelmed and I am carrying too much"
+- "guidance" → "I need direction and I feel lost"
+- "money" → "I am stressed about money and finances"
+- "relationship conflict" → "I am struggling with a difficult relationship"
+- "discouraged" → "I feel discouraged and like a failure"
+
+**FINDING 9 ✅ COMPLETE** — Added 3 new wisdomResponse scenarios:
+- LONELINESS / ISOLATION ("I feel alone", "no one cares", "feel invisible", etc.) → links to book pp. 105-118
+- CHRONIC ILLNESS / HEALTH FEAR ("chronic illness", "health scare", "i was diagnosed", etc.) → links to book pp. 159-171
+- SHAME / PAST MISTAKES ("I feel ashamed", "haunted by my past", "too broken to be fixed", etc.) → links to book pp. 66-70 and 183-196
+
+**Phase D5 ✅ — 4 new SEO landing pages built and committed:**
+- /biblical-wisdom-for-loneliness (book ch. 8, pp. 105-118)
+- /proverbs-for-anger (book ch. 12, p. 126)
+- /proverbs-for-failure (book ch. 13-14, pp. 171-183)
+- /proverbs-for-leadership (book ch. 5-6, pp. 66-78)
+- sitemap.ts updated with all 4 new pages
+
+### Status of all 10 audit findings (updated):
+- FINDING 1 ✅ FIXED
+- FINDING 2 ✅ FIXED
+- FINDING 3 ⚠️ HALF DONE — code uses HMAC token auth (better than rename). No action needed.
+- FINDING 4 ✅ FIXED
+- FINDING 5 ✅ FIXED
+- FINDING 6 ✅ FIXED
+- FINDING 7 ✅ FIXED — chips now use full natural-language queries
+- FINDING 8 ⬜ LOW — ask John: does book have content before page 12?
+- FINDING 9 ✅ COMPLETE — loneliness, chronic illness, shame added + priority routing done
+- FINDING 10 ✅ FIXED
+
+### SEO landing pages complete (7 total):
+- /proverbs-for-anxiety ✅
+- /biblical-wisdom-for-job-loss ✅
+- /proverbs-for-marriage ✅
+- /biblical-wisdom-for-loneliness ✅ (new today)
+- /proverbs-for-anger ✅ (new today)
+- /proverbs-for-failure ✅ (new today)
+- /proverbs-for-leadership ✅ (new today)
+
+### Commits this session:
+- FINDING 7: Wire situation chips to full natural-language queries for better wisdomResponse matches
+- FINDING 9: Add loneliness, chronic illness, and shame scenarios to wisdomResponse.ts
+- Phase D5: Add SEO landing page /biblical-wisdom-for-loneliness
+- Phase D5: Add SEO landing page /proverbs-for-anger
+- Phase D5: Add SEO landing page /proverbs-for-failure
+- Phase D5: Add SEO landing page /proverbs-for-leadership
+- Phase D5: Update sitemap.ts with 4 new SEO landing pages
+
+### Next session priority:
+- John: Set up Google Search Console (D3) — 5 min, see D3 instructions above
+- Build Phase D2 further: consider a dedicated "wisdom of the day" share feature
+- Possible new SEO pages: /proverbs-for-discipline, /solomon-wisdom-for-confidence, /biblical-wisdom-for-grief
+- FINDING 8: Ask John if book has searchable content before page 12
+
+Last updated: May 19, 2026
