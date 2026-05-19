@@ -75,5 +75,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.8,
     },
-  ];
+      {
+      url: "https://asksolomon.app/biblical-wisdom-for-laziness-and-procrastination",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: "https://asksolomon.app/proverbs-for-relationships",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: "https://asksolomon.app/proverbs-for-diligence",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+];
 }
