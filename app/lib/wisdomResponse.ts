@@ -49,17 +49,17 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "shocked, blindsided, and unsure what comes next",
       deeperMeaning:
-        "You did not see this coming — and right now the ground feels unsteady. That is a completely honest response to sudden loss.",
+        "You did not see this coming â and right now the ground feels unsteady. That is a completely honest response to sudden loss.",
       searchLanes: ["work", "purpose", "provision", "hope", "identity"],
       headline: "Wisdom Meets You in the Blindside",
       insight:
         "Proverbs does not define your identity by your employment. Your worth precedes your work. Sudden loss can become sudden clarity about what you were meant for next.",
       reflection:
-        "What does this loss reveal about what you truly want — and what you were tolerating?",
+        "What does this loss reveal about what you truly want â and what you were tolerating?",
       nextStep:
         "Give yourself 24 hours before making any major decisions. Then, write down three things this door closing might be making room for.",
       bookConnection:
-        "Success Secrets of Solomon — Work Ethic (pp. 96-100) and Purpose (pp. 146-150)",
+        "Success Secrets of Solomon â Work Ethic (pp. 96-100) and Purpose (pp. 146-150)",
     };
   }
 
@@ -84,17 +84,17 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "trapped, purposeless, and wondering if this is all there is",
       deeperMeaning:
-        "You are not lazy — you are misaligned. Something in you knows you were made for more than this.",
+        "You are not lazy â you are misaligned. Something in you knows you were made for more than this.",
       searchLanes: ["purpose", "work", "diligence", "calling", "direction"],
       headline: "Wisdom Speaks to the Stuck Place",
       insight:
-        "Proverbs connects diligence to meaning, not just output. When your work stops feeding your soul, it may be calling you toward something God is preparing. Wisdom does not say stay stuck — it says stay faithful while you move.",
+        "Proverbs connects diligence to meaning, not just output. When your work stops feeding your soul, it may be calling you toward something God is preparing. Wisdom does not say stay stuck â it says stay faithful while you move.",
       reflection:
         "What would you do with your days if money were not the question? That answer matters.",
       nextStep:
         "This week, do one thing outside your job that uses the gift you feel is being wasted. It does not have to be big. It just has to be real.",
       bookConnection:
-        "Success Secrets of Solomon — Purpose (pp. 146-150) and Diligence (pp. 72-76)",
+        "Success Secrets of Solomon â Purpose (pp. 146-150) and Diligence (pp. 72-76)",
     };
   }
 
@@ -128,17 +128,17 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "wounded, guarded, and not sure who to trust anymore",
       deeperMeaning:
-        "Betrayal does not just hurt — it rewires how you see people. Wisdom understands this wound and does not rush you past it.",
+        "Betrayal does not just hurt â it rewires how you see people. Wisdom understands this wound and does not rush you past it.",
       searchLanes: ["trust", "relationships", "healing", "wisdom", "discernment"],
       headline: "Wisdom guards you without hardening you",
       insight:
-        "Solomon wrote more about the danger of untrustworthy companions than almost any other topic. He knew that discernment — not suspicion — is what protects you. The goal is not to close your heart. It is to learn to read people more wisely.",
+        "Solomon wrote more about the danger of untrustworthy companions than almost any other topic. He knew that discernment â not suspicion â is what protects you. The goal is not to close your heart. It is to learn to read people more wisely.",
       reflection:
-        "What did this betrayal teach you about what you need in a true friend — and what red flags you may have overlooked?",
+        "What did this betrayal teach you about what you need in a true friend â and what red flags you may have overlooked?",
       nextStep:
         "Name one boundary this situation has shown you that you need to hold in the future. Write it down as a decision, not a reaction.",
       bookConnection:
-        "Success Secrets of Solomon — Relationships (pp. 130-134) and Integrity (pp. 66-70)",
+        "Success Secrets of Solomon â Relationships (pp. 130-134) and Integrity (pp. 66-70)",
     };
   }
 
@@ -171,17 +171,17 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "torn between love and pain, and not sure what the right move is",
       deeperMeaning:
-        "Few things carry more weight than a marriage in crisis. Wisdom does not minimize that — it meets you in the complexity of it.",
+        "Few things carry more weight than a marriage in crisis. Wisdom does not minimize that â it meets you in the complexity of it.",
       searchLanes: ["relationships", "healing", "wisdom", "conflict", "forgiveness"],
       headline: "Wisdom holds both the pain and the hope",
       insight:
-        "Solomon wrote more about the quality of character in relationships than about romantic feelings. He understood that trust, honesty, and consistency are what hold people together — and that their absence is what pulls them apart. Whatever you are facing, wisdom begins with honest self-reflection.",
+        "Solomon wrote more about the quality of character in relationships than about romantic feelings. He understood that trust, honesty, and consistency are what hold people together â and that their absence is what pulls them apart. Whatever you are facing, wisdom begins with honest self-reflection.",
       reflection:
-        "What does wisdom ask of you in this relationship — not of the other person, but of you?",
+        "What does wisdom ask of you in this relationship â not of the other person, but of you?",
       nextStep:
         "Before making any major decisions, seek counsel from someone wise and trusted. Do not navigate this alone.",
       bookConnection:
-        "Success Secrets of Solomon — Relationships (pp. 130-134) and Conflict (pp. 138-140)",
+        "Success Secrets of Solomon â Relationships (pp. 130-134) and Conflict (pp. 138-140)",
     };
   }
 
@@ -215,17 +215,17 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "pressured, ashamed, and desperate to find a way out",
       deeperMeaning:
-        "Financial pressure does not just drain your bank account — it drains your confidence and your peace. Wisdom understands money deeply and speaks to the shame as much as the strategy.",
+        "Financial pressure does not just drain your bank account â it drains your confidence and your peace. Wisdom understands money deeply and speaks to the shame as much as the strategy.",
       searchLanes: ["money", "wisdom", "discipline", "stewardship", "hope"],
       headline: "Wisdom starts with what is true",
       insight:
         "Solomon built extraordinary wealth, but he also wrote extensively about the danger of debt and the trap of chasing money as an end. He understood that financial freedom begins in the mind and character before it shows up in the bank account.",
       reflection:
-        "What financial habit or belief brought you here — and what would a wise, disciplined version of you do differently starting today?",
+        "What financial habit or belief brought you here â and what would a wise, disciplined version of you do differently starting today?",
       nextStep:
         "Write down your full financial picture, honestly. You cannot steward what you will not face. Wisdom begins with truth.",
       bookConnection:
-        "Success Secrets of Solomon — Money and Wealth (pp. 88-92) and Discipline (pp. 54-58)",
+        "Success Secrets of Solomon â Money and Wealth (pp. 88-92) and Discipline (pp. 54-58)",
     };
   }
 
@@ -258,17 +258,17 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "discouraged, delayed, and comparing yourself to others",
       deeperMeaning:
-        "You are not just asking about progress. You are asking whether delay means failure — and whether you still have a chance.",
+        "You are not just asking about progress. You are asking whether delay means failure â and whether you still have a chance.",
       searchLanes: ["comparison", "discouraged", "purpose", "hope", "progress"],
       headline: "Wisdom has something to say about this",
       insight:
-        "Your life is not measured by someone else's timeline. Wisdom does not reward the fastest — it rewards the faithful. The growth happening beneath the surface right now is real, even when it is not yet visible.",
+        "Your life is not measured by someone else's timeline. Wisdom does not reward the fastest â it rewards the faithful. The growth happening beneath the surface right now is real, even when it is not yet visible.",
       reflection:
         "Where are you judging yourself by speed instead of faithfulness?",
       nextStep:
         "Take one small, honest step today. Stop trying to solve your whole future at once.",
       bookConnection:
-        "Success Secrets of Solomon — Confidence (pp. 80–82) and Discipline (pp. 54–58)",
+        "Success Secrets of Solomon â Confidence (pp. 80â82) and Discipline (pp. 54â58)",
     };
   }
 
@@ -309,13 +309,13 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       searchLanes: ["hope", "strength", "healing", "encouragement"],
       headline: "Wisdom meets you exactly here",
       insight:
-        "A low moment is not the same thing as a final outcome. You may be tired, but you are not finished. Wisdom does not ask you to feel strong before you move — it asks you to move anyway.",
+        "A low moment is not the same thing as a final outcome. You may be tired, but you are not finished. Wisdom does not ask you to feel strong before you move â it asks you to move anyway.",
       reflection:
         "What burden are you carrying today that wisdom is asking you to release or face differently?",
       nextStep:
-        "Pause, breathe, and do the next right thing — without demanding that you feel strong first.",
+        "Pause, breathe, and do the next right thing â without demanding that you feel strong first.",
       bookConnection:
-        "Success Secrets of Solomon — Diligence (pp. 72–76) and Patience (pp. 140–142)",
+        "Success Secrets of Solomon â Diligence (pp. 72â76) and Patience (pp. 140â142)",
     };
   }
 
@@ -356,16 +356,16 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "searching, uncertain, and hungry for meaning",
       deeperMeaning:
-        "You are not just lacking a career plan. You are longing for a reason — something that makes the sacrifice feel worth it.",
+        "You are not just lacking a career plan. You are longing for a reason â something that makes the sacrifice feel worth it.",
       searchLanes: ["purpose", "direction", "wisdom", "calling", "guidance"],
       headline: "Wisdom was made for this question",
       insight:
-        "Purpose is not found by thinking harder — it is revealed by walking faithfully in the direction you already sense. Wisdom lights the next step, not the whole staircase.",
+        "Purpose is not found by thinking harder â it is revealed by walking faithfully in the direction you already sense. Wisdom lights the next step, not the whole staircase.",
       reflection: "What do you already know you should do that you have been avoiding?",
       nextStep:
         "Ask wisdom to show you one step, not the whole path. Then take it.",
       bookConnection:
-        "Success Secrets of Solomon — Purpose (pp. 146–150) and Wisdom (pp. 1–10)",
+        "Success Secrets of Solomon â Purpose (pp. 146â150) and Wisdom (pp. 1â10)",
     };
   }
 
@@ -412,12 +412,12 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       searchLanes: ["fear", "confidence", "courage", "trust", "wisdom"],
       headline: "Fear shrinks when wisdom grows",
       insight:
-        "Wisdom does not guarantee a risk-free path — it gives you the clarity to move forward anyway. Courage is not the absence of fear; it is moving despite it.",
+        "Wisdom does not guarantee a risk-free path â it gives you the clarity to move forward anyway. Courage is not the absence of fear; it is moving despite it.",
       reflection: "What is fear costing you right now by keeping you in place?",
       nextStep:
-        "Name the specific fear. Then ask: what is the wisest response to it — not the safest, the wisest.",
+        "Name the specific fear. Then ask: what is the wisest response to it â not the safest, the wisest.",
       bookConnection:
-        "Success Secrets of Solomon — Overcoming Fear (pp. 77–80) and Confidence (pp. 80–82)",
+        "Success Secrets of Solomon â Overcoming Fear (pp. 77â80) and Confidence (pp. 80â82)",
     };
   }
 
@@ -459,17 +459,17 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "angry, frustrated, and struggling to control your response",
       deeperMeaning:
-        "Anger often signals that something you value — fairness, respect, safety — has been threatened. The question wisdom asks is not whether you feel it, but what you do with it.",
+        "Anger often signals that something you value â fairness, respect, safety â has been threatened. The question wisdom asks is not whether you feel it, but what you do with it.",
       searchLanes: ["anger", "self-control", "wisdom", "peace", "patience"],
       headline: "Wisdom speaks directly to anger",
       insight:
-        "Solomon wrote more about anger than almost any other emotion. A slow response to anger is not weakness — it is one of the clearest marks of wisdom. The person who controls their temper controls their future.",
+        "Solomon wrote more about anger than almost any other emotion. A slow response to anger is not weakness â it is one of the clearest marks of wisdom. The person who controls their temper controls their future.",
       reflection:
-        "Is your anger pointing at a real injustice — or at unmet expectations?",
+        "Is your anger pointing at a real injustice â or at unmet expectations?",
       nextStep:
         "Before you respond, pause. Ask yourself: will this response build or destroy?",
       bookConnection:
-        "Success Secrets of Solomon — Managing Anger (pp. 126–128) and Patience (pp. 140–142)",
+        "Success Secrets of Solomon â Managing Anger (pp. 126â128) and Patience (pp. 140â142)",
     };
   }
 
@@ -505,16 +505,16 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "hurt, frustrated, or drained by a difficult relationship",
       deeperMeaning:
-        "Relationship pain cuts deeply because connection matters deeply. You were made for meaningful relationships — and when they fracture, the wound is real.",
+        "Relationship pain cuts deeply because connection matters deeply. You were made for meaningful relationships â and when they fracture, the wound is real.",
       searchLanes: ["relationships", "speech", "wisdom", "peace"],
       headline: "Wisdom gives you power in conflict",
       insight:
         "Wisdom does not ask you to absorb every wound in silence. But it does ask you to respond with discernment rather than reaction. Some relationships need boundaries, some need forgiveness, some need both.",
-      reflection: "Are you trying to change this person — or to respond wisely regardless of what they do?",
+      reflection: "Are you trying to change this person â or to respond wisely regardless of what they do?",
       nextStep:
         "Decide what a wise, not just a hurt, response looks like. Then act from that place.",
       bookConnection:
-        "Success Secrets of Solomon — Relationships (pp. 130–134) and Conflict Resolution (pp. 138–140)",
+        "Success Secrets of Solomon â Relationships (pp. 130â134) and Conflict Resolution (pp. 138â140)",
     };
   }
 
@@ -550,17 +550,17 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "stressed, pressured, or anxious about your finances",
       deeperMeaning:
-        "Money pressure rarely stays in the bank account. It seeps into your sleep, your relationships, and your sense of worth. Wisdom does not ignore the practical — it speaks to it directly.",
+        "Money pressure rarely stays in the bank account. It seeps into your sleep, your relationships, and your sense of worth. Wisdom does not ignore the practical â it speaks to it directly.",
       searchLanes: ["money", "stewardship", "diligence", "wisdom", "planning"],
       headline: "Solomon had a lot to say about money",
       insight:
-        "Financial wisdom is not about having more — it is about managing what you have with intention. Diligence and stewardship are the foundations of financial stability, not luck or income alone.",
+        "Financial wisdom is not about having more â it is about managing what you have with intention. Diligence and stewardship are the foundations of financial stability, not luck or income alone.",
       reflection:
-        "Write down your actual situation clearly — without exaggerating or minimizing. What does wisdom say about the first honest step?",
+        "Write down your actual situation clearly â without exaggerating or minimizing. What does wisdom say about the first honest step?",
       nextStep:
         "Address the most urgent financial issue first. Wisdom handles one thing at a time.",
       bookConnection:
-        "Success Secrets of Solomon — Money & Wealth (pp. 88–92) and Stewardship (pp. 92–96)",
+        "Success Secrets of Solomon â Money & Wealth (pp. 88â92) and Stewardship (pp. 92â96)",
     };
   }
 
@@ -597,12 +597,12 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       searchLanes: ["wisdom", "guidance", "counsel", "decision", "clarity"],
       headline: "You came to the right place",
       insight:
-        "Wisdom is the principle thing — and getting it is the beginning of all good outcomes. Solomon says wisdom is available to anyone who sincerely seeks it. The question is not whether wisdom is accessible, but whether you are willing to follow it.",
+        "Wisdom is the principle thing â and getting it is the beginning of all good outcomes. Solomon says wisdom is available to anyone who sincerely seeks it. The question is not whether wisdom is accessible, but whether you are willing to follow it.",
       reflection: "What decision have you been delaying? What is wisdom already telling you?",
       nextStep:
         "Seek counsel from someone wiser than you. Then compare what they say against what wisdom confirms internally.",
       bookConnection:
-        "Success Secrets of Solomon — Wisdom (pp. 1–10) and Seeking Counsel (pp. 42–46)",
+        "Success Secrets of Solomon â Wisdom (pp. 1â10) and Seeking Counsel (pp. 42â46)",
     };
   }
 
@@ -640,12 +640,12 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       searchLanes: ["humility", "pride", "wisdom", "character"],
       headline: "Wisdom and pride cannot occupy the same space",
       insight:
-        "Solomon is direct: pride goes before a fall, and a haughty spirit before destruction. Humility is not weakness — it is the posture that allows wisdom to enter and favor to flow.",
+        "Solomon is direct: pride goes before a fall, and a haughty spirit before destruction. Humility is not weakness â it is the posture that allows wisdom to enter and favor to flow.",
       reflection: "Where is pride currently costing you a relationship, an opportunity, or peace?",
       nextStep:
         "Do the humble thing you have been avoiding. The relief on the other side is real.",
       bookConnection:
-        "Success Secrets of Solomon — Pride vs Humility (pp. 106–114)",
+        "Success Secrets of Solomon â Pride vs Humility (pp. 106â114)",
     };
   }
 
@@ -685,12 +685,12 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       searchLanes: ["peace", "rest", "wisdom", "focus", "strength"],
       headline: "Wisdom helps you carry only what is yours",
       insight:
-        "Not every burden on your plate was given to you by God. Some were volunteered. Wisdom helps you discern the difference between responsibility and overload — and gives you permission to set some things down.",
+        "Not every burden on your plate was given to you by God. Some were volunteered. Wisdom helps you discern the difference between responsibility and overload â and gives you permission to set some things down.",
       reflection: "What on your list could be removed, delegated, or delayed without real consequence?",
       nextStep:
         "Write everything you are carrying. Circle the top three that matter most. Let wisdom guide the rest.",
       bookConnection:
-        "Success Secrets of Solomon — Focus (pp. 144–146) and Patience (pp. 140–142)",
+        "Success Secrets of Solomon â Focus (pp. 144â146) and Patience (pp. 140â142)",
     };
   }
 
@@ -722,16 +722,16 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "carrying the weight and responsibility of leading others",
       deeperMeaning:
-        "Leadership is not a title — it is the responsibility of influence. And influence multiplies whatever wisdom or foolishness lives in the leader.",
+        "Leadership is not a title â it is the responsibility of influence. And influence multiplies whatever wisdom or foolishness lives in the leader.",
       searchLanes: ["leadership", "wisdom", "influence", "integrity", "counsel"],
       headline: "Solomon was the greatest leadership teacher of his era",
       insight:
         "True leadership starts from the inside out. Before you can lead people effectively, wisdom must govern your own decisions. Those who lead with integrity attract trust; those who lead with ego eventually lose it.",
-      reflection: "Are you leading from strength and wisdom — or from insecurity and control?",
+      reflection: "Are you leading from strength and wisdom â or from insecurity and control?",
       nextStep:
         "Identify the one area of your leadership that needs the most honesty. Address it first.",
       bookConnection:
-        "Success Secrets of Solomon — Leadership (pp. 42–46) and Integrity (pp. 66–70)",
+        "Success Secrets of Solomon â Leadership (pp. 42â46) and Integrity (pp. 66â70)",
     };
   }
 
@@ -768,12 +768,12 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       searchLanes: ["discipline", "diligence", "work", "focus", "success"],
       headline: "Discipline is the path wisdom walks on",
       insight:
-        "Solomon writes with intensity about the sluggard — the person who wants the harvest but avoids the work. Discipline is not punishment; it is the structure that allows your potential to become reality.",
+        "Solomon writes with intensity about the sluggard â the person who wants the harvest but avoids the work. Discipline is not punishment; it is the structure that allows your potential to become reality.",
       reflection: "What one habit, if built consistently, would change the most about your life?",
       nextStep:
         "Start smaller than you think you need to. Consistency with something small beats intensity with something unsustainable.",
       bookConnection:
-        "Success Secrets of Solomon — Discipline (pp. 54–58) and Work Ethic (pp. 96–100)",
+        "Success Secrets of Solomon â Discipline (pp. 54â58) and Work Ethic (pp. 96â100)",
     };
   }
 
@@ -805,16 +805,16 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "driven, ambitious, and hungry to build something meaningful",
       deeperMeaning:
-        "Ambition is not the enemy of wisdom — but ambition without wisdom is a fast car with no steering wheel.",
+        "Ambition is not the enemy of wisdom â but ambition without wisdom is a fast car with no steering wheel.",
       searchLanes: ["success", "diligence", "wisdom", "planning", "integrity"],
-      headline: "Solomon built an empire — here is what he learned",
+      headline: "Solomon built an empire â here is what he learned",
       insight:
-        "Success built on wisdom lasts. Success built on shortcuts, ego, or compromise eventually collapses. Solomon's secrets are not about working harder — they are about working with clarity, integrity, and divine alignment.",
-      reflection: "Is your pursuit of success built on wisdom — or are you cutting corners you hope no one notices?",
+        "Success built on wisdom lasts. Success built on shortcuts, ego, or compromise eventually collapses. Solomon's secrets are not about working harder â they are about working with clarity, integrity, and divine alignment.",
+      reflection: "Is your pursuit of success built on wisdom â or are you cutting corners you hope no one notices?",
       nextStep:
-        "Define what real success looks like for you — not society's version. Then evaluate your current path against it.",
+        "Define what real success looks like for you â not society's version. Then evaluate your current path against it.",
       bookConnection:
-        "Success Secrets of Solomon — Success Principles (pp. 170–176) and Diligence (pp. 72–76)",
+        "Success Secrets of Solomon â Success Principles (pp. 170â176) and Diligence (pp. 72â76)",
     };
   }
 
@@ -851,16 +851,16 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "aware that your words have power and sometimes cause damage",
       deeperMeaning:
-        "Solomon devoted more of Proverbs to speech than to almost any other topic. Words are not neutral — they build lives or erode them.",
+        "Solomon devoted more of Proverbs to speech than to almost any other topic. Words are not neutral â they build lives or erode them.",
       searchLanes: ["speech", "wisdom", "relationships", "character"],
       headline: "Life and death are in the power of the tongue",
       insight:
-        "Wisdom teaches that the person who guards their mouth guards their life. You cannot unsay a word — but you can choose the next word wisely. The tongue reveals what the heart contains.",
+        "Wisdom teaches that the person who guards their mouth guards their life. You cannot unsay a word â but you can choose the next word wisely. The tongue reveals what the heart contains.",
       reflection: "What would change in your relationships if you spoke more intentionally for 30 days?",
       nextStep:
         "Before your next difficult conversation, pause and ask: is this true, is this kind, is this necessary?",
       bookConnection:
-        "Success Secrets of Solomon — Power of Words (pp. 120–124)",
+        "Success Secrets of Solomon â Power of Words (pp. 120â124)",
     };
   }
 
@@ -897,12 +897,12 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       searchLanes: ["integrity", "character", "wisdom", "reputation"],
       headline: "A good name is more valuable than riches",
       insight:
-        "Solomon is clear: integrity protects you. It may cost you short-term — a deal, a friendship, a shortcut — but it builds something no one can take from you. Character is the foundation everything else rests on.",
+        "Solomon is clear: integrity protects you. It may cost you short-term â a deal, a friendship, a shortcut â but it builds something no one can take from you. Character is the foundation everything else rests on.",
       reflection: "Is there anywhere in your life where your private choices contradict your public values?",
       nextStep:
         "Close the gap between who you are privately and who you want to be publicly. Start with one honest act today.",
       bookConnection:
-        "Success Secrets of Solomon — Integrity (pp. 66–70) and Character (pp. 162–166)",
+        "Success Secrets of Solomon â Integrity (pp. 66â70) and Character (pp. 162â166)",
     };
   }
 
@@ -935,16 +935,16 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "struggling with self-doubt and a shaky sense of your own worth",
       deeperMeaning:
-        "Self-doubt is rarely about facts — it is about the story running beneath the facts. Wisdom challenges that story with a different truth.",
+        "Self-doubt is rarely about facts â it is about the story running beneath the facts. Wisdom challenges that story with a different truth.",
       searchLanes: ["confidence", "wisdom", "identity", "courage", "strength"],
-      headline: "Confidence begins internally — Solomon knew this",
+      headline: "Confidence begins internally â Solomon knew this",
       insight:
-        "Confidence is not something you wait to receive from the world. It grows from wisdom, from repeated faithful action, and from knowing who made you and why. You do not need to feel confident before you act — you act, and confidence follows.",
-      reflection: "Whose voice are you believing about yourself — and is that voice aligned with wisdom?",
+        "Confidence is not something you wait to receive from the world. It grows from wisdom, from repeated faithful action, and from knowing who made you and why. You do not need to feel confident before you act â you act, and confidence follows.",
+      reflection: "Whose voice are you believing about yourself â and is that voice aligned with wisdom?",
       nextStep:
         "Do one thing today that the confident version of you would do. Act from who you are becoming, not who you fear you are.",
       bookConnection:
-        "Success Secrets of Solomon — Confidence (pp. 80–82) and Character (pp. 162–166)",
+        "Success Secrets of Solomon â Confidence (pp. 80â82) and Character (pp. 162â166)",
     };
   }
 
@@ -979,12 +979,12 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       searchLanes: ["hope", "patience", "faith", "trust", "encouragement"],
       headline: "Wisdom was built for seasons of waiting",
       insight:
-        "Solomon describes hope as a tree of life. Waiting with wisdom is not passive — it is purposeful. It is preparation meeting patience. The breakthrough you are waiting for is being preceded by the growth you are currently in.",
+        "Solomon describes hope as a tree of life. Waiting with wisdom is not passive â it is purposeful. It is preparation meeting patience. The breakthrough you are waiting for is being preceded by the growth you are currently in.",
       reflection: "What is this waiting season developing in you that success alone could not?",
       nextStep:
-        "Trust the process by continuing the last thing wisdom told you to do — before you saw results.",
+        "Trust the process by continuing the last thing wisdom told you to do â before you saw results.",
       bookConnection:
-        "Success Secrets of Solomon — Patience (pp. 140–142) and Purpose (pp. 146–150)",
+        "Success Secrets of Solomon â Patience (pp. 140â142) and Purpose (pp. 146â150)",
     };
   }
 
@@ -1020,16 +1020,16 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "navigating challenge, frustration, or uncertainty in your work life",
       deeperMeaning:
-        "Work is not just how you earn money — it is how you exercise the gifts and capacities you were built with. When work is broken, something deeper feels broken too.",
+        "Work is not just how you earn money â it is how you exercise the gifts and capacities you were built with. When work is broken, something deeper feels broken too.",
       searchLanes: ["work", "diligence", "wisdom", "purpose", "planning"],
       headline: "Solomon understood the dignity of work",
       insight:
-        "Wisdom says that diligent work leads to abundance, but scattered effort produces nothing. Whether you are losing a job, grinding in one you hate, or trying to find your path — wisdom calls you to show up with excellence in this moment, not just the next one.",
-      reflection: "Are you giving your current work your best — or are you saving your best for something that isn't here yet?",
+        "Wisdom says that diligent work leads to abundance, but scattered effort produces nothing. Whether you are losing a job, grinding in one you hate, or trying to find your path â wisdom calls you to show up with excellence in this moment, not just the next one.",
+      reflection: "Are you giving your current work your best â or are you saving your best for something that isn't here yet?",
       nextStep:
         "Do excellent work today, regardless of whether you plan to stay. Wisdom seen in small things opens the door to greater things.",
       bookConnection:
-        "Success Secrets of Solomon — Work Ethic (pp. 96–100) and Diligence (pp. 72–76)",
+        "Success Secrets of Solomon â Work Ethic (pp. 96â100) and Diligence (pp. 72â76)",
     };
   }
 
@@ -1060,16 +1060,16 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "wanting to be more strategic, prepared, and intentional",
       deeperMeaning:
-        "Planning is an act of faith — it says you believe your future is worth preparing for. Wisdom gives planning both direction and humility.",
+        "Planning is an act of faith â it says you believe your future is worth preparing for. Wisdom gives planning both direction and humility.",
       searchLanes: ["planning", "wisdom", "counsel", "diligence", "purpose"],
       headline: "Wisdom plans. Foolishness drifts.",
       insight:
-        "Solomon says plans succeed when they are bathed in wise counsel and aligned with truth. A good plan does not eliminate uncertainty — it gives you a framework to respond to uncertainty wisely.",
+        "Solomon says plans succeed when they are bathed in wise counsel and aligned with truth. A good plan does not eliminate uncertainty â it gives you a framework to respond to uncertainty wisely.",
       reflection: "What area of your life has been running on reaction rather than intention?",
       nextStep:
         "Write a clear, one-paragraph description of what you want in 12 months. Then work backward to today.",
       bookConnection:
-        "Success Secrets of Solomon — Planning (pp. 102–104) and Seeking Counsel (pp. 42–46)",
+        "Success Secrets of Solomon â Planning (pp. 102â104) and Seeking Counsel (pp. 42â46)",
     };
   }
 
@@ -1100,16 +1100,16 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "carrying a wound and wrestling with whether to forgive",
       deeperMeaning:
-        "Unforgiveness is one of the heaviest weights a person can carry. It rarely hurts the other person — it mostly poisons the one holding it.",
+        "Unforgiveness is one of the heaviest weights a person can carry. It rarely hurts the other person â it mostly poisons the one holding it.",
       searchLanes: ["forgiveness", "peace", "healing", "wisdom", "relationships"],
       headline: "Wisdom knows the cost of bitterness",
       insight:
-        "Forgiveness is not saying what happened was okay. It is releasing yourself from the prison of carrying it forever. Solomon understood that a wise person overlooks offenses — not out of weakness, but because peace is more valuable than being right.",
+        "Forgiveness is not saying what happened was okay. It is releasing yourself from the prison of carrying it forever. Solomon understood that a wise person overlooks offenses â not out of weakness, but because peace is more valuable than being right.",
       reflection: "Who or what are you carrying that is costing you more than it costs them?",
       nextStep:
         "Forgiveness starts as a decision, not a feeling. Make the decision. The feelings will follow.",
       bookConnection:
-        "Success Secrets of Solomon — Conflict Resolution (pp. 138–140) and Character (pp. 162–166)",
+        "Success Secrets of Solomon â Conflict Resolution (pp. 138â140) and Character (pp. 162â166)",
     };
   }
 
@@ -1138,16 +1138,16 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "uncertain about who you are, what defines you, or who you are becoming",
       deeperMeaning:
-        "Identity confusion is rarely a philosophical problem — it is usually the result of living too long for other people's expectations.",
+        "Identity confusion is rarely a philosophical problem â it is usually the result of living too long for other people's expectations.",
       searchLanes: ["identity", "wisdom", "character", "purpose", "confidence"],
-      headline: "Wisdom knows who made you — and why",
+      headline: "Wisdom knows who made you â and why",
       insight:
-        "Your identity is not found in your achievements, your roles, or other people's opinions of you. Solomon anchored identity in the fear of the Lord — a deep reverence that aligns you with truth and frees you from performance.",
-      reflection: "Which parts of your current life reflect who you truly are — and which parts are for someone else's approval?",
+        "Your identity is not found in your achievements, your roles, or other people's opinions of you. Solomon anchored identity in the fear of the Lord â a deep reverence that aligns you with truth and frees you from performance.",
+      reflection: "Which parts of your current life reflect who you truly are â and which parts are for someone else's approval?",
       nextStep:
         "Do one thing today that comes from your truest self, not from what you think is expected of you.",
       bookConnection:
-        "Success Secrets of Solomon — Character (pp. 162–166) and Confidence (pp. 80–82)",
+        "Success Secrets of Solomon â Character (pp. 162â166) and Confidence (pp. 80â82)",
     };
   }
 
@@ -1179,16 +1179,16 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "seeking spiritual depth, clarity, or closeness with God",
       deeperMeaning:
-        "The search for God is never a detour from real life — it is the most direct path through it. Wisdom begins where the fear of the Lord begins.",
+        "The search for God is never a detour from real life â it is the most direct path through it. Wisdom begins where the fear of the Lord begins.",
       searchLanes: ["faith", "wisdom", "trust", "guidance", "hope"],
       headline: "The fear of the Lord is the beginning of wisdom",
       insight:
-        "Solomon, with all his wealth, wisdom, and power, concluded that a life without reverence for God is empty. Not because God needs your attention — but because you were designed to operate best in alignment with Him.",
+        "Solomon, with all his wealth, wisdom, and power, concluded that a life without reverence for God is empty. Not because God needs your attention â but because you were designed to operate best in alignment with Him.",
       reflection: "What would your life look like if you genuinely invited wisdom into every decision?",
       nextStep:
-        "Spend five minutes in silence today. Ask for wisdom — Solomon says God gives it generously to those who ask.",
+        "Spend five minutes in silence today. Ask for wisdom â Solomon says God gives it generously to those who ask.",
       bookConnection:
-        "Success Secrets of Solomon — Wisdom (pp. 1–10) and Purpose (pp. 146–150)",
+        "Success Secrets of Solomon â Wisdom (pp. 1â10) and Purpose (pp. 146â150)",
     };
   }
 
@@ -1210,17 +1210,17 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "shocked, blindsided, and unsure what comes next",
       deeperMeaning:
-        "You didn\'t see this coming — and right now the ground feels unsteady. That is a completely honest response to sudden loss.",
+        "You didn\'t see this coming â and right now the ground feels unsteady. That is a completely honest response to sudden loss.",
       searchLanes: ["work", "purpose", "provision", "hope", "identity"],
       headline: "Wisdom Meets You in the Blindside",
       insight:
         "Proverbs does not define your identity by your employment. Your worth precedes your work. Sudden loss can become sudden clarity about what you were meant for next.",
       reflection:
-        "What does this loss reveal about what you truly want — and what you were tolerating?",
+        "What does this loss reveal about what you truly want â and what you were tolerating?",
       nextStep:
         "Give yourself 24 hours before making any major decisions. Then take one practical step: update a resume, call one trusted person, or sit quietly and ask what is next.",
       bookConnection:
-        "Success Secrets of Solomon — Work Ethic (pp. 96–100) and Purpose (pp. 146–150)",
+        "Success Secrets of Solomon â Work Ethic (pp. 96â100) and Purpose (pp. 146â150)",
     };
   }
 
@@ -1240,17 +1240,17 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "trapped, purposeless, and wondering if this is all there is",
       deeperMeaning:
-        "You\'re not lazy — you\'re misaligned. Something in you knows you were made for more than this.",
+        "You\'re not lazy â you\'re misaligned. Something in you knows you were made for more than this.",
       searchLanes: ["purpose", "work", "diligence", "calling", "direction"],
       headline: "Wisdom Speaks to the Stuck Place",
       insight:
-        "Proverbs connects diligence to meaning, not just output. When your work stops feeding your soul, it may be calling you toward something God is preparing. Wisdom does not say stay stuck — it says use this season to build and discern.",
+        "Proverbs connects diligence to meaning, not just output. When your work stops feeding your soul, it may be calling you toward something God is preparing. Wisdom does not say stay stuck â it says use this season to build and discern.",
       reflection:
         "If fear were not a factor, what kind of work would you pursue? What gifts are you leaving unused right now?",
       nextStep:
-        "Do not quit in frustration — plan in wisdom. Spend 15 minutes this week writing down what you are actually good at and what work feels alive to you.",
+        "Do not quit in frustration â plan in wisdom. Spend 15 minutes this week writing down what you are actually good at and what work feels alive to you.",
       bookConnection:
-        "Success Secrets of Solomon — Purpose (pp. 146–150) and Diligence (pp. 72–76)",
+        "Success Secrets of Solomon â Purpose (pp. 146â150) and Diligence (pp. 72â76)",
     };
   }
 
@@ -1286,17 +1286,17 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "shaken, uncertain, and searching for ground beneath your feet",
       deeperMeaning:
-        "Losing a job is not just about money — it can strip your identity, your routine, and your sense of worth all at once. Wisdom addresses that deeper wound.",
+        "Losing a job is not just about money â it can strip your identity, your routine, and your sense of worth all at once. Wisdom addresses that deeper wound.",
       searchLanes: ["work", "purpose", "provision", "diligence", "hope"],
       headline: "Your value was never your job title",
       insight:
-        "Solomon understood that diligence opens doors, but no door that closes is your final answer. The hand of the diligent rises again. Your circumstances changed — your character and your calling did not.",
+        "Solomon understood that diligence opens doors, but no door that closes is your final answer. The hand of the diligent rises again. Your circumstances changed â your character and your calling did not.",
       reflection:
         "What have you learned about yourself through this disruption that you could not have learned any other way?",
       nextStep:
-        "Tend to your integrity and your effort today. Provision does not always come from where you expect — but it follows those who remain faithful.",
+        "Tend to your integrity and your effort today. Provision does not always come from where you expect â but it follows those who remain faithful.",
       bookConnection:
-        "Success Secrets of Solomon — Work Ethic (pp. 96–100) and Diligence (pp. 72–76)",
+        "Success Secrets of Solomon â Work Ethic (pp. 96â100) and Diligence (pp. 72â76)",
     };
   }
 
@@ -1337,17 +1337,17 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "wounded, guarded, and struggling to trust again",
       deeperMeaning:
-        "Betrayal does not just break a relationship — it challenges your ability to be open again. Wisdom speaks directly into the tension between protecting yourself and remaining whole.",
+        "Betrayal does not just break a relationship â it challenges your ability to be open again. Wisdom speaks directly into the tension between protecting yourself and remaining whole.",
       searchLanes: ["trust", "relationships", "integrity", "forgiveness", "healing"],
       headline: "Wisdom guards the heart without hardening it",
       insight:
-        "Solomon knew that a person of poor character eventually reveals themselves. Your trust was not foolish — it was good. The failure belonged to the one who broke it. Wisdom now asks you to guard your heart without closing it entirely.",
+        "Solomon knew that a person of poor character eventually reveals themselves. Your trust was not foolish â it was good. The failure belonged to the one who broke it. Wisdom now asks you to guard your heart without closing it entirely.",
       reflection:
         "Is there a difference between healthy discernment and fear-based isolation in how you are responding to this?",
       nextStep:
-        "Give yourself permission to grieve the loss of that trust. Then ask wisdom to show you what healthy boundaries — not walls — look like moving forward.",
+        "Give yourself permission to grieve the loss of that trust. Then ask wisdom to show you what healthy boundaries â not walls â look like moving forward.",
       bookConnection:
-        "Success Secrets of Solomon — Relationships (pp. 130–134) and Character (pp. 162–166)",
+        "Success Secrets of Solomon â Relationships (pp. 130â134) and Character (pp. 162â166)",
     };
   }
 
@@ -1393,17 +1393,17 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "deep in grief, raw, and aching with loss",
       deeperMeaning:
-        "Grief is not a problem to solve. It is love with nowhere to go. Wisdom does not rush you through it — it sits with you inside it.",
+        "Grief is not a problem to solve. It is love with nowhere to go. Wisdom does not rush you through it â it sits with you inside it.",
       searchLanes: ["healing", "hope", "patience", "comfort", "purpose"],
       headline: "There is a wisdom that holds you when words fail",
       insight:
-        "Solomon wrote about the mystery of sorrow and joy coexisting. He knew that grief is one of the most honest human experiences — it proves that love was real. Mourning is not weakness. It is the soul honoring what mattered.",
+        "Solomon wrote about the mystery of sorrow and joy coexisting. He knew that grief is one of the most honest human experiences â it proves that love was real. Mourning is not weakness. It is the soul honoring what mattered.",
       reflection:
         "What do you most want to remember or honor about the person or season you have lost?",
       nextStep:
-        "Do not run from the grief. Let yourself feel it fully today — even if for just a few minutes. Healing does not skip over loss. It moves through it.",
+        "Do not run from the grief. Let yourself feel it fully today â even if for just a few minutes. Healing does not skip over loss. It moves through it.",
       bookConnection:
-        "Success Secrets of Solomon — Patience (pp. 140–142) and Purpose (pp. 146–150)",
+        "Success Secrets of Solomon â Patience (pp. 140â142) and Purpose (pp. 146â150)",
     };
   }
 
@@ -1447,7 +1447,7 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "burdened, uncertain, and deeply invested in someone you love",
       deeperMeaning:
-        "Parenting tests everything — your patience, your identity, your faith, and your love. Wisdom honors the weight of that responsibility and speaks directly into it.",
+        "Parenting tests everything â your patience, your identity, your faith, and your love. Wisdom honors the weight of that responsibility and speaks directly into it.",
       searchLanes: ["discipline", "wisdom", "guidance", "patience", "relationships"],
       headline: "Train up a child in the way he should go",
       insight:
@@ -1457,7 +1457,7 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       nextStep:
         "Choose one moment today to listen more than you speak. Understanding your child's heart is the foundation of any real influence.",
       bookConnection:
-        "Success Secrets of Solomon — Discipline (pp. 54–58) and Wisdom (pp. 1–10)",
+        "Success Secrets of Solomon â Discipline (pp. 54â58) and Wisdom (pp. 1â10)",
     };
   }
 
@@ -1493,17 +1493,17 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "torn between love and pain, and searching for what comes next",
       deeperMeaning:
-        "A marriage in crisis touches every part of who you are. Wisdom does not offer quick fixes — but it speaks profound truth about covenant, character, and the courage required for any real restoration.",
+        "A marriage in crisis touches every part of who you are. Wisdom does not offer quick fixes â but it speaks profound truth about covenant, character, and the courage required for any real restoration.",
       searchLanes: ["relationships", "conflict", "patience", "integrity", "healing"],
       headline: "Wisdom speaks into the hardest relationship questions",
       insight:
-        "Solomon wrote more about the quality of character in relationships than about romantic feelings. He understood that trust, honesty, and consistency are what hold people together — and that their absence is what pulls them apart. Whatever you are facing, wisdom begins with honest self-reflection.",
+        "Solomon wrote more about the quality of character in relationships than about romantic feelings. He understood that trust, honesty, and consistency are what hold people together â and that their absence is what pulls them apart. Whatever you are facing, wisdom begins with honest self-reflection.",
       reflection:
-        "What does wisdom ask of you in this relationship — not of the other person, but of you?",
+        "What does wisdom ask of you in this relationship â not of the other person, but of you?",
       nextStep:
         "Before making any major decisions, seek counsel from someone wise and trusted. Do not navigate this alone.",
       bookConnection:
-        "Success Secrets of Solomon — Relationships (pp. 130–134) and Conflict (pp. 138–140)",
+        "Success Secrets of Solomon â Relationships (pp. 130â134) and Conflict (pp. 138â140)",
     };
   }
 
@@ -1542,17 +1542,17 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "pressured, ashamed, and desperate to find a way out",
       deeperMeaning:
-        "Financial pressure does not just drain your bank account — it drains your confidence and your peace. Wisdom understands money deeply and speaks truth into both the practical and the emotional weight of debt.",
+        "Financial pressure does not just drain your bank account â it drains your confidence and your peace. Wisdom understands money deeply and speaks truth into both the practical and the emotional weight of debt.",
       searchLanes: ["money", "stewardship", "discipline", "planning", "wisdom"],
       headline: "Wisdom is the most underused financial tool",
       insight:
-        "Solomon spoke more about money than almost any other topic in Proverbs. He understood that debt is a form of bondage and that financial freedom is built through patient, disciplined decisions — not desperation. Shame will paralyze you. Wisdom will move you forward.",
+        "Solomon spoke more about money than almost any other topic in Proverbs. He understood that debt is a form of bondage and that financial freedom is built through patient, disciplined decisions â not desperation. Shame will paralyze you. Wisdom will move you forward.",
       reflection:
-        "What financial habit or belief brought you here — and what would a wise, disciplined version of you do differently starting today?",
+        "What financial habit or belief brought you here â and what would a wise, disciplined version of you do differently starting today?",
       nextStep:
         "Write down your full financial picture, honestly. You cannot steward what you will not face. Wisdom begins with truth.",
       bookConnection:
-        "Success Secrets of Solomon — Money & Wealth (pp. 88–92) and Stewardship (pp. 92–96)",
+        "Success Secrets of Solomon â Money & Wealth (pp. 88â92) and Stewardship (pp. 92â96)",
     };
   }
 
@@ -1602,17 +1602,17 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "trapped, ashamed, and wanting freedom but struggling to find it",
       deeperMeaning:
-        "Addiction is not a character flaw — it is a wound seeking relief in the wrong place. Wisdom speaks to the deep need beneath the behavior and points toward real freedom, not just willpower.",
+        "Addiction is not a character flaw â it is a wound seeking relief in the wrong place. Wisdom speaks to the deep need beneath the behavior and points toward real freedom, not just willpower.",
       searchLanes: ["discipline", "wisdom", "healing", "self-control", "freedom"],
       headline: "The path to freedom begins with honest sight",
       insight:
-        "Solomon warned that what looks like pleasure often leads to chains — and that the wise person sees the end of a path before walking it. But wisdom is also deeply merciful. It does not mock the person who is caught. It offers a way out through discipline, community, and truth.",
+        "Solomon warned that what looks like pleasure often leads to chains â and that the wise person sees the end of a path before walking it. But wisdom is also deeply merciful. It does not mock the person who is caught. It offers a way out through discipline, community, and truth.",
       reflection:
-        "What is the real need — the pain, loneliness, or fear — that this habit has been trying to meet?",
+        "What is the real need â the pain, loneliness, or fear â that this habit has been trying to meet?",
       nextStep:
         "Reach out to one trustworthy person today. Shame thrives in silence. Real healing almost always requires another person walking with you.",
       bookConnection:
-        "Success Secrets of Solomon — Discipline (pp. 54–58) and Confidence (pp. 80–82)",
+        "Success Secrets of Solomon â Discipline (pp. 54â58) and Confidence (pp. 80â82)",
     };
   }
 
@@ -1651,13 +1651,13 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       searchLanes: ["loneliness", "identity", "hope", "peace", "community"],
       headline: "Loneliness Does Not Mean You Are Forgotten",
       insight:
-        "Solomon wrote that two are better than one — not because aloneness is weakness, but because we were built for witness. The season you are in right now is not your permanent address. Wisdom reminds you that the God who sees you is also the God who moves.",
+        "Solomon wrote that two are better than one â not because aloneness is weakness, but because we were built for witness. The season you are in right now is not your permanent address. Wisdom reminds you that the God who sees you is also the God who moves.",
       reflection:
-        "Is your loneliness about circumstances — or about a story you are telling yourself about your worth?",
+        "Is your loneliness about circumstances â or about a story you are telling yourself about your worth?",
       nextStep:
-        "Do one thing today that places you in proximity to people — even small proximity counts. A walk, a call, a chair at a coffee shop. Connection rarely comes all at once.",
+        "Do one thing today that places you in proximity to people â even small proximity counts. A walk, a call, a chair at a coffee shop. Connection rarely comes all at once.",
       bookConnection:
-        "Success Secrets of Solomon — Loneliness (pp. 105-118) and Identity (pp. 118-132)",
+        "Success Secrets of Solomon â Loneliness (pp. 105-118) and Identity (pp. 118-132)",
     };
   }
 
@@ -1690,17 +1690,17 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "physically weary, afraid, and wrestling with things beyond your control",
       deeperMeaning:
-        "When your body becomes the battleground, everything else feels secondary. This is one of the rawest forms of vulnerability — and it deserves honesty, not platitudes.",
+        "When your body becomes the battleground, everything else feels secondary. This is one of the rawest forms of vulnerability â and it deserves honesty, not platitudes.",
       searchLanes: ["fear", "hope", "peace", "trust", "suffering"],
       headline: "Wisdom Does Not Look Away From Suffering",
       insight:
-        "Solomon wrote about the human condition with unflinching clarity. He understood that strength is not the absence of pain — it is what you choose to anchor to when pain is present. Proverbs does not promise easy lives. It promises a wisdom that outlasts what we face.",
+        "Solomon wrote about the human condition with unflinching clarity. He understood that strength is not the absence of pain â it is what you choose to anchor to when pain is present. Proverbs does not promise easy lives. It promises a wisdom that outlasts what we face.",
       reflection:
         "What does this season of physical struggle reveal about what you are truly leaning on?",
       nextStep:
-        "Give yourself permission to grieve what your body is going through — without guilt. Then ask: what is one thing still within my control today that I can do with intention?",
+        "Give yourself permission to grieve what your body is going through â without guilt. Then ask: what is one thing still within my control today that I can do with intention?",
       bookConnection:
-        "Success Secrets of Solomon — Resilience (pp. 159-171) and Fear (pp. 37-51)",
+        "Success Secrets of Solomon â Resilience (pp. 159-171) and Fear (pp. 37-51)",
     };
   }
 
@@ -1733,17 +1733,17 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     return {
       emotionalState: "weighed down by shame, convinced that your past defines your future",
       deeperMeaning:
-        "Shame tells you that what you did IS who you are. That is the lie at the center of it. What you did is real. But it is not your permanent identity — unless you let shame write the last chapter.",
+        "Shame tells you that what you did IS who you are. That is the lie at the center of it. What you did is real. But it is not your permanent identity â unless you let shame write the last chapter.",
       searchLanes: ["identity", "forgiveness", "hope", "grace", "renewal"],
       headline: "Wisdom Knows the Difference Between Guilt and Shame",
       insight:
-        "Proverbs distinguishes between the fool who covers his sins and the wise person who confesses and finds mercy. Shame says hide. Wisdom says face it, name it, and move. A righteous person falls seven times and rises again — that is not an exception. That is the pattern.",
+        "Proverbs distinguishes between the fool who covers his sins and the wise person who confesses and finds mercy. Shame says hide. Wisdom says face it, name it, and move. A righteous person falls seven times and rises again â that is not an exception. That is the pattern.",
       reflection:
         "What would it look like to accept what happened without letting it become the story you tell about who you are?",
       nextStep:
         "Write down one true thing about who you are that exists independently of your worst moment. It does not need to be big. It just needs to be real.",
       bookConnection:
-        "Success Secrets of Solomon — Integrity (pp. 66-70) and Starting Over (pp. 183-196)",
+        "Success Secrets of Solomon â Integrity (pp. 66-70) and Starting Over (pp. 183-196)",
     };
   }
 
@@ -1762,7 +1762,7 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       insight: "Solomon watched the ant and saw everything we avoid. No manager. No overseer. No ruler. The ant simply does what it was made to do. The sluggard waits for the right feeling, the right moment, the right conditions. Those never come. Activity is the answer, not rest. The ant does not wait to feel motivated. It moves, and the motivation follows.",
       reflection: "What one thing could you do today that your future self would thank you for? Start there. Just one thing.",
       nextStep: "Ask Solomon what is keeping you stuck. Name the specific task you are avoiding.",
-      bookConnection: "Success Secrets of Solomon — The Ant (pp. 85-89) and The Sluggard (pp. 89-104)",
+      bookConnection: "Success Secrets of Solomon â The Ant (pp. 85-89) and The Sluggard (pp. 89-104)",
     };
   }
 
@@ -1782,7 +1782,7 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       insight: "Solomon was clear: the diligent person will eventually be recognized and rewarded. Not overnight. Not always on your timeline. But diligence creates an unstoppable momentum. The sluggard has desires too, and gets nothing. The difference is not the dream. It is the daily discipline behind the dream. Give your best at whatever is in front of you right now. That is how Joseph went from a prison to a palace.",
       reflection: "Are you giving your best at your current level, or waiting until things improve before you do?",
       nextStep: "Bring your question about work and purpose to Solomon. He has specific wisdom for where you are.",
-      bookConnection: "Success Secrets of Solomon — Diligence (pp. 108-113)",
+      bookConnection: "Success Secrets of Solomon â Diligence (pp. 108-113)",
     };
   }
 
@@ -1802,7 +1802,7 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       insight: "Solomon was direct: the fear of man brings a snare. Fear does not just warn you. It creates. What you continuously fear, you move toward. It limits your potential, shrinks your world, and keeps you from what God has for you. But there is a different force available. Trust. Solomon said the one who trusts in the Lord is safe. Not fearless. Safe. The boldness of the righteous is not the absence of fear. It is the presence of God.",
       reflection: "What would you attempt if you truly believed God was working on your behalf right now?",
       nextStep: "Tell Solomon what you are afraid of. He has walked through fear and come out the other side.",
-      bookConnection: "Success Secrets of Solomon — Fear vs. Faith (pp. 224-226)",
+      bookConnection: "Success Secrets of Solomon â Fear vs. Faith (pp. 224-226)",
     };
   }
 
@@ -1822,7 +1822,7 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       insight: "Solomon said it plainly. A friend should sharpen you, not dull you. The friction is the same, but the result is entirely different depending on who is doing the sharpening. Some friendships grind you down. They drain your energy, lower your faith, and make everything harder. You have to work harder to stay positive around them. That is the dull-axe effect. A true friend makes life better. They see the better version of you even on your worst day, and they call you toward it.",
       reflection: "If you are honest, do the people closest to you make you better or worse? What is one relationship you need to invest more in, and one you need to step back from?",
       nextStep: "Ask Solomon about finding the right people and what to do about the wrong ones.",
-      bookConnection: "Success Secrets of Solomon — Friendship (pp. 166-170)",
+      bookConnection: "Success Secrets of Solomon â Friendship (pp. 166-170)",
     };
   }
 
@@ -1841,7 +1841,7 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       insight: "Solomon ranked a good reputation and loving favor above silver and gold. Not because wealth does not matter. But because reputation is what opens doors that money cannot. And integrity is what keeps them open. The person with integrity does not have to manage their image. Their walk manages it for them. Solomon watched people and said we all create our reputation whether we are conscious of it or not. The question is: is it working for you or against you?",
       reflection: "What are you actually known for by the people who see you every day? Does that match who you want to be?",
       nextStep: "Bring your questions about character and reputation to Solomon.",
-      bookConnection: "Success Secrets of Solomon — Reputation and Favor (pp. 199-200)",
+      bookConnection: "Success Secrets of Solomon â Reputation and Favor (pp. 199-200)",
     };
   }
 
@@ -1862,7 +1862,7 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       insight: "Solomon said a wise person values the rebuke of someone who cares more than the flattery of someone who does not. The sting is real. But it is not destructive. It is productive. The person who refuses correction hardens their neck, and Solomon warned that path leads to sudden destruction. The wise person invites the discomfort because they know it produces growth. You can go through life or grow through life. The only variable is whether you are willing to be corrected.",
       reflection: "Is there a correction you have been given repeatedly that you have been dismissing? What would change if you took it seriously?",
       nextStep: "Tell Solomon the situation. He can help you see it from a different angle.",
-      bookConnection: "Success Secrets of Solomon — Receiving Correction (pp. 114-117) and Hard-Headedness (pp. 91)",
+      bookConnection: "Success Secrets of Solomon â Receiving Correction (pp. 114-117) and Hard-Headedness (pp. 91)",
     };
   }
 
@@ -1883,7 +1883,7 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       insight: "Solomon watched people destroy relationships with their mouths in a moment of anger. He said the wise person bridles themselves. They hit pause before they hit the accelerator. Once words are out, they are sown. They will grow something. Wise people are not people who have no reaction. They are people who know the pause button exists and use it on purpose. There is no rewind. There is only the choice, in this moment, to keep the fire small before it spreads.",
       reflection: "What triggers you to speak before you think? What would it look like to practice the pause in that specific situation?",
       nextStep: "Ask Solomon about managing conflict and the power of words. He wrote an entire chapter on it.",
-      bookConnection: "Success Secrets of Solomon — Managing the Mouth (pp. 66-84) and Conflict (pp. 182-186)",
+      bookConnection: "Success Secrets of Solomon â Managing the Mouth (pp. 66-84) and Conflict (pp. 182-186)",
     };
   }
 
@@ -1904,7 +1904,7 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       insight: "Solomon wrote that every person is created for God and by God, with a unique purpose built in. Not assigned later. Built in. Your gifts are not an accident. Your passions are not a coincidence. Solomon also said a person who is diligent in their gifts will stand before kings. The world does not need another copy of someone else. It needs you operating in what God actually designed you for. Living by default is choosing someone else's story. Living by design starts with a single question: What did God put in me that I have been ignoring?",
       reflection: "What gift or ability do you have that you have been underinvesting in? What would it look like to take it seriously for 90 days?",
       nextStep: "Ask Solomon about purpose, gifts, and living by design instead of default.",
-      bookConnection: "Success Secrets of Solomon — Divine Design and Purpose (pp. 156-158) and Giftedness (pp. 178)",
+      bookConnection: "Success Secrets of Solomon â Divine Design and Purpose (pp. 156-158) and Giftedness (pp. 178)",
     };
   }
 
@@ -1926,7 +1926,7 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       insight: "Solomon was precise: without a vision, people do not just stagnate. They perish. They lose ground. They give their days to whatever pulls hardest. A vision is not wishful thinking. It is a deliberate mental picture of the future you are building toward. People who live by design see that picture clearly and make daily decisions toward it. People who live by default wake up one day and realize life happened to them instead of through them. The vision does not have to be grand. It has to be real. It has to be yours. It has to be specific enough to pull you toward it on a hard day.",
       reflection: "If you had to describe your life five years from now in three sentences, what would you say? If you cannot say it clearly, that is where to start.",
       nextStep: "Ask Solomon to help you build a vision. Tell him where you are and what you want your life to look like.",
-      bookConnection: "Success Secrets of Solomon — Living by Design vs. Default (pp. 62-65) and Divine Purpose (pp. 156-158)",
+      bookConnection: "Success Secrets of Solomon â Living by Design vs. Default (pp. 62-65) and Divine Purpose (pp. 156-158)",
     };
   }
 
@@ -1945,11 +1945,11 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       emotionalState: "exhausted by a pattern you cannot seem to break",
       deeperMeaning: "Solomon identified the root causes of failure with surgical precision. Most of them are internal, not external.",
       searchLanes: ["wisdom", "growth", "purpose"],
-      headline: "Solomon Identified Why People Fail — and Most of It Is Fixable",
-      insight: "Solomon watched people fail across every area of life and he identified the patterns. People fail because they lack a vision and drift. They fail because they have desire without diligence — they want the outcome but avoid the work. They fail because they refuse counsel and correction, insisting they already know best. They fail because they neglect small things until the neglect becomes overwhelming. They fail because their mouth keeps creating problems their life cannot absorb. They fail because fear keeps them from attempting what they were designed to do. The remarkable thing is that Solomon said every single one of these is correctable. Not easy. Correctable. The question is not whether failure can be reversed. The question is whether you are willing to hear which of these is yours.",
+      headline: "Solomon Identified Why People Fail â and Most of It Is Fixable",
+      insight: "Solomon watched people fail across every area of life and he identified the patterns. People fail because they lack a vision and drift. They fail because they have desire without diligence â they want the outcome but avoid the work. They fail because they refuse counsel and correction, insisting they already know best. They fail because they neglect small things until the neglect becomes overwhelming. They fail because their mouth keeps creating problems their life cannot absorb. They fail because fear keeps them from attempting what they were designed to do. The remarkable thing is that Solomon said every single one of these is correctable. Not easy. Correctable. The question is not whether failure can be reversed. The question is whether you are willing to hear which of these is yours.",
       reflection: "Which of these is most true for you right now: no clear vision, desire without action, refusing correction, neglecting important things, or fear of attempting?",
       nextStep: "Be honest with Solomon about the pattern. He has seen it before and he has the specific wisdom for it.",
-      bookConnection: "Success Secrets of Solomon — The Sluggard (pp. 89-104), Receiving Correction (pp. 114-117), and Managing the Mouth (pp. 66-84)",
+      bookConnection: "Success Secrets of Solomon â The Sluggard (pp. 89-104), Receiving Correction (pp. 114-117), and Managing the Mouth (pp. 66-84)",
     };
   }
 
@@ -1968,11 +1968,11 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       emotionalState: "carrying a persistent sense that something is always missing",
       deeperMeaning: "Solomon said the eyes of man are never satisfied. But he also said contentment is a choice that comes from the inside out.",
       searchLanes: ["peace", "wisdom", "purpose"],
-      headline: "Solomon Said the Eyes Are Never Satisfied — But That Is Not the Whole Story",
+      headline: "Solomon Said the Eyes Are Never Satisfied â But That Is Not the Whole Story",
       insight: "Solomon was honest. He said the eye is never satisfied with seeing. The ear never full with hearing. He had more than anyone in history and described it as vanity. Not because having things is wrong. But because things alone cannot fill what only God and purpose were designed to fill. He also said a person who has learned contentment has found something that wealth cannot purchase. The emptiness you feel is not a flaw in you. It is a signal. It is pointing to something that possessions, achievement, and approval were never designed to provide. The question is not how to get more. The question is what the emptiness is actually pointing toward.",
       reflection: "What have you been trying to fill the emptiness with? What is the one thing that, if you had it, you believe the emptiness would stop?",
       nextStep: "Tell Solomon what feels empty. He has walked through every form of this and has specific wisdom for where you are.",
-      bookConnection: "Success Secrets of Solomon — Contentment and Balance (pp. 227-229) and Purpose (pp. 156-158)",
+      bookConnection: "Success Secrets of Solomon â Contentment and Balance (pp. 227-229) and Purpose (pp. 156-158)",
     };
   }
 
@@ -1995,9 +1995,59 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
       insight: "Solomon wrote one of the most psychologically precise verses in all of Proverbs: to the hungry soul, even bitter things taste sweet. When a person is starving for love, acceptance, or belonging, they will lower every standard to fill the hunger. They will accept what they know is wrong because the need is louder than the wisdom. Solomon is not condemning the need. He is warning about the danger of letting unmet need make the decisions. The need for love is real. The need to be seen and valued is real. Those needs are meant to be filled. But filled by the right source at the right time. Not by desperation.",
       reflection: "What need is currently loudest in you right now? Is that need driving you toward something you know is not right for you?",
       nextStep: "Ask Solomon about this specific need. He has wisdom for where that need came from and how it can actually be met.",
-      bookConnection: "Success Secrets of Solomon — The Hungry Soul (pp. 214-215) and Friendship and Counsel (pp. 114-118)",
+      bookConnection: "Success Secrets of Solomon â The Hungry Soul (pp. 214-215) and Friendship and Counsel (pp. 114-118)",
     };
   }
+
+  // SUCCESS / HOW TO SUCCEED / SECRETS OF SUCCESS
+  if (includesAny(q, [
+    "how do i succeed", "how to be successful", "secrets of success", "what makes people successful",
+    "want to be successful", "how do i become successful", "success principles",
+    "path to success", "why are some people successful", "what is success",
+    "how do i achieve success", "i want to succeed", "keys to success",
+    "success mindset", "how do successful people think", "success habits",
+    "achieve my goals", "how to reach my goals", "want to win in life",
+    "how do i get ahead in life", "how to build a successful life",
+    "what does the bible say about success", "biblical success",
+    "solomon success", "success secrets", "success secrets of solomon"
+  ])) {
+    return {
+      emotionalState: "hungry for success and looking for the principles that actually produce it",
+      deeperMeaning: "Solomon was the most successful person who ever lived — and he wrote down exactly why. His answer surprises most people.",
+      searchLanes: ["wisdom", "purpose", "work", "diligence", "growth"],
+      headline: "Solomon Was the Original Success Secret",
+      insight: "Solomon did not chase success. He asked God for wisdom — and success chased him. That is not a metaphor. He received wealth, honor, peace, and influence that the world had never seen, and he traced every bit of it back to one decision: seeking wisdom first. He identified the principles in Proverbs with surgical precision. The successful person has a vision and lives by design, not default. They are diligent — the diligent hand makes rich while the slack hand brings poverty. They guard their mind, because as a person thinks in their heart, so they become. They choose the right people, because iron sharpens iron and the wrong companions dull you. They honor God with their substance, and their barns overflow. They manage their mouth, because life and death are in the power of the tongue. Success in Solomon's framework is not an accident. It is the predictable result of applied wisdom.",
+      reflection: "Which of Solomon's success principles is most absent from your life right now — and what would change if you applied it this week?",
+      nextStep: "Pick one principle: diligence, vision, right relationships, or guarding your mind. Commit to one specific action in that area today. Solomon said desire without diligence is just daydreaming.",
+      bookConnection: "Success Secrets of Solomon — Living by Design vs. Default (pp. 62-65), Diligence (pp. 108-113), and Vision (pp. 156-158)",
+    };
+  }
+
+  // WEALTH / PROSPERITY / FINANCIAL SUCCESS / ABUNDANCE
+  if (includesAny(q, [
+    "how do i build wealth", "how to become wealthy", "how to get rich",
+    "want to be wealthy", "wealth building", "wealth principles",
+    "biblical wealth", "what does the bible say about wealth", "wealth and prosperity",
+    "prosperity", "how to prosper", "prosperity principles", "financial abundance",
+    "abundance mindset", "how to attract abundance", "abundance",
+    "how do i create wealth", "path to wealth", "wealth mindset",
+    "generational wealth", "how to be prosperous", "what is prosperity",
+    "wealth creation", "build financial wealth", "money and wealth",
+    "solomon wealth", "solomon prosperity", "proverbs about wealth",
+    "proverbs about prosperity", "financial freedom", "financial independence"
+  ])) {
+    return {
+      emotionalState: "hungry for financial increase and looking for principles that actually produce lasting wealth",
+      deeperMeaning: "Solomon was the wealthiest person in the ancient world — and his wealth was a byproduct of wisdom, not the goal. That distinction changes everything.",
+      searchLanes: ["wisdom", "work", "diligence", "giving", "purpose"],
+      headline: "Solomon Built Generational Wealth — and He Left the Blueprint",
+      insight: "Solomon had more wealth than any ruler in recorded history. And in Proverbs he explains exactly how it works — not as a self-help formula, but as divine law. The diligent hand makes rich; the slack hand makes poor. That is not motivational language. It is cause and effect. He said to honor God with your firstfruits — the first portion — and your barns would overflow. He warned that the borrower is servant to the lender, and that debt is a form of bondage. He taught that the contributor builds wealth while the hoarder loses it — true wealth flows through generosity, not hoarding. He identified that desire without knowledge leads to failure, which is why lottery winners go broke and athletes lose fortunes. Wealth without wisdom cannot hold. And he made clear that a good name and loving favor are worth more than silver and gold — because reputation opens doors that money alone cannot. Wealth in Solomon's world is the result of applied wisdom over time. It is not given to the hasty or the lazy. It grows in the hands of the diligent, the generous, and the faithful.",
+      reflection: "Are you building wealth with wisdom — or just working hard and hoping? What is one financial principle from Proverbs you are not currently living by?",
+      nextStep: "Identify one area: diligence, debt, generosity, or how you honor God with your income. Take one concrete step this week. Solomon said the ant stores in summer what it will need in winter — start storing.",
+      bookConnection: "Success Secrets of Solomon — Wealth Principles (pp. 96-100), Giving and Generosity (pp. 210-215), and Diligence (pp. 108-113)",
+    };
+  }
+
 
 return null;
 }
