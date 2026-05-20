@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Proverbs About Wisdom | What Proverbs Says About Gaining Wisdom',
-  description: 'Discover what the Book of Proverbs says about wisdom. Biblical wisdom for everyday decisions, relationships, and success — drawn from Solomon's timeless insights.',
+  description: 'Discover what the Book of Proverbs says about wisdom. Biblical wisdom for everyday decisions, relationships, and success â drawn from Solomon\'s timeless insights.',
   keywords: 'proverbs about wisdom, biblical wisdom, proverbs for wisdom, what does the bible say about wisdom, wisdom from proverbs, solomon wisdom',
   openGraph: {
     title: 'Proverbs About Wisdom | Ask Solomon',
@@ -18,32 +18,32 @@ const wisdomProverbs = [
   {
     reference: 'Proverbs 4:7',
     verse: 'Wisdom is the principal thing; therefore get wisdom: and with all thy getting get understanding.',
-    insight: 'Solomon places wisdom above wealth, status, and talent. The word "principal" means first — not secondary, not supplemental. If you could pursue only one thing, this is it.'
+    insight: 'Solomon places wisdom above wealth, status, and talent. The word "principal" means first â not secondary, not supplemental. If you could pursue only one thing, this is it.'
   },
   {
     reference: 'Proverbs 9:10',
     verse: 'The fear of the Lord is the beginning of wisdom: and the knowledge of the holy is understanding.',
-    insight: 'Wisdom does not start with intelligence or education. It starts with reverence — a right relationship with God. Every decision made outside of this foundation is built on sand.'
+    insight: 'Wisdom does not start with intelligence or education. It starts with reverence â a right relationship with God. Every decision made outside of this foundation is built on sand.'
   },
   {
     reference: 'Proverbs 3:13-14',
     verse: 'Happy is the man that findeth wisdom, and the man that getteth understanding. For the merchandise of it is better than the merchandise of silver, and the gain thereof than fine gold.',
-    insight: 'Solomon — the wealthiest man who ever lived — says wisdom is worth more than silver and gold. He was in a unique position to compare the two.'
+    insight: 'Solomon â the wealthiest man who ever lived â says wisdom is worth more than silver and gold. He was in a unique position to compare the two.'
   },
   {
     reference: 'Proverbs 2:6',
     verse: 'For the Lord giveth wisdom: out of his mouth cometh knowledge and understanding.',
-    insight: 'Wisdom is not manufactured by human effort — it is given by God. You can study, observe, and learn, but the source is divine. This is why Solomon asked God for wisdom rather than riches.'
+    insight: 'Wisdom is not manufactured by human effort â it is given by God. You can study, observe, and learn, but the source is divine. This is why Solomon asked God for wisdom rather than riches.'
   },
   {
     reference: 'Proverbs 13:10',
     verse: 'Only by pride cometh contention: but with the well advised is wisdom.',
-    insight: 'The wise person seeks counsel before acting. Conflict — in marriages, businesses, and nations — nearly always traces back to pride. Wisdom asks questions. Pride already has all the answers.'
+    insight: 'The wise person seeks counsel before acting. Conflict â in marriages, businesses, and nations â nearly always traces back to pride. Wisdom asks questions. Pride already has all the answers.'
   },
   {
     reference: 'Proverbs 3:7',
     verse: 'Be not wise in thine own eyes: fear the Lord, and depart from evil.',
-    insight: 'Self-wisdom is a trap. The moment you stop learning, stop asking, and stop deferring to God — you have reached the ceiling of your own limited understanding. Real wisdom stays humble.'
+    insight: 'Self-wisdom is a trap. The moment you stop learning, stop asking, and stop deferring to God â you have reached the ceiling of your own limited understanding. Real wisdom stays humble.'
   },
   {
     reference: 'Proverbs 8:11',
@@ -63,13 +63,13 @@ export default function ProverbsForWisdomPage() {
             Proverbs About Wisdom
           </h1>
           <p className="text-xl md:text-2xl text-amber-100 max-w-2xl mx-auto mb-8">
-            Solomon wrote more about wisdom than any other subject. Before wealth, before relationships, before success — he said: <em>get wisdom.</em>
+            Solomon wrote more about wisdom than any other subject. Before wealth, before relationships, before success â he said: <em>get wisdom.</em>
           </p>
           <Link
             href="/"
             className="inline-block bg-amber-400 text-amber-900 font-bold px-8 py-4 rounded-full text-lg hover:bg-amber-300 transition-colors"
           >
-            Ask Solomon About Your Situation →
+            Ask Solomon About Your Situation â
           </Link>
         </div>
       </section>
@@ -82,10 +82,10 @@ export default function ProverbsForWisdomPage() {
             When God appeared to Solomon and said "Ask what I shall give thee," Solomon did not ask for long life, or riches, or the death of his enemies. He asked for wisdom and knowledge to lead the people well (2 Chronicles 1:10).
           </p>
           <p className="text-gray-700 text-lg leading-relaxed mb-6">
-            God was so pleased by this answer that He gave Solomon wisdom — and then also gave him the wealth and honor he had not asked for. The principle: <strong>seek wisdom first, and what you need tends to follow.</strong>
+            God was so pleased by this answer that He gave Solomon wisdom â and then also gave him the wealth and honor he had not asked for. The principle: <strong>seek wisdom first, and what you need tends to follow.</strong>
           </p>
           <p className="text-gray-700 text-lg leading-relaxed">
-            The Book of Proverbs is Solomon&apos;s gift to you — thousands of years of compressed wisdom about money, relationships, work, leadership, speech, and character. Here are some of the most powerful proverbs on wisdom itself.
+            The Book of Proverbs is Solomon&apos;s gift to you â thousands of years of compressed wisdom about money, relationships, work, leadership, speech, and character. Here are some of the most powerful proverbs on wisdom itself.
           </p>
         </div>
       </section>
@@ -116,19 +116,19 @@ export default function ProverbsForWisdomPage() {
           <h2 className="text-3xl font-bold mb-8 text-center">How to Actually Get Wisdom</h2>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-amber-700 rounded-xl p-6">
-              <div className="text-3xl mb-3">🙏</div>
+              <div className="text-3xl mb-3">ð</div>
               <h3 className="font-bold text-lg mb-2">Ask God</h3>
-              <p className="text-amber-100 text-sm">James 1:5 says if anyone lacks wisdom, ask God — who gives generously without finding fault. It starts with prayer, not study.</p>
+              <p className="text-amber-100 text-sm">James 1:5 says if anyone lacks wisdom, ask God â who gives generously without finding fault. It starts with prayer, not study.</p>
             </div>
             <div className="bg-amber-700 rounded-xl p-6">
-              <div className="text-3xl mb-3">📖</div>
+              <div className="text-3xl mb-3">ð</div>
               <h3 className="font-bold text-lg mb-2">Read Proverbs</h3>
-              <p className="text-amber-100 text-sm">Proverbs has 31 chapters — one for each day of the month. Read one chapter per day and in a month you will have walked through Solomon&apos;s entire library of wisdom.</p>
+              <p className="text-amber-100 text-sm">Proverbs has 31 chapters â one for each day of the month. Read one chapter per day and in a month you will have walked through Solomon&apos;s entire library of wisdom.</p>
             </div>
             <div className="bg-amber-700 rounded-xl p-6">
-              <div className="text-3xl mb-3">🧠</div>
+              <div className="text-3xl mb-3">ð§ </div>
               <h3 className="font-bold text-lg mb-2">Apply It</h3>
-              <p className="text-amber-100 text-sm">Knowledge without application remains theory. Wisdom is proved by its results — in your decisions, your relationships, and your outcomes over time.</p>
+              <p className="text-amber-100 text-sm">Knowledge without application remains theory. Wisdom is proved by its results â in your decisions, your relationships, and your outcomes over time.</p>
             </div>
           </div>
         </div>
@@ -140,13 +140,13 @@ export default function ProverbsForWisdomPage() {
           Apply Solomon&apos;s Wisdom to Your Situation Right Now
         </h2>
         <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          Ask Solomon is a free tool that delivers biblical wisdom from Proverbs based on exactly what you are facing — fear, money, relationships, work, or anything else.
+          Ask Solomon is a free tool that delivers biblical wisdom from Proverbs based on exactly what you are facing â fear, money, relationships, work, or anything else.
         </p>
         <Link
           href="/"
           className="inline-block bg-amber-600 text-white font-bold px-10 py-5 rounded-full text-xl hover:bg-amber-700 transition-colors shadow-lg"
         >
-          Ask Solomon a Question →
+          Ask Solomon a Question â
         </Link>
         <p className="text-gray-400 text-sm mt-4">Free. No sign-up required.</p>
       </section>
