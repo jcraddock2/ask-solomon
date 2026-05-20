@@ -34,12 +34,12 @@ function safeParse<T>(raw: string | null, fallback: T): T {
 }
 
 const SITUATION_PRESETS = [
-  { label: "⚡ I'm Angry", value: "I feel angry and I cannot control it" },
-  { label: "😟 I'm Overwhelmed", value: "I feel overwhelmed and I am carrying too much" },
-  { label: "🧭 Need Direction", value: "I need direction and I feel lost" },
-  { label: "💰 Money Stress", value: "I am stressed about money and finances" },
-  { label: "💔 Relationship Conflict", value: "I am struggling with a difficult relationship" },
-  { label: "🌧 Feeling Discouraged", value: "I feel discouraged and like a failure" },
+  { label: "â¡ I'm Angry", value: "I feel angry and I cannot control it" },
+  { label: "ð I'm Overwhelmed", value: "I feel overwhelmed and I am carrying too much" },
+  { label: "ð§­ Need Direction", value: "I need direction and I feel lost" },
+  { label: "ð° Money Stress", value: "I am stressed about money and finances" },
+  { label: "ð Relationship Conflict", value: "I am struggling with a difficult relationship" },
+  { label: "ð§ Feeling Discouraged", value: "I feel discouraged and like a failure" },
 ] as const;
 
 type ShareTemplate = "classic" | "dark" | "gold" | "daily" | "gradientModern";
@@ -130,12 +130,12 @@ function renderBookMatchMeta(match: any): string {
 
   if (match?.pages) parts.push(String(match.pages));
   if (Array.isArray(match?.chapters) && match.chapters.length > 0) {
-    parts.push(match.chapters.join(" • "));
+    parts.push(match.chapters.join(" â¢ "));
   } else if (match?.chapter) {
     parts.push(String(match.chapter));
   }
 
-  return parts.join(" • ");
+  return parts.join(" â¢ ");
 }
 
 function tokenizeQuery(q: string): string[] {
@@ -535,7 +535,7 @@ ${link}`;
   const handleTwitterShare = () => {
     if (!wisdomCard) return;
     const queryLine = q ? 'I searched "' + q + '" and got this wisdom: ' : '';
-    const tweetText = queryLine + wisdomCard.headline + ' — asksolomon.app';
+    const tweetText = queryLine + wisdomCard.headline + ' â asksolomon.app';
     const twitterUrl = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(tweetText);
     window.open(twitterUrl, '_blank', 'noopener,noreferrer');
   };
@@ -770,7 +770,7 @@ ${link}`;
       ctx.restore();
 
       const verse = (item.body || "").trim();
-      const ref = `${item.ref}${item.title ? ` — ${item.title}` : ""}`.trim();
+      const ref = `${item.ref}${item.title ? ` â ${item.title}` : ""}`.trim();
 
       const verseFont = "700 46px system-ui";
       const lineHeight = 60;
@@ -1195,7 +1195,7 @@ const applySituation = (situationQuery: string) => {
     if (favoritesOnly && favoritesCount === 0) {
       return (
         <div style={{ color: "#64748b", fontSize: 14, padding: 8, fontWeight: 800 }}>
-          You haven’t saved any favorites yet. Tap ☆ on a verse to save it.
+          You havenât saved any favorites yet. Tap â on a verse to save it.
         </div>
       );
     }
@@ -1232,7 +1232,7 @@ const applySituation = (situationQuery: string) => {
                   color: "#111827",
                 }}
               >
-                Wisdom for what you’re facing right now
+                Wisdom for what youâre facing right now
               </h1>
               <p
                 style={{
@@ -1242,7 +1242,7 @@ const applySituation = (situationQuery: string) => {
                   fontWeight: 800,
                 }}
               >
-                Encouragement first—wisdom from Proverbs for what you’re facing right now.
+                Encouragement firstâwisdom from Proverbs for what youâre facing right now.
               </p>
             </div>
 
@@ -1282,7 +1282,7 @@ const applySituation = (situationQuery: string) => {
           </div>
         </header>
 
-        {/* ── HERO SECTION — shows only on empty search state ── */}
+        {/* ââ HERO SECTION â shows only on empty search state ââ */}
         {q.trim() === "" && (
           <div style={{
             background: 'linear-gradient(160deg, #0f0c29 0%, #1a1040 50%, #0d1b2a 100%)',
@@ -1307,7 +1307,7 @@ const applySituation = (situationQuery: string) => {
               fontSize: 11, fontWeight: 900, letterSpacing: 2.5,
               color: '#d4af37', textTransform: 'uppercase', marginBottom: 14,
             }}>
-              Biblical Wisdom · Proverbs · Book of Solomon
+              Biblical Wisdom Â· Proverbs Â· Book of Solomon
             </div>
 
             {/* Headline */}
@@ -1319,7 +1319,7 @@ const applySituation = (situationQuery: string) => {
               color: '#ffffff',
               letterSpacing: -0.5,
             }}>
-              Whatever you're facing right now —<br />
+              Whatever you're facing right now â<br />
               <span style={{ color: '#f5e06e' }}>Proverbs has something to say about it.</span>
             </h2>
 
@@ -1333,7 +1333,7 @@ const applySituation = (situationQuery: string) => {
               lineHeight: 1.65,
             }}>
               Type what you're feeling or going through. Ask Solomon responds with
-              emotionally intelligent wisdom — rooted in Scripture, connected to real life.
+              emotionally intelligent wisdom â rooted in Scripture, connected to real life.
             </p>
 
             {/* Example chips */}
@@ -1342,12 +1342,12 @@ const applySituation = (situationQuery: string) => {
               justifyContent: 'center', marginBottom: 28,
             }}>
               {[
-                { label: '😔 I feel like a failure', q: 'I feel like a failure' },
-                { label: "😤 I can't control my anger", q: "I can't control my anger" },
-                { label: "💸 I'm stressed about money", q: "I'm stressed about money" },
-                { label: '💔 My marriage is struggling', q: 'My marriage is struggling' },
-                { label: "😰 I'm overwhelmed", q: "I'm overwhelmed" },
-                { label: '🙏 I need direction from God', q: 'I need direction from God' },
+                { label: 'ð I feel like a failure', q: 'I feel like a failure' },
+                { label: "ð¤ I can't control my anger", q: "I can't control my anger" },
+                { label: "ð¸ I'm stressed about money", q: "I'm stressed about money" },
+                { label: 'ð My marriage is struggling', q: 'My marriage is struggling' },
+                { label: "ð° I'm overwhelmed", q: "I'm overwhelmed" },
+                { label: 'ð I need direction from God', q: 'I need direction from God' },
               ].map(({ label, q: chipQ }) => (
                 <button
                   key={label}
@@ -1393,7 +1393,7 @@ const applySituation = (situationQuery: string) => {
                   maxWidth: 420,
                   lineHeight: 1.55,
                 }}>
-                  &ldquo;{quote}&rdquo; <span style={{ fontStyle: 'normal', fontWeight: 800, opacity: 0.9 }}>— {name}</span>
+                  &ldquo;{quote}&rdquo; <span style={{ fontStyle: 'normal', fontWeight: 800, opacity: 0.9 }}>â {name}</span>
                 </div>
               ))}
             </div>
@@ -1407,11 +1407,11 @@ const applySituation = (situationQuery: string) => {
               color: 'rgba(212,175,55,0.75)',
               letterSpacing: 0.4,
             }}>
-              <span>👥 1,200+ wisdom searches</span>
-              <span>📖 25+ life scenarios</span>
-              <span>✦ Rooted in Proverbs</span>
-              <span>📚 Connected to the book</span>
-              <span>⚡ Free to use</span>
+              <span>ð¥ 1,200+ wisdom searches</span>
+              <span>ð 25+ life scenarios</span>
+              <span>â¦ Rooted in Proverbs</span>
+              <span>ð Connected to the book</span>
+              <span>â¡ Free to use</span>
             </div>
 
             {/* CTA arrow */}
@@ -1420,7 +1420,7 @@ const applySituation = (situationQuery: string) => {
               color: 'rgba(255,255,255,0.45)',
               letterSpacing: 1,
             }}>
-              ↓ Type what you're facing in the search below
+              â Type what you're facing in the search below
             </div>
           </div>
         )}
@@ -1480,7 +1480,7 @@ const applySituation = (situationQuery: string) => {
                 }}
                 title="Show only saved favorites"
               >
-                <span>⭐</span>
+                <span>â­</span>
                 <span>
                   {favoritesOnly
                     ? `Showing Favorites (${favoritesCount})`
@@ -1502,8 +1502,8 @@ const applySituation = (situationQuery: string) => {
                 }}
                 title="Show one random verse from the current filter"
               >
-                <span>✨</span>
-                <span>{todayFocusOn ? "Today’s Focus (On)" : "Today’s Focus"}</span>
+                <span>â¨</span>
+                <span>{todayFocusOn ? "Todayâs Focus (On)" : "Todayâs Focus"}</span>
               </button>
 
               {todayFocusOn && (
@@ -1516,7 +1516,7 @@ const applySituation = (situationQuery: string) => {
                   style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
                   title="Return to normal results"
                 >
-                  <span>↩️</span>
+                  <span>â©ï¸</span>
                   <span>Clear Focus</span>
                 </button>
               )}
@@ -1528,7 +1528,7 @@ const applySituation = (situationQuery: string) => {
                   style={{ ...pillBtn(false), display: "flex", gap: 8, alignItems: "center" }}
                   title="Pick a different verse"
                 >
-                  <span>🔄</span>
+                  <span>ð</span>
                   <span>Re-roll</span>
                 </button>
               )}
@@ -1675,7 +1675,7 @@ const applySituation = (situationQuery: string) => {
                 }}
                 onFocus={() => setSearchFocused(true)}
                 onBlur={() => setSearchFocused(false)}
-                placeholder="Search a keyword (e.g., fear, diligence, counsel)…"
+                placeholder="Search a keyword (e.g., fear, diligence, counsel)â¦"
                 style={{
                   flex: 1,
                   minWidth: 260,
@@ -1772,7 +1772,7 @@ const applySituation = (situationQuery: string) => {
                 }}
               >
                 <div style={{ fontSize: 11, fontWeight: 900, color: "#6366f1", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 }}>
-                  📖 In the Book
+                  ð In the Book
                 </div>
                 <div style={{ fontSize: 13, color: "#374151", marginBottom: 10, lineHeight: 1.5 }}>
                   {wisdomCard.bookConnection}
@@ -1791,14 +1791,14 @@ const applySituation = (situationQuery: string) => {
                     textDecoration: "none",
                   }}
                 >
-                  Explore Topic in Book Index →
+                  Explore Topic in Book Index â
                 </a>
               </div>
             )}
               </div>
             )}
 
-{/* Email Capture — show for free users, after search results */}
+{/* Email Capture â show for free users, after search results */}
 {!isProUser() && q.trim().length > 0 && (
   <div style={{
     background: 'linear-gradient(135deg, #1a1040 0%, #0d1b2a 100%)',
@@ -1809,7 +1809,7 @@ const applySituation = (situationQuery: string) => {
     marginBottom: '24px',
     textAlign: 'center',
   }}>
-    <div style={{ fontSize: '20px', marginBottom: '6px' }}>📖
+    <div style={{ fontSize: '20px', marginBottom: '6px' }}>ð
                   {/* Share this wisdom */}
                   <div style={{ textAlign: "center", marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.12)" }}>
                     <button
@@ -1849,7 +1849,7 @@ const applySituation = (situationQuery: string) => {
                 gap: "6px",
               }}
             >
-              𝕏 Share on X
+              ð Share on X
             </button>
           )}
                   </div>
@@ -1862,7 +1862,7 @@ const applySituation = (situationQuery: string) => {
     </div>
     {emailStatus === 'success' ? (
       <div style={{ color: '#6ee7b7', fontWeight: 600, fontSize: '15px' }}>
-        ✓ You're on the list! Check your inbox.
+        â You're on the list! Check your inbox.
       </div>
     ) : (
       <form
@@ -1912,7 +1912,7 @@ const applySituation = (situationQuery: string) => {
             cursor: emailStatus === 'sending' ? 'not-allowed' : 'pointer',
           }}
         >
-          {emailStatus === 'sending' ? 'Sending…' : 'Subscribe Free'}
+          {emailStatus === 'sending' ? 'Sendingâ¦' : 'Subscribe Free'}
         </button>
       </form>
     )}
@@ -1964,7 +1964,7 @@ const applySituation = (situationQuery: string) => {
                 }}
               >
                 <div style={{ fontSize: 12, fontWeight: 900, color: "#111", marginBottom: 6 }}>
-                  Solomon’s note
+                  Solomonâs note
                 </div>
                 <div style={{ fontSize: 14, color: "#334155", lineHeight: 1.5 }}>
                   {subCommentary[sub as Sub]}
@@ -2042,7 +2042,7 @@ const applySituation = (situationQuery: string) => {
                 {isPro ? (
                   bookMatches.length === 0 ? (
                     <div style={{ color: "#64748b", fontSize: 13, fontWeight: 800 }}>
-                      No book matches yet for “{q.trim()}”.
+                      No book matches yet for â{q.trim()}â.
                     </div>
                   ) : (
                     <div style={{ display: "grid", gap: 10 }}>
@@ -2110,7 +2110,7 @@ const applySituation = (situationQuery: string) => {
                     </div>
                   )
                 ) : (
-                  /* Free user: tease the book match — show title/chapter/excerpt blurred, then CTA */
+                  /* Free user: tease the book match â show title/chapter/excerpt blurred, then CTA */
                   <div style={{ display: "grid", gap: 10 }}>
                     {bookMatches.length === 0 ? (
                       <div style={{
@@ -2121,7 +2121,7 @@ const applySituation = (situationQuery: string) => {
                         boxShadow: "0 10px 26px rgba(0,0,0,0.06)",
                         textAlign: "center",
                       }}>
-                        <div style={{ fontSize: 22, marginBottom: 8 }}>📚</div>
+                        <div style={{ fontSize: 22, marginBottom: 8 }}>ð</div>
                         <div style={{ fontWeight: 900, fontSize: 14, color: "#111", marginBottom: 6 }}>
                           Solomon wrote about this
                         </div>
@@ -2143,7 +2143,7 @@ const applySituation = (situationQuery: string) => {
                             letterSpacing: 0.3,
                           }}
                         >
-                          📖 Unlock the Book — $29 Lifetime
+                          ð Unlock the Book â $29 Lifetime
                         </button>
                       </div>
                     ) : bookMatches.slice(0, 2).map((m: any, idx: number) => (
@@ -2158,13 +2158,13 @@ const applySituation = (situationQuery: string) => {
                           position: "relative",
                         }}
                       >
-                        {/* Visible header — chapter + title */}
+                        {/* Visible header â chapter + title */}
                         <div style={{ padding: "14px 14px 10px" }}>
                           <div style={{
                             fontSize: 11, fontWeight: 900, color: "#d4af37",
                             textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 4,
                           }}>
-                            📖 {renderBookMatchMeta(m) || "In the Book"}
+                            ð {renderBookMatchMeta(m) || "In the Book"}
                           </div>
                           <div style={{ fontWeight: 900, fontSize: 15, color: "#111", marginBottom: 8 }}>
                             {renderBookMatchTitle(m)}
@@ -2194,7 +2194,7 @@ const applySituation = (situationQuery: string) => {
                                   fontSize: 11, fontWeight: 900, color: "#92400e",
                                   letterSpacing: 0.5,
                                 }}>
-                                  🔒 Unlock to read
+                                  ð Unlock to read
                                 </span>
                               </div>
                             </div>
@@ -2229,7 +2229,7 @@ const applySituation = (situationQuery: string) => {
                               whiteSpace: "nowrap",
                             }}
                           >
-                            Unlock — $29 Lifetime
+                            Unlock â $29 Lifetime
                           </button>
                         </div>
                       </div>
@@ -2391,7 +2391,7 @@ const applySituation = (situationQuery: string) => {
                             title={featuredFav ? "Saved" : "Save this verse"}
                             aria-label={featuredFav ? "Saved" : "Save this verse"}
                           >
-                            {featuredFav ? "★" : "☆"}
+                            {featuredFav ? "â" : "â"}
                           </button>
 
                           <button
@@ -2598,7 +2598,7 @@ const applySituation = (situationQuery: string) => {
                                     title={isFav ? "Saved" : "Save this verse"}
                                     aria-label={isFav ? "Saved" : "Save this verse"}
                                   >
-                                    {isFav ? "★" : "☆"}
+                                    {isFav ? "â" : "â"}
                                   </button>
 
                                   <button
@@ -2798,7 +2798,7 @@ const applySituation = (situationQuery: string) => {
                                   title={isFav ? "Saved" : "Save this verse"}
                                   aria-label={isFav ? "Saved" : "Save this verse"}
                                 >
-                                  {isFav ? "★" : "☆"}
+                                  {isFav ? "â" : "â"}
                                 </button>
 
                                 <button
@@ -2925,7 +2925,7 @@ const applySituation = (situationQuery: string) => {
                               style={miniBtn}
                               title={isFav ? "Saved" : "Save this verse"}
                             >
-                              {isFav ? "★" : "☆"}
+                              {isFav ? "â" : "â"}
                             </button>
 
                             <button
@@ -2968,7 +2968,7 @@ const applySituation = (situationQuery: string) => {
           </div>
         </section>
 
-                {/* Book callout — connects app to physical book for book readers */}
+                {/* Book callout â connects app to physical book for book readers */}
         <section style={{
           maxWidth: 680,
           margin: "0 auto",
@@ -3011,11 +3011,11 @@ const applySituation = (situationQuery: string) => {
               justifyContent: "center", gap: 10, marginBottom: 24,
             }}>
               {[
-                "Anger → pp. 126–128",
-                "Purpose → pp. 146–150",
-                "Money → pp. 88–92",
-                "Fear → pp. 77–80",
-                "Relationships → pp. 130–134",
+                "Anger â pp. 126â128",
+                "Purpose â pp. 146â150",
+                "Money â pp. 88â92",
+                "Fear â pp. 77â80",
+                "Relationships â pp. 130â134",
               ].map((tag) => (
                 <span key={tag} style={{
                   background: "rgba(212,175,55,0.12)",
@@ -3081,6 +3081,37 @@ const applySituation = (situationQuery: string) => {
             }
           }
         `}</style>
+
+        {/* SEO Internal Links */}
+        <div style={{ borderTop: '1px solid rgba(0,0,0,0.08)', paddingTop: '2rem', marginTop: '2rem', textAlign: 'center' }}>
+          <p style={{ fontSize: '0.75rem', color: 'rgba(15,23,42,0.5)', marginBottom: '0.75rem', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+            Explore Biblical Wisdom
+          </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center', maxWidth: '700px', margin: '0 auto' }}>
+            {[
+              { href: '/proverbs-for-wisdom', label: 'Proverbs for Wisdom' },
+              { href: '/proverbs-for-money', label: 'Proverbs for Money' },
+              { href: '/proverbs-for-success', label: 'Proverbs for Success' },
+              { href: '/proverbs-for-wealth-and-prosperity', label: 'Proverbs for Wealth' },
+              { href: '/proverbs-for-fear', label: 'Proverbs for Fear' },
+              { href: '/proverbs-for-hope', label: 'Proverbs for Hope' },
+              { href: '/proverbs-for-friendship', label: 'Proverbs for Friendship' },
+              { href: '/proverbs-for-purpose', label: 'Proverbs for Purpose' },
+              { href: '/proverbs-for-pride', label: 'Proverbs for Pride' },
+              { href: '/proverbs-for-humility', label: 'Proverbs for Humility' },
+              { href: '/proverbs-for-self-control', label: 'Proverbs for Self-Control' },
+              { href: '/proverbs-about-laziness', label: 'Proverbs About Laziness' },
+              { href: '/biblical-wisdom-for-depression', label: 'Biblical Wisdom for Depression' },
+              { href: '/success-secrets-of-solomon', label: 'Success Secrets of Solomon' },
+              { href: '/what-does-the-bible-say-about-success', label: 'Bible on Success' },
+              { href: '/solomon-challenge', label: '7-Day Solomon Challenge' },
+            ].map(({ href, label }) => (
+              <a key={href} href={href} style={{ fontSize: '0.75rem', color: 'rgba(15,23,42,0.55)', textDecoration: 'none', padding: '0.25rem 0.625rem', borderRadius: '999px', border: '1px solid rgba(15,23,42,0.12)', whiteSpace: 'nowrap' }}>
+                {label}
+              </a>
+            ))}
+          </div>
+        </div>
       </main>
     </div>
   );
