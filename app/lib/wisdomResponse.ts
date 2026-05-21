@@ -1945,13 +1945,13 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
   ])) {
     return {
       emotionalState: "hungry for success and looking for the principles that actually produce it",
-      deeperMeaning: "Solomon was the most successful person who ever lived â and he wrote down exactly why. His answer surprises most people.",
+      deeperMeaning: "Solomon was the most successful person who ever lived — and he wrote down exactly why. His answer surprises most people.",
       searchLanes: ["wisdom", "purpose", "work", "diligence", "growth"],
       headline: "Solomon Was the Original Success Secret",
-      insight: "Solomon did not chase success. He asked God for wisdom â and success chased him. That is not a metaphor. He received wealth, honor, peace, and influence that the world had never seen, and he traced every bit of it back to one decision: seeking wisdom first. He identified the principles in Proverbs with surgical precision. The successful person has a vision and lives by design, not default. They are diligent â the diligent hand makes rich while the slack hand brings poverty. They guard their mind, because as a person thinks in their heart, so they become. They choose the right people, because iron sharpens iron and the wrong companions dull you. They honor God with their substance, and their barns overflow. They manage their mouth, because life and death are in the power of the tongue. Success in Solomon's framework is not an accident. It is the predictable result of applied wisdom.",
-      reflection: "Which of Solomon's success principles is most absent from your life right now â and what would change if you applied it this week?",
+      insight: "Solomon did not chase success. He asked God for wisdom — and success chased him. That is not a metaphor. He received wealth, honor, peace, and influence that the world had never seen, and he traced every bit of it back to one decision: seeking wisdom first. He identified the principles in Proverbs with surgical precision. The successful person has a vision and lives by design, not default. They are diligent — the diligent hand makes rich while the slack hand brings poverty. They guard their mind, because as a person thinks in their heart, so they become. They choose the right people, because iron sharpens iron and the wrong companions dull you. They honor God with their substance, and their barns overflow. They manage their mouth, because life and death are in the power of the tongue. Success in Solomon's framework is not an accident. It is the predictable result of applied wisdom.",
+      reflection: "Which of Solomon's success principles is most absent from your life right now — and what would change if you applied it this week?",
       nextStep: "Pick one principle: diligence, vision, right relationships, or guarding your mind. Commit to one specific action in that area today. Solomon said desire without diligence is just daydreaming.",
-      bookConnection: "Success Secrets of Solomon â Living by Design vs. Default (pp. 62-65), Diligence (pp. 108-113), and Vision (pp. 156-158)",
+      bookConnection: "Success Secrets of Solomon — Living by Design vs. Default (pp. 62-65), Diligence (pp. 108-113), and Vision (pp. 156-158)",
     };
   }
 
@@ -1970,13 +1970,13 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
   ])) {
     return {
       emotionalState: "hungry for financial increase and looking for principles that actually produce lasting wealth",
-      deeperMeaning: "Solomon was the wealthiest person in the ancient world â and his wealth was a byproduct of wisdom, not the goal. That distinction changes everything.",
+      deeperMeaning: "Solomon was the wealthiest person in the ancient world — and his wealth was a byproduct of wisdom, not the goal. That distinction changes everything.",
       searchLanes: ["wisdom", "work", "diligence", "giving", "purpose"],
-      headline: "Solomon Built Generational Wealth â and He Left the Blueprint",
-      insight: "Solomon had more wealth than any ruler in recorded history. And in Proverbs he explains exactly how it works â not as a self-help formula, but as divine law. The diligent hand makes rich; the slack hand makes poor. That is not motivational language. It is cause and effect. He said to honor God with your firstfruits â the first portion â and your barns would overflow. He warned that the borrower is servant to the lender, and that debt is a form of bondage. He taught that the contributor builds wealth while the hoarder loses it â true wealth flows through generosity, not hoarding. He identified that desire without knowledge leads to failure, which is why lottery winners go broke and athletes lose fortunes. Wealth without wisdom cannot hold. And he made clear that a good name and loving favor are worth more than silver and gold â because reputation opens doors that money alone cannot. Wealth in Solomon's world is the result of applied wisdom over time. It is not given to the hasty or the lazy. It grows in the hands of the diligent, the generous, and the faithful.",
-      reflection: "Are you building wealth with wisdom â or just working hard and hoping? What is one financial principle from Proverbs you are not currently living by?",
-      nextStep: "Identify one area: diligence, debt, generosity, or how you honor God with your income. Take one concrete step this week. Solomon said the ant stores in summer what it will need in winter â start storing.",
-      bookConnection: "Success Secrets of Solomon â Wealth Principles (pp. 96-100), Giving and Generosity (pp. 210-215), and Diligence (pp. 108-113)",
+      headline: "Solomon Built Generational Wealth — and He Left the Blueprint",
+      insight: "Solomon had more wealth than any ruler in recorded history. And in Proverbs he explains exactly how it works — not as a self-help formula, but as divine law. The diligent hand makes rich; the slack hand makes poor. That is not motivational language. It is cause and effect. He said to honor God with your firstfruits — the first portion — and your barns would overflow. He warned that the borrower is servant to the lender, and that debt is a form of bondage. He taught that the contributor builds wealth while the hoarder loses it — true wealth flows through generosity, not hoarding. He identified that desire without knowledge leads to failure, which is why lottery winners go broke and athletes lose fortunes. Wealth without wisdom cannot hold. And he made clear that a good name and loving favor are worth more than silver and gold — because reputation opens doors that money alone cannot. Wealth in Solomon's world is the result of applied wisdom over time. It is not given to the hasty or the lazy. It grows in the hands of the diligent, the generous, and the faithful.",
+      reflection: "Are you building wealth with wisdom — or just working hard and hoping? What is one financial principle from Proverbs you are not currently living by?",
+      nextStep: "Identify one area: diligence, debt, generosity, or how you honor God with your income. Take one concrete step this week. Solomon said the ant stores in summer what it will need in winter — start storing.",
+      bookConnection: "Success Secrets of Solomon — Wealth Principles (pp. 96-100), Giving and Generosity (pp. 210-215), and Diligence (pp. 108-113)",
     };
   }
 
