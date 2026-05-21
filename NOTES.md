@@ -1204,5 +1204,9 @@ The Solomon Challenge — 10 Days email automation is fully built in MailerLite.
                                                                                                                                             - - Google Search Console setup (D3)
                                                                                                                                              
                                                                                                                                               - *Last updated: May 21, 2026 - Stripe $19 founding price wired up and live.*
+                                                                                                                                             
+                                                                                                                                              - ## Session May 21 Part 3: Email PS Added + JUNE 1 REMINDER
+                                                                                                                                              - CRITICAL after June 1: Remove PS from emails 1-3 in Solomon Challenge. Revert STRIPE_PRICE_ID to price_1T447hDAMsgblXx3uX0PmdCc.
+                                                                                                                                              - Emails 1-3 now have $19 founding member PS. Automation ACTIVE. Launch ready Monday.
 
 Last updated: May 19, 2026 — Part 3 complete. Vision intent lane live in intent.ts.
