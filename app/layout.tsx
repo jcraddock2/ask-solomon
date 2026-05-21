@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import FoundingBanner from "./FoundingBanner";
 
 export const metadata: Metadata = {
   title: "Ask Solomon — Biblical Wisdom for What You're Facing Right Now",
@@ -120,8 +121,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           margin: 0,
           fontFamily:
             "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+          paddingTop: 44,
         }}
       >
+      <FoundingBanner />
         {children}
       </body>
     </html>
