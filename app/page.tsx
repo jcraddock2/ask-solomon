@@ -11,7 +11,7 @@ import {
   interpretQueryAdvanced,
   expandSmartTerms,
 } from "./lib/intent";
-import {h
+import {
   DATA,
   MODES,
   SUBS,
