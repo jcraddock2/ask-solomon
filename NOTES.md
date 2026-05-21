@@ -1269,3 +1269,29 @@ Note: "i am struggling" and "i need help" return 0 - these are intentional (too 
 - $19 founding price: price_1TZXqADAMsgblXx3oA3yRaex (active until June 1)
 
 Last updated: May 21, 2026 - Part 4 complete. Encoding fixed. Search keywords expanded. Launch-blocking bugs resolved.
+
+
+## Session May 21 Part 4 ADDENDUM: Build Fix
+
+**Build failure after encoding commits - RESOLVED (commit 6cb0766)**
+
+The encoding fix for page.tsx accidentally introduced a stray 'h' character on line 14 (import { became import {h). This caused all subsequent Vercel builds to fail.
+
+Root cause: When fetching page.tsx via GitHub API and using atob() to decode base64, then doing string replacements and dispatching back to CM6 editor -- a character corruption occurred. The exact mechanism is unknown but 'h' (char 104) appeared after the opening brace on line 14.
+
+Fix: Removed the stray 'h' from line 14 in a separate commit.
+
+**IMPORTANT FOR FUTURE SESSIONS: When editing files via CM6 editor dispatch in GitHub, always verify line 14 and nearby lines after commit.**
+
+**DEPLOYMENT STATUS as of end of session:**
+- commit 6cb0766 "Fix: remove stray h" -- DEPLOYED GREEN to Production
+- All other changes (encoding fix, keyword aliases) included in this commit
+- asksolomon.app headings now correctly show you're and em-dashes
+- Search keyword aliases active: happy, depressed, forgive, guilt, prayer, career, overthinking
+
+**REMAINING BROKEN (lower priority):**
+- Emoji in the dark hero section (delta symbols) -- this was pre-existing, not caused by our changes
+- Situation Mode buttons have emoji rendering issues (pre-existing)
+- Book section ">" bullets still show mojibake (in bookIndex.ts render code)
+
+**LAUNCH STATUS: READY for Monday** - all critical bugs resolved, keyword coverage expanded, encoding fixed in all main headings.
