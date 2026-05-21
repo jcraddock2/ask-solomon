@@ -1210,3 +1210,62 @@ The Solomon Challenge — 10 Days email automation is fully built in MailerLite.
                                                                                                                                               - Emails 1-3 now have $19 founding member PS. Automation ACTIVE. Launch ready Monday.
 
 Last updated: May 19, 2026 — Part 3 complete. Vision intent lane live in intent.ts.
+
+
+## Session May 21 Part 4: Encoding Fix + Search Keyword Expansion + Search Testing
+
+### COMPLETED THIS SESSION:
+
+**1. MailerLite (from previous session - already done):**
+- All 10 automation emails: sender = "Ask Solomon" (was "John Craddock, LLC")
+- Automation: ACTIVE
+- Account company: "Ask Solomon"
+- Footer address: 700 E Main St 2487, Richmond, VA 23219 (set by John, CAN-SPAM compliant)
+- Footer is global/auto - no per-email editing needed
+
+**2. CRITICAL ENCODING BUG FIXED (commits e1ce13d, 5d9cad1):**
+- Bug: Curly quotes (', ', —, ", ", –, …) were rendering as mojibake (youare, A¢AA, etc.)
+- VISIBLE TO USERS - launch blocker
+- Fixed in app/page.tsx: replaced 28 mojibake sequences (6 rsqm + 13 em-dash + 1 rdqm + 1 ldqm + 5 en-dash + 2 ellipsis)
+- Fixed in app/lib/wisdomResponse.ts: replaced 15 em-dash mojibake sequences
+- Vercel auto-deploy triggered - will be live in ~2 min after commit
+
+**3. SEARCH KEYWORD GAPS FIXED (commit b377c7b):**
+- Tested top 50 real-world search queries against the live app
+- Found INTENT_EXPANSIONS and WORD_ALIASES structures in app/lib/proverbs.ts
+- Added missing keyword aliases for:
+  - happy/happiness -> hope, peace, joy, encouragement, healing
+  - depressed/depression -> hurting, healing, hope, peace, strength
+  - forgive/forgiveness -> healing, peace, trust, grace
+  - guilty/guilt -> identity, healing, peace, grace, forgiveness
+  - pray/prayer/praying -> hope, peace, direction, trust, healing, wisdom
+  - career -> success, purpose, direction, leadership, discipline
+  - overthinking/overthink -> peace, wisdom, direction, fear, worry, anxiety
+
+**4. SEARCH TEST RESULTS:**
+STRONG (8 results): anxiety, stressed, angry, purpose, marriage, worry, lonely, grief, fear, money, confidence, peace, wisdom, hope, failure, discipline, meaning, addiction, direction, prayer (after fix), happy (after fix)
+WEAK (1-3 results): shame(3), regret(3), jealous(1), envy(1), forgive someone(1)
+ZERO (needs fix - already fixed above): happy, depression, forgive, guilt, prayer, career, overthink, "i am struggling", "i need help"
+
+Note: "i am struggling" and "i need help" return 0 - these are intentional (too generic) - wisdomResponse.ts handles them with emotional AI response
+
+**5. ENCODING BUG STILL IN BUTTON/ICON TEXT:**
+- "Explore Topic in Book Index" button has broken arrow emoji
+- "Unlock -> $29" button has broken arrow emoji
+- Book section headers (e.g., "pp. 77-80 > COURAGE OVER FEAR") have broken bullets
+- These are in bookIndex.ts or page.tsx render code - check after deploy
+
+### NEXT SESSION PRIORITIES:
+
+1. **CHECK DEPLOYMENT** - Verify encoding fix deployed correctly (asksolomon.app heading should say "you're" not "youare")
+2. **CHECK bookIndex.ts for encoding** - The ">" in book match section headers may be broken
+3. **FINDING 8 (outstanding)** - Ask John: does book have content before page 12 in bookIndex.ts?
+4. **Google Search Console** (D3 task - 5 min for John)
+5. **Reel recording** (John) - 5-shot script from previous session
+
+### JUNE 1 ROLLBACK (CRITICAL - DO NOT FORGET):
+- Remove PS from Emails 1, 2, 3 in Solomon Challenge automation
+- Revert STRIPE_PRICE_ID in Vercel to: price_1T447hDAMsgblXx3uX0PmdCc
+- $19 founding price: price_1TZXqADAMsgblXx3oA3yRaex (active until June 1)
+
+Last updated: May 21, 2026 - Part 4 complete. Encoding fixed. Search keywords expanded. Launch-blocking bugs resolved.
