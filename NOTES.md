@@ -1179,5 +1179,30 @@ The Solomon Challenge — 10 Days email automation is fully built in MailerLite.
                                                                                                                       - ---
                                                                                                                       
                                                                                                                       *Last updated: May 21, 2026 — MailerLite automation complete. Ownership declaration added. 2000-member launch strategy written.*
+                                                                                                                      
+                                                                                                                      ---
+                                                                                                                      
+                                                                                                                      ## Session May 21, 2026 - Part 2: Stripe $19 Price Wired Up
+                                                                                                                      
+                                                                                                                      ### Completed This Session
+                                                                                                                      - John created $19 Founding Member price in Stripe (price_1TZXqADAMsgblXx3oA3yRaex)
+                                                                                                                      - - Updated STRIPE_PRICE_ID in Vercel environment variables
+                                                                                                                        - - Redeployed to production - asksolomon.app now charges $19 at checkout
+                                                                                                                          - - Full founding member campaign is now LIVE end-to-end: banner shows $19, upgrade page shows $19, Stripe charges $19
+                                                                                                                           
+                                                                                                                            - ### Stripe Price IDs to Know
+                                                                                                                            - - $29 original price: price_1T447hDAMsgblXx3uX0PmdCc (restore after June 1)
+                                                                                                                              - - $19 founding price: price_1TZXqADAMsgblXx3oA3yRaex (ACTIVE now through June 1)
+                                                                                                                               
+                                                                                                                                - ### Next Steps
+                                                                                                                                - - 3 MailerLite broadcast emails for launch week (Day 1 announcement, Day 4 urgency, Day 7 last call)
+                                                                                                                                  - - John records the Reel using 5-shot script provided last session
+                                                                                                                                    - - Post to all social platforms on launch day
+                                                                                                                                      - - Submit to Product Hunt
+                                                                                                                                        - - After June 1: revert STRIPE_PRICE_ID back to price_1T447hDAMsgblXx3uX0PmdCc in Vercel
+                                                                                                                                          - - FINDING 8: Ask John if book has content before page 12 in bookIndex.ts
+                                                                                                                                            - - Google Search Console setup (D3)
+                                                                                                                                             
+                                                                                                                                              - *Last updated: May 21, 2026 - Stripe $19 founding price wired up and live.*
 
 Last updated: May 19, 2026 — Part 3 complete. Vision intent lane live in intent.ts.
