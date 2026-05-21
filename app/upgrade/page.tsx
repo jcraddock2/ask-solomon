@@ -115,8 +115,8 @@ export default function UpgradePage() {
             FOUNDING MEMBER PRICE
           </div>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "center", gap: 10 }}>
-            <span style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", textDecoration: "line-through" }}>$39</span>
-            <span style={{ fontSize: 42, fontWeight: 900, color: "#f5e06e", lineHeight: 1 }}>$29</span>
+            <span style={{ fontSize: 15, color: "rgba(255,255,255,0.4)", textDecoration: "line-through" }}>$29</span>
+            <span style={{ fontSize: 42, fontWeight: 900, color: "#f5e06e", lineHeight: 1 }}>$19</span>
           </div>
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 4 }}>
             One-time · Lifetime access · No renewal ever
@@ -144,7 +144,7 @@ export default function UpgradePage() {
             cursor: isLoading ? "not-allowed" : "pointer",
           }}
         >
-          {isLoading ? "Taking you to checkout..." : "📖 Unlock Lifetime Access — $29"}
+          {isLoading ? "Taking you to checkout..." : "🔓 Unlock Lifetime Access — $19"}
         </button>
 
         <p style={{ marginTop: 12, fontSize: 11, color: "rgba(255,255,255,0.35)", lineHeight: 1.5 }}>
