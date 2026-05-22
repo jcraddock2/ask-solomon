@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: "Proverbs for Anger — What Solomon Said About Controlling Your Temper",
@@ -96,6 +97,9 @@ export default function ProverbsForAngerPage() {
           Search Proverbs for what you are facing
         </Link>
       </section>
+
+
+      <SevenDaysOptIn topic="Anger & Conflict" />
 
     </main>
   );
