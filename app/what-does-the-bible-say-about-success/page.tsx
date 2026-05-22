@@ -50,7 +50,7 @@ export default function WhatDoesBibleSayAboutSuccessPage() {
 
         <div className="bg-amber-100 border-l-4 border-amber-500 p-6 my-8 rounded-r-xl">
           <p className="text-amber-900 text-lg font-medium">
-            &ldquo;Wisdom is the principal thing; therefore get wisdom: and with all thy getting get understanding.&rdquo; &mdash; Proverbs 4:7
+            “Wisdom is the principal thing; therefore get wisdom: and with all thy getting get understanding.” &mdash; Proverbs 4:7
           </p>
         </div>
 
@@ -73,7 +73,7 @@ export default function WhatDoesBibleSayAboutSuccessPage() {
 
       <section className="bg-amber-800 text-white py-16 px-4 text-center">
         <div className="max-w-2xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6">Apply Solomon&apos;s Wisdom to Your Situation</h2>
+          <h2 className="text-3xl font-bold mb-6">Apply Solomon's Wisdom to Your Situation</h2>
           <p className="text-amber-100 text-lg mb-8">Ask Solomon delivers wisdom from Proverbs based on exactly what you are facing.</p>
           <Link href="/" className="inline-block bg-white text-amber-900 font-bold px-10 py-4 rounded-full text-lg hover:bg-amber-100 transition-colors">Ask Solomon a Question</Link>
           <p className="text-amber-300 text-sm mt-4">Free. No sign-up required.</p>
