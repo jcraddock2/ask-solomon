@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: "Biblical Wisdom for Loneliness — Solomon on Feeling Alone",
@@ -96,6 +97,9 @@ export default function BiblicalWisdomForLonelinessPage() {
           Search Proverbs for what you are facing
         </Link>
       </section>
+
+
+      <SevenDaysOptIn topic="Loneliness & Isolation" />
 
     </main>
   );
