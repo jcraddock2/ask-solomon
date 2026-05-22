@@ -113,9 +113,9 @@ export default function SolomonChallengePage() {
         <div className="bg-amber-100 rounded-2xl p-10">
           <div className="text-5xl mb-4">📖</div>
           <blockquote className="text-2xl font-medium text-amber-900 italic mb-4">
-            &ldquo;Wisdom is the principal thing; therefore get wisdom: and with all thy getting get understanding.&rdquo;
+            “Wisdom is the principal thing; therefore get wisdom: and with all thy getting get understanding.”
           </blockquote>
-          <cite className="text-amber-700 font-semibold">Proverbs 4:7 &mdash; King Solomon</cite>
+          <cite className="text-amber-700 font-semibold">Proverbs 4:7 — King Solomon</cite>
         </div>
       </section>
 
