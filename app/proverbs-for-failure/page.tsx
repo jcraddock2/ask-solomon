@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: "Proverbs for Failure — Biblical Wisdom When You Feel Like You Failed",
@@ -96,6 +97,9 @@ export default function ProverbsForFailurePage() {
           Search Proverbs for what you are facing
         </Link>
       </section>
+
+
+      <SevenDaysOptIn topic="Failure & Resilience" />
 
     </main>
   );
