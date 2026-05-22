@@ -1295,3 +1295,32 @@ Fix: Removed the stray 'h' from line 14 in a separate commit.
 - Book section ">" bullets still show mojibake (in bookIndex.ts render code)
 
 **LAUNCH STATUS: READY for Monday** - all critical bugs resolved, keyword coverage expanded, encoding fixed in all main headings.
+
+
+Session May 22, 2026 — Keyword Gap Fix: Envy, Shame, Regret, Jealousy
+
+Completed this session:
+
+Added 10 new WORD_ALIASES to proverbs.ts (commit e6b8bb1):
+
+- shame: identity, healing, peace, grace, forgiveness, guilt, hurting
+- ashamed: identity, healing, peace, grace, forgiveness, shame, hurting
+- regret / regrets: healing, peace, forgiveness, guilt, hope, direction, past
+- jealous / jealousy: envy, bitterness, peace, contentment, trust, comparison, covet
+- envy: jealous, bitterness, peace, contentment, comparison, covet, rots
+- envious: envy, jealous, bitterness, peace, contentment, comparison
+- covet / coveting: envy, jealous, contentment, peace, trust
+
+Why this matters: "Envy rots the bones" (Proverbs 14:30) — envy is a named, explicit theme in Proverbs and a direct synonym for jealousy in context. These searches were returning 1-3 results before. Now they map to full topic pools.
+
+These were the last remaining weak-search gaps from the 55-query test run in Part 4 (May 21). All critical keyword coverage gaps are now closed.
+
+Build: Committed directly to main — Vercel auto-deploy triggered.
+
+Outstanding items (unchanged):
+- FINDING 8: Ask John if book has content before page 12 in bookIndex.ts
+- Google Search Console setup (D3 task — 5 min for John)
+- Reel recording (John)
+- JUNE 1 ROLLBACK: Remove PS from Emails 1-3, revert STRIPE_PRICE_ID to price_1T447hDAMsgblXx3uX0PmdCc
+
+Last updated: May 22, 2026 — Envy/shame/regret/jealousy keyword aliases added. All search gaps closed.
