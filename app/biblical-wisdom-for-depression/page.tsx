@@ -107,7 +107,7 @@ export default function BiblicalWisdomForDepressionPage() {
                 </span>
               </div>
               <blockquote className="text-xl text-gray-800 italic font-medium my-4 pl-4 border-l-4 border-slate-400">
-                &ldquo;{item.verse}&rdquo;
+                “{item.verse}”
               </blockquote>
               <p className="text-gray-600 leading-relaxed">{item.insight}</p>
             </div>
