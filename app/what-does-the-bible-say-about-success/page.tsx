@@ -49,7 +49,7 @@ export default function WhatDoesBibleSayAboutSuccessPage() {
 
         <div className="bg-amber-100 border-l-4 border-amber-500 p-6 my-8 rounded-r-xl">
           <p className="text-amber-900 text-lg font-medium">
-            “Wisdom is the principal thing; therefore get wisdom: and with all thy getting get understanding.” &mdash; Proverbs 4:7
+            “Wisdom is the principal thing; therefore get wisdom: and with all thy getting get understanding.” — Proverbs 4:7
           </p>
         </div>
 
@@ -61,7 +61,7 @@ export default function WhatDoesBibleSayAboutSuccessPage() {
               <div>
                 <div className="flex flex-wrap items-center gap-3 mb-1">
                   <span className="font-bold text-gray-800">{p.t}</span>
-                  <span className="text-amber-600 text-sm">&mdash; {p.v}</span>
+                  <span className="text-amber-600 text-sm">— {p.v}</span>
                 </div>
                 <p className="text-gray-600 text-sm">{p.d}</p>
               </div>
