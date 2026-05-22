@@ -78,15 +78,15 @@ export default function ProverbsForMoneyPage() {
       {/* Intro */}
       <section className="max-w-4xl mx-auto px-4 py-16">
         <div className="prose prose-lg max-w-none">
-          <h2 className="text-3xl font-bold text-amber-900 mb-6">What Made Solomon&apos;s Financial Wisdom Different</h2>
+          <h2 className="text-3xl font-bold text-amber-900 mb-6">What Made Solomon's Financial Wisdom Different</h2>
           <p className="text-gray-700 text-lg leading-relaxed mb-6">
             Solomon did not become wealthy by accident. He received wisdom from God, and that wisdom expressed itself in every area of life — including how he managed resources, built enterprises, and understood the principles that govern wealth.
           </p>
           <p className="text-gray-700 text-lg leading-relaxed mb-6">
-            Most financial advice today is tactical: budget this, invest that, cut expenses here. Solomon&apos;s wisdom goes deeper. He addresses the <strong>character and mindset</strong> that determine whether wealth is built, kept, or destroyed.
+            Most financial advice today is tactical: budget this, invest that, cut expenses here. Solomon's wisdom goes deeper. He addresses the <strong>character and mindset</strong> that determine whether wealth is built, kept, or destroyed.
           </p>
           <p className="text-gray-700 text-lg leading-relaxed">
-            Here are seven of Solomon&apos;s most powerful money principles — still as relevant today as when they were written 3,000 years ago.
+            Here are seven of Solomon's most powerful money principles — still as relevant today as when they were written 3,000 years ago.
           </p>
         </div>
       </section>
@@ -114,7 +114,7 @@ export default function ProverbsForMoneyPage() {
       {/* 5 Principles */}
       <section className="bg-green-800 text-white py-16 px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold mb-2 text-center">Solomon&apos;s 5 Wealth Principles</h2>
+          <h2 className="text-3xl font-bold mb-2 text-center">Solomon's 5 Wealth Principles</h2>
           <p className="text-green-200 text-center mb-10">From the book <em>Success Secrets of Solomon</em> by John Craddock</p>
           <div className="grid md:grid-cols-5 gap-4">
             {[
