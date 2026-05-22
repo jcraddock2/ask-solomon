@@ -62,6 +62,69 @@ export default function ProverbsForFearPage() {
             Solomon understood that fear is one of the great obstacles to wisdom. Here is what he taught about navigating fear, anxiety, and uncertainty with God as your anchor.
           </p>
           <Link
+import Link from 'next/link'
+import SevenDaysOptIn from '../SevenDaysOptIn'
+
+export const metadata: Metadata = {
+  title: 'Proverbs for Fear & Anxiety | Bible Verses About Fear',
+  description: 'Find biblical wisdom from Proverbs for fear, anxiety, and uncertainty. What Solomon taught about overcoming fear with trust, courage, and the fear of God.',
+  keywords: 'proverbs for fear, bible verses about fear, proverbs about anxiety, biblical wisdom for fear, what does the bible say about fear, overcome fear bible',
+  openGraph: {
+    title: 'Proverbs for Fear & Anxiety | Ask Solomon',
+    description: 'Solomon understood fear deeply — both the fear that cripples and the fear that liberates. Here is what Proverbs teaches about navigating fear with wisdom and faith.',
+    url: 'https://asksolomon.app/proverbs-for-fear',
+    siteName: 'Ask Solomon',
+    type: 'article',
+  },
+}
+
+const fearProverbs = [
+  {
+    reference: 'Proverbs 29:25',
+    verse: 'The fear of man bringeth a snare: but whoso putteth his trust in the Lord shall be safe.',
+    insight: 'Fear of man — what people think, what people might do, what people will say — is a trap. It constrains your obedience, distorts your decisions, and puts your security in the hands of people who cannot ultimately protect you. Trust in God is the only stable foundation.'
+  },
+  {
+    reference: 'Proverbs 3:5-6',
+    verse: 'Trust in the Lord with all thine heart; and lean not unto thine own understanding. In all thy ways acknowledge him, and he shall direct thy paths.',
+    insight: 'Anxiety typically emerges when we rely on our own understanding and find it insufficient. Solomon says: stop leaning on your own analysis. Acknowledge God in every decision — and He will make the path clear. This is not passivity; it is properly placed confidence.'
+  },
+  {
+    reference: 'Proverbs 14:26-27',
+    verse: 'In the fear of the Lord is strong confidence: and his children shall have a place of refuge. The fear of the Lord is a fountain of life, to depart from the snares of death.',
+    insight: 'There is a fear that destroys — the fear of circumstances, people, and outcomes. And there is a fear that liberates — the reverence of God. When you are properly in awe of God, the things that used to terrify you shrink to their actual size.'
+  },
+  {
+    reference: 'Proverbs 1:33',
+    verse: 'But whoso hearkeneth unto me shall dwell safely, and shall be quiet from fear of evil.',
+    insight: 'Wisdom promises something remarkable: quiet from fear of evil. Not absence of danger — but freedom from fear of it. The person who hearkens to wisdom is not naive; they are secured by something larger than circumstances.'
+  },
+  {
+    reference: 'Proverbs 3:25-26',
+    verse: 'Be not afraid of sudden fear, neither of the desolation of the wicked, when it cometh. For the Lord shall be thy confidence, and shall keep thy foot from being taken.',
+    insight: 'Sudden fear — unexpected bad news, a crisis that appears without warning — can devastate people who have no anchor. Solomon promises: God is your confidence, not your circumstances. He keeps your foot from being taken even in the sudden storm.'
+  },
+  {
+    reference: 'Proverbs 12:25',
+    verse: 'Heaviness in the heart of man maketh it stoop: but a good word maketh it glad.',
+    insight: 'Anxiety weighs the heart down. Solomon acknowledges it — he does not pretend fear is not real. But he also identifies the remedy: a good word. Sometimes what you need most when fear presses in is one well-placed voice speaking truth over you.'
+  },
+]
+
+export default function ProverbsForFearPage() {
+  return (
+    <main className="min-h-screen bg-amber-50">
+      {/* Hero */}
+      <section className="bg-gradient-to-b from-blue-900 to-blue-800 text-white py-20 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <p className="text-blue-300 text-sm font-semibold tracking-widest uppercase mb-4">Book of Proverbs</p>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            Proverbs for Fear & Anxiety
+          </h1>
+          <p className="text-xl md:text-2xl text-blue-100 max-w-2xl mx-auto mb-8">
+            Solomon understood that fear is one of the great obstacles to wisdom. Here is what he taught about navigating fear, anxiety, and uncertainty with God as your anchor.
+          </p>
+          <Link
             href="/"
             className="inline-block bg-amber-400 text-blue-900 font-bold px-8 py-4 rounded-full text-lg hover:bg-amber-300 transition-colors"
           >
@@ -114,11 +177,11 @@ export default function ProverbsForFearPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-blue-8
+      <section className="bg-blue-800 text-white py-16 px-4">
       {/* 7 Days Email Opt-In */}
       <SevenDaysOptIn topic="Fear & Anxiety" />
 
-      00 text-white py-16 px-4">
+      
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Tell Solomon What You Are Afraid Of
