@@ -4,7 +4,7 @@ import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: 'Proverbs for Humility | What the Bible Says About Being Humble',
-  description: 'Discover what Proverbs says about humility â the path to wisdom, honor, and divine favor. Biblical wisdom on lowliness, teachability, and walking humbly with God.',
+  description: 'Discover what Proverbs says about humility — the path to wisdom, honor, and divine favor. Biblical wisdom on lowliness, teachability, and walking humbly with God.',
   keywords: 'proverbs for humility, bible verses about humility, what does the bible say about humility, humble yourself bible, proverbs about being humble, solomon humility',
   openGraph: {
     title: 'Proverbs for Humility | Ask Solomon',
@@ -56,7 +56,7 @@ export default function ProverbsForHumilityPage() {
           <p className="text-emerald-300 text-sm font-semibold tracking-widest uppercase mb-4">Book of Proverbs</p>
           <h1 className="text-4xl md:text-6xl font-bold mb-6">Proverbs for Humility</h1>
           <p className="text-xl md:text-2xl text-emerald-100 max-w-2xl mx-auto mb-8">
-            Solomon said before honor is humility Ã¢ÂÂ not after. Here is what Proverbs teaches about the posture that opens doors to wisdom, favor, and God&apos;s blessing.
+            Solomon said before honor is humility Ã¢ÂÂ not after. Here is what Proverbs teaches about the posture that opens doors to wisdom, favor, and God's blessing.
           </p>
           <Link href="/" className="inline-block bg-amber-400 text-emerald-900 font-bold px-8 py-4 rounded-full text-lg hover:bg-amber-300 transition-colors">
             Ask Solomon About Your Situation Ã¢ÂÂ
@@ -67,7 +67,7 @@ export default function ProverbsForHumilityPage() {
       <section className="max-w-4xl mx-auto px-4 py-16">
         <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-6 mb-10">
           <p className="text-emerald-900 text-lg font-medium text-center">
-            &ldquo;By humility and the fear of the Lord are riches, and honour, and life.&rdquo; Ã¢ÂÂ Proverbs 22:4
+            “By humility and the fear of the Lord are riches, and honour, and life.” Ã¢ÂÂ Proverbs 22:4
           </p>
         </div>
         <h2 className="text-3xl font-bold text-amber-900 mb-8">6 Proverbs for Humility & Teachability</h2>
@@ -75,7 +75,7 @@ export default function ProverbsForHumilityPage() {
           {humilityProverbs.map((item, index) => (
             <div key={index} className="bg-white rounded-2xl shadow-sm border border-amber-100 p-8">
               <span className="bg-emerald-100 text-emerald-800 font-bold text-sm px-3 py-1 rounded-full">{item.reference}</span>
-              <blockquote className="text-xl text-gray-800 italic font-medium my-4 pl-4 border-l-4 border-emerald-400">&ldquo;{item.verse}&rdquo;</blockquote>
+              <blockquote className="text-xl text-gray-800 italic font-medium my-4 pl-4 border-l-4 border-emerald-400">“{item.verse}”</blockquote>
               <p className="text-gray-600 leading-relaxed">{item.insight}</p>
             </div>
           ))}
