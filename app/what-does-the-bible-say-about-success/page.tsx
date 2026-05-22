@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import SevenDaysOptIn from '../SevenDaysOptIn'
-
-export const metadata: Metadata = {
+Fix remaining JSX HTML entities in what-does-the-bible-say-about-successexport const metadata: Metadata = {
   title: 'What Does the Bible Say About Success? | Biblical Success Principles',
   description: 'What does the Bible say about success and prosperity? Biblical framework for success from King Solomon that goes beyond wealth to wisdom, character, and purpose.',
   keywords: 'what does the bible say about success, biblical success, bible verses about success, christian success principles, god and success, proverbs about success',
