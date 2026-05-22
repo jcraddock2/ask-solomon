@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: "Proverbs for Leadership — Solomon on What It Really Takes to Lead",
@@ -96,6 +97,9 @@ export default function ProverbsForLeadershipPage() {
           Search Proverbs for what you are facing
         </Link>
       </section>
+
+
+      <SevenDaysOptIn topic="Leadership & Influence" />
 
     </main>
   );
