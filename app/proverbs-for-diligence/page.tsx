@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: "Proverbs for Diligence | Biblical Wisdom for Hard Work and Success",
@@ -144,6 +145,9 @@ export default function ProverbsForDiligencePage() {
         </div>
 
       </div>
+
+      <SevenDaysOptIn topic="Diligence & Hard Work" />
+
     </main>
   );
 }
