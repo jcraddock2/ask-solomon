@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: 'Proverbs for Hope | Bible Verses About Hope & Expectation',
@@ -95,6 +96,9 @@ export default function ProverbsForHopePage() {
           </div>
         </div>
       </section>
+
+      <SevenDaysOptIn topic="Hope & Encouragement" />
+
     </main>
   )
 }
