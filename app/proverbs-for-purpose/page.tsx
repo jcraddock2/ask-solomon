@@ -61,7 +61,7 @@ export default function ProverbsForPurposePage() {
       <section className="max-w-4xl mx-auto px-4 py-16">
         <div className="bg-violet-50 border border-violet-200 rounded-xl p-6 mb-10">
           <p className="text-violet-900 text-lg font-medium text-center">
-            &ldquo;Where there is no vision, the people perish.&rdquo; Ã¢ÂÂ Proverbs 29:18
+            “Where there is no vision, the people perish.” Ã¢ÂÂ Proverbs 29:18
           </p>
         </div>
         <h2 className="text-3xl font-bold text-amber-900 mb-8">6 Proverbs for Purpose & Direction</h2>
@@ -69,7 +69,7 @@ export default function ProverbsForPurposePage() {
           {purposeProverbs.map((item, index) => (
             <div key={index} className="bg-white rounded-2xl shadow-sm border border-amber-100 p-8">
               <span className="bg-violet-100 text-violet-800 font-bold text-sm px-3 py-1 rounded-full">{item.reference}</span>
-              <blockquote className="text-xl text-gray-800 italic font-medium my-4 pl-4 border-l-4 border-violet-400">&ldquo;{item.verse}&rdquo;</blockquote>
+              <blockquote className="text-xl text-gray-800 italic font-medium my-4 pl-4 border-l-4 border-violet-400">“{item.verse}”</blockquote>
               <p className="text-gray-600 leading-relaxed">{item.insight}</p>
             </div>
           ))}
