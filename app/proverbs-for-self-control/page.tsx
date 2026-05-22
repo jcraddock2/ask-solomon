@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: 'Proverbs for Self-Control | Biblical Wisdom on Discipline & Restraint',
@@ -100,6 +101,9 @@ export default function ProverbsForSelfControlPage() {
           </div>
         </div>
       </section>
+
+      <SevenDaysOptIn topic="Self-Control & Discipline" />
+
     </main>
   )
 }
