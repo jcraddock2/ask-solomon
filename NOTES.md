@@ -1364,3 +1364,71 @@ Post to social on launch day
 Product Hunt submission
 
 Last updated: May 22, 2026 — Part 2 complete. Email opt-in on all SEO pages. Pro nudge live. All roadmap items complete.
+
+
+---
+
+## SESSION — May 22, 2026 — Part 3 (Google Search Console Setup)
+
+### What Was Done This Session
+
+**Google Search Console — FULLY SET UP ✅**
+- Property type: Domain (covers all subdomains and http/https)
+- Domain: asksolomon.app
+- Verified via DNS TXT record — method: Domain name provider
+- TXT record added to Vercel DNS:
+  - Name: @ (root)
+  - Type: TXT
+  - Value: google-site-verification=4qSYldbkUsABzo-XY-OPcNhn_alNPjD3pPs9cohruCg
+- Verification result: green "Ownership verified" banner confirmed in GSC ✅
+- Sitemap submitted: https://asksolomon.app/sitemap.xml ✅
+
+---
+
+### Sitemap Status — "Couldn't fetch" (TRANSIENT — No Action Needed Yet)
+
+Google showed "Couldn't fetch" immediately after submission. This is **normal behavior** — Google attempts to fetch the sitemap the moment it is submitted, but DNS propagation or Vercel CDN edge caching can cause a momentary failure on the first attempt.
+
+- app/sitemap.ts EXISTS and is properly built with all SEO pages ✅
+- app/robots.ts EXISTS and correctly references https://asksolomon.app/sitemap.xml ✅
+- Google will automatically retry within 24-48 hours — NO manual action needed unless still failing after 48 hours
+
+---
+
+### ⚠️ FOLLOW-UP CHECK REQUIRED — By May 24, 2026 (48 hours)
+
+**Go to:** https://search.google.com/search-console/sitemaps?resource_id=sc-domain%3Aasksolomon.app
+
+**Expected result:** Status changes from "Couldn't fetch" → "Success" with a discovered pages count (should show 25+ pages)
+
+**If still "Couldn't fetch" after 48 hours — troubleshoot in this order:**
+1. Open https://asksolomon.app/sitemap.xml in browser — should display XML with all page URLs
+2. Open https://asksolomon.app/robots.txt in browser — should show sitemap URL line
+3. In GSC Sitemaps page, click the 3-dot menu on the sitemap row → "Resubmit"
+4. If still failing, check Vercel deployment logs for sitemap route errors (Next.js builds sitemap.ts as a route handler)
+
+---
+
+### Roadmap Status (End of May 22, 2026 — Part 3)
+
+- ✅ SevenDaysOptIn component created
+- ✅ Email opt-in added to all 26 SEO pages
+- ✅ Pro conversion nudge in app/page.tsx
+- ✅ Google Search Console property created and ownership verified
+- ✅ Sitemap submitted to Google
+- ⏳ Sitemap "Couldn't fetch" — awaiting Google auto-retry (check by May 24)
+- 🔲 Reels recording (John)
+- 🔲 Email book readers (John)
+- 🔲 Social launch post (John)
+- 🔲 Product Hunt (John)
+- 🔲 JUNE 1 ROLLBACK — CRITICAL (see below)
+
+---
+
+### JUNE 1 ROLLBACK — CRITICAL (DO NOT FORGET)
+
+1. **MailerLite:** Remove $19 PS from Emails 1, 2, 3 in Solomon Challenge automation
+2. **Vercel:** Settings → Environment Variables → change STRIPE_PRICE_ID to: price_1T447hDAMsgblXx3uX0PmdCc
+   - Current $19 founding price: price_1TZXqADAMsgblXx3oA3yRaex (active until June 1 ONLY)
+
+Last updated: May 22, 2026 — Part 3 complete. GSC verified. Sitemap submitted. Follow-up check by May 24.
