@@ -122,7 +122,7 @@ export default function BiblicalWisdomForLazinessPage() {
             From the Book: Success Secrets of Solomon
           </h2>
           <p style={{ lineHeight: "1.8", marginBottom: "16px" }}>
-            These insights come from John Craddock&apos;s book <em>Success Secrets of Solomon</em>, a devotional guide to applying the wisdom of Proverbs to everyday life. The chapters on the ant, the sluggard, and diligence are some of the most practically powerful in the entire book.
+            These insights come from John Craddock's book <em>Success Secrets of Solomon</em>, a devotional guide to applying the wisdom of Proverbs to everyday life. The chapters on the ant, the sluggard, and diligence are some of the most practically powerful in the entire book.
           </p>
           <p style={{ lineHeight: "1.8" }}>
             When you use Ask Solomon, you get access to this wisdom directly, personalized to what you are actually going through right now.
