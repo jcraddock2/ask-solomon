@@ -67,7 +67,7 @@ export default function ProverbsForSelfControlPage() {
       <section className="max-w-4xl mx-auto px-4 py-16">
         <div className="bg-orange-50 border border-orange-200 rounded-xl p-6 mb-10">
           <p className="text-orange-900 text-lg font-medium text-center">
-            &ldquo;He that hath no rule over his own spirit is like a broken down city without walls.&rdquo; â Proverbs 25:28
+            “He that hath no rule over his own spirit is like a broken down city without walls.” â Proverbs 25:28
           </p>
         </div>
         <h2 className="text-3xl font-bold text-amber-900 mb-8">6 Proverbs for Self-Control & Discipline</h2>
@@ -75,7 +75,7 @@ export default function ProverbsForSelfControlPage() {
           {selfControlProverbs.map((item, index) => (
             <div key={index} className="bg-white rounded-2xl shadow-sm border border-amber-100 p-8">
               <span className="bg-orange-100 text-orange-800 font-bold text-sm px-3 py-1 rounded-full">{item.reference}</span>
-              <blockquote className="text-xl text-gray-800 italic font-medium my-4 pl-4 border-l-4 border-orange-400">&ldquo;{item.verse}&rdquo;</blockquote>
+              <blockquote className="text-xl text-gray-800 italic font-medium my-4 pl-4 border-l-4 border-orange-400">“{item.verse}”</blockquote>
               <p className="text-gray-600 leading-relaxed">{item.insight}</p>
             </div>
           ))}
