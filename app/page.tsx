@@ -286,7 +286,7 @@ function PageInner() {
     border: "1px solid rgba(0,0,0,0.08)",
     boxShadow: "0 26px 80px rgba(0,0,0,0.10)",
     padding: 18,
-    height: "72vh",
+    minHeight: "60vh",
     overflowY: "auto",
     WebkitOverflowScrolling: "touch",
   };
