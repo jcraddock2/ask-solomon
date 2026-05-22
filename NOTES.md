@@ -1324,3 +1324,43 @@ Outstanding items (unchanged):
 - JUNE 1 ROLLBACK: Remove PS from Emails 1-3, revert STRIPE_PRICE_ID to price_1T447hDAMsgblXx3uX0PmdCc
 
 Last updated: May 22, 2026 — Envy/shame/regret/jealousy keyword aliases added. All search gaps closed.
+
+
+SESSION — May 22, 2026 — Part 2 (Email Opt-In + Pro Nudge)
+What was done this session (all deployed):
+
+FINDING 8 CONFIRMED DONE — Book starts with father's instruction to son (Proverbs 1) and wisdom is the principal thing (Proverbs 4:7). This was covered in previous sessions when the full book was read.
+
+SevenDaysOptIn component — NEW file: app/SevenDaysOptIn.tsx
+Reusable dark navy/gold email capture component
+Posts to /api/subscribe (MailerLite)
+Topic-aware heading (e.g. "Fear & Anxiety — 7 Days of Solomon")
+Success/error states with confirmation message
+Added to ALL 26 SEO pages (each with topic-specific label):
+proverbs-for-fear, proverbs-for-anxiety, proverbs-for-anger, proverbs-for-diligence, proverbs-for-failure, proverbs-for-friendship, proverbs-for-hope, proverbs-for-humility, proverbs-for-leadership, proverbs-for-marriage, proverbs-for-money, proverbs-for-pride, proverbs-for-purpose, proverbs-for-relationships, proverbs-for-self-control, proverbs-for-success, proverbs-for-wealth-and-prosperity, proverbs-for-wisdom, proverbs-about-laziness, biblical-wisdom-for-depression, biblical-wisdom-for-job-loss, biblical-wisdom-for-laziness-and-procrastination, biblical-wisdom-for-loneliness, success-secrets-of-solomon, what-does-the-bible-say-about-success
+
+Pro Conversion Nudge — added to app/page.tsx
+searchCount state (increments on each search)
+showProNudge state (triggers after 2nd search for free users)
+Floating bottom-right overlay: dark navy/gold, dismissable with x
+Copy: "Unlock Pro — $19 Founding Member" links to /upgrade
+Shows only to non-Pro users after their 2nd search
+
+Commits this session:
+Add SevenDaysOptIn component for email subscription
+Add SevenDaysOptIn component to [all 26 SEO pages]
+Implement search count and pro user nudge
+
+JUNE 1 ROLLBACK — CRITICAL (DO NOT FORGET):
+Remove PS from Emails 1, 2, 3 in MailerLite Solomon Challenge automation
+Revert STRIPE_PRICE_ID in Vercel environment variables to: price_1T447hDAMsgblXx3uX0PmdCc
+(Current $19 founding price: price_1TZXqADAMsgblXx3oA3yRaex — active until June 1)
+
+Outstanding John tasks:
+Google Search Console (D3) — search.google.com/search-console, add asksolomon.app, verify via DNS, submit sitemap.xml
+Record Reels (5-shot script from May 21 session notes)
+Email book readers (warmest audience)
+Post to social on launch day
+Product Hunt submission
+
+Last updated: May 22, 2026 — Part 2 complete. Email opt-in on all SEO pages. Pro nudge live. All roadmap items complete.
