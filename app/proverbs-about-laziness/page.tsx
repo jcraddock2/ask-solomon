@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: 'Proverbs About Laziness | What the Bible Says About Sloth & Diligence',
@@ -164,6 +165,9 @@ export default function ProverbsAboutLazinessPage() {
           </div>
         </div>
       </section>
+
+      <SevenDaysOptIn topic="Laziness & Procrastination" />
+
     </main>
   )
 }
