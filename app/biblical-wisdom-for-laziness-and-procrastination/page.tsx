@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: "Biblical Wisdom for Laziness and Procrastination | Ask Solomon",
@@ -147,6 +148,9 @@ export default function BiblicalWisdomForLazinessPage() {
         </div>
 
       </div>
+
+      <SevenDaysOptIn topic="Laziness & Procrastination" />
+
     </main>
   );
 }
