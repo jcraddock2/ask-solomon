@@ -4,11 +4,11 @@ import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: 'Success Secrets of Solomon | Biblical Wisdom for Success & Achievement',
-  description: 'Explore the success principles of King Solomon from the Book of Proverbs. Wisdom on wealth, leadership, relationships, and purpose â from the most successful man in history.',
+  description: 'Explore the success principles of King Solomon from the Book of Proverbs. Wisdom on wealth, leadership, relationships, and purpose — from the most successful man in history.',
   keywords: 'success secrets of solomon, solomon success principles, biblical wisdom for success, proverbs for success, king solomon success, john craddock solomon book',
   openGraph: {
     title: 'Success Secrets of Solomon | Ask Solomon',
-    description: 'Solomon was wealthier, wiser, and more accomplished than anyone before or after. Here are the principles he lived by â drawn from the Book of Proverbs.',
+    description: 'Solomon was wealthier, wiser, and more accomplished than anyone before or after. Here are the principles he lived by — drawn from the Book of Proverbs.',
     url: 'https://asksolomon.app/success-secrets-of-solomon',
     siteName: 'Ask Solomon',
     type: 'article',
@@ -20,19 +20,19 @@ const successPrinciples = [
     number: '01',
     title: 'Wisdom First',
     proverb: 'Proverbs 4:7',
-    description: 'Solomon asked God for wisdom above all else â and received it. Then everything else followed. The foundation of his success was not intelligence, ambition, or strategy. It was wisdom from God.',
+    description: 'Solomon asked God for wisdom above all else — and received it. Then everything else followed. The foundation of his success was not intelligence, ambition, or strategy. It was wisdom from God.',
   },
   {
     number: '02',
     title: 'Firstfruits Principle',
     proverb: 'Proverbs 3:9-10',
-    description: 'Honor God with the first of everything â income, time, attention. This is both a spiritual discipline and a financial principle. Solomon called it the path to full barns.',
+    description: 'Honor God with the first of everything — income, time, attention. This is both a spiritual discipline and a financial principle. Solomon called it the path to full barns.',
   },
   {
     number: '03',
     title: 'Diligence Over Brilliance',
     proverb: 'Proverbs 22:29',
-    description: 'Seest thou a man diligent in his work? He shall stand before kings. Not the most talented â the most diligent. Consistent, excellent work is what opens the rooms most people want to be in.',
+    description: 'Seest thou a man diligent in his work? He shall stand before kings. Not the most talented — the most diligent. Consistent, excellent work is what opens the rooms most people want to be in.',
   },
   {
     number: '04',
@@ -44,13 +44,13 @@ const successPrinciples = [
     number: '05',
     title: 'Guard Your Heart',
     proverb: 'Proverbs 4:23',
-    description: 'Keep your heart with all diligence, for out of it are the issues of life. Every area of your life â your business, your family, your health â flows from the condition of your heart.',
+    description: 'Keep your heart with all diligence, for out of it are the issues of life. Every area of your life — your business, your family, your health — flows from the condition of your heart.',
   },
   {
     number: '06',
     title: 'The Power of the Tongue',
     proverb: 'Proverbs 18:21',
-    description: 'Death and life are in the power of the tongue. What you say â about yourself, to others, about your future â shapes outcomes. Solomon took words seriously as a force, not just a medium.',
+    description: 'Death and life are in the power of the tongue. What you say — about yourself, to others, about your future — shapes outcomes. Solomon took words seriously as a force, not just a medium.',
   },
   {
     number: '07',
@@ -66,12 +66,12 @@ const seoPages = [
   { href: '/proverbs-for-success', label: 'Proverbs for Success', desc: 'What Proverbs says about achieving excellence' },
   { href: '/proverbs-for-wealth-and-prosperity', label: 'Proverbs for Wealth', desc: 'Biblical wisdom on building and keeping wealth' },
   { href: '/proverbs-for-purpose', label: 'Proverbs for Purpose', desc: 'Vision, calling, and direction from Proverbs' },
-  { href: '/proverbs-for-friendship', label: 'Proverbs for Friendship', desc: 'Iron sharpens iron â choosing the right relationships' },
+  { href: '/proverbs-for-friendship', label: 'Proverbs for Friendship', desc: 'Iron sharpens iron — choosing the right relationships' },
   { href: '/proverbs-for-humility', label: 'Proverbs for Humility', desc: 'Before honor is humility' },
-  { href: '/proverbs-for-self-control', label: 'Proverbs for Self-Control', desc: 'Ruling your spirit â the greatest conquest' },
+  { href: '/proverbs-for-self-control', label: 'Proverbs for Self-Control', desc: 'Ruling your spirit — the greatest conquest' },
   { href: '/proverbs-for-pride', label: 'Proverbs for Pride', desc: 'Pride goes before destruction' },
   { href: '/proverbs-about-laziness', label: 'Proverbs About Laziness', desc: 'Go to the ant, thou sluggard' },
-  { href: '/proverbs-for-fear', label: 'Proverbs for Fear', desc: 'The fear of man is a snare â trust God' },
+  { href: '/proverbs-for-fear', label: 'Proverbs for Fear', desc: 'The fear of man is a snare — trust God' },
   { href: '/proverbs-for-hope', label: 'Proverbs for Hope', desc: 'Your expectation shall not be cut off' },
 ]
 
@@ -100,15 +100,15 @@ export default function SuccessSecretsOfSolomonPage() {
       {/* Who Was Solomon */}
       <section className="max-w-4xl mx-auto px-4 py-16">
         <div className="prose prose-lg max-w-none">
-          <h2 className="text-3xl font-bold text-amber-900 mb-6">Who Was Solomon â And Why Does His Wisdom Matter Today?</h2>
+          <h2 className="text-3xl font-bold text-amber-900 mb-6">Who Was Solomon — And Why Does His Wisdom Matter Today?</h2>
           <p className="text-gray-700 text-lg leading-relaxed mb-6">
-            Solomon became king of Israel around 970 BCE and reigned for forty years. By the end of his reign, he had accumulated wealth that would be estimated today in the trillions of dollars, built one of the ancient world&apos;s most magnificent architectural projects (the Temple in Jerusalem), received dignitaries from nations across the earth, and authored thousands of proverbs and songs.
+            Solomon became king of Israel around 970 BCE and reigned for forty years. By the end of his reign, he had accumulated wealth that would be estimated today in the trillions of dollars, built one of the ancient world's most magnificent architectural projects (the Temple in Jerusalem), received dignitaries from nations across the earth, and authored thousands of proverbs and songs.
           </p>
           <p className="text-gray-700 text-lg leading-relaxed mb-6">
-            What made Solomon different was not his birth. It was a single moment when God appeared to him and said &ldquo;Ask what I shall give thee.&rdquo; Solomon asked for wisdom â and God gave him wisdom, and then also gave him what he had not asked for. That sequence has never stopped being instructive.
+            What made Solomon different was not his birth. It was a single moment when God appeared to him and said “Ask what I shall give thee.” Solomon asked for wisdom — and God gave him wisdom, and then also gave him what he had not asked for. That sequence has never stopped being instructive.
           </p>
           <p className="text-gray-700 text-lg leading-relaxed">
-            The Book of Proverbs is Solomon&apos;s legacy to you. It is a compressed transmission of everything he learned about how life actually works â about money, work, relationships, speech, character, and God. The success secrets below are drawn directly from that book.
+            The Book of Proverbs is Solomon's legacy to you. It is a compressed transmission of everything he learned about how life actually works — about money, work, relationships, speech, character, and God. The success secrets below are drawn directly from that book.
           </p>
         </div>
       </section>
@@ -125,7 +125,7 @@ export default function SuccessSecretsOfSolomonPage() {
                 <div>
                   <div className="flex items-center gap-3 mb-2">
                     <h3 className="font-bold text-lg">{p.title}</h3>
-                    <span className="text-amber-300 text-sm">â {p.proverb}</span>
+                    <span className="text-amber-300 text-sm">— {p.proverb}</span>
                   </div>
                   <p className="text-amber-100 text-sm leading-relaxed">{p.description}</p>
                 </div>
@@ -139,7 +139,7 @@ export default function SuccessSecretsOfSolomonPage() {
       <section className="max-w-4xl mx-auto px-4 py-16 text-center">
         <h2 className="text-3xl font-bold text-amber-900 mb-6">Apply These Principles to Your Exact Situation</h2>
         <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          Ask Solomon is a free app that delivers wisdom from Proverbs based on what you are actually dealing with â a financial decision, a relationship challenge, a question about your direction, or anything else.
+          Ask Solomon is a free app that delivers wisdom from Proverbs based on what you are actually dealing with — a financial decision, a relationship challenge, a question about your direction, or anything else.
         </p>
         <Link
           href="/"
@@ -153,7 +153,7 @@ export default function SuccessSecretsOfSolomonPage() {
       {/* Topic Grid */}
       <section className="bg-gray-50 py-16 px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">Explore Solomon&apos;s Wisdom by Topic</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">Explore Solomon's Wisdom by Topic</h2>
           <div className="grid md:grid-cols-2 gap-4">
             {seoPages.map((page) => (
               <Link
