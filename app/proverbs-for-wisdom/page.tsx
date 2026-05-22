@@ -86,7 +86,7 @@ export default function ProverbsForWisdomPage() {
             God was so pleased by this answer that He gave Solomon wisdom â and then also gave him the wealth and honor he had not asked for. The principle: <strong>seek wisdom first, and what you need tends to follow.</strong>
           </p>
           <p className="text-gray-700 text-lg leading-relaxed">
-            The Book of Proverbs is Solomon&apos;s gift to you â thousands of years of compressed wisdom about money, relationships, work, leadership, speech, and character. Here are some of the most powerful proverbs on wisdom itself.
+            The Book of Proverbs is Solomon's gift to you â thousands of years of compressed wisdom about money, relationships, work, leadership, speech, and character. Here are some of the most powerful proverbs on wisdom itself.
           </p>
         </div>
       </section>
@@ -103,7 +103,7 @@ export default function ProverbsForWisdomPage() {
                 </span>
               </div>
               <blockquote className="text-xl text-gray-800 italic font-medium my-4 pl-4 border-l-4 border-amber-400">
-                &ldquo;{item.verse}&rdquo;
+                “{item.verse}”
               </blockquote>
               <p className="text-gray-600 leading-relaxed">{item.insight}</p>
             </div>
@@ -124,7 +124,7 @@ export default function ProverbsForWisdomPage() {
             <div className="bg-amber-700 rounded-xl p-6">
               <div className="text-3xl mb-3">ð</div>
               <h3 className="font-bold text-lg mb-2">Read Proverbs</h3>
-              <p className="text-amber-100 text-sm">Proverbs has 31 chapters â one for each day of the month. Read one chapter per day and in a month you will have walked through Solomon&apos;s entire library of wisdom.</p>
+              <p className="text-amber-100 text-sm">Proverbs has 31 chapters â one for each day of the month. Read one chapter per day and in a month you will have walked through Solomon's entire library of wisdom.</p>
             </div>
             <div className="bg-amber-700 rounded-xl p-6">
               <div className="text-3xl mb-3">ð§ </div>
@@ -138,7 +138,7 @@ export default function ProverbsForWisdomPage() {
       {/* CTA */}
       <section className="max-w-4xl mx-auto px-4 py-20 text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-amber-900 mb-6">
-          Apply Solomon&apos;s Wisdom to Your Situation Right Now
+          Apply Solomon's Wisdom to Your Situation Right Now
         </h2>
         <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
           Ask Solomon is a free tool that delivers biblical wisdom from Proverbs based on exactly what you are facing â fear, money, relationships, work, or anything else.
