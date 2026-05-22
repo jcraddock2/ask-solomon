@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: 'Success Secrets of Solomon | Biblical Wisdom for Success & Achievement',
@@ -167,6 +168,9 @@ export default function SuccessSecretsOfSolomonPage() {
           </div>
         </div>
       </section>
+
+      <SevenDaysOptIn topic="Success Secrets of Solomon" />
+
     </main>
   )
 }
