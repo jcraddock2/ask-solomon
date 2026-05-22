@@ -1,4 +1,4 @@
-“”import type { Metadata } from "next";
+himport type { Metadata } from "next";
 import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
