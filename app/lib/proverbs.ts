@@ -655,6 +655,16 @@ const WORD_ALIASES: Record<string, string[]> = {
   overthinking: ["peace", "wisdom", "direction", "fear", "worry", "anxiety"],
   overthink: ["peace", "wisdom", "direction", "fear", "worry", "anxiety"],
   career: ["success", "purpose", "direction", "leadership", "work", "discipline"],
+  shame: ["identity", "healing", "peace", "grace", "forgiveness", "guilt", "hurting"],
+  ashamed: ["identity", "healing", "peace", "grace", "forgiveness", "shame", "hurting"],
+  regret: ["healing", "peace", "forgiveness", "guilt", "hope", "direction", "past"],
+  regrets: ["healing", "peace", "forgiveness", "guilt", "hope", "direction", "past"],
+  jealous: ["envy", "bitterness", "peace", "contentment", "trust", "comparison", "covet"],
+  jealousy: ["envy", "bitterness", "peace", "contentment", "trust", "comparison", "covet"],
+  envy: ["jealous", "bitterness", "peace", "contentment", "comparison", "covet", "rots"],
+  envious: ["envy", "jealous", "bitterness", "peace", "contentment", "comparison"],
+  covet: ["envy", "jealous", "contentment", "peace", "trust"],
+  coveting: ["envy", "jealous", "contentment", "peace", "trust"],
 };
 
 const LANE_PHRASE_BOOSTS: Array<{
