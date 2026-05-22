@@ -237,6 +237,8 @@ function PageInner() {
   const [emailInput, setEmailInput] = React.useState('')
    const [shareCopied, setShareCopied] = useState(false);
   const [emailStatus, setEmailStatus] = React.useState<'idle' | 'sending' | 'success' | 'error'>('idle')
+  const [searchCount, setSearchCount] = useState(0)
+  const [showProNudge, setShowProNudge] = useState(false)
 
   const outerStyle: React.CSSProperties = {
     minHeight: "100vh",
@@ -360,6 +362,8 @@ function PageInner() {
   // Update wisdom response whenever q changes
   useEffect(() => {
     setWisdomCard(q.trim() ? getWisdomResponse(q) : null);
+        setSearchCount(prev => prev + 1)
+        if (!isProUser() && searchCount >= 1) { setShowProNudge(true) }
   }, [q]);
 
   useEffect(() => {
@@ -1581,6 +1585,40 @@ const applySituation = (situationQuery: string) => {
                 {asArray(SUBS).map((s: any) => {
                   const subKey = getSubKey(s);
                   return (
+
+      {/* Pro Conversion Nudge — appears after 2nd free search */}
+      {showProNudge && !isProUser() && (
+        <div style={{
+          position: 'fixed', bottom: 24, right: 24, zIndex: 9999,
+          background: '#0d1b2a', border: '1px solid #c9a227',
+          borderRadius: 16, padding: '20px 24px', maxWidth: 320,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+        }}>
+          <button
+            onClick={() => setShowProNudge(false)}
+            style={{ position: 'absolute', top: 10, right: 14, background: 'none', border: 'none', color: '#4a6a8a', fontSize: 18, cursor: 'pointer', lineHeight: 1 }}
+            aria-label="Close"
+          >x</button>
+          <p style={{ color: '#c9a227', fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
+            Unlock the full library
+          </p>
+          <p style={{ color: '#e8dcc8', fontSize: 15, lineHeight: 1.5, marginBottom: 16 }}>
+            You have found something valuable here. Get every book page reference, all 50+ wisdom scenarios, and the full Solomon library.
+          </p>
+          <a
+            href="/upgrade"
+            style={{
+              display: 'block', background: '#c9a227', color: '#0d1b2a',
+              fontWeight: 700, fontSize: 15, padding: '12px 0', borderRadius: 10,
+              textAlign: 'center', textDecoration: 'none',
+            }}
+          >
+            Unlock Pro — $19 Founding Member
+          </a>
+          <p style={{ color: '#4a6a8a', fontSize: 12, marginTop: 10 }}>One time. No subscription. Ever.</p>
+        </div>
+      )}
+
                     <button
                       key={subKey}
                       type="button"
