@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: 'Proverbs About Money | What the Bible Says About Finances',
@@ -163,6 +164,9 @@ export default function ProverbsForMoneyPage() {
           </div>
         </div>
       </section>
+
+      <SevenDaysOptIn topic="Money & Wealth" />
+
     </main>
   )
 }
