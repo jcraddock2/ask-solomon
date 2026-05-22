@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: 'Proverbs for Purpose | Biblical Wisdom on Calling & Direction',
@@ -100,6 +101,9 @@ export default function ProverbsForPurposePage() {
           </div>
         </div>
       </section>
+
+      <SevenDaysOptIn topic="Purpose & Vision" />
+
     </main>
   )
 }
