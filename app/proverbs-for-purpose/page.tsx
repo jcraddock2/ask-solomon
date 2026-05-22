@@ -1,6 +1,12 @@
-\u00e2\u0080\u0094“export const metadata: Metadata = {
-”  description: 'What does Proverbs say about purpose, calling, and finding direction? Biblical wisdom on vision, plans, and living intentionally with God as your guide.',
-—  openGraph: {
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import SevenDaysOptIn from '../SevenDaysOptIn'
+
+export const metadata: Metadata = {
+  title: 'Proverbs for Purpose | Biblical Wisdom on Calling & Direction',
+  description: 'What does Proverbs say about purpose, calling, and finding direction? Biblical wisdom on vision, plans, and living intentionally with God as your guide.',
+  keywords: 'proverbs for purpose, bible verses about purpose, biblical calling, what does the bible say about purpose, proverbs about vision, finding purpose bible',
+  openGraph: {
     title: 'Proverbs for Purpose | Ask Solomon',
     description: 'Solomon said where there is no vision, the people perish. Here is what Proverbs teaches about purpose, calling, and aligning your life with the design God has for you.',
     url: 'https://asksolomon.app/proverbs-for-purpose',
