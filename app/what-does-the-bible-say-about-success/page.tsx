@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import SevenDaysOptIn from '../SevenDaysOptIn'
-Fix remaining JSX HTML entities in what-does-the-bible-say-about-successexport const metadata: Metadata = {
+export const metadata: Metadata = {
   title: 'What Does the Bible Say About Success? | Biblical Success Principles',
   description: 'What does the Bible say about success and prosperity? Biblical framework for success from King Solomon that goes beyond wealth to wisdom, character, and purpose.',
   keywords: 'what does the bible say about success, biblical success, bible verses about success, christian success principles, god and success, proverbs about success',
@@ -49,7 +49,7 @@ export default function WhatDoesBibleSayAboutSuccessPage() {
 
         <div className="bg-amber-100 border-l-4 border-amber-500 p-6 my-8 rounded-r-xl">
           <p className="text-amber-900 text-lg font-medium">
-            “Wisdom is the principal thing; therefore get wisdom: and with all thy getting get understanding.” — Proverbs 4:7
+            âWisdom is the principal thing; therefore get wisdom: and with all thy getting get understanding.â â Proverbs 4:7
           </p>
         </div>
 
@@ -61,7 +61,7 @@ export default function WhatDoesBibleSayAboutSuccessPage() {
               <div>
                 <div className="flex flex-wrap items-center gap-3 mb-1">
                   <span className="font-bold text-gray-800">{p.t}</span>
-                  <span className="text-amber-600 text-sm">— {p.v}</span>
+                  <span className="text-amber-600 text-sm">â {p.v}</span>
                 </div>
                 <p className="text-gray-600 text-sm">{p.d}</p>
               </div>
