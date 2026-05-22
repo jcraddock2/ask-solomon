@@ -4,7 +4,7 @@ import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: 'Proverbs for Hope | Bible Verses About Hope & Expectation',
-  description: 'Find hope in the words of Proverbs. Biblical wisdom about hope, expectation, and trusting God with your future â from the writings of King Solomon.',
+  description: 'Find hope in the words of Proverbs. Biblical wisdom about hope, expectation, and trusting God with your future — from the writings of King Solomon.',
   keywords: 'proverbs for hope, bible verses about hope, biblical hope, proverbs about hope, what does the bible say about hope, solomon hope verses',
   openGraph: {
     title: 'Proverbs for Hope | Ask Solomon',
@@ -19,32 +19,32 @@ const hopeProverbs = [
   {
     reference: 'Proverbs 13:12',
     verse: 'Hope deferred maketh the heart sick: but when the desire cometh, it is a tree of life.',
-    insight: 'Solomon validates what so many feel â the weight of waiting. Hope deferred is a specific kind of pain. But notice the second half: when the desire comes, it is a tree of life. The wait does not disqualify the outcome. Trees of life are worth waiting for.'
+    insight: 'Solomon validates what so many feel — the weight of waiting. Hope deferred is a specific kind of pain. But notice the second half: when the desire comes, it is a tree of life. The wait does not disqualify the outcome. Trees of life are worth waiting for.'
   },
   {
     reference: 'Proverbs 23:18',
     verse: 'For surely there is an end; and thine expectation shall not be cut off.',
-    insight: 'This is one of the most direct promises in Proverbs: your expectation â your hope, your trust in God â will not be cut off. Surely. Not probably. Not maybe. Solomon writes with certainty about the future of those who hold fast to hope in God.'
+    insight: 'This is one of the most direct promises in Proverbs: your expectation — your hope, your trust in God — will not be cut off. Surely. Not probably. Not maybe. Solomon writes with certainty about the future of those who hold fast to hope in God.'
   },
   {
     reference: 'Proverbs 24:14',
     verse: 'So shall the knowledge of wisdom be unto thy soul: when thou hast found it, then there shall be a reward, and thy expectation shall not be cut off.',
-    insight: 'Wisdom and hope are connected. The person who walks in wisdom has an expectation â a future worth hoping for. The fear that hope will be disappointed is addressed directly: your expectation shall not be cut off.'
+    insight: 'Wisdom and hope are connected. The person who walks in wisdom has an expectation — a future worth hoping for. The fear that hope will be disappointed is addressed directly: your expectation shall not be cut off.'
   },
   {
     reference: 'Proverbs 3:5-6',
     verse: 'Trust in the Lord with all thine heart; and lean not unto thine own understanding. In all thy ways acknowledge him, and he shall direct thy paths.',
-    insight: 'Hope that is anchored to God is not wishful thinking â it is the most stable foundation available. Your own understanding will fail you. God\'s direction will not. Placing your hope here is not passive; it is the wisest decision you can make.'
+    insight: 'Hope that is anchored to God is not wishful thinking — it is the most stable foundation available. Your own understanding will fail you. God\'s direction will not. Placing your hope here is not passive; it is the wisest decision you can make.'
   },
   {
     reference: 'Proverbs 11:7',
     verse: 'When a wicked man dieth, his expectation shall perish: and the hope of unjust men perisheth.',
-    insight: 'Solomon shows the contrast: the hope of those who trust God endures. The hope of those who trust only in themselves, their schemes, or their wealth â that hope perishes. The anchor of your hope determines whether it will hold.'
+    insight: 'Solomon shows the contrast: the hope of those who trust God endures. The hope of those who trust only in themselves, their schemes, or their wealth — that hope perishes. The anchor of your hope determines whether it will hold.'
   },
   {
     reference: 'Proverbs 10:28',
     verse: 'The hope of the righteous shall be gladness: but the expectation of the wicked shall perish.',
-    insight: 'Righteousness â living in alignment with God â does not just produce moral outcomes. It produces gladness. Hope fulfilled becomes joy. Solomon presents a clear trajectory: right living, rooted in God, leads to a hope that actually delivers.'
+    insight: 'Righteousness — living in alignment with God — does not just produce moral outcomes. It produces gladness. Hope fulfilled becomes joy. Solomon presents a clear trajectory: right living, rooted in God, leads to a hope that actually delivers.'
   },
 ]
 
@@ -70,7 +70,7 @@ export default function ProverbsForHopePage() {
           {hopeProverbs.map((item, index) => (
             <div key={index} className="bg-white rounded-2xl shadow-sm border border-amber-100 p-8">
               <span className="bg-teal-100 text-teal-800 font-bold text-sm px-3 py-1 rounded-full">{item.reference}</span>
-              <blockquote className="text-xl text-gray-800 italic font-medium my-4 pl-4 border-l-4 border-teal-400">&ldquo;{item.verse}&rdquo;</blockquote>
+              <blockquote className="text-xl text-gray-800 italic font-medium my-4 pl-4 border-l-4 border-teal-400">“{item.verse}”</blockquote>
               <p className="text-gray-600 leading-relaxed">{item.insight}</p>
             </div>
           ))}
@@ -80,7 +80,7 @@ export default function ProverbsForHopePage() {
       <section className="bg-teal-800 text-white py-16 px-4 text-center">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-3xl font-bold mb-6">Your Expectation Shall Not Be Cut Off</h2>
-          <p className="text-teal-100 text-lg mb-8">That is not a motivational slogan â it is Solomon&apos;s direct promise to those who anchor their hope in God. Ask Solomon what Proverbs says about your specific situation.</p>
+          <p className="text-teal-100 text-lg mb-8">That is not a motivational slogan — it is Solomon's direct promise to those who anchor their hope in God. Ask Solomon what Proverbs says about your specific situation.</p>
           <Link href="/" className="inline-block bg-amber-400 text-teal-900 font-bold px-10 py-4 rounded-full text-lg hover:bg-amber-300 transition-colors">Ask Solomon a Question â</Link>
         </div>
       </section>
