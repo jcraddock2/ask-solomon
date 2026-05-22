@@ -1584,7 +1584,7 @@ const applySituation = (situationQuery: string) => {
 
                 {asArray(SUBS).map((s: any) => {
                   const subKey = getSubKey(s);
-                  return (
+                  return (<>
 
       {/* Pro Conversion Nudge — appears after 2nd free search */}
       {showProNudge && !isProUser() && (
@@ -1632,7 +1632,7 @@ const applySituation = (situationQuery: string) => {
                     >
                       {getSubLabel(s)}
                     </button>
-                  );
+                  </>);
                 })}
               </div>
             )}
