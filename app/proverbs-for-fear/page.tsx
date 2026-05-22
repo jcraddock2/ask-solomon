@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: 'Proverbs for Fear & Anxiety | Bible Verses About Fear',
@@ -113,7 +114,11 @@ export default function ProverbsForFearPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-blue-800 text-white py-16 px-4">
+      <section className="bg-blue-8
+      {/* 7 Days Email Opt-In */}
+      <SevenDaysOptIn topic="Fear & Anxiety" />
+
+      00 text-white py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Tell Solomon What You Are Afraid Of
