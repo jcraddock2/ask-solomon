@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: "Proverbs for Anxiety — Biblical Wisdom When You Are Afraid",
@@ -89,6 +90,9 @@ export default function ProverbsForAnxietyPage() {
           Search Proverbs for what you are facing
         </Link>
       </section>
+
+
+      <SevenDaysOptIn topic="Anxiety & Worry" />
 
     </main>
   );
