@@ -1,4 +1,4 @@
-# Ask Solomon — Project Notes for AI Sessions 
+# Ask Solomon — Project Notes for AI Sessions—
 
 > **FOR CLAUDE: Read this file FIRST at the start of every session before touching any code.**
 > Then read the key source files listed below to orient yourself fully.
