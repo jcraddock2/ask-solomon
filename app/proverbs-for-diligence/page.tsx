@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+“”import type { Metadata } from "next";
 import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
@@ -70,7 +70,7 @@ export default function ProverbsForDiligencePage() {
             Solomon also said a person with a gift will find that gift opening doors. Not because they pushed their way in. Because they were the best at what God designed them to do. Successful people collect talent. They want the best at anything.
           </p>
           <p style={{ lineHeight: "1.8" }}>
-            Many people spend their lives trying to copy someone else. They focus on areas where they are weak. Solomon said the wiser path is discovering what you are actually gifted at and developing that with everything you have. That is your key to promotion and prosperity. Not someone else&apos;s key. Yours.
+            Many people spend their lives trying to copy someone else. They focus on areas where they are weak. Solomon said the wiser path is discovering what you are actually gifted at and developing that with everything you have. That is your key to promotion and prosperity. Not someone else's key. Yours.
           </p>
         </section>
 
@@ -122,7 +122,7 @@ export default function ProverbsForDiligencePage() {
             From the Book: Success Secrets of Solomon
           </h2>
           <p style={{ lineHeight: "1.8" }}>
-            These insights come from John Craddock&apos;s book <em>Success Secrets of Solomon</em>. The chapters on diligence, giftedness, and the ant are some of the most practically powerful in the entire book. When you use Ask Solomon, you get access to this wisdom personalized to your exact situation.
+            These insights come from John Craddock's book <em>Success Secrets of Solomon</em>. The chapters on diligence, giftedness, and the ant are some of the most practically powerful in the entire book. When you use Ask Solomon, you get access to this wisdom personalized to your exact situation.
           </p>
         </section>
 
