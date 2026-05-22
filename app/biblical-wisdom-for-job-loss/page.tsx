@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: "Biblical Wisdom for Job Loss — Proverbs When You Lose Your Job",
@@ -89,6 +90,9 @@ export default function BiblicalWisdomForJobLossPage() {
           Search Proverbs for what you are facing
         </Link>
       </section>
+
+
+      <SevenDaysOptIn topic="Job Loss & Work Struggles" />
 
     </main>
   );
