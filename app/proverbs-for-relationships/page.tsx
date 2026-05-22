@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import SevenDaysOptIn from '../SevenDaysOptIn'
 
 export const metadata: Metadata = {
   title: "Proverbs for Relationships | Biblical Wisdom for Friendships and Marriage",
@@ -147,6 +148,9 @@ export default function ProverbsForRelationshipsPage() {
         </div>
 
       </div>
+
+      <SevenDaysOptIn topic="Relationships & People" />
+
     </main>
   );
 }
