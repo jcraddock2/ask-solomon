@@ -73,7 +73,7 @@ export default function ProverbsForFearPage() {
       {/* Two Types of Fear */}
       <section className="max-w-4xl mx-auto px-4 py-16">
         <div className="prose prose-lg max-w-none">
-          <h2 className="text-3xl font-bold text-amber-900 mb-6">Solomon&apos;s Two-Type Theory of Fear</h2>
+          <h2 className="text-3xl font-bold text-amber-900 mb-6">Solomon's Two-Type Theory of Fear</h2>
           <p className="text-gray-700 text-lg leading-relaxed mb-6">
             Proverbs does not tell you to be fearless. It tells you to fear the <em>right thing</em>. Solomon distinguishes between two kinds of fear throughout Proverbs:
           </p>
@@ -105,7 +105,7 @@ export default function ProverbsForFearPage() {
                 </span>
               </div>
               <blockquote className="text-xl text-gray-800 italic font-medium my-4 pl-4 border-l-4 border-blue-400">
-                &ldquo;{item.verse}&rdquo;
+                “{item.verse}”
               </blockquote>
               <p className="text-gray-600 leading-relaxed">{item.insight}</p>
             </div>
