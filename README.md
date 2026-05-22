@@ -60,3 +60,5 @@ Type something like *"I feel overwhelmed"* or *"I lost my job"* and Ask Solomon 
 ---
 
 *Built with Next.js · Deployed on Vercel · Powered by Proverbs*
+
+<!-- deploy trigger -->
