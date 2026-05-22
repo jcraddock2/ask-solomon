@@ -64,7 +64,7 @@ export default function ProverbsForRelationshipsPage() {
 
         <section style={{ marginBottom: "40px" }}>
           <h2 style={{ fontSize: "1.5rem", color: "#c9a227", marginBottom: "16px" }}>
-            Solomon&apos;s Warning About Toxic Relationships
+            Solomon's Warning About Toxic Relationships
           </h2>
           <p style={{ lineHeight: "1.8", marginBottom: "16px" }}>
             Solomon did not mince words. Do not make friendship with an angry man. Do not go with a furious man. Attitudes are contagious. You will not change them. They will infect you. Their drama will drain your energy, cloud your judgment, and pull you away from your purpose.
@@ -125,7 +125,7 @@ export default function ProverbsForRelationshipsPage() {
             From the Book: Success Secrets of Solomon
           </h2>
           <p style={{ lineHeight: "1.8" }}>
-            These insights come from John Craddock&apos;s book <em>Success Secrets of Solomon</em>. The chapters on friendship, choosing the right people, and finding a virtuous partner are among the most practically powerful in the book. Ask Solomon gives you access to this wisdom personalized to your situation.
+            These insights come from John Craddock's book <em>Success Secrets of Solomon</em>. The chapters on friendship, choosing the right people, and finding a virtuous partner are among the most practically powerful in the book. Ask Solomon gives you access to this wisdom personalized to your situation.
           </p>
         </section>
 
