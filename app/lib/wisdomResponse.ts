@@ -2059,5 +2059,131 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
   }
 
 
+  // ===== DIVORCE RECOVERY =====
+  if (includesAny(q, [
+    "my divorce is final", "after my divorce", "rebuilding after divorce",
+    "single again", "co-parenting after divorce", "starting over after marriage",
+    "just got divorced", "recently divorced", "healing from divorce",
+    "life after divorce", "moving on after divorce", "divorce recovery"
+  ])) {
+    return {
+      emotionalState: "navigating the rawness of life after a marriage has ended",
+      deeperMeaning: "Solomon wrote deeply about the covenant nature of relationships, about what happens when trust is broken, and about the God who restores what feels beyond repair. Rebuilding after divorce is not a lesser life — it is a new beginning that requires wisdom at every turn.",
+      searchLanes: ["healing", "relationships", "direction", "identity", "purpose"],
+      headline: "Wisdom Meets You at the Beginning of What Comes Next",
+      insight: "Solomon said a righteous man falls seven times and rises again. That principle does not have an asterisk that says except after divorce. The fall is real. The grief is real. The shame — if you carry it — is real. But Proverbs speaks consistently about recovery, about rebuilding, and about the wisdom that grows in people who have been through real things. Solomon himself understood broken covenant — the weight of relationships that did not go the way they were supposed to. What he learned is that wisdom does not abandon you in the aftermath. It waits there for you. The question is not what this ending says about who you are. The question is what you will choose to build with what remains.",
+      reflection: "What is one thing you are being asked to let go of — and one thing you are being called to rebuild? They are not the same thing, and wisdom knows the difference.",
+      nextStep: "Identify one trusted person you can speak honestly with about where you actually are — not where you think you should be. Honest naming is the beginning of honest healing.",
+      bookConnection: "Success Secrets of Solomon — Trust Builds Slowly and Breaks Quickly (pp. 130-134) and Starting Over Requires Courage (pp. 156-160)",
+    };
+  }
+
+  // ===== CAREGIVER / AGING PARENTS =====
+  if (includesAny(q, [
+    "caring for aging parents", "aging parent", "my parent has dementia",
+    "caregiver burnout", "caring for my parent", "my parents need me",
+    "i am responsible for everyone", "sandwiched between kids and parents",
+    "my mom is declining", "my dad needs care", "i am the one taking care of everyone",
+    "i am burned out from caregiving", "secondary trauma", "compassion fatigue"
+  ])) {
+    return {
+      emotionalState: "carrying the weight of others at a level that is depleting your own reserves",
+      deeperMeaning: "There is a kind of exhaustion that comes not from laziness but from love — the bone-deep tiredness of a person who has given everything to someone who needs everything. Solomon understood the cost of stewardship and the dignity of those who carry responsibility for others. He also understood that wisdom requires you to care for yourself not out of selfishness, but out of faithfulness — because a depleted caregiver eventually cannot give.",
+      searchLanes: ["healing", "direction", "relationships", "wisdom", "strength"],
+      headline: "Wisdom Knows the Cost of Love Given Without Rest",
+      insight: "Solomon observed that the ant — the symbol of diligence in Proverbs — stores provision in seasons of strength for seasons of scarcity. The principle applies to human energy as well. Caring for an aging parent, a declining spouse, or a child with special needs is among the most sacred and invisible forms of service. But sacred does not mean inexhaustible. Proverbs 11:25 says the generous soul will be made rich — but that generosity is sustainable only when the source is not running empty. You are allowed to ask for help. You are allowed to rest. The love you are showing is extraordinary. Wisdom says: protect the person giving the love, not just the person receiving it.",
+      reflection: "What is one area of your life where you have stopped asking for help because you assumed no one could give it — or that asking would burden others? What would it take to ask anyway?",
+      nextStep: "Name one person in your life who could take one task off your plate this week — even a small one. Then actually ask them. Receiving help is not weakness. It is wisdom.",
+      bookConnection: "Success Secrets of Solomon — Resilience Is Built in the Dark (pp. 159-165) and Influence Outlasts Instruction (pp. 172-176)",
+    };
+  }
+
+  // ===== STARTING A BUSINESS / ENTREPRENEURSHIP =====
+  if (includesAny(q, [
+    "starting a business", "i want to start a business", "i am an entrepreneur",
+    "i have a business idea", "i am launching something", "i launched a business",
+    "my startup", "i started a company", "building a business", "running my own business",
+    "entrepreneurship", "solo founder", "i am self-employed", "i work for myself",
+    "building something", "side business", "my business is struggling", "growing my business"
+  ])) {
+    return {
+      emotionalState: "building something from the ground up — carrying both the excitement and the weight of that responsibility",
+      deeperMeaning: "Solomon was not just a philosopher — he was a builder. He built cities, fleets, temples, and systems. He understood that building requires vision, counsel, patience, and the discipline to work in seasons when the results are not yet visible. He also understood that the biggest threat to a builder is not the competition — it is the inner collapse that comes from isolation, lack of counsel, or misaligned priorities.",
+      searchLanes: ["success", "leadership", "discipline", "wisdom", "purpose"],
+      headline: "Solomon Was the Original Builder — and He Left the Blueprint",
+      insight: "Proverbs 24:3 says that by wisdom a house is built, and through understanding it is established. The house Solomon describes is not just a physical structure — it is anything you are building: a business, a team, a client base, a reputation. Wisdom first. Understanding establishes it. Knowledge fills it with rare and beautiful treasures. That is the sequence. Not hustle first, then learn. Wisdom first — then the building holds. Solomon also said that without counsel, plans fail, but with many advisers they succeed. The lone founder who refuses to be coached, who refuses to be challenged, who builds in a vacuum — that person is running on momentum that will eventually run out. The one who seeks counsel, who builds accountability into the process, who measures honestly against results — that person is building something that can outlast them.",
+      reflection: "What is the one decision in your business right now that you have been making alone that would benefit from outside counsel? Who could you bring into that?",
+      nextStep: "Before your next major decision, write out the three most important questions you need answered. Then identify one person who has done what you are trying to do and ask them those three questions directly.",
+      bookConnection: "Success Secrets of Solomon — Solomon Built Generational Wealth (pp. 176-183) and Diligence Opens Doors That Talent Cannot (pp. 108-113)",
+    };
+  }
+
+  // ===== SPIRITUAL DRYNESS / GOD FEELS DISTANT =====
+  if (includesAny(q, [
+    "feel spiritually dry", "god feels distant", "i cannot feel god anymore",
+    "unanswered prayer", "god has forgotten me", "i feel abandoned by god",
+    "spiritual dryness", "i dont feel god anymore", "god is silent",
+    "my faith feels empty", "i am going through a spiritual desert",
+    "i pray but nothing happens", "where is god", "god why", "crisis of faith",
+    "losing my faith", "doubting god", "questioning my faith"
+  ])) {
+    return {
+      emotionalState: "in a season where faith feels effortful and God feels further than usual",
+      deeperMeaning: "Solomon wrote Proverbs from the other side of a long life — a life that included not only extraordinary wisdom but extraordinary failure, broken faith, and painful seasons where the principles he taught seemed to abandon him. The wisdom he preserved was not written by someone who had never doubted. It was written by someone who had seen both the presence and the apparent absence of God — and chose wisdom anyway.",
+      searchLanes: ["faith", "healing", "direction", "wisdom", "hope"],
+      headline: "The Fear of the Lord Is the Beginning of Wisdom — Even in Dry Seasons",
+      insight: "Proverbs says to trust in the Lord with all your heart and lean not on your own understanding. The instruction to lean not on your own understanding is particularly relevant in dry seasons — because in a dry season your understanding will tell you that nothing is working, that God is absent, that the investment of faith is not paying off. But understanding is not the same as wisdom. Wisdom says: the silence is not absence. The drought is not the end of the river. The inability to feel does not alter what is true. Solomon observed that the righteous may fall seven times — and the principle does not exclude spiritual falls. A person can be faithful and dry. Patient and empty. Faithful and confused. Wisdom does not require you to feel certain in order to keep walking. It just asks you to keep walking.",
+      reflection: "If you could say honestly to God what you have not said out loud — what would it be? The psalms modeled radical honesty. Solomon modeled wisdom. Both invite you to stop pretending.",
+      nextStep: "Spend five minutes writing out exactly what you wish God would say to you right now. Sometimes the act of naming what you need opens a door that silence kept shut.",
+      bookConnection: "Success Secrets of Solomon — Wisdom Is the Foundation of Every Good Decision (pp. 26-30) and The Fear of the Lord (pp. 77-80)",
+    };
+  }
+
+  // ===== ACCOUNTABILITY / COACHING =====
+  if (includesAny(q, [
+    "accountability", "i need accountability", "i need a coach", "looking for a coach",
+    "i need someone to hold me accountable", "accountability partner", "i need mentorship",
+    "i need a mentor", "who holds me accountable", "nobody challenges me",
+    "i need someone to push me", "i want to grow but have no structure",
+    "i am coachable", "i want coaching", "life coaching", "executive coaching",
+    "coaching myself", "i dont have a mentor", "i need more structure",
+    "how do i stay on track", "i keep falling off track", "i lose momentum easily"
+  ])) {
+    return {
+      emotionalState: "aware that you need more structure, more challenge, or more external accountability to reach what you are capable of",
+      deeperMeaning: "Solomon said without counsel plans fail, but with many advisers they succeed. He also said iron sharpens iron. These are not just proverbs about friendship — they are foundational statements about human architecture. We are built to grow in community, under challenge, through honest feedback. The person who seeks accountability is not weak. They understand the system.",
+      searchLanes: ["leadership", "discipline", "direction", "wisdom", "growth"],
+      headline: "Iron Sharpens Iron — and That Requires Contact",
+      insight: "Proverbs 27:17 — iron sharpens iron, so one person sharpens another. That verse is simple and easy to quote. But notice what it actually requires: contact. Iron does not sharpen itself. It requires friction, proximity, and the willingness to be shaped by something harder than itself. Solomon surrounded himself with advisers. He sought wisdom from every direction. He built systems of accountability into governance because he understood that unchecked authority — even his own — produced blind spots. The principle translates directly into personal growth. A person without accountability is like iron without a whetstone — capable of cutting, but getting duller with every use. The question is not whether you need accountability. The question is whether you are willing to create the kind of relationships where honest sharpening can happen. Most people settle for relationships that feel good over relationships that make them better. Wisdom chooses the latter.",
+      reflection: "Who in your life is allowed to tell you the truth about your blind spots — and actually does? If the answer is no one, that is the most important gap to close right now.",
+      nextStep: "Identify one person whose judgment you trust and respect. Ask them directly: what is one thing you see in me that I might not see in myself? Then actually listen to the answer without defending yourself.",
+      bookConnection: "Success Secrets of Solomon — Iron Sharpens Iron (pp. 166-170) and The Gift of True Friendship (pp. 166-170)",
+    };
+  }
+
+  // ===== SOCIAL MEDIA COMPARISON =====
+  if (includesAny(q, [
+    "instagram makes me feel bad", "everyone else seems to have it together",
+    "social media comparison", "why does everyone else succeed but me",
+    "social media is making me depressed", "i compare myself to what i see online",
+    "everyone looks so happy on social media", "i feel behind when i see others",
+    "social media makes me feel like a failure", "scrolling makes me feel worse",
+    "i hate social media but i cant stop", "everyone is moving forward except me",
+    "my peers are doing better than me", "i feel like i missed my window"
+  ])) {
+    return {
+      emotionalState: "measuring your internal reality against other people's external presentations — and finding yourself lacking",
+      deeperMeaning: "Solomon wrote Proverbs 14:30 — envy rots the bones. He did not say envy hurts a little or makes you slightly uncomfortable. He said it rots. The imagery is biological decay — a process that once started is hard to stop and damages from the inside out. Solomon observed this in a world without social media. In a world designed to maximize the display of curated success, envy is a structural feature of the platform, not a personal failing.",
+      searchLanes: ["comparison", "confidence", "identity", "healing", "direction"],
+      headline: "Envy Rots the Bones — and Solomon Said So Long Before Instagram",
+      insight: "Proverbs 14:30 says a peaceful heart gives life to the body, but envy rots the bones. The contrast is direct: peace gives life, envy creates decay. Solomon observed that most of what people compare themselves to is not real — people project strength in public and collapse in private, display victories and hide defeats, perform confidence while carrying fear. The algorithm does not show you the 3am moments. It shows you the highlight reel. You are comparing your interior life to other people's exterior performance — and that comparison will always produce a deficit because you are using the wrong data. Solomon's prescription is not to stop observing others. It is to stop letting their observed outcomes define your worth. Your path is not their path. Their timeline is not your timeline. The ant does not compare itself to the bird. It works in season, gathers in season, and produces in season. That is the model.",
+      reflection: "When you scroll and feel the drop — the moment where your sense of your own life shrinks — what specifically are you comparing? What are you assuming about the other person's life that you cannot actually know?",
+      nextStep: "For the next 48 hours, replace 10 minutes of social media time with 10 minutes of writing about one thing you are building that no one can see yet. Name it. Describe it. That is your lane.",
+      bookConnection: "Success Secrets of Solomon — Comparison Distorts Perspective (pp. 107-108) and Identity Shapes Decisions (pp. 51-55)",
+    };
+  }
+
+
+
 return null;
 }
