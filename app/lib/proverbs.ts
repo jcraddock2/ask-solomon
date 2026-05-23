@@ -665,6 +665,33 @@ const WORD_ALIASES: Record<string, string[]> = {
   envious: ["envy", "jealous", "bitterness", "peace", "contentment", "comparison"],
   covet: ["envy", "jealous", "contentment", "peace", "trust"],
   coveting: ["envy", "jealous", "contentment", "peace", "trust"],
+  // accountability / coaching
+  accountability: ["accountability", "coach", "mentor", "iron sharpens iron", "feedback", "correction", "counsel", "growth"],
+  accountable: ["accountability", "correction", "mentor", "feedback", "coaching", "growth"],
+  coach: ["accountability", "mentor", "counsel", "feedback", "coaching", "growth", "leadership"],
+  coaching: ["accountability", "mentor", "counsel", "feedback", "coach", "growth", "iron sharpens iron"],
+  mentor: ["accountability", "coach", "counsel", "feedback", "wisdom", "leadership", "growth"],
+  mentorship: ["accountability", "mentor", "coaching", "counsel", "growth", "leadership"],
+
+  // mouth management / speech
+  gossip: ["speech", "tongue", "words", "integrity", "relationships", "mouth"],
+  gossiping: ["speech", "tongue", "words", "integrity", "relationships", "mouth", "gossip"],
+
+  // social media / comparison
+  instagram: ["comparison", "envy", "jealous", "contentment", "identity", "peace"],
+  scrolling: ["comparison", "envy", "distraction", "discipline", "contentment", "identity"],
+
+  // divorce / starting over
+  divorce: ["relationships", "marriage", "healing", "identity", "starting over", "forgiveness"],
+  divorced: ["relationships", "marriage", "healing", "identity", "starting over", "forgiveness"],
+  remarry: ["marriage", "relationships", "healing", "trust", "identity"],
+
+  // entrepreneur / business
+  entrepreneur: ["success", "leadership", "purpose", "discipline", "vision", "growth"],
+  entrepreneurship: ["success", "leadership", "purpose", "discipline", "vision", "growth"],
+  startup: ["success", "leadership", "planning", "discipline", "vision"],
+  business: ["success", "discipline", "leadership", "planning", "work", "purpose"],
+
 };
 
 const LANE_PHRASE_BOOSTS: Array<{
