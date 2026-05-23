@@ -367,7 +367,15 @@ const INTENT_LANES: IntentLane[] = [
       "not where i should be",
       "late in life",
       "stuck behind",
-    ],
+          "instagram",
+      "social media comparison",
+      "everyone seems to have it together",
+      "why does everyone succeed but me",
+      "i feel behind when i see others",
+      "social media makes me feel",
+      "scrolling makes me feel",
+      "my peers are doing better",
+      ],
   },
   {
     name: "vision",
@@ -389,6 +397,27 @@ const INTENT_LANES: IntentLane[] = [
       "purpose",
       "direction in life",
       "going in circles",
+    ],
+  },
+  {
+    name: "accountability",
+    terms: [
+      "accountability",
+      "accountable",
+      "i need a coach",
+      "looking for a coach",
+      "accountability partner",
+      "i need mentorship",
+      "i need a mentor",
+      "nobody challenges me",
+      "i need someone to push me",
+      "coaching",
+      "coached",
+      "how do i stay on track",
+      "i keep falling off track",
+      "iron sharpens iron",
+      "i need structure",
+      "lose momentum",
     ],
   },
 ];
@@ -521,6 +550,18 @@ const LANE_EXPANSIONS: Record<string, string[]> = {
     "direction",
     "wandering",
     "proverbs 29",
+  ],
+  accountability: [
+    "mentor",
+    "coach",
+    "feedback",
+    "correction",
+    "counsel",
+    "iron sharpens iron",
+    "sharpened",
+    "partner",
+    "structure",
+    "track",
   ],
 };
 function normalize(input: string): string {
@@ -1188,6 +1229,47 @@ export function interpretQueryAdvanced(query: string): Interpretation {
     return {
       message: "You may be carrying pain, grief, or emotional hurt.",
       lane: "hurting",
+    };
+  }
+
+  // ACCOUNTABILITY / COACHING
+  if (
+    q.includes("accountability") ||
+    q.includes("accountable") ||
+    q.includes("i need a coach") ||
+    q.includes("accountability partner") ||
+    q.includes("iron sharpens iron") ||
+    q.includes("i need mentorship") ||
+    q.includes("i need a mentor") ||
+    q.includes("nobody challenges me") ||
+    q.includes("i need someone to push me") ||
+    q.includes("how do i stay on track") ||
+    q.includes("i keep falling off track") ||
+    q.includes("coaching") ||
+    q.includes("i need structure") ||
+    q.includes("lose momentum easily")
+  ) {
+    return {
+      message: "You may be looking for accountability, mentorship, or structured growth.",
+      lane: "accountability",
+    };
+  }
+
+  // SOCIAL MEDIA COMPARISON
+  if (
+    q.includes("instagram") ||
+    q.includes("social media comparison") ||
+    q.includes("everyone seems to have it together") ||
+    q.includes("why does everyone succeed but me") ||
+    q.includes("social media makes me feel") ||
+    q.includes("scrolling makes me feel") ||
+    q.includes("my peers are doing better") ||
+    q.includes("everyone looks so happy") ||
+    q.includes("i feel behind when i see others")
+  ) {
+    return {
+      message: "You may be struggling with comparison, especially through what you see on social media.",
+      lane: "comparison",
     };
   }
 
