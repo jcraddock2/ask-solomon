@@ -242,4 +242,245 @@ export const PROVERBS_10_15: ProverbEntry[] = [
     ["respect", "confidence", "leadership"],
     ["overlooked", "respected", "steady"]
   ),
+
+  // --- PROVERBS 10 (additional) ---
+
+  createProverb(
+    "Proverbs 10:1",
+    "Wisdom brings joy, folly brings grief",
+    "A wise son brings joy to his father, but a foolish son brings grief to his mother.",
+    ["relationships", "wisdom", "family"],
+    ["wisdom", "joy", "grief", "family", "son", "parent", "disappointment"],
+    ["relationships", "direction", "leadership"],
+    ["regret", "proud", "worried"]
+  ),
+
+  createProverb(
+    "Proverbs 10:11",
+    "The mouth of the righteous is a fountain",
+    "The mouth of a righteous person is a fountain of life, but violence covers the mouth of the wicked.",
+    ["speech", "integrity", "wisdom"],
+    ["mouth", "speech", "words", "righteous", "fountain", "life", "tongue"],
+    ["leadership", "relationships", "confidence"],
+    ["speaking", "communicating", "words matter"]
+  ),
+
+  createProverb(
+    "Proverbs 10:17",
+    "Correction leads to life",
+    "The one who heeds instruction is on the path of life, but the one who ignores correction goes astray.",
+    ["wisdom", "discipline", "growth"],
+    ["instruction", "correction", "accountability", "path", "heeds", "life", "feedback", "coaching"],
+    ["leadership", "direction", "discipline"],
+    ["stubborn", "learning", "coaching"]
+  ),
+
+  createProverb(
+    "Proverbs 10:19",
+    "Many words invite sin",
+    "When words are many, sin is not absent, but whoever controls their tongue is wise.",
+    ["speech", "wisdom", "discipline"],
+    ["words", "tongue", "sin", "control", "speak", "mouth", "talking too much", "overtalking"],
+    ["relationships", "leadership", "confidence"],
+    ["talking", "communicating", "careful"]
+  ),
+
+  // --- PROVERBS 11 (additional) ---
+
+  createProverb(
+    "Proverbs 11:3",
+    "Integrity guides the upright",
+    "The integrity of the upright guides them, but the unfaithful are destroyed by their duplicity.",
+    ["integrity", "character", "direction"],
+    ["integrity", "upright", "guides", "honest", "character", "duplicity", "trustworthy", "accountability"],
+    ["leadership", "direction", "confidence"],
+    ["honest", "character", "trusted"]
+  ),
+
+  createProverb(
+    "Proverbs 11:12",
+    "Wisdom holds its tongue",
+    "A person who lacks judgment derides their neighbor, but a person of understanding holds their tongue.",
+    ["wisdom", "speech", "relationships"],
+    ["tongue", "hold", "understanding", "judgment", "derides", "neighbor", "gossip", "mocking"],
+    ["relationships", "leadership", "confidence"],
+    ["restraint", "quiet", "wise"]
+  ),
+
+  createProverb(
+    "Proverbs 11:14",
+    "Victory comes through counsel",
+    "Where there is no guidance, a nation falls, but victory comes through many advisers.",
+    ["wisdom", "leadership", "planning"],
+    ["counsel", "guidance", "advisers", "victory", "coaching", "accountability", "mentorship", "wise counsel"],
+    ["leadership", "direction", "success"],
+    ["planning", "decision", "counsel"]
+  ),
+
+  createProverb(
+    "Proverbs 11:24",
+    "Generosity creates abundance",
+    "One person gives freely and gains even more; another withholds unduly but comes to poverty.",
+    ["money", "generosity", "blessing"],
+    ["give", "generous", "abundance", "withholds", "poverty", "money", "wealth", "blessing", "free"],
+    ["money", "success", "direction"],
+    ["giving", "tight", "money"]
+  ),
+
+  createProverb(
+    "Proverbs 11:28",
+    "Wealth is unstable ground",
+    "Those who trust in their riches will fall, but the righteous will thrive like a green leaf.",
+    ["money", "integrity", "trust"],
+    ["riches", "wealth", "trust", "fall", "thrive", "righteous", "money", "security"],
+    ["money", "confidence", "direction"],
+    ["money", "security", "worried"]
+  ),
+
+  // --- PROVERBS 12 (additional) ---
+
+  createProverb(
+    "Proverbs 12:1",
+    "Whoever loves discipline loves knowledge",
+    "Whoever loves discipline loves knowledge, but whoever hates correction is stupid.",
+    ["discipline", "wisdom", "growth"],
+    ["discipline", "knowledge", "correction", "accountable", "feedback", "coaching", "growth", "learning"],
+    ["discipline", "leadership", "direction"],
+    ["learning", "correction", "growth"]
+  ),
+
+  createProverb(
+    "Proverbs 12:10",
+    "The righteous care for others",
+    "A righteous person cares for the needs of their animal, but the kindest acts of the wicked are cruel.",
+    ["integrity", "relationships", "character"],
+    ["care", "righteous", "kindness", "character", "compassion", "empathy", "wicked"],
+    ["relationships", "leadership", "integrity"],
+    ["caring", "compassion", "character"]
+  ),
+
+  createProverb(
+    "Proverbs 12:11",
+    "Work your land",
+    "Those who work their land will have abundant food, but those who chase fantasies have no sense.",
+    ["discipline", "success", "work"],
+    ["work", "land", "abundant", "food", "fantasies", "diligence", "focus", "practical", "discipline"],
+    ["success", "discipline", "money"],
+    ["work", "focused", "practical"]
+  ),
+
+  createProverb(
+    "Proverbs 12:14",
+    "Your words return to you",
+    "From the fruit of their lips people are filled with good things, and the work of their hands brings them reward.",
+    ["speech", "success", "work"],
+    ["fruit", "lips", "words", "filled", "reward", "work", "hands", "return", "speech"],
+    ["success", "relationships", "confidence"],
+    ["speaking", "reward", "work"]
+  ),
+
+  createProverb(
+    "Proverbs 12:16",
+    "A fool shows their anger immediately",
+    "Fools show their annoyance at once, but the prudent overlook an insult.",
+    ["anger", "wisdom", "relationships"],
+    ["anger", "annoyance", "fool", "prudent", "insult", "react", "temper", "self-control", "overlook"],
+    ["anger", "relationships", "confidence"],
+    ["anger", "react", "control"]
+  ),
+
+  createProverb(
+    "Proverbs 12:17",
+    "Truth is trustworthy",
+    "An honest witness tells the truth, but a false witness tells lies.",
+    ["integrity", "speech", "character"],
+    ["truth", "honest", "witness", "lies", "false", "trustworthy", "integrity", "character"],
+    ["integrity", "leadership", "confidence"],
+    ["trust", "honest", "truth"]
+  ),
+
+  // --- PROVERBS 13 (additional) ---
+
+  createProverb(
+    "Proverbs 13:1",
+    "A wise son receives instruction",
+    "A wise son heeds his father's instruction, but a mocker does not respond to rebukes.",
+    ["wisdom", "discipline", "relationships"],
+    ["instruction", "heeds", "rebuke", "mocker", "wise", "coaching", "accountability", "mentorship"],
+    ["discipline", "leadership", "direction"],
+    ["learning", "coaching", "wisdom"]
+  ),
+
+  createProverb(
+    "Proverbs 13:11",
+    "Slow growth is lasting growth",
+    "Dishonest money dwindles away, but whoever gathers money little by little makes it grow.",
+    ["money", "discipline", "integrity"],
+    ["money", "dwindles", "gathers", "little by little", "slow", "steady", "grow", "wealth", "dishonest"],
+    ["money", "discipline", "success"],
+    ["money", "patient", "steady"]
+  ),
+
+  createProverb(
+    "Proverbs 13:18",
+    "Discipline leads to honor",
+    "Poverty and shame come to one who ignores instruction, but whoever heeds correction is honored.",
+    ["discipline", "integrity", "success"],
+    ["poverty", "shame", "instruction", "correction", "honored", "discipline", "accountability", "feedback"],
+    ["discipline", "success", "direction"],
+    ["ashamed", "correction", "honor"]
+  ),
+
+  createProverb(
+    "Proverbs 13:24",
+    "Real love includes correction",
+    "Whoever spares the rod hates their children, but whoever loves them is careful to discipline.",
+    ["relationships", "discipline", "family"],
+    ["discipline", "correction", "love", "children", "family", "parenting", "accountability", "coaching"],
+    ["relationships", "discipline", "leadership"],
+    ["parenting", "correction", "love"]
+  ),
+
+  // --- PROVERBS 14 (additional) ---
+
+  createProverb(
+    "Proverbs 14:1",
+    "Wisdom builds, folly destroys",
+    "A wise woman builds her house, but with her own hands the foolish one tears hers down.",
+    ["wisdom", "relationships", "family"],
+    ["builds", "house", "wisdom", "foolish", "tears down", "family", "home", "marriage", "builds up"],
+    ["relationships", "leadership", "direction"],
+    ["building", "family", "home"]
+  ),
+
+  createProverb(
+    "Proverbs 14:15",
+    "The prudent think before acting",
+    "The simple believe anything, but the prudent give thought to their steps.",
+    ["wisdom", "planning", "direction"],
+    ["prudent", "think", "steps", "simple", "believe", "careful", "decision", "discernment", "planning"],
+    ["direction", "leadership", "confidence"],
+    ["decision", "careful", "planning"]
+  ),
+
+  createProverb(
+    "Proverbs 14:20",
+    "Your circle affects your standing",
+    "The poor are shunned even by their neighbors, but the rich have many friends.",
+    ["relationships", "money", "social"],
+    ["rich", "poor", "friends", "neighbors", "shunned", "relationships", "social", "standing", "circle"],
+    ["relationships", "money", "direction"],
+    ["alone", "friends", "lonely"]
+  ),
+
+  createProverb(
+    "Proverbs 14:30",
+    "Envy rots the bones",
+    "A peaceful heart gives life to the body, but envy rots the bones.",
+    ["peace", "relationships", "health"],
+    ["envy", "jealous", "comparison", "rots", "peaceful", "heart", "life", "body", "contentment"],
+    ["relationships", "confidence", "direction"],
+    ["jealous", "comparison", "envy"]
+  ),
+
 ];
