@@ -513,6 +513,42 @@ export const BOOK_ENTRIES: BookEntry[] = [
   },
 
 
+
+  // --- ACCOUNTABILITY / COACHING ---
+  {
+    id: "accountability-1",
+    chapter: "Chapter 9",
+    page: "Page 114",
+    title: "Iron Sharpens Iron",
+    excerpt: "Iron sharpens iron, so one person sharpens another. The right relationships make you better — every interaction either sharpens or dulls you.",
+    searchPhrase: "How do I find accountability and grow?",
+    tags: ["accountability", "coaching", "mentorship", "growth"],
+    keywords: ["accountability", "coach", "mentor", "iron sharpens iron", "sharpen", "partner", "accountability partner", "feedback", "counsel", "hold me accountable", "nobody challenges me", "i need someone to push me", "structure", "growing", "i keep falling off track", "lose momentum"],
+  },
+
+  {
+    id: "accountability-2",
+    chapter: "Chapter 7",
+    page: "Page 91",
+    title: "The Wound of a Friend Is Better Than the Kiss of an Enemy",
+    excerpt: "Faithful are the wounds of a friend. The people who tell you the truth — even when it hurts — are doing something the people who flatter you will never do.",
+    searchPhrase: "How do I handle honest feedback and correction?",
+    tags: ["accountability", "coaching", "friendship", "correction"],
+    keywords: ["correction", "honest feedback", "wound of a friend", "hard to hear", "accountability", "rebuke", "coaching", "mentor", "trusted feedback", "faithful wounds", "flattery", "hard headed", "stubborn", "take criticism", "i dont take feedback well"],
+  },
+
+  // --- MOUTH MANAGEMENT / SPEECH ---
+  {
+    id: "mouth-management-1",
+    chapter: "Chapter 6",
+    page: "Page 82",
+    title: "Managing the Mouth",
+    excerpt: "The tongue has the power of life and death. What you say shapes what you build. Solomon devoted more space to the management of words than almost any other topic in Proverbs.",
+    searchPhrase: "How do I control my words and speech?",
+    tags: ["speech", "mouth", "words", "tongue"],
+    keywords: ["words", "tongue", "speech", "mouth", "what i say", "said something i regret", "mouth management", "talk too much", "gossip", "hasty words", "control my tongue", "words matter", "life and death in the tongue", "speak wisely", "watch my mouth"],
+  },
+
 ];
 
 export function findBookMatchIds(query: string): string[] {
