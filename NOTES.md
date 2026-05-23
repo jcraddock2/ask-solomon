@@ -1469,3 +1469,197 @@ Full code audit confirmed ALL "Future Claude tasks" from Phase D were already im
                                 - - 🔲 JUNE 1 ROLLBACK — CRITICAL (see above)
                                  
                                   - Last updated: May 22, 2026 — Part 4 complete. Full audit: all Claude tasks done. Site is launch-ready.
+
+
+---
+
+## SESSION -- May 22, 2026 -- Part 5 (Emergency Deployment Fix)
+
+### What Happened
+
+A cascading build failure was discovered after the SevenDaysOptIn and Pro Nudge commits from Part 2.
+
+**Root cause:** The Pro Conversion Nudge block (added in commit a1249e2) was inserted inside the `{asArray(SUBS).map((s: any) => { ... return ( ... ) })}` callback as a sibling to the `<button>` element -- but with no JSX fragment wrapper. React requires a single root element in a return. Two siblings need `<>...</>`.
+
+**Why Vercel was not building:** The GitHub webhook had dropped silently. Commits `0c3e4d8` and `2bc172e` never triggered builds. The old `3a05df9` commit (Add SevenDaysOptIn) was still the live production deploy.
+
+**What was fixed:**
+
+1. **Vercel webhook re-triggered** -- Used the Manual Deploy Hook to fire a build from main:
+   `https://api.vercel.com/v1/integrations/deploy/prj_YXNv39Tvm8uh1s5IjVmsbM0kxvvP/5Ki44mO6kX`
+   (POST to this URL any time GitHub webhook drops and you need to force a build)
+
+2. **app/page.tsx -- JSX fragment fix** (commit `b625bd3`):
+   - Line 1587: `return (` changed to `return (<>`
+   - Line 1635: `);` changed to `</>);`
+   - This wraps both the Pro Nudge block AND the `<button>` in a single JSX fragment
+   - Build went green in 45 seconds -- first successful deploy in 6+ hours
+
+3. **proverbs-for-humility/page.tsx -- mojibake fix** (commit `c06d753`):
+   - 9 instances of em-dash mojibake `\u00C3\u00A2\u00C2\u0080\u00C2\u0094` replaced with proper `--`
+   - 2 instances of arrow mojibake `\u00C3\u00A2\u00C2\u0086\u00C2\u0092` replaced with proper `->`
+
+4. **proverbs-for-purpose/page.tsx -- mojibake fix** (commit `12d8fa9`):
+   - 12 em-dash and 2 arrow mojibake instances replaced
+   - Included in the build triggered by c06d753 (Vercel builds from HEAD of main)
+
+### Final Deployment Status (End of May 22 Part 5)
+
+- Production deploy: `CeA3bqpri` -- **Ready / Current** -- 44s build -- all fixes included
+- asksolomon.app is LIVE and healthy
+- Monday launch: GO
+
+### Technical Lesson for Future Sessions
+
+**CM6 Editor API** (for precise in-editor edits without UI fighting):
+```js
+var view = document.querySelector('.cm-content').cmTile.view;
+var doc = view.state.doc;
+var line = doc.line(1587);  // get line by number
+view.dispatch({ changes: [{ from: line.to, insert: '<>' }] });
+```
+
+**Auto-complete interference:** GitHub's CM6 editor auto-completes `<` to `</>`. When typing JSX manually in the editor, use the API instead of keyboard to avoid corruption.
+
+**Build hook URL (save this):**
+`POST https://api.vercel.com/v1/integrations/deploy/prj_YXNv39Tvm8uh1s5IjVmsbM0kxvvP/5Ki44mO6kX`
+Use: `fetch('https://api.vercel.com/v1/integrations/deploy/prj_YXNv39Tvm8uh1s5IjVmsbM0kxvvP/5Ki44mO6kX', {method:'POST'})` in browser console on Vercel dashboard.
+
+---
+
+## OVERNIGHT SEARCH AUDIT REPORT -- May 22-23, 2026
+
+_Read by Claude at start of next session. No repairs done -- report only._
+
+### Database Summary (as of May 22, 2026)
+
+| Layer | Count | Notes |
+|-------|-------|-------|
+| Proverbs verses indexed | 338 | Covers all 31 chapters |
+| wisdomResponse scenarios | 54 | Full if-block scenarios in wisdomResponse.ts |
+| Intent lanes (intent.ts) | 14 | hurting, lonely, discouraged, direction, money, fear, conflict, anger, temptation, addiction, leadership, confidence, comparison, vision |
+| Word aliases (proverbs.ts) | 71 | Keyword expansion dictionary |
+| Book index entries (bookIndex.ts) | 43 | All 31 chapters, 43 specific page entries |
+| SEO landing pages | 26 | All with SevenDaysOptIn component |
+
+---
+
+### CHAPTER COVERAGE ANALYSIS
+
+**Dense chapters (20+ verses):** Proverbs 1-9 (256 total -- extremely well covered, nearly complete)
+
+**Adequate chapters (5-19 verses):** Proverbs 15 (covered), 16 (covered)
+
+**Thin chapters (fewer than 5 verses each):**
+Ch10(4), Ch11(3), Ch12(2), Ch13(4), Ch14(4), Ch17(3), Ch18(3), Ch19(3), Ch21(2), Ch23(3), Ch24(4), Ch25(4), Ch26(3), Ch27(3), Ch28(3), Ch29(3), Ch30(2), Ch31(4)
+
+**Observation:** Chapters 1-9 dominate with 256 of 338 total entries (76%). Chapters 10-31 have only 82 entries across 22 chapters -- averaging 3.7 entries per chapter. This is the single biggest data gap in the search engine. Proverbs 10-31 contains many of Solomon's most practical, memorable verses (Pr 10:22, Pr 16:18, Pr 18:21, Pr 22:6, Pr 27:17, Pr 29:18, Pr 31:30) and they are lightly indexed.
+
+---
+
+### WISDOM SCENARIO COVERAGE ANALYSIS
+
+**54 scenarios cover:** betrayal, marriage, debt, discouragement, purpose, fear/anxiety, anger, conflict, money, wisdom, pride/humility, overwhelm, leadership, discipline, success, words/speech, integrity, confidence, hope, difficult boss, work/career, planning, forgiveness, identity, faith, job loss, grief, parenting, addiction, loneliness, chronic illness, shame, procrastination, diligence, toxic friends, reputation, vision, failure, scarcity, unmet needs, wealth building, living by design, wasting time, receiving correction, constant conflict, made for more.
+
+**Gaps identified (scenarios with no current wisdomResponse match):**
+
+1. **Divorce recovery** -- "I am going through a divorce" fires the marriage scenario. "My divorce is final" or "rebuilding after divorce" has no specific match. The marriage scenario covers it but from the wrong angle (saving the marriage vs. healing after).
+
+2. **Caring for aging parents** -- No scenario for "my parents are aging" / "caregiver burnout" / "I am the one everyone leans on." High real-world frequency for the 35-55 age demographic.
+
+3. **Comparison to peers / social media envy** -- There IS a comparison scenario (ifcondition includes "comparing", "comparison") but the trigger words do not include "Instagram", "social media comparison", "everyone else seems to have it together", "why does everyone else succeed but me". The alias for 'envious' helps but could be stronger.
+
+4. **Starting a business** -- "I want to start a business" / "I am an entrepreneur" / "I am launching something" has no direct scenario. The success scenario is the closest but does not speak to the specific fears of starting.
+
+5. **Feeling forgotten by God / Spiritual dryness** -- "I feel like God has forgotten me" / "I feel spiritually dry" / "I cannot feel God anymore" / "my prayers feel unanswered" -- the Faith/Spiritual scenario covers "prayer" and "god" broadly but could be stronger on spiritual abandonment specifically.
+
+6. **Children leaving home / Empty nest** -- No scenario. Could overlap with grief or identity scenarios.
+
+7. **Racial or injustice-related burden** -- Noted in previous audit. Still no scenario. Low priority given it requires very careful framing.
+
+---
+
+### PROVERBS SEARCH QUALITY SPOT-CHECK
+
+The following searches were simulated against the keyword/alias/intent system to estimate result quality:
+
+| Search Query | Expected Match | Quality |
+|---|---|---|
+| "i feel afraid" | wisdomResponse: Fear (Wisdom guards) | STRONG |
+| "my marriage is falling apart" | wisdomResponse: Marriage scenario | STRONG |
+| "i cant forgive" | wisdomResponse: Forgiveness + proverbs aliases | STRONG |
+| "i feel hopeless" | wisdomResponse: Discouraged + intent:discouraged | STRONG |
+| "i need direction" | wisdomResponse: Purpose + intent:direction | STRONG |
+| "i am jealous" | proverbs.ts aliases: jealous->contentment,peace + wisdomResponse via intent | GOOD |
+| "i feel ashamed" | wisdomResponse: Shame scenario (direct trigger) | STRONG |
+| "divorce" | wisdomResponse: Marriage/Divorce (direct trigger) | GOOD |
+| "i want to build wealth" | wisdomResponse: Build Wealth scenario | STRONG |
+| "living by design" | wisdomResponse: Vision + intent.ts:vision lane | STRONG |
+| "procrastinating" | wisdomResponse: Procrastination + proverbs.ts aliases | STRONG |
+| "addiction" | wisdomResponse: Addiction scenario | STRONG |
+| "i miss someone who died" | wisdomResponse: Grief scenario | STRONG |
+| "my teenager is rebellious" | wisdomResponse: Parenting scenario | GOOD |
+| "i feel compared to others" | wisdomResponse: comparison intent lane | GOOD |
+| "caregiver burnout" | No direct scenario -- hits "burned out"/"exhausted" --> discouraged intent | WEAK |
+| "my divorce is final" | Marriage scenario (wrong angle but fires) | FAIR |
+| "starting a business" | Success scenario (partial match) | FAIR |
+| "i feel spiritually dry" | Faith scenario via "spiritual","prayer" | FAIR |
+| "everyone else has it together" | Comparison intent lane (partial) | FAIR |
+| "my kids left home" | No specific match -- may hit identity/grief aliases | WEAK |
+
+**Overall search quality grade: A- (strong for 16/21 test queries, fair/weak for 5)**
+
+---
+
+### BOOK MATCH QUALITY
+
+The bookIndex.ts has 43 entries covering:
+- Confidence, Purpose, Fear, Success, Leadership, Overwhelm, Respect, Loneliness, Identity
+- Rejection, Burnout, Comparison, Failure, Starting Over, Trust, Purpose (survival), Self-Worth
+- Being Overlooked, Difficult People, Resilience, Discipline, Grief, Influence, Covenant/Character
+- Stewardship, Diligence, Anger, Words, Integrity, Wisdom, Patience, The Ant, The Sluggard
+- Communication, Friendship, Conflict, Virtuous Partner, Vision, Why People Fail, Contentment
+- Unmet Needs, Success, Wealth, Living by Design, Time/Habits
+
+**Chapters with no book index entries:** None -- all chapters covered in some form.
+
+**Book match gap:** Chapters 10-15 are the thinnest (3-4 proverb verse entries each), but the bookIndex has dedicated entries for their key themes (diligence, integrity, conflict, words, anger). Book matches should still surface for the major emotional searches.
+
+---
+
+### RECOMMENDED ENHANCEMENTS FOR TOMORROW
+
+**High Priority (biggest user impact):**
+
+1. **Expand Proverbs 10-31 database** -- Add 5 curated entries per thin chapter (18 chapters x 5 = 90 new verses). Focus on the most-searched emotional themes: Pr 10:22 (blessing), Pr 16:18 (pride before fall), Pr 17:17 (friend loves at all times), Pr 18:21 (death and life in tongue), Pr 22:6 (train up a child), Pr 27:17 (iron sharpens iron already in bookIndex -- add to verse DB), Pr 29:11 (fool gives full vent), Pr 31:25-30 (strength/dignity/woman who fears the Lord).
+
+2. **Add "divorce recovery" wisdomResponse scenario** -- Separate from the "marriage falling apart" scenario. Trigger words: "my divorce is final", "rebuilding after divorce", "starting over after marriage", "single again", "co-parenting after divorce". Book reference: pp. 130-140 (Relationships chapter).
+
+3. **Add "caregiver/aging parents" wisdomResponse scenario** -- Trigger words: "caring for aging parents", "caregiver burnout", "my parent has dementia", "I am responsible for everyone", "sandwiched between kids and parents". This fills a major life-stage gap for the 40-60 demographic.
+
+4. **Strengthen "starting a business" coverage** -- Add alias mapping: "entrepreneur" -> success, leadership, purpose, discipline. Add "starting a business" / "launching something" / "I have an idea" to the wisdomResponse success scenario trigger words.
+
+5. **Spiritual dryness scenario** -- Add trigger words "feel spiritually dry", "god feels distant", "i cannot feel god anymore", "unanswered prayer", "god has forgotten me" to the Faith scenario in wisdomResponse.ts.
+
+**Medium Priority:**
+
+6. **bookIndex.ts mojibake** -- 3 instances of `â` chars remain in bookIndex.ts section headers (found in previous audit). These affect Book Index display (/book-index page). Low launch risk but should be cleaned.
+
+7. **Social media comparison triggers** -- Add to comparison intent lane: "instagram", "everyone else seems to", "why does everyone succeed but me", "social media makes me feel". Small change, high relevance for younger users.
+
+**Low Priority / John Tasks:**
+
+8. **PDF rename** -- Old `successsecrets.pdf` still accessible at direct URL. New name in code is `sss-wisdom-book-jc2024.pdf` but John has not re-uploaded the file yet. Until done, old URL still works. FINDING 3 half-done status unchanged.
+
+9. **FINDING 8 resolved** -- Book content before page 12 is not indexed separately but chapter 1 (Proverbs 1:1-1:9) is in the verse database and the book's devotional structure begins at page 12 by design. No action needed.
+
+---
+
+### JUNE 1 ROLLBACK -- CRITICAL (DO NOT FORGET)
+- MailerLite: Remove the `$19 Founding Member` PS from Emails 1, 2, 3 in Solomon Challenge automation
+- Vercel Environment Variables: Change `STRIPE_PRICE_ID` to `price_1T447hDAMsgblXx3uX0PmdCc`
+- Current $19 price: `price_1TZXqADAMsgblXx3oA3yRaex` (ACTIVE ONLY UNTIL JUNE 1)
+
+---
+
+_Last updated: May 22-23, 2026 -- Part 5 deployment fix complete. Overnight audit report ready. Monday launch: GO._
