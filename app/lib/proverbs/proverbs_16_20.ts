@@ -202,4 +202,185 @@ export const PROVERBS_16_20: ProverbEntry[] = [
     ["confidence", "leadership", "wisdom"],
     ["steady", "experienced", "reflective"]
   ),
+
+  // --- PROVERBS 16 (additional) ---
+
+  createProverb(
+    "Proverbs 16:1",
+    "God orders the final word",
+    "To humans belong the plans of the heart, but from the Lord comes the proper answer of the tongue.",
+    ["direction", "wisdom", "planning"],
+    ["plans", "heart", "lord", "answer", "tongue", "speech", "guidance", "mouth management"],
+    ["direction", "leadership", "confidence"],
+    ["planning", "speaking", "guidance"]
+  ),
+
+  createProverb(
+    "Proverbs 16:7",
+    "Right living brings peace",
+    "When the Lord takes pleasure in anyone's way, he causes their enemies to make peace with them.",
+    ["integrity", "peace", "direction"],
+    ["peace", "enemies", "lord", "pleasure", "right living", "integrity", "favor"],
+    ["direction", "relationships", "confidence"],
+    ["peace", "enemies", "favor"]
+  ),
+
+  createProverb(
+    "Proverbs 16:16",
+    "Wisdom is worth more than gold",
+    "How much better to get wisdom than gold, and good judgment than silver.",
+    ["wisdom", "money", "direction"],
+    ["wisdom", "gold", "silver", "judgment", "better", "understanding", "knowledge", "wealth"],
+    ["wisdom", "money", "direction"],
+    ["wisdom", "wealth", "priorities"]
+  ),
+
+  createProverb(
+    "Proverbs 16:21",
+    "Sweetness of speech increases learning",
+    "The wise in heart are called discerning, and gracious words promote instruction.",
+    ["speech", "wisdom", "leadership"],
+    ["gracious", "words", "speech", "instruction", "learning", "discerning", "mouth management", "coaching"],
+    ["leadership", "relationships", "confidence"],
+    ["teaching", "coaching", "speaking"]
+  ),
+
+  createProverb(
+    "Proverbs 16:28",
+    "Gossip destroys friendships",
+    "A perverse person stirs up conflict, and a gossip separates close friends.",
+    ["relationships", "speech", "integrity"],
+    ["gossip", "conflict", "separates", "friends", "friendship", "perverse", "mouth", "tongue", "rumor"],
+    ["relationships", "leadership", "confidence"],
+    ["gossip", "conflict", "friendship"]
+  ),
+
+  // --- PROVERBS 17 (additional) ---
+
+  createProverb(
+    "Proverbs 17:1",
+    "Peace is better than plenty",
+    "Better a dry crust with peace than a house full of feasting with strife.",
+    ["peace", "relationships", "money"],
+    ["peace", "strife", "feasting", "house", "contentment", "better", "simplicity", "conflict"],
+    ["relationships", "money", "direction"],
+    ["peace", "conflict", "contentment"]
+  ),
+
+  createProverb(
+    "Proverbs 17:14",
+    "Stop conflict before it starts",
+    "Starting a quarrel is like breaching a dam; so drop the matter before a dispute breaks out.",
+    ["relationships", "conflict", "wisdom"],
+    ["quarrel", "dispute", "conflict", "drop it", "argument", "strife", "dam", "peace", "stop fighting"],
+    ["relationships", "anger", "leadership"],
+    ["conflict", "argument", "fight"]
+  ),
+
+  createProverb(
+    "Proverbs 17:28",
+    "Even a fool seems wise when silent",
+    "Even fools are thought wise if they keep silent, and discerning if they hold their tongues.",
+    ["wisdom", "speech", "discipline"],
+    ["silent", "fool", "wise", "tongue", "hold", "discerning", "mouth management", "quiet", "restraint"],
+    ["leadership", "relationships", "confidence"],
+    ["quiet", "silent", "restraint"]
+  ),
+
+  // --- PROVERBS 18 (additional) ---
+
+  createProverb(
+    "Proverbs 18:4",
+    "Wise words run deep",
+    "The words of the mouth are deep waters, but the fountain of wisdom is a rushing stream.",
+    ["wisdom", "speech", "character"],
+    ["words", "mouth", "deep", "wisdom", "fountain", "stream", "speech", "tongue", "depth"],
+    ["wisdom", "leadership", "relationships"],
+    ["wisdom", "speaking", "words"]
+  ),
+
+  createProverb(
+    "Proverbs 18:12",
+    "Humility precedes honor",
+    "Before a downfall the heart is haughty, but humility comes before honor.",
+    ["pride", "wisdom", "success"],
+    ["pride", "humility", "haughty", "downfall", "honor", "arrogant", "humble", "fall"],
+    ["success", "leadership", "direction"],
+    ["proud", "humble", "honor"]
+  ),
+
+  createProverb(
+    "Proverbs 18:15",
+    "The wise seek knowledge",
+    "The heart of the discerning acquires knowledge, for the ears of the wise seek it out.",
+    ["wisdom", "discipline", "growth"],
+    ["knowledge", "discerning", "wise", "seek", "ears", "learning", "coaching", "accountability", "growth"],
+    ["wisdom", "leadership", "direction"],
+    ["learning", "coaching", "knowledge"]
+  ),
+
+  // --- PROVERBS 19 (additional) ---
+
+  createProverb(
+    "Proverbs 19:2",
+    "Hasty action misses the mark",
+    "Desire without knowledge is not good, and whoever is in a hurry makes mistakes.",
+    ["wisdom", "planning", "discipline"],
+    ["hasty", "hurry", "desire", "knowledge", "mistakes", "rushing", "careful", "planning", "mistakes"],
+    ["direction", "discipline", "leadership"],
+    ["rushing", "mistakes", "careful"]
+  ),
+
+  createProverb(
+    "Proverbs 19:8",
+    "Self-knowledge brings prosperity",
+    "The one who gets wisdom loves life; the one who cherishes understanding will soon prosper.",
+    ["wisdom", "success", "growth"],
+    ["wisdom", "love", "life", "understanding", "prosper", "cherish", "knowledge", "self-awareness"],
+    ["success", "direction", "confidence"],
+    ["wisdom", "growth", "prosper"]
+  ),
+
+  createProverb(
+    "Proverbs 19:15",
+    "Laziness leads to hunger",
+    "Laziness brings on deep sleep, and the shiftless go hungry.",
+    ["discipline", "work", "success"],
+    ["lazy", "laziness", "sleep", "hungry", "shiftless", "idle", "discipline", "work", "productivity"],
+    ["discipline", "success", "money"],
+    ["lazy", "idle", "discipline"]
+  ),
+
+  // --- PROVERBS 20 (additional) ---
+
+  createProverb(
+    "Proverbs 20:3",
+    "It is honorable to avoid strife",
+    "It is to one's honor to avoid strife, but every fool is quick to quarrel.",
+    ["wisdom", "relationships", "discipline"],
+    ["honor", "strife", "quarrel", "fool", "avoid", "conflict", "peace", "quick", "argument"],
+    ["relationships", "leadership", "confidence"],
+    ["conflict", "avoid", "honor"]
+  ),
+
+  createProverb(
+    "Proverbs 20:7",
+    "The righteous leave a legacy",
+    "The righteous lead blameless lives; blessed are their children after them.",
+    ["integrity", "family", "legacy"],
+    ["righteous", "blameless", "legacy", "children", "family", "integrity", "blessed", "character"],
+    ["leadership", "relationships", "integrity"],
+    ["legacy", "family", "integrity"]
+  ),
+
+  createProverb(
+    "Proverbs 20:11",
+    "Character shows early",
+    "Even small children are known by their actions, so is their conduct really pure and upright?",
+    ["integrity", "character", "wisdom"],
+    ["character", "actions", "conduct", "pure", "upright", "integrity", "accountable", "behavior"],
+    ["leadership", "integrity", "discipline"],
+    ["character", "behavior", "integrity"]
+  ),
+
 ];
