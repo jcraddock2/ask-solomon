@@ -182,4 +182,187 @@ export const PROVERBS_26_31: ProverbEntry[] = [
     ["respect", "confidence", "wisdom"],
     ["overlooked", "insecure", "steady"]
   ),
+
+  // --- PROVERBS 26 (additional) ---
+
+  createProverb(
+    "Proverbs 26:2",
+    "An undeserved curse does not land",
+    "Like a fluttering sparrow or a darting swallow, an undeserved curse does not come to rest.",
+    ["integrity", "peace", "wisdom"],
+    ["curse", "undeserved", "sparrow", "worry", "gossip", "spoken against", "criticism", "peace", "protected"],
+    ["confidence", "integrity", "direction"],
+    ["criticized", "worried", "attacked"]
+  ),
+
+  createProverb(
+    "Proverbs 26:13",
+    "Every excuse sounds reasonable",
+    "A sluggard says there is a lion in the road, a fierce lion roaming the streets.",
+    ["discipline", "wisdom", "work"],
+    ["excuse", "lazy", "sluggard", "lion", "fear", "procrastination", "avoidance", "discipline"],
+    ["discipline", "direction", "success"],
+    ["excuse", "lazy", "procrastinating"]
+  ),
+
+  createProverb(
+    "Proverbs 26:17",
+    "Do not meddle in other fights",
+    "Like one who grabs a stray dog by the ears is someone who rushes into a quarrel not their own.",
+    ["wisdom", "relationships", "conflict"],
+    ["meddle", "quarrel", "stray dog", "conflict", "rushing in", "boundaries", "mind your business"],
+    ["relationships", "leadership", "wisdom"],
+    ["conflict", "boundaries", "meddling"]
+  ),
+
+  // --- PROVERBS 27 (additional) ---
+
+  createProverb(
+    "Proverbs 27:4",
+    "Jealousy is harder to handle than anger",
+    "Anger is cruel and fury overwhelming, but who can stand before jealousy?",
+    ["relationships", "anger", "wisdom"],
+    ["jealousy", "anger", "fury", "cruel", "envy", "comparison", "resentment", "bitter"],
+    ["anger", "relationships", "confidence"],
+    ["jealous", "envy", "angry"]
+  ),
+
+  createProverb(
+    "Proverbs 27:9",
+    "A friend's counsel is sweet",
+    "Perfume and incense bring joy to the heart, and the pleasantness of a friend springs from their heartfelt advice.",
+    ["relationships", "wisdom", "coaching"],
+    ["friend", "counsel", "advice", "heartfelt", "joy", "heart", "coaching", "accountability", "mentorship"],
+    ["relationships", "direction", "leadership"],
+    ["counsel", "coaching", "friendship"]
+  ),
+
+  createProverb(
+    "Proverbs 27:12",
+    "The prudent see danger and prepare",
+    "The prudent see danger and take refuge, but the simple keep going and pay the penalty.",
+    ["wisdom", "planning", "discipline"],
+    ["prudent", "danger", "refuge", "simple", "penalty", "wise", "planning", "foresight", "prepare"],
+    ["direction", "leadership", "discipline"],
+    ["planning", "foresight", "wise"]
+  ),
+
+  createProverb(
+    "Proverbs 27:23",
+    "Know the state of your flock",
+    "Be sure you know the condition of your flocks, give careful attention to your herds.",
+    ["leadership", "discipline", "work"],
+    ["know", "flock", "herds", "attention", "leadership", "accountability", "stewardship", "coaching", "business"],
+    ["leadership", "success", "discipline"],
+    ["leadership", "stewardship", "coaching"]
+  ),
+
+  // --- PROVERBS 28 (additional) ---
+
+  createProverb(
+    "Proverbs 28:2",
+    "Good leaders bring stability",
+    "When a country is rebellious, it has many rulers, but a ruler with discernment and knowledge maintains order.",
+    ["leadership", "wisdom", "integrity"],
+    ["leadership", "discernment", "knowledge", "stability", "order", "rulers", "rebelling", "governance"],
+    ["leadership", "integrity", "direction"],
+    ["leadership", "stability", "governance"]
+  ),
+
+  createProverb(
+    "Proverbs 28:9",
+    "Ignoring instruction blocks prayer",
+    "If anyone turns a deaf ear to my instruction, even their prayers are detestable.",
+    ["wisdom", "integrity", "faith"],
+    ["prayer", "instruction", "deaf ear", "detestable", "wisdom", "obey", "accountability", "coaching"],
+    ["integrity", "direction", "faith"],
+    ["prayer", "instruction", "accountability"]
+  ),
+
+  createProverb(
+    "Proverbs 28:19",
+    "Work your land",
+    "Those who work their land will have abundant food, but those who chase fantasies will have their fill of poverty.",
+    ["discipline", "work", "money"],
+    ["work", "land", "abundant", "food", "fantasies", "poverty", "diligence", "discipline", "practical"],
+    ["discipline", "money", "success"],
+    ["work", "practical", "discipline"]
+  ),
+
+  // --- PROVERBS 29 (additional) ---
+
+  createProverb(
+    "Proverbs 29:1",
+    "Persistent rebellion brings destruction",
+    "Whoever remains stiff-necked after many rebukes will suddenly be destroyed without remedy.",
+    ["wisdom", "discipline", "integrity"],
+    ["stiff-necked", "rebuke", "destroyed", "correction", "accountability", "coaching", "stubborn", "hardened"],
+    ["discipline", "leadership", "integrity"],
+    ["stubborn", "correction", "accountable"]
+  ),
+
+  createProverb(
+    "Proverbs 29:15",
+    "Correction brings wisdom",
+    "A rod and a reprimand impart wisdom, but a child left undisciplined disgraces its mother.",
+    ["discipline", "wisdom", "family"],
+    ["correction", "wisdom", "undisciplined", "parenting", "coaching", "accountability", "discipline", "rebuke"],
+    ["discipline", "leadership", "relationships"],
+    ["parenting", "coaching", "correction"]
+  ),
+
+  createProverb(
+    "Proverbs 29:20",
+    "Hasty words are hard to fix",
+    "Do you see someone who speaks in haste? There is more hope for a fool than for them.",
+    ["speech", "wisdom", "relationships"],
+    ["hasty", "words", "speak", "haste", "tongue", "mouth management", "fool", "react", "regret"],
+    ["leadership", "relationships", "confidence"],
+    ["hasty", "words", "regret"]
+  ),
+
+  // --- PROVERBS 30 (additional) ---
+
+  createProverb(
+    "Proverbs 30:6",
+    "Do not add to God's words",
+    "Do not add to his words, or he will rebuke you and prove you a liar.",
+    ["integrity", "wisdom", "faith"],
+    ["truth", "words", "integrity", "honest", "rebuke", "liar", "add", "faithful", "trust"],
+    ["integrity", "direction", "faith"],
+    ["truth", "integrity", "honest"]
+  ),
+
+  createProverb(
+    "Proverbs 30:17",
+    "Honor your parents",
+    "The eye that mocks a father, that scorns an aged mother, will be pecked out by the ravens.",
+    ["family", "integrity", "relationships"],
+    ["parents", "honor", "family", "mother", "father", "respect", "mocking", "scorns", "relationship"],
+    ["relationships", "integrity", "direction"],
+    ["parents", "honor", "respect"]
+  ),
+
+  // --- PROVERBS 31 (additional) ---
+
+  createProverb(
+    "Proverbs 31:8",
+    "Speak up for the voiceless",
+    "Speak up for those who cannot speak for themselves, for the rights of all who are destitute.",
+    ["leadership", "integrity", "relationships"],
+    ["speak up", "voiceless", "rights", "destitute", "advocate", "help", "leadership", "coaching", "accountability"],
+    ["leadership", "integrity", "relationships"],
+    ["advocate", "leadership", "speak up"]
+  ),
+
+  createProverb(
+    "Proverbs 31:10",
+    "A person of character is rare and valuable",
+    "A wife of noble character who can find? She is worth far more than rubies.",
+    ["integrity", "relationships", "character"],
+    ["noble", "character", "rare", "valuable", "rubies", "worth", "trustworthy", "excellence", "integrity"],
+    ["integrity", "relationships", "confidence"],
+    ["character", "trust", "valuable"]
+  ),
+
 ];
