@@ -1663,3 +1663,99 @@ The bookIndex.ts has 43 entries covering:
 ---
 
 _Last updated: May 22-23, 2026 -- Part 5 deployment fix complete. Overnight audit report ready. Monday launch: GO._
+
+
+---
+
+## SESSION -- May 23, 2026 -- Search Gap Fixes + Proverbs Expansion + Accountability/Coaching
+
+### What Was Done This Session (All Deployed Green)
+
+All 7 commits deployed successfully. asksolomon.app is live with full improvements.
+
+#### 1. Proverbs Database Expansion -- 68 New Verses (proverbs_10_15, _16_20, _21_25, _26_31)
+
+**Before:** Chapters 10-31 had only 82 total entries (avg 3.7 per chapter).
+**After:** Added 68 new curated entries across all thin chapters. Total Proverbs database now ~400+ verses.
+
+New entries by focus area:
+- **Speech / Mouth Management** (Pr 10:11, 10:17, 10:19, 12:14, 12:16, 16:21, 16:28, 17:28, 18:4, 29:20) -- gossip, controlling tongue, hasty words, wise speech
+- **Accountability / Coaching** (Pr 10:17, 11:14, 12:1, 13:1, 13:18, 13:24, 22:6, 22:17, 23:12, 24:11, 27:9, 27:23, 29:1, 29:15) -- correction, feedback, mentorship, counsel
+- **Vision / Direction** (Pr 16:3, 16:9, 21:2, 23:17, 29:18 already present + new context entries)
+- **Money / Wealth** (Pr 11:24, 11:28, 21:17, 23:4) -- generosity, pleasure vs discipline, seeking wealth
+- **Pride / Humility** (Pr 11:2, 18:12, 22:4 expanded, 26:12 existing + 26:2 new)
+- **Leadership / Legacy** (Pr 20:7, 22:6, 27:23, 28:2, 31:8, 31:10)
+- **Discipline / Work** (Pr 12:11, 19:15, 20:7, 24:30, 28:19) -- laziness, diligence, harvest
+- **Integrity / Character** (Pr 11:3, 12:17, 20:11, 28:9, 30:6)
+
+#### 2. WisdomResponse -- 6 New Scenarios (wisdomResponse.ts)
+
+All scenarios follow the full format: emotionalState, deeperMeaning, searchLanes, headline, insight, reflection, nextStep, bookConnection.
+
+| Scenario | Trigger Phrases |
+|---|---|
+| Divorce Recovery | "my divorce is final", "rebuilding after divorce", "single again", "co-parenting after divorce" |
+| Caregiver / Aging Parents | "caring for aging parents", "caregiver burnout", "my parent has dementia", "i am responsible for everyone" |
+| Starting a Business | "starting a business", "i am an entrepreneur", "building a business", "my startup", "growing my business" |
+| Spiritual Dryness | "god feels distant", "feel spiritually dry", "god has forgotten me", "crisis of faith", "doubting god" |
+| Accountability / Coaching | "accountability", "i need a coach", "accountability partner", "iron sharpens iron", "i keep falling off track" |
+| Social Media Comparison | "instagram makes me feel bad", "everyone else seems to have it together", "social media comparison", "scrolling makes me feel worse" |
+
+**wisdomResponse.ts now: 2189 lines (113 KB) -- 60 total scenarios**
+
+#### 3. BookIndex -- 3 New Entries (bookIndex.ts)
+
+- **Iron Sharpens Iron** (Ch 9, p.114) -- accountability, coaching, mentorship, iron sharpens iron, i need someone to push me
+- **Wound of a Friend** (Ch 7, p.91) -- correction, honest feedback, accountability, coaching, rebuke, trusted feedback
+- **Managing the Mouth** (Ch 6, p.82) -- words, tongue, speech, mouth management, gossip, hasty words, watch my mouth
+
+#### 4. Intent.ts -- New Accountability Lane + Social Media Comparison Routing
+
+- New **"accountability"** INTENT_LANE with 16 terms
+- New **accountability** LANE_EXPANSION with 10 synonyms
+- Comparison lane expanded with 8 social media terms (instagram, scrolling, peers doing better, etc.)
+- Added **accountability routing block** in interpretQueryAdvanced (routes to accountability lane)
+- Added **social media comparison routing block** in interpretQueryAdvanced (routes to comparison lane)
+- **intent.ts now: 1280 lines (24.3 KB) -- 15 total intent lanes**
+
+#### 5. Proverbs.ts -- New Keyword Aliases
+
+Added 14 new WORD_ALIASES groups:
+- accountability, accountable, coach, coaching, mentor, mentorship
+- gossip, gossiping (-> speech, tongue, integrity)
+- instagram, scrolling (-> comparison, envy, contentment)
+- divorce, divorced, remarry (-> relationships, healing, identity)
+- entrepreneur, entrepreneurship, startup, business (-> success, leadership, purpose, discipline)
+
+### Deployment Status
+
+All commits deployed green:
+- `0a8dbec` -- Expand proverbs_10_15 (35s) ✅
+- `0fcbdf2` -- Expand proverbs_16_20 (50s) ✅
+- `fa905e5` -- Expand proverbs_21_25 (46s) ✅
+- `648909c` -- Expand proverbs_26_31 (36s) ✅
+- `54ef197` -- Add 6 wisdom scenarios (44s) ✅
+- `3a94382` -- bookIndex accountability entries (45s) ✅
+- `50d60a8` -- proverbs.ts + intent.ts aliases + routing (49s) ✅ **CURRENT PRODUCTION**
+
+### Search Quality Update
+
+Previous grade: A- (16/21 strong, 5 fair/weak)
+Expected new grade: A (estimated 20/21 strong based on gaps now filled)
+
+All previous gaps from the overnight audit report are now addressed:
+- ✅ Divorce recovery scenario added
+- ✅ Caregiver/aging parents scenario added  
+- ✅ Starting a business scenario added
+- ✅ Spiritual dryness scenario added
+- ✅ Accountability/coaching scenario + full lane added
+- ✅ Social media comparison triggers added
+- ✅ Proverbs 10-31 database substantially expanded (68 new entries)
+- ✅ Mouth management book index entry added
+
+### June 1 Rollback -- CRITICAL (DO NOT FORGET)
+- MailerLite: Remove $19 PS from Emails 1, 2, 3 in Solomon Challenge automation
+- Vercel: Change STRIPE_PRICE_ID to price_1T447hDAMsgblXx3uX0PmdCc
+- Current $19 price: price_1TZXqADAMsgblXx3oA3yRaex (active until June 1 ONLY)
+
+_Last updated: May 23, 2026 -- Search gaps fixed, Proverbs 10-31 expanded, accountability/coaching added. All deployments green._
