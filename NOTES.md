@@ -1983,3 +1983,65 @@ MailerLite: Remove $19 PS from Emails 1, 2, 3 in Solomon Challenge automation
 Vercel: Change STRIPE_PRICE_ID to price_1T447hDAMsgblXx3uX0PmdCc
 
 Last updated: May 25, 2026 -- Part 4. Explicit opt-in system live. LAUNCH READY.
+
+
+---
+
+## May 25, 2026 — Part 5: Email Sender Fixes, Footer Fixes, Challenge Link Fix
+
+### Problems Reported by John (with screenshots):
+1. Sender name shows "LLC John Craddock" instead of "Ask Solomon"
+2. Footer address still shows "208 Whistlewood Ct, Lynchburg" (home address)
+3. Challenge button link creates a loop - takes user back to app with no confirmation
+
+### Root Cause Analysis:
+- Each automation email had its OWN "Who is it from?" and "Sender email" fields set to "John Craddock, LLC" and "thejohncraddock@gmail.com" - overriding the account defaults
+- The footer in each email template had hardcoded "John Craddock, LLC / 208 Whistlewood Ct" text (not dynamically pulled from account settings despite the account-level address being correct)
+- The /api/start-challenge route was working correctly (redirecting to asksolomon.app?challenge=started) but there was NO success/confirmation page - users just saw the homepage with no feedback
+
+### Fixes Applied:
+
+**Fix 1 - Sender name and email (Welcome email automation - all 3 emails):**
+- Email 1 (Welcome): "Who is it from?" changed from "John Craddock, LLC" to "Ask Solomon"; Sender email changed to hello@asksolomon.app
+- Email 2 (I feel like a failure): Same fix
+- Email 3 (Page 77): Same fix
+- Automation re-activated
+
+**Fix 2 - Footer address (Welcome email automation - all 3 emails):**
+- Opened each email's Simple Editor
+- Clicked "Show Footer" to reveal editable footer
+- Changed "John Craddock, LLC" to "Ask Solomon"
+- Changed "208 Whistlewood Ct, Lynchburg / United States of America" to "700 E Main St #2487, Richmond, VA 23219"
+- Saved each email
+
+**Fix 3 - Solomon Challenge automation (all 10 emails):**
+- Paused automation
+- For each of 10 emails: changed Sender email from thejohncraddock@gmail.com to hello@asksolomon.app
+- "Who is it from?" was already "Ask Solomon" in most (some needed fixing)
+- Re-activated automation
+
+**Fix 4 - Challenge link loop:**
+- Rewrote /api/start-challenge/route.ts to use subscriber UPSERT endpoint (POST /api/subscribers with groups array) instead of lookup + assign
+- Added guard for {$email} literal (in case MailerLite doesn't substitute the variable)
+- Changed redirect from asksolomon.app?challenge=started to asksolomon.app/challenge-started
+- Created new page: app/challenge-started/page.tsx — green checkmark success page with "Your 10-Day Wisdom Challenge starts now. Check your inbox. Day 1 is on its way."
+- Both commits auto-deployed to Vercel, status: READY
+
+### Commits This Session:
+- Fix start-challenge: use upsert API, redirect to /challenge-started success page (e37d6b3)
+- Add /challenge-started success page for 10-Day Challenge opt-in (b3a391c)
+
+### Status After Part 5:
+- All emails in BOTH automations now send from "Ask Solomon" <hello@asksolomon.app>
+- All email footers show "Ask Solomon / 700 E Main St #2487, Richmond, VA 23219"
+- Challenge button sends user to a proper confirmation page
+- Both automations active and live
+- Vercel: READY (current deployment b3a391c)
+
+### STILL PENDING (CRITICAL - June 1):
+- Remove $19 PS from Emails 1, 2, 3 in Solomon Challenge automation
+- Revert STRIPE_PRICE_ID from price_1TZXqADAMsgblXx3oA3yRaex back to price_1T447hDAMsgblXx3uX0PmdCc
+
+### PENDING (non-blocking):
+- MailerLite domain authentication for asksolomon.app (DNS propagation, auto-resolves, check Domains tab)
+- Google Search Console setup (5 min manual task for John)
