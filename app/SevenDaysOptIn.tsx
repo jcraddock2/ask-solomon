@@ -51,16 +51,14 @@ export default function SevenDaysOptIn({ topic }: { topic?: string }) {
           marginBottom: 12,
           lineHeight: 1.25,
         }}>
-          {topic ? topic + ' — 7 Days of Solomon' : '7 Days of Solomon'}
-        </h2>
+          {topic ? topic + ' — 10 Days of Solomon' : '10 Days of Solomon'}        </h2>
         <p style={{
           color: '#a8b8c8',
           fontSize: 16,
           lineHeight: 1.6,
           marginBottom: 28,
         }}>
-          7 daily emails. One principle from the wisest man who ever lived, applied to your real life. Free.
-        </p>
+            10 daily emails. One principle from the wisest man who ever lived, applied to your real life. Free.        </p>
 
         {status === 'success' ? (
           <div style={{
