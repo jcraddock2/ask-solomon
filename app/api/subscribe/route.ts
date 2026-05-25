@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   try {
-    const { email } = await req.json();
+    const { email , groupId} = await req.json();
 
     if (!email || !email.includes('@')) {
       return NextResponse.json({ error: 'Valid email required' }, { status: 400 });
@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Server misconfigured' }, { status: 500 });
     }
 
-    // Add subscriber and assign to Ask Solomon Subscribers group
+            // Add subscriber to specified group (or default Ask Solomon Subscribers)
     const response = await fetch('https://connect.mailerlite.com/api/subscribers', {
       method: 'POST',
       headers: {
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         email,
-        groups: ['187558192643835097'],
+                      groups: [groupId || '187558192643835097'],
       }),
     });
 
