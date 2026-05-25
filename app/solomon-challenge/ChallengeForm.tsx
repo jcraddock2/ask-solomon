@@ -21,7 +21,7 @@ export default function ChallengeForm({ buttonText = 'Start the Challenge' }: { 
   }
 
   if (status === 'success') {
-        return <div style={{color:'#166534',background:'#dcfce7',border:'1px solid #86efac',borderRadius:12,padding:'16px 24px',fontWeight:600,fontSize:16,textAlign:'center'}}>You are in. Check your inbox for Day 1.</div>div>
+        return <div style={{color:'#166534',background:'#dcfce7',border:'1px solid #86efac',borderRadius:12,padding:'16px 24px',fontWeight:600,fontSize:16,textAlign:'center'}}>You are in. Check your inbox for Day 1.</div>
           }
 
   return (
@@ -32,9 +32,7 @@ export default function ChallengeForm({ buttonText = 'Start the Challenge' }: { 
                         {status === 'loading' ? 'Sending...' : buttonText}
                       </button>
               </form>
-          {status === 'error' && <p style={{color:'#dc2626',fontSize:14,textAlign:'center'}}>Something went wrong. Please try again.</p>p>}
+          {status === 'error' && <p style={{color:'#dc2626',fontSize:14,textAlign:'center'}}>Something went wrong. Please try again.</p>}
         </div>
       )
-    </div>
-    )
 }
