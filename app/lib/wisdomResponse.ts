@@ -2183,6 +2183,41 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
     };
   }
 
+      // ===== LAW OF ASSOCIATION =====
+      if (includesAny(q, [
+              "law of association", "who i spend time with", "who you spend time with",
+              "bad influence", "bad influences", "negative influence", "wrong crowd",
+              "toxic people", "toxic person", "being around negative people",
+              "friends make me worse", "people i hang around", "hanging around wrong people",
+              "become like the people around you", "you are who you hang with",
+              "surround yourself with", "walk with the wise", "walk with wise men",
+              "walk with fools", "companion of fools", "companion of wise",
+              "choose your friends carefully", "choose your companions",
+              "angry man", "angry friend", "befriend an angry person",
+              "angry people become like them", "learn their ways",
+              "association shapes character", "influence of friends",
+              "people around me are negative", "friends pulling me down",
+              "do not associate with", "avoid foolish people", "avoid angry people",
+              "iron sharpens iron people", "my circle is holding me back",
+              "my friends are bad for me", "wrong friends", "wrong friendships",
+              "who is in my inner circle", "i need better people around me",
+              "my environment is toxic", "bad company", "good company",
+              "your network is your net worth", "the wise make me wiser",
+              "being around successful people", "mentors in my life",
+              "proverbs 13:20", "proverbs 22:24", "proverbs 1:10"
+            ])) {
+              return {
+                        emotionalState: "shaped by the people closest to you -- for better or for worse",
+                        deeperMeaning: "Solomon understood something modern psychology has only recently confirmed: you become who you spend time with. In Proverbs 13:20 he wrote that those who walk with the wise grow wise, but companions of fools suffer harm. He did not say fools merely annoy you or slow you down. He said you suffer harm. In Proverbs 22:24-25, he warned his son directly: do not make friends with a hot-tempered person, do not associate with one easily angered, or you may learn their ways and get yourself ensnared. The Law of Association is not about judging others -- it is about understanding the invisible transfer that happens in every relationship. Attitudes, habits, standards, and expectations travel person to person like a current. The wise become wiser in wise company. The undisciplined become more so in undisciplined company. Solomon knew this. He built it into the very architecture of his instruction.",
+                        searchLanes: ["relationships", "wisdom", "leadership", "direction", "identity"],
+                        headline: "You Are Being Shaped by Your Closest Associations -- the Question Is Whether You Chose Them",
+                        insight: "Proverbs 13:20 says walk with the wise and you will grow wise -- but a companion of fools suffers harm. Solomon gave his son a direct warning in Proverbs 22:24-25: do not befriend a hot-tempered man or you may learn his ways and be ensnared. The law works in both directions. You are either being pulled up or pulled down by the people in your daily life. There is no neutral company.",
+                        reflection: "Name the three people you spend the most time with. For each one: are they pulling you toward wisdom, discipline, and growth -- or away from it? This is not a judgment of their worth as people. It is an honest audit of the current in your life.",
+                        nextStep: "Identify one relationship in your life that consistently leaves you worse off -- more anxious, less disciplined, further from your values. Decide what a healthy boundary with that person looks like and take one step toward it this week. Then identify one person who represents the life you want and find a way to spend more intentional time with them.",
+                        bookConnection: "Success Secrets of Solomon -- The Gift of True Friendship (pp. 166-170) and Toxic People (pp. 224-230)",
+              };
+      }
+
 
 
 return null;
