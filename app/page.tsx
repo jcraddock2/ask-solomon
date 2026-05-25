@@ -3142,8 +3142,7 @@ const applySituation = (situationQuery: string) => {
               { href: '/biblical-wisdom-for-depression', label: 'Biblical Wisdom for Depression' },
               { href: '/success-secrets-of-solomon', label: 'Success Secrets of Solomon' },
               { href: '/what-does-the-bible-say-about-success', label: 'Bible on Success' },
-              { href: '/solomon-challenge', label: '7-Day Solomon Challenge' },
-            ].map(({ href, label }) => (
+  { href: '/solomon-challenge', label: '10-Day Solomon Challenge' },            ].map(({ href, label }) => (
               <a key={href} href={href} style={{ fontSize: '0.75rem', color: 'rgba(15,23,42,0.55)', textDecoration: 'none', padding: '0.25rem 0.625rem', borderRadius: '999px', border: '1px solid rgba(15,23,42,0.12)', whiteSpace: 'nowrap' }}>
                 {label}
               </a>
