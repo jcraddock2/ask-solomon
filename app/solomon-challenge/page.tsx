@@ -1,13 +1,14 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import ChallengeForm from './ChallengeForm'
 
 export const metadata: Metadata = {
-      title: 'The Solomon Challenge | 10 Days of Biblical Wisdom',
-  description: 'Take the Solomon Challenge: 7 days, 7 wisdom principles from Proverbs applied to your real life. Start your free 7-day email course today.',
-  keywords: 'solomon challenge, 7 days of solomon, biblical wisdom challenge, proverbs wisdom course, success secrets of solomon, john craddock',
+          title: 'The Solomon Challenge | 10 Days of Biblical Wisdom',
+          description: 'Take the Solomon Challenge: 10 days, 10 wisdom principles from Proverbs applied to your life. Start your free 10-Day Challenge today.',
+      keywords: 'solomon challenge, 10 days of solomon, biblical wisdom challenge, proverbs wisdom course, success secrets of solomon, john craddock',
   openGraph: {
     title: 'The Solomon Challenge | 7 Days of Biblical Wisdom',
-    description: 'Solomon asked God for one thing — wisdom. Then everything else followed. Take the 7-day Solomon Challenge and let the same wisdom transform your life.',
+          description: 'Solomon asked God for one thing -- wisdom. Then everything else followed. Take the 10-Day Solomon Challenge and let the same wisdom transform your life.',
     url: 'https://asksolomon.app/solomon-challenge',
     siteName: 'Ask Solomon',
     type: 'article',
@@ -45,16 +46,7 @@ export default function SolomonChallengePage() {
           </p>
           <div className="max-w-md mx-auto">
             <p className="text-amber-200 text-sm mb-4">Sign up with your email to receive Day 1 immediately:</p>
-            <div className="flex flex-col gap-3">
-              <input
-                type="email"
-                placeholder="Your email address"
-                className="px-6 py-4 rounded-full text-gray-900 text-lg w-full focus:outline-none focus:ring-2 focus:ring-amber-400"
-              />
-              <button className="bg-amber-400 text-amber-900 font-bold px-8 py-4 rounded-full text-lg hover:bg-amber-300 transition-colors w-full">
-                Start the Challenge — It's Free
-              </button>
-            </div>
+                        <ChallengeForm buttonText="Start the Challenge" />
             <p className="text-amber-300 text-xs mt-3">No spam. Unsubscribe anytime. One email per day for 10 days.</p>
           </div>
         </div>
@@ -86,19 +78,19 @@ export default function SolomonChallengePage() {
         <div className="max-w-4xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold mb-6">Why Solomon\u2019s Wisdom?</h2>
+                        <h2 className="text-3xl font-bold mb-6">Why Solomon's Wisdom?</h2>
               <p className="text-amber-100 text-lg leading-relaxed mb-4">
-                Solomon was not just wise in theory. He was the most accomplished person in the ancient world \u2014 managing a kingdom, building architectural wonders, conducting trade across continents, and raising the standard of living for an entire nation.
+                              Solomon was not just wise in theory. He was the most accomplished person in the ancient world — managing a kingdom, building architectural wonders, conducting trade across continents, and raising the standard of living for an entire nation.
               </p>
               <p className="text-amber-100 text-lg leading-relaxed">
-                And he left us 3,000 proverbs. A compressed library of everything he learned about how life actually works. The Solomon Challenge gives you seven of the most important principles he wrote \u2014 in seven days you can apply immediately.
+                              The Solomon Challenge gives you ten of the most important principles he wrote — principles you can apply immediately.
               </p>
             </div>
             <div className="space-y-4">
               {[
                 { stat: '3,000+', label: 'Proverbs written by Solomon' },
                 { stat: '3,000', label: 'Years of proven wisdom' },
-                { stat: '7', label: 'Days to transform your thinking' },
+                { stat: '10', label: 'Days to transform your thinking' },
                 { stat: '0', label: 'Cost to start' },
               ].map((s) => (
                 <div key={s.stat} className="bg-amber-700 rounded-xl p-4 flex items-center gap-4">
@@ -130,16 +122,7 @@ export default function SolomonChallengePage() {
             Day 1 arrives in your inbox immediately. No cost. No commitment. Just ten days of wisdom that could reshape how you think, work, and live.
           </p>
           <div className="max-w-md mx-auto">
-            <div className="flex flex-col gap-3">
-              <input
-                type="email"
-                placeholder="Your email address"
-                className="px-6 py-4 rounded-full text-gray-900 text-lg w-full focus:outline-none focus:ring-2 focus:ring-amber-400"
-              />
-              <button className="bg-amber-400 text-amber-900 font-bold px-8 py-4 rounded-full text-xl hover:bg-amber-300 transition-colors w-full">
-                Start the 10-Day Solomon Challenge
-              </button>
-            </div>
+                        <ChallengeForm buttonText="Start the 10-Day Solomon Challenge" />
             <p className="text-amber-400 text-xs mt-3">Free forever. Unsubscribe anytime.</p>
           </div>
         </div>
