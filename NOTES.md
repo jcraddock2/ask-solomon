@@ -1933,3 +1933,53 @@ Vercel: Change STRIPE_PRICE_ID to price_1T447hDAMsgblXx3uX0PmdCc
 Current $19 price: price_1TZXqADAMsgblXx3oA3yRaex (active until June 1 ONLY)
 
 Last updated: May 25, 2026 -- Part 3. Address fixed. Email order fixed. Opt-in issue diagnosed with solution options.
+
+
+SESSION -- May 25, 2026 -- Part 4 (Option B: Explicit Opt-In Challenge System -- COMPLETE)
+What Was Done This Session (All Deployed Green)
+
+Implemented Option B -- the gold-standard explicit opt-in flow for the Solomon Challenge.
+
+NEW SYSTEM OVERVIEW:
+1. User submits email on asksolomon.app --> added to "Ask Solomon Subscribers" group
+2. Welcome email fires IMMEDIATELY
+3. Welcome email has CTA button: "Start Your 10-Day Wisdom Challenge"
+4. If they click: /api/start-challenge is called with their email
+5. They are added to "Solomon Challenge Active" group
+6. Solomon Challenge Day 1 fires immediately after joining that group
+7. Only people who explicitly clicked the button get the 10-day series
+
+CHANGES MADE:
+
+1. New MailerLite group: "Solomon Challenge Active" (ID: 188449434786334023)
+
+2. Solomon Challenge trigger changed:
+   OLD: "Joins Ask Solomon Subscribers" (everyone gets it)
+   NEW: "Joins Solomon Challenge Active" (only people who clicked the button)
+   Status: ACTIVE
+
+3. Removed 1-day delay from start of Solomon Challenge (no longer needed).
+   Existing delays BETWEEN emails still in place.
+
+4. Added CTA button to Welcome email:
+   Text: "Start Your 10-Day Wisdom Challenge"
+   URL: https://asksolomon.app/api/start-challenge?email={$email}
+   Placement: Between "-- John" and the P.S.
+   Welcome automation: ACTIVE
+
+5. Created: app/api/start-challenge/route.ts
+   Looks up subscriber, adds to Solomon Challenge Active group, redirects to asksolomon.app
+
+6. Vercel env variable: SOLOMON_CHALLENGE_GROUP_ID = 188449434786334023
+
+7. Redeployed: READY (green)
+
+GROUPS:
+Ask Solomon Subscribers: ID 187558192643835097 -- all signups, Welcome email only
+Solomon Challenge Active: ID 188449434786334023 -- explicit opt-in, 10-day Challenge
+
+JUNE 1 ROLLBACK -- CRITICAL
+MailerLite: Remove $19 PS from Emails 1, 2, 3 in Solomon Challenge automation
+Vercel: Change STRIPE_PRICE_ID to price_1T447hDAMsgblXx3uX0PmdCc
+
+Last updated: May 25, 2026 -- Part 4. Explicit opt-in system live. LAUNCH READY.
