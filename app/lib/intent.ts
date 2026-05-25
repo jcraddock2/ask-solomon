@@ -420,6 +420,34 @@ const INTENT_LANES: IntentLane[] = [
       "lose momentum",
     ],
   },
+  {
+    name: "association",
+    terms: [
+      "law of association",
+      "who i spend time with",
+      "who you spend time with",
+      "bad influence",
+      "negative influence",
+      "wrong crowd",
+      "toxic people",
+      "walk with the wise",
+      "companion of fools",
+      "choose your friends",
+      "choose your companions",
+      "iron sharpens iron people",
+      "being around negative people",
+      "friends pulling me down",
+      "my circle is holding me back",
+      "my friends are bad for me",
+      "wrong friendships",
+      "surround yourself with",
+      "association shapes character",
+      "angry man angry friend",
+      "do not associate with",
+      "proverbs 13:20",
+      "proverbs 22:24",
+    ],
+  },
 ];
 const LANE_EXPANSIONS: Record<string, string[]> = {
   hurting: [
@@ -562,6 +590,17 @@ const LANE_EXPANSIONS: Record<string, string[]> = {
     "partner",
     "structure",
     "track",
+  ],
+  association: [
+    "walk with the wise",
+    "toxic people",
+    "bad influence",
+    "wrong friendships",
+    "companion of fools",
+    "choose your companions",
+    "iron sharpens iron",
+    "surround yourself with wise people",
+    "law of association",
   ],
 };
 function normalize(input: string): string {
@@ -1270,6 +1309,30 @@ export function interpretQueryAdvanced(query: string): Interpretation {
     return {
       message: "You may be struggling with comparison, especially through what you see on social media.",
       lane: "comparison",
+    };
+  }
+
+  // LAW OF ASSOCIATION
+  if (
+    q.includes("law of association") ||
+    q.includes("who i spend time with") ||
+    q.includes("walk with the wise") ||
+    q.includes("companion of fools") ||
+    q.includes("bad influence") ||
+    q.includes("toxic people") ||
+    q.includes("wrong crowd") ||
+    q.includes("surround yourself with") ||
+    q.includes("wrong friendships") ||
+    q.includes("my circle is holding me back") ||
+    q.includes("choose your friends carefully") ||
+    q.includes("proverbs 13:20") ||
+    q.includes("proverbs 22:24") ||
+    q.includes("befriend an angry person") ||
+    q.includes("you become who you hang with")
+  ) {
+    return {
+      message: "Solomon taught the Law of Association -- you become like the people you spend the most time with. Walk with the wise and grow wise; be a companion of fools and suffer harm.",
+      lane: "association",
     };
   }
 
