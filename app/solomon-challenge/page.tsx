@@ -7,7 +7,7 @@ export const metadata: Metadata = {
           description: 'Take the Solomon Challenge: 10 days, 10 wisdom principles from Proverbs applied to your life. Start your free 10-Day Challenge today.',
       keywords: 'solomon challenge, 10 days of solomon, biblical wisdom challenge, proverbs wisdom course, success secrets of solomon, john craddock',
   openGraph: {
-    title: 'The Solomon Challenge | 7 Days of Biblical Wisdom',
+    title: 'The Solomon Challenge | 10 Days of Biblical Wisdom',
           description: 'Solomon asked God for one thing -- wisdom. Then everything else followed. Take the 10-Day Solomon Challenge and let the same wisdom transform your life.',
     url: 'https://asksolomon.app/solomon-challenge',
     siteName: 'Ask Solomon',
