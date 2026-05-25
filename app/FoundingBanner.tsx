@@ -7,7 +7,7 @@ const P = (n: number) => String(n).padStart(2, "0");
 export default function FoundingBanner() {
       const [tl, setTl] = useState({ d: 0, h: 0, m: 0, s: 0 });
       const [show, setShow] = useState(true);
-      const [fl, setFl] = useState(true);h
+      const [fl, setFl] = useState(true);
       useEffect(() => {
               const tick = () => {
                         const diff = END - Date.now();
