@@ -41,7 +41,7 @@ export default function SolomonChallengePage() {
             10 days. 10 principles. One question that changes everything.
           </p>
           <p className="text-amber-200 text-lg max-w-xl mx-auto mb-10">
-            Solomon asked God for wisdom above all else. Then wealth, honor, and influence followed. Take the challenge and let the same wisdom reshape your life in seven days.
+            Solomon asked God for wisdom above all else. Then wealth, honor, and influence followed. Take the challenge and let the same wisdom reshape your life in ten days.
           </p>
           <div className="max-w-md mx-auto">
             <p className="text-amber-200 text-sm mb-4">Sign up with your email to receive Day 1 immediately:</p>
