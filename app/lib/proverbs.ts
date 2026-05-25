@@ -691,6 +691,10 @@ const WORD_ALIASES: Record<string, string[]> = {
   entrepreneurship: ["success", "leadership", "purpose", "discipline", "vision", "growth"],
   startup: ["success", "leadership", "planning", "discipline", "vision"],
   business: ["success", "discipline", "leadership", "planning", "work", "purpose"],
+  "association": ["walk with the wise", "toxic people", "bad influence", "wrong friendships", "companion of fools", "choose companions", "law of association", "circle"],
+  "law of association": ["association", "toxic people", "bad influence", "companion of fools", "wrong friendships", "walk with wise"],
+  "toxic friend": ["association", "toxic people", "bad influence", "wrong friendships"],
+  "bad company": ["association", "toxic people", "bad influence", "wrong friendships", "companion of fools"],
 
 };
 
