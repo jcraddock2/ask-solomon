@@ -1893,14 +1893,14 @@ const applySituation = (situationQuery: string) => {
                   </div>
 </div>
     <div style={{ color: '#f5e06e', fontWeight: 700, fontSize: '16px', marginBottom: '6px' }}>
-      Get a free weekly wisdom verse
+      Start the Free 10-Day Solomon Challenge
     </div>
     <div style={{ color: 'rgba(220,200,140,0.8)', fontSize: '13px', marginBottom: '16px' }}>
-      One verse. One insight. Delivered every week from Proverbs.
+      10 days. 10 wisdom principles. Free. Enter your email to begin.
     </div>
     {emailStatus === 'success' ? (
       <div style={{ color: '#6ee7b7', fontWeight: 600, fontSize: '15px' }}>
-        ✓ You're on the list! Check your inbox.
+        ✓ Check your inbox -- Day 1 is on its way!
       </div>
     ) : (
       <form
@@ -1911,7 +1911,7 @@ const applySituation = (situationQuery: string) => {
             const res = await fetch('/api/subscribe', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-              body: JSON.stringify({ email: emailInput }),
+              body: JSON.stringify({ email: emailInput, groupId: '188449434786334023' }),
             })
             if (res.ok) { setEmailStatus('success') }
             else { setEmailStatus('error') }
@@ -1950,7 +1950,7 @@ const applySituation = (situationQuery: string) => {
             cursor: emailStatus === 'sending' ? 'not-allowed' : 'pointer',
           }}
         >
-          {emailStatus === 'sending' ? 'Sending…' : 'Subscribe Free'}
+          {emailStatus === 'sending' ? 'Sending…' : 'Start the Challenge'}
         </button>
       </form>
     )}
