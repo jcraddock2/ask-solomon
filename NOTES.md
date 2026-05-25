@@ -1759,3 +1759,75 @@ All previous gaps from the overnight audit report are now addressed:
 - Current $19 price: price_1TZXqADAMsgblXx3oA3yRaex (active until June 1 ONLY)
 
 _Last updated: May 23, 2026 -- Search gaps fixed, Proverbs 10-31 expanded, accountability/coaching added. All deployments green._
+
+## SESSION -- May 25, 2026 -- Law of Association + Book Index Upgrade
+
+### What Was Done This Session (All Deployed Green)
+
+John confirmed readiness to launch. Session focused on adding the Law of Association as a full principle, upgrading the Book Index with category tabs and Proverbs search, and wiring the new concept through all relevant files.
+
+**1. Law of Association -- wisdomResponse.ts (commit 9b01fb3)**
+
+Added complete new wisdom scenario for the Law of Association:
+- Trigger phrases: "law of association", "walk with the wise", "companion of fools", "bad influence", "toxic people", "angry friend", "wrong friendships", "my circle is holding me back", "proverbs 13:20", "proverbs 22:24", "proverbs 1:10", "befriend an angry person", and 30+ related phrases
+- emotionalState, deeperMeaning, searchLanes, headline, insight, reflection, nextStep, bookConnection all fully written
+- Covers BOTH directions: warning about foolish/angry companions AND the positive benefit of walking with wise/successful people
+- Book connection: Success Secrets of Solomon -- The Gift of True Friendship (pp. 166-170) and Toxic People (pp. 224-230)
+
+**2. bookIndex.ts -- Law of Association entry (commit 9ff9018)**
+
+Added new BookEntry:
+- id: "law-of-association-1", chapter: "Chapter 13 / Chapter 17", page: "Page 166"
+- title: "The Law of Association"
+- Full keywords covering all association/influence/companion phrases
+- Tags: relationships, friendship, wisdom, influence, character
+
+**3. book-index/page.tsx -- Category Tabs + Law of Association + Search Proverbs button (commit efb5126)**
+
+- Added "law-of-association" to TOPIC_INDEX (label: "Law of Association", pages: 166-170, chapters: The Gift of True Friendship / Toxic People)
+- Added CATEGORIES array with 6 category tabs:
+  1. All Topics (default)
+  2. Wisdom & Character
+  3. Leadership & Success
+  4. Mind & Emotions
+  5. Relationships & Community (includes law-of-association, relationships, friendship, conflict, speech, anger)
+  6. Money & Work
+- Added activeCategory state and category-aware filtered logic
+- Added category tab buttons UI (dark navy when active, light when inactive)
+- Added "Search Proverbs" gold button in header alongside "Back to Ask Solomon"
+- Header is now a flex row with both buttons side-by-side
+
+**4. intent.ts -- Association Intent Lane (commit fb4108d)**
+
+- Added "association" INTENT_LANE with 23 trigger terms
+- Added "association" LANE_EXPANSION with 9 synonym groups
+- Added routing block in interpretQueryAdvanced for all association/companion phrases
+
+**5. proverbs.ts -- Association Word Aliases (commit 8161629)**
+
+- Added WORD_ALIASES entries: "association", "law of association", "toxic friend", "bad company"
+- All map to relevant synonym arrays for Proverbs verse search coverage
+
+### Deployment Status (May 25, 2026)
+
+All 5 commits deployed GREEN to production:
+- 8161629 proverbs.ts aliases -- Ready (Current) 46s build
+- fb4108d intent.ts association lane -- Ready 48s build
+- efb5126 book-index page -- Ready 35s build
+- 9ff9018 bookIndex entry -- Ready 35s build
+- 9b01fb3 wisdomResponse scenario -- Ready 36s build
+
+### JUNE 1 ROLLBACK -- CRITICAL (DO NOT FORGET)
+
+MailerLite: Remove $19 PS from Emails 1, 2, 3 in Solomon Challenge automation
+Vercel: Change STRIPE_PRICE_ID to price_1T447hDAMsgblXx3uX0PmdCc
+Current $19 price: price_1TZXqADAMsgblXx3oA3yRaex (active until June 1 ONLY)
+
+### Next Session Priorities
+
+- John: Launch day actions (email book readers, post to social, Product Hunt, record Reels)
+- Check SEO landing page for Law of Association (could add /proverbs-for-association or /biblical-wisdom-for-bad-company)
+- Verify live site search for "law of association" and "proverbs 13:20" returns correct wisdom card
+- Google Search Console check: sitemap should now show 35+ pages
+
+Last updated: May 25, 2026 -- Law of Association fully live. Book Index upgraded with category tabs. LAUNCH READY.
