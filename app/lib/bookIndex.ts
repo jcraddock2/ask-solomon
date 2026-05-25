@@ -548,7 +548,17 @@ export const BOOK_ENTRIES: BookEntry[] = [
     tags: ["speech", "mouth", "words", "tongue"],
     keywords: ["words", "tongue", "speech", "mouth", "what i say", "said something i regret", "mouth management", "talk too much", "gossip", "hasty words", "control my tongue", "words matter", "life and death in the tongue", "speak wisely", "watch my mouth"],
   },
-
+    // --- LAW OF ASSOCIATION ---
+{
+        id: "law-of-association-1",
+                chapter: "Chapter 13 / Chapter 17",
+                page: "Page 166",
+                title: "The Law of Association",
+                excerpt: "Walk with the wise and you will grow wise. A companion of fools suffers harm. Every relationship in your life is either an asset or a liability -- not by accident, but by design.",
+                searchPhrase: "How do my friendships shape who I become?",
+                tags: ["relationships", "friendship", "wisdom", "influence", "character"],
+                keywords: ["law of association", "walk with the wise", "companion of fools", "who i spend time with", "bad influence", "toxic people", "negative influence", "wrong crowd", "friends make me worse", "my circle", "choose your friends", "choose your companions", "angry friend", "angry man", "befriend an angry person", "learn their ways", "being around negative people", "iron sharpens iron", "surround yourself with", "my environment is toxic", "bad company", "good company", "being around successful people", "proverbs 13:20", "proverbs 22:24", "association shapes character", "influence of friends", "my friends are bad for me", "wrong friendships", "people i hang around", "you become who you are around"],
+          },
 ];
 
 export function findBookMatchIds(query: string): string[] {
