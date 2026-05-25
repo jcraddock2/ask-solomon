@@ -2045,3 +2045,176 @@ Last updated: May 25, 2026 -- Part 4. Explicit opt-in system live. LAUNCH READY.
 ### PENDING (non-blocking):
 - MailerLite domain authentication for asksolomon.app (DNS propagation, auto-resolves, check Domains tab)
 - Google Search Console setup (5 min manual task for John)
+
+
+---
+
+## SESSION -- May 25, 2026 -- Part 6 (Opt-In Audit + Weekly Verse Replaced + 10-Day Challenge CTA)
+
+### WHAT TRIGGERED THIS SESSION
+John sent screenshots showing:
+1. Email sender showing "LLC John Craddock" (not "Ask Solomon") -- pre-existing issue confirmed carried from prior sessions
+2. 2. Email footer showing "208 Whistlewood Ct, Lynchburg" -- same pre-existing issue
+   3. 3. The "Get a free weekly wisdom verse" Subscribe Free form on the main search results page
+      4. John asked: "is the opt in link for the 10 day challenge correct and active?"
+     
+      5. ### INVESTIGATION FINDINGS
+     
+      6. **Weekly Verse Form (app/page.tsx lines 1895-1953):**
+      7. - The "Get a free weekly wisdom verse / Subscribe Free" form DID have a working onSubmit handler
+         - - It posted to /api/subscribe with ONLY {email: emailInput} -- no groupId
+           - - /api/subscribe/route.ts hardcoded groups: ['187558192643835097'] (Ask Solomon Subscribers)
+             - - Joining "Ask Solomon Subscribers" triggers the "Simple welcome email" automation
+               - - That automation has ONLY 1 email -- the welcome email (not a weekly verse, not a challenge)
+                 - - So the form was LYING -- it promised a weekly verse but delivered only a welcome email
+                   - - There was NO weekly verse content or automation anywhere in MailerLite
+                    
+                     - **MailerLite groups confirmed:**
+                     - - "Ask Solomon Subscribers" (ID: 187558192643835097) -- all signups, welcome email only, 6 subscribers
+                       - - "Solomon Challenge Active" (ID: 188449434786334023) -- 10-day series, 2 subscribers
+                        
+                         - **MailerLite automations confirmed (only 2):**
+                         - - "Simple welcome email" -- triggers on "Ask Solomon Subscribers" -- 1 email only
+                           - - "The Solomon Challenge -- 10 Days" -- triggers on "Solomon Challenge Active" -- 10 emails
+                            
+                             - **MailerLite trial status: 4 days remaining -- UPGRADE NEEDED**
+                            
+                             - ### DECISION MADE
+                             - John chose Option 3: Replace the weekly verse opt-in with a 10-Day Solomon Challenge CTA.
+                             - People who enter their email get added directly to "Solomon Challenge Active" group and receive the full 10-day sequence.
+                             - No weekly obligation. No new content needed. Clean single funnel.
+                            
+                             - ### FIXES APPLIED (All Deployed Green)
+                            
+                             - **Fix 1 -- /api/subscribe/route.ts (commit 48eabbb):**
+                             - - Added optional groupId parameter to the request body
+                               - - Line 5: const { email , groupId } = await req.json();
+                                 - - Line 26: groups: [groupId || '187558192643835097']
+                                   - - If groupId is passed, subscribers go to that group. Falls back to Ask Solomon Subscribers if not.
+                                     - - This makes the API reusable for any group without changing the route.
+                                      
+                                       - **Fix 2 -- app/page.tsx (commit 94852f7) -- Weekly verse form completely replaced:**
+                                       - - Heading: "Get a free weekly wisdom verse" --> "Start the Free 10-Day Solomon Challenge"
+                                         - - Subtext: "One verse. One insight. Delivered every week from Proverbs." --> "10 days. 10 wisdom principles. Free. Enter your email to begin."
+                                           - - Button: "Subscribe Free" --> "Start the Challenge"
+                                             - - Success message: "You're on the list! Check your inbox." --> "Check your inbox -- Day 1 is on its way!"
+                                               - - Fetch body: {email: emailInput} --> {email: emailInput, groupId: '188449434786334023'}
+                                                 - - Subscribers now go directly into Solomon Challenge Active and receive the 10-day series
+                                                  
+                                                   - **NOTE: /solomon-challenge page has its OWN opt-in form (ChallengeForm.tsx) which was fixed in a prior session today and already posts to Solomon Challenge Active directly. The form on the main search page NOW ALSO goes to Solomon Challenge Active.**
+                                                  
+                                                   - ### ALSO FIXED THIS SESSION: /solomon-challenge page (from earlier today, same day)
+                                                  
+                                                   - **Background (earlier Part 5 context, now clarified):**
+                                                   - The /solomon-challenge page had TWO static HTML forms with no JavaScript handlers -- completely broken.
+                                                   - Fixed by creating app/solomon-challenge/ChallengeForm.tsx (client component) and replacing both static forms.
+                                                  
+                                                   - **ChallengeForm.tsx (app/solomon-challenge/ChallengeForm.tsx):**
+                                                   - - 'use client' component
+                                                     - - useState for email and status
+                                                       - - handleSubmit posts to /api/subscribe with groupId: '188449434786334023'
+                                                         - - Success, error, loading states
+                                                           - - Props: buttonText (string)
+                                                             - - Used twice on page: hero form + bottom CTA form
+                                                              
+                                                               - **page.tsx fixes (app/solomon-challenge/page.tsx):**
+                                                               - - All "7 day / seven days / 7 Days" references updated to "10 day / ten days / 10 Days"
+                                                                 - - metadata: title "10 Days of Biblical Wisdom", description "10 days, 10 wisdom principles"
+                                                                   - - openGraph: title/description both updated to 10-Day
+                                                                     - - "Why Solomon's Wisdom?" heading: fixed unicode escape \u2019 to proper apostrophe
+                                                                       - - Body text: "seven of the most important principles...in seven days" --> "ten of the most important principles...principles you can apply immediately"
+                                                                         - - Stats: '7' --> '10' (Days to transform your thinking)
+                                                                           - - Both static forms replaced with ChallengeForm component
+                                                                            
+                                                                             - **app/SevenDaysOptIn.tsx:**
+                                                                             - - "7 emails total" --> "10 emails total" (on all SEO pages)
+                                                                              
+                                                                               - **Commits for /solomon-challenge fixes (from this same session day, earlier):**
+                                                                               - - Add: ChallengeForm client component -- fixes broken 10-Day opt-in form (a01f04e)
+                                                                                 - - Fix: ChallengeForm JSX syntax errors -- remove autocomplete artifacts (ddc1315)
+                                                                                   - - Fix: Import ChallengeForm, fix all 7-day to 10-day, fix Why Solomon unicode, fix stats (26147b7)
+                                                                                     - - Fix: openGraph title 7 Days to 10 Days for Solomon Challenge (ec2aba2)
+                                                                                       - - Update email count from 7 to 10 in opt-in message (ef22bbd)
+                                                                                        
+                                                                                         - ### FOUNDING MEMBER COUNTDOWN RESET (commit defcdad)
+                                                                                        
+                                                                                         - John is not ready to launch yet. Needs more testing time.
+                                                                                        
+                                                                                         - **FoundingBanner.tsx -- countdown date extended:**
+                                                                                         - - OLD: const END = new Date("2026-06-01T23:59:59Z").getTime();
+                                                                                           - - NEW: const END = new Date("2026-06-02T23:59:59Z").getTime();
+                                                                                             - - 8 days from May 25 = June 2, 2026 at midnight UTC
+                                                                                              
+                                                                                               - **JUNE 1 ROLLBACK DEADLINE UPDATED TO JUNE 2:**
+                                                                                               - - MailerLite: Remove $19 PS from Emails 1, 2, 3 in Solomon Challenge automation
+                                                                                                 - - Vercel: Change STRIPE_PRICE_ID from price_1TZXqADAMsgblXx3oA3yRaex back to price_1T447hDAMsgblXx3uX0PmdCc
+                                                                                                   - - Banner expires June 2 automatically (code handles it)
+                                                                                                    
+                                                                                                     - **Build issue during this fix (lesson learned):**
+                                                                                                     - - When pressing Ctrl+H in the GitHub CM6 editor to open Find/Replace, the 'h' key landed IN the editor instead
+                                                                                                       - - Caused stray 'h' on line 10: "const [fl, setFl] = useState(true);h" -- broke the build
+                                                                                                         - - Fixed in separate commit (defcdad) which removed the stray character
+                                                                                                           - - LESSON: Always use the toolbar Find button or click the search icon -- do NOT use keyboard shortcuts while the editor area has focus. Or use the CM6 API to make precise edits.
+                                                                                                            
+                                                                                                             - ### ARCHITECTURE NOTES (for future Claude sessions)
+                                                                                                            
+                                                                                                             - **Opt-in funnel as of May 25, 2026:**
+                                                                                                            
+                                                                                                             - Funnel 1 -- Main search page (app/page.tsx lines 1895-1953):
+                                                                                                             - - Trigger: User sees wisdom card, wants more
+                                                                                                               - - CTA: "Start the Free 10-Day Solomon Challenge"
+                                                                                                                 - - Submits to: /api/subscribe with groupId: '188449434786334023'
+                                                                                                                   - - Result: Joins "Solomon Challenge Active" --> 10-day email series starts next day
+                                                                                                                    
+                                                                                                                     - Funnel 2 -- /solomon-challenge page (app/solomon-challenge/):
+                                                                                                                     - - Trigger: User lands on dedicated challenge page
+                                                                                                                       - - CTA: "Start the Challenge" / "Start the 10-Day Solomon Challenge"
+                                                                                                                         - - Component: ChallengeForm.tsx (separate 'use client' component)
+                                                                                                                           - - Submits to: /api/subscribe with groupId: '188449434786334023'
+                                                                                                                             - - Result: Joins "Solomon Challenge Active" --> 10-day email series
+                                                                                                                              
+                                                                                                                               - Funnel 3 -- SEO pages (all 26 pages with SevenDaysOptIn.tsx):
+                                                                                                                               - - CTA: "[Topic] -- 7 Days of Solomon" (now updated to reference 10 emails)
+                                                                                                                                 - - Submits to: /api/subscribe with NO groupId
+                                                                                                                                   - - Result: Joins "Ask Solomon Subscribers" --> Welcome email only (no 10-day series)
+                                                                                                                                     - - NOTE: SevenDaysOptIn.tsx on SEO pages does NOT pass a groupId -- only goes to welcome email.
+                                                                                                                                       -   If John wants SEO page signups to also go to Solomon Challenge Active, pass groupId there too.
+                                                                                                                                      
+                                                                                                                                       -   **Why /solomon-challenge page.tsx has NO 'use client' directive:**
+                                                                                                                                       -   Server components with export const metadata cannot have 'use client'.
+                                                                                                                                       -   Solution: page.tsx stays a server component and imports ChallengeForm.tsx (the client component).
+                                                                                                                                       -   This pattern must be used for any page that has metadata exports AND needs interactive forms.
+                                                                                                                                      
+                                                                                                                                       -   **MailerLite API key:** Stored in Vercel env variable MAILERLITE_API_KEY
+                                                                                                                                       -   **Solomon Challenge Group ID:** 188449434786334023 (Solomon Challenge Active)
+                                                                                                                                       -   **Ask Solomon Subscribers Group ID:** 187558192643835097
+                                                                                                                                       -   **Vercel deploy hook (force build):** POST https://api.vercel.com/v1/integrations/deploy/prj_YXNv39Tvm8uh1s5IjVmsbM0kxvvP/5Ki44mO6kX
+                                                                                                                                      
+                                                                                                                                       -   ### CURRENT DEPLOYMENT STATUS (end of May 25 Part 6)
+                                                                                                                                       -   - Latest commit: defcdad "Fix: Remove stray character from FoundingBanner -- countdown now expires June 2"
+                                                                                                                                           - - Status: GREEN, Active on Production
+                                                                                                                                             - - asksolomon.app: LIVE and healthy
+                                                                                                                                              
+                                                                                                                                               - ### COMPLETE OPT-IN SYSTEM STATUS
+                                                                                                                                               - - /solomon-challenge hero form: LIVE, posts to Solomon Challenge Active (188449434786334023)
+                                                                                                                                                 - - /solomon-challenge bottom CTA form: LIVE, same
+                                                                                                                                                   - - Main search page "Start the Challenge" form: LIVE, posts to Solomon Challenge Active
+                                                                                                                                                     - - SEO pages SevenDaysOptIn: LIVE, posts to Ask Solomon Subscribers (187558192643835097)
+                                                                                                                                                       - - /api/subscribe: accepts optional groupId, falls back to Ask Solomon Subscribers
+                                                                                                                                                         - - /api/start-challenge: LIVE, upserts subscriber to Solomon Challenge Active group
+                                                                                                                                                          
+                                                                                                                                                           - ### STILL PENDING -- CRITICAL (June 2 deadline)
+                                                                                                                                                           - - MailerLite: Remove $19 PS from Emails 1, 2, 3 in Solomon Challenge automation
+                                                                                                                                                             - - Vercel: Change STRIPE_PRICE_ID to price_1T447hDAMsgblXx3uX0PmdCc (from price_1TZXqADAMsgblXx3oA3yRaex)
+                                                                                                                                                               - - MailerLite trial expires in ~4 days -- UPGRADE MAILERLITE before signups break
+                                                                                                                                                                
+                                                                                                                                                                 - ### STILL PENDING -- NON-BLOCKING
+                                                                                                                                                                 - - MailerLite domain authentication (asksolomon.app) -- DNS propagation, auto-resolves
+                                                                                                                                                                   - - PDF rename (successsecrets.pdf --> sss-wisdom-book-jc2024.pdf) -- John must upload via GitHub
+                                                                                                                                                                     - - Google Search Console check (sitemap should show 35+ pages now)
+                                                                                                                                                                       - - John: Record Reels (5-shot script from May 21 notes)
+                                                                                                                                                                         - - John: Email book readers (warmest audience)
+                                                                                                                                                                           - - John: Social launch post
+                                                                                                                                                                             - - John: Product Hunt
+                                                                                                                                                                              
+                                                                                                                                                                               - Last updated: May 25, 2026 -- Part 6 complete. All opt-ins unified to 10-Day Challenge. Countdown reset to June 2. Ready for launch checks.
