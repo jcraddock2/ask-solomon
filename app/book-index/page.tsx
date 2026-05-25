@@ -46,14 +46,26 @@ const TOPIC_INDEX: Topic[] = [
   { topic: "why-people-fail", label: "Why People Fail", pages: "54–60", chapters: ["Why People Fail"], summary: "People fail because of drifting, desire without diligence, refusing correction, or fear. Every cause is fixable." },
   { topic: "contentment", label: "Contentment and Lack", pages: "224–230", chapters: ["Contentment and Balance"], summary: "The eye is never satisfied with seeing. Emptiness is a signal pointing toward what possessions were never designed to fill." },
   { topic: "unmet-needs", label: "Unmet Needs", pages: "210–218", chapters: ["The Hungry Soul"], summary: "To the hungry soul even bitter things are sweet. Unmet needs drive decisions that bypass wisdom." },
+  { topic: "law-of-association", label: "Law of Association", pages: "166-170", chapters: ["The Gift of True Friendship", "Toxic People"], summary: "You become who you walk with. Solomon warned that companions of fools suffer harm -- and those who walk with the wise grow wise." },
 ];
 
+const CATEGORIES: { id: string; label: string; topics: string[] }[] = [
+  { id: "all", label: "All Topics", topics: [] },
+  { id: "wisdom-character", label: "Wisdom & Character", topics: ["wisdom", "foolishness", "integrity", "discipline", "decision", "diligence", "work", "planning", "focus", "character", "reputation"] },
+  { id: "leadership-success", label: "Leadership & Success", topics: ["leadership", "counsel", "stewardship", "success", "influence", "mentorship", "vision", "why-people-fail", "purpose", "justice"] },
+  { id: "mind-emotions", label: "Mind & Emotions", topics: ["fear", "confidence", "pride", "humility", "contentment", "unmet-needs", "patience"] },
+  { id: "relationships", label: "Relationships & Community", topics: ["relationships", "friendship", "conflict", "speech", "anger", "law-of-association"] },
+  { id: "money-work", label: "Money & Work", topics: ["money", "work", "stewardship", "diligence"] },
+];
 export default function BookIndex() {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const [activeCategory, setActiveCategory] = useState("all");
 
+  const categoryTopics = activeCategory === "all" ? null : (CATEGORIES.find((c) => c.id === activeCategory)?.topics ?? null);
+  const baseList = categoryTopics ? TOPIC_INDEX.filter((t) => categoryTopics.includes(t.topic)) : TOPIC_INDEX;
   const filtered = search.trim()
-    ? TOPIC_INDEX.filter((t) => {
+    ? baseList.filter((t) => {
         const s = search.toLowerCase();
         return (
           t.label.toLowerCase().includes(s) ||
@@ -62,7 +74,7 @@ export default function BookIndex() {
           t.chapters.some((c) => c.toLowerCase().includes(s))
         );
       })
-    : TOPIC_INDEX;
+    : baseList;
 
   return (
     <main
@@ -74,7 +86,7 @@ export default function BookIndex() {
       }}
     >
       {/* Header */}
-      <div style={{ marginBottom: 8 }}>
+      <div style={{ marginBottom: 8, display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
         <button
           type="button"
           onClick={() => router.push("/")}
@@ -87,10 +99,25 @@ export default function BookIndex() {
             fontWeight: 700,
             fontSize: 13,
             color: "#374151",
-            marginBottom: 16,
           }}
         >
           ← Back to Ask Solomon
+        </button>
+        <button
+          type="button"
+          onClick={() => router.push("/")}
+          style={{
+            background: "#f0c040",
+            border: "none",
+            borderRadius: 10,
+            padding: "8px 16px",
+            cursor: "pointer",
+            fontWeight: 700,
+            fontSize: 13,
+            color: "#0f172a",
+          }}
+        >
+          Search Proverbs
         </button>
       </div>
 
@@ -129,6 +156,29 @@ export default function BookIndex() {
               : `${filtered.length} topic${filtered.length === 1 ? "" : "s"} found`}
           </div>
         )}
+      </div>
+
+      {/* Category Tabs */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
+        {CATEGORIES.map((cat) => (
+          <button
+            key={cat.id}
+            onClick={() => setActiveCategory(cat.id)}
+            style={{
+              padding: "7px 16px",
+              borderRadius: 20,
+              border: "none",
+              cursor: "pointer",
+              fontSize: 13,
+              fontWeight: 700,
+              background: activeCategory === cat.id ? "#0f172a" : "#f1f5f9",
+              color: activeCategory === cat.id ? "#f0c040" : "#374151",
+              transition: "all 0.15s",
+            }}
+          >
+            {cat.label}
+          </button>
+        ))}
       </div>
 
       {/* Topic Cards */}
