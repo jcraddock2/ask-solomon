@@ -1880,3 +1880,56 @@ Vercel: Change STRIPE_PRICE_ID to price_1T447hDAMsgblXx3uX0PmdCc
 Current $19 price: price_1TZXqADAMsgblXx3oA3yRaex (active until June 1 ONLY)
 
 Last updated: May 25, 2026 -- MailerLite domain authentication DNS records added to Vercel. Awaiting propagation (auto-activates within 24h).
+
+
+SESSION -- May 25, 2026 -- Part 3 (MailerLite Email Fixes: Address, Sequence Order, Opt-In)
+Problems reported by John:
+1. Email footer still showing "208 Whistlewood Ct" (home address) instead of the PO Box
+2. Subscribers receiving Solomon Challenge Day 1 email BEFORE the Welcome email (or simultaneously)
+3. People receiving Solomon Challenge emails without explicitly opting in
+
+FIXES COMPLETED THIS SESSION:
+
+FIX 1 -- Footer Address Updated (Global + Force-Pushed to All Emails)
+Location: MailerLite > Account Settings > Default Settings > Company details
+Old address: 208 Whistlewood Ct, Lynchburg, United States of America
+New address: Ask Solomon, 700 E Main St #2487, Richmond, VA 23219
+Checked "Force-update company details in drafts, ongoing automation emails, templates and published landing pages"
+Confirmed "Update 2 automations" in dialog
+Result: Saved successfully -- address pushed to all automation emails
+
+FIX 2 -- Email Sequence Order Fixed (Welcome goes FIRST, Solomon Challenge starts Day 2)
+Problem: Both automations (Welcome + Solomon Challenge) had the same trigger firing at the same time. Solomon Challenge Day 1 arrived simultaneously or before the Welcome email.
+Fix: Added "Time delay 1" step (Wait 1 day) at the very start of the Solomon Challenge workflow, BEFORE Email 1.
+New Solomon Challenge flow: Trigger > Wait 1 day [NEW] > Email 1 (Day 1) > ... (rest unchanged)
+Welcome email still fires immediately on signup. Solomon Challenge Day 1 now waits 24 hours.
+Automation re-activated after edit.
+
+FIX 3 -- Opt-In Issue (DIAGNOSED, solution options below)
+Root cause: Email capture form on asksolomon.app adds users to "Ask Solomon Subscribers" group. Both automations trigger on that same group. Users only signed up for "wisdom" -- not explicitly for a 10-day challenge.
+The 1-day delay helps (Welcome arrives first) but does not fix the consent gap.
+
+RECOMMENDED NEXT STEP for opt-in (John to decide):
+Option A (Recommended -- easiest): Update the email capture form copy to set expectations:
+  Change button/label to: "Start my free 10-day Solomon wisdom challenge" or
+  "Get 10 days of Solomon's wisdom in your inbox"
+  This way subscribers know what they signed up for before they get Day 1.
+Option B (Most explicit opt-in): In the Welcome email, add a CTA button: "Start the 10-Day Challenge"
+  Clicking it adds them to a second group which triggers the Challenge automation separately.
+Option C (Do nothing extra): The 1-day delay + Welcome-first order may be enough for now.
+
+AUTOMATION STATUS after this session:
+Simple Welcome email: ACTIVE -- fires immediately on group join
+Solomon Challenge -- 10 Days: ACTIVE -- 1-day delay added before Day 1
+
+SENDER / HEADER STATUS:
+Sender name: Ask Solomon
+Sender email: hello@asksolomon.app (DNS verification pending from Part 2)
+Footer address: Ask Solomon, 700 E Main St #2487, Richmond, VA 23219 (FIXED)
+
+JUNE 1 ROLLBACK -- CRITICAL (DO NOT FORGET)
+MailerLite: Remove $19 PS from Emails 1, 2, 3 in Solomon Challenge automation
+Vercel: Change STRIPE_PRICE_ID to price_1T447hDAMsgblXx3uX0PmdCc
+Current $19 price: price_1TZXqADAMsgblXx3oA3yRaex (active until June 1 ONLY)
+
+Last updated: May 25, 2026 -- Part 3. Address fixed. Email order fixed. Opt-in issue diagnosed with solution options.
