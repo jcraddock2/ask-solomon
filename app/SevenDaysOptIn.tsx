@@ -119,7 +119,7 @@ export default function SevenDaysOptIn({ topic }: { topic?: string }) {
         )}
 
         <p style={{ color: '#4a6a8a', fontSize: 13, marginTop: 16 }}>
-          No spam. Unsubscribe anytime. 7 emails total.
+          No spam. Unsubscribe anytime. 10 emails total.
         </p>
       </div>
     </section>
