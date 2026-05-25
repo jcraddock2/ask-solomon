@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'The Solomon Challenge | 7 Days of Biblical Wisdom',
+      title: 'The Solomon Challenge | 10 Days of Biblical Wisdom',
   description: 'Take the Solomon Challenge: 7 days, 7 wisdom principles from Proverbs applied to your real life. Start your free 7-day email course today.',
   keywords: 'solomon challenge, 7 days of solomon, biblical wisdom challenge, proverbs wisdom course, success secrets of solomon, john craddock',
   openGraph: {
@@ -22,6 +22,9 @@ const days = [
   { day: 'Day 5', title: 'Solomon\'s 5 Wealth Principles', preview: 'Firstfruits. Diligence. Debt. Generosity. Knowledge. A framework for financial life that still works.' },
   { day: 'Day 6', title: 'Iron Sharpens Iron', preview: 'Your five closest relationships are shaping you. Are they sharpening you or dulling you?' },
   { day: 'Day 7', title: 'Where There Is No Vision', preview: 'Without vision, the people perish. What is the vision for your life? Today you design it.' },
+  { day: 'Day 8', title: 'You Have Been Thinking About It', preview: 'That thing you keep putting off -- the decision, the change, the step. Today is the day.' },
+  { day: 'Day 9', title: 'The Problem With Free Wisdom', preview: 'Solomon shared his wisdom freely. Most people never came back to apply it. Here is the difference.' },
+  { day: 'Day 10', title: 'Last Call', preview: 'The challenge is complete. But wisdom is a lifelong pursuit. Here is your next step.' },
 ]
 
 export default function SolomonChallengePage() {
@@ -30,12 +33,12 @@ export default function SolomonChallengePage() {
       {/* Hero */}
       <section className="bg-gradient-to-b from-amber-900 via-amber-800 to-amber-700 text-white py-24 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-amber-300 text-sm font-semibold tracking-widest uppercase mb-4">Free 7-Day Email Course</p>
+          <p className="text-amber-300 text-sm font-semibold tracking-widest uppercase mb-4">Free 10-Day Email Course</p>
           <h1 className="text-5xl md:text-7xl font-bold mb-6">
             The Solomon<br />Challenge
           </h1>
           <p className="text-2xl text-amber-100 max-w-2xl mx-auto mb-4">
-            7 days. 7 principles. One question that changes everything.
+            10 days. 10 principles. One question that changes everything.
           </p>
           <p className="text-amber-200 text-lg max-w-xl mx-auto mb-10">
             Solomon asked God for wisdom above all else. Then wealth, honor, and influence followed. Take the challenge and let the same wisdom reshape your life in seven days.
@@ -49,10 +52,10 @@ export default function SolomonChallengePage() {
                 className="px-6 py-4 rounded-full text-gray-900 text-lg w-full focus:outline-none focus:ring-2 focus:ring-amber-400"
               />
               <button className="bg-amber-400 text-amber-900 font-bold px-8 py-4 rounded-full text-lg hover:bg-amber-300 transition-colors w-full">
-                Start the Challenge — It\u2019s Free
+                Start the Challenge — It's Free
               </button>
             </div>
-            <p className="text-amber-300 text-xs mt-3">No spam. Unsubscribe anytime. One email per day for 7 days.</p>
+            <p className="text-amber-300 text-xs mt-3">No spam. Unsubscribe anytime. One email per day for 10 days.</p>
           </div>
         </div>
       </section>
@@ -124,7 +127,7 @@ export default function SolomonChallengePage() {
         <div className="max-w-2xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Start?</h2>
           <p className="text-amber-100 text-xl mb-10">
-            Day 1 arrives in your inbox immediately. No cost. No commitment. Just seven days of wisdom that could reshape how you think, work, and live.
+            Day 1 arrives in your inbox immediately. No cost. No commitment. Just ten days of wisdom that could reshape how you think, work, and live.
           </p>
           <div className="max-w-md mx-auto">
             <div className="flex flex-col gap-3">
@@ -134,7 +137,7 @@ export default function SolomonChallengePage() {
                 className="px-6 py-4 rounded-full text-gray-900 text-lg w-full focus:outline-none focus:ring-2 focus:ring-amber-400"
               />
               <button className="bg-amber-400 text-amber-900 font-bold px-8 py-4 rounded-full text-xl hover:bg-amber-300 transition-colors w-full">
-                Start the 7-Day Solomon Challenge
+                Start the 10-Day Solomon Challenge
               </button>
             </div>
             <p className="text-amber-400 text-xs mt-3">Free forever. Unsubscribe anytime.</p>
