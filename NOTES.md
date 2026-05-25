@@ -1831,3 +1831,52 @@ Current $19 price: price_1TZXqADAMsgblXx3oA3yRaex (active until June 1 ONLY)
 - Google Search Console check: sitemap should now show 35+ pages
 
 Last updated: May 25, 2026 -- Law of Association fully live. Book Index upgraded with category tabs. LAUNCH READY.
+
+
+SESSION -- May 25, 2026 -- Part 2 (MailerLite Domain Authentication / DMS Setup)
+What Was Done This Session
+
+Goal: Make automated MailerLite emails display "Ask Solomon" coming from asksolomon.app instead of John's Gmail address.
+
+What was set up: MailerLite Sending Domain Authentication (sometimes called DMS -- Domain Mail Setup). This authenticates asksolomon.app as a verified sending domain so MailerLite can send emails on behalf of @asksolomon.app without showing Gmail as the origin.
+
+Steps completed:
+
+1. Navigated to MailerLite > Account Settings > Domains
+   - asksolomon.app was already added as a sending domain (status: "Wait to activate")
+   - Clicked "Check status" to reveal the required DNS records
+
+2. Retrieved 3 required DNS records from MailerLite:
+   - CNAME: Name = litesrv._domainkey | Value = litesrv._domainkey.mlsend.com (DKIM signing)
+   - TXT:   Name = @ | Value = v=spf1 a mx include:_spf.mlsend.com ?all (SPF authorization)
+   - TXT:   Name = @ | Value = mailerlite-domain-verification=3b78d789e291889d563e19249de2882c06331724 (domain ownership verification)
+
+3. Navigated to Vercel > Domains > asksolomon.app > DNS Records
+   - Added all 3 records successfully via the Vercel DNS form
+   - All 3 records confirmed visible in the "Current DNS Records" table
+
+4. Returned to MailerLite and clicked "Check records"
+   - Status still shows "Wait to activate" -- this is EXPECTED
+   - DNS propagation can take up to 24 hours (usually 1-4 hours)
+   - MailerLite will send a confirmation email to jcraddock2@yahoo.com when verified
+
+Current Status: PENDING DNS PROPAGATION
+- DNS records are live in Vercel
+- MailerLite is checking -- expect activation within 1-24 hours
+- No action needed from John -- it will activate automatically
+- Once active: all Solomon Challenge emails will show sender as Ask Solomon (asksolomon.app)
+
+DNS Records Now in Vercel (asksolomon.app):
+Name                  | Type  | Value
+google-site-verify... | TXT   | google-site-verification=4qSYldb... (Google Search Console -- pre-existing)
+litesrv._domainkey    | CNAME | litesrv._domainkey.mlsend.com (NEW -- MailerLite DKIM)
+@                     | TXT   | v=spf1 a mx include:_spf.mlsend.com ?all (NEW -- MailerLite SPF)
+@                     | TXT   | mailerlite-domain-verification=3b78... (NEW -- MailerLite domain verify)
+CAA entries           | CAA   | pki.goog / sectigo.com (pre-existing SSL)
+
+JUNE 1 ROLLBACK -- CRITICAL (DO NOT FORGET)
+MailerLite: Remove $19 PS from Emails 1, 2, 3 in Solomon Challenge automation
+Vercel: Change STRIPE_PRICE_ID to price_1T447hDAMsgblXx3uX0PmdCc
+Current $19 price: price_1TZXqADAMsgblXx3oA3yRaex (active until June 1 ONLY)
+
+Last updated: May 25, 2026 -- MailerLite domain authentication DNS records added to Vercel. Awaiting propagation (auto-activates within 24h).
