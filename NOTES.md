@@ -2218,3 +2218,91 @@ John sent screenshots showing:
                                                                                                                                                                              - - John: Product Hunt
                                                                                                                                                                               
                                                                                                                                                                                - Last updated: May 25, 2026 -- Part 6 complete. All opt-ins unified to 10-Day Challenge. Countdown reset to June 2. Ready for launch checks.
+
+
+SESSION -- May 26, 2026 -- Email 8 and 9 Devotion Rewrites + Duplication Fix
+
+WHAT HAPPENED (ROOT CAUSE)
+During a previous session fixing Email 10 (Day 10), Emails 8 and 9 in the Solomon Challenge automation
+were inadvertently reverted to the OLD 7-day challenge scripts. These are different from the
+10-day devotional format -- they were sales/recap content from an earlier version of the automation.
+
+Email 8 had reverted to: "You just completed the 7-Day Solomon Challenge. Seven days. Seven principles..."
+Email 9 had reverted to: "Solomon shared his wisdom freely. 3,000 proverbs...Ask Solomon Pro is a deeper
+version of the app...It is $29 one time..."
+
+EMAILS REWRITTEN THIS SESSION
+
+Email 8 (ID: 188016049113794281)
+Subject: "Day 8 -- You have been thinking about it"
+Theme: Battle of the mind -- Proverbs 23:7 ("As a man thinks in his heart, so is he") + Proverbs 4:23
+("Guard your heart above all else, for everything you do flows from it")
+Content structure:
+  - Day 8 connects back to Day 2 (guarding the heart) as the "deeper cut"
+  - The thought running on repeat at 2am is the diagnostic -- Proverbs 23:7
+  - Three outcomes of thought seeds: fear -> avoidance, bitterness -> resentment, hope -> movement/faith/fruit
+  - Reflection question + Try Ask Solomon CTA + P.S.
+
+Email 9 (ID: 188016320125601601)
+Subject: "Day 9 -- The problem with free wisdom"
+Theme: Wisdom without application -- Proverbs 14:23 ("All hard work brings a profit, but mere talk
+leads only to poverty") + Proverbs 21:25 (sluggard) + Proverbs 4:7 ("get wisdom" -- active pursuit)
+Content structure:
+  - Solomon gave wisdom freely -- 3,000 proverbs, held nothing back
+  - Most walked away unchanged -- wisdom must be applied, not admired
+  - Sluggard craves but does not act (Proverbs 21:25)
+  - The shift: action creates clarity, not the other way around
+  - Proverbs 4:7 -- "get" is an active verb
+  - Reflection + Try Ask Solomon CTA + teaser: "Tomorrow is Day 10 -- the last one."
+
+CRITICAL BUG DISCOVERED AND FIXED: Email 8 Duplication
+
+After the first rewrite attempt, John reported that Email 8 content appeared TWICE in the final
+email output -- the clean devotion followed by fragments of the devotion mixed with the old 7-day
+script.
+
+ROOT CAUSE: Email 8 used a legacy drag-and-drop template that had been edited multiple times.
+The template had accumulated 40 total contenteditable blocks (not the standard 16):
+  - Blocks 0-12: Main content (the new devotion)
+  - Blocks 13-36: Hidden/extra blocks from previous edit sessions -- MailerLite STILL RENDERS
+    these in the final sent email even though they appear empty/hidden in the editor
+  - Blocks 37-39: Footer (company name, address, legal)
+
+The fix: Used JavaScript to explicitly set blocks 13-36 to empty placeholder content
+(<p> </p>) so they render nothing. The main content in blocks 0-12 stays clean.
+
+TECHNICAL PATTERN (for all future Email 8+ edits):
+1. Pause automation
+2. Navigate to email editor (legacy drag-and-drop with content-builder-iframe)
+3. ALWAYS audit block count first:
+   const iframe = document.getElementById('content-builder-iframe');
+   const doc = iframe.contentDocument;
+   const editables = doc.querySelectorAll('[contenteditable="true"]');
+   console.log(editables.length); // MUST check this -- Email 8 had 40, not standard 16
+4. Update content blocks 0-12
+5. CRITICAL: Clear ALL blocks 13-(N-4) by setting innerHTML = '<p> </p>'
+   (N-3, N-2, N-1 are footer blocks -- keep those)
+6. Dispatch input + change events on every modified block
+7. Save via "Done editing"
+8. Re-activate automation
+
+Block counts confirmed:
+  Email 8: 40 total contenteditable blocks (blocks 13-36 must be cleared on every edit)
+  Email 9: 16 total contenteditable blocks (standard -- no duplication issue)
+  Email 10: 16 total contenteditable blocks (standard)
+
+AUTOMATION STATUS
+After all fixes: Solomon Challenge automation -- ACTIVE
+Both emails verified clean in editor preview before saving
+
+JUNE 2 ROLLBACK -- CRITICAL (DO NOT FORGET)
+MailerLite: Remove $19 PS from Emails 1, 2, 3 in Solomon Challenge automation
+Vercel: Change STRIPE_PRICE_ID from price_1TZXqADAMsgblXx3oA3yRaex to price_1T447hDAMsgblXx3uX0PmdCc
+Current $19 founding price: price_1TZXqADAMsgblXx3oA3yRaex (active ONLY until June 2)
+Countdown banner expires June 2 automatically (code in FoundingBanner.tsx handles it)
+
+MAILERLITE TRIAL -- URGENT
+Trial expires in approximately 3 days from May 26. MUST UPGRADE before signups stop processing.
+Navigate to: dashboard.mailerlite.com -> Account -> Plan and billing -> Upgrade
+
+Last updated: May 26, 2026 -- Email 8 and 9 devotions rewritten. Duplication bug fixed. Automation active.
