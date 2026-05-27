@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
-const END = new Date("2026-06-04T23:59:59Z").getTime();h
+const END = new Date("2026-06-04T23:59:59Z").getTime();
 const P = (n: number) => String(n).padStart(2, "0");
 
 export default function FoundingBanner() {
