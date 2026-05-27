@@ -2307,18 +2307,83 @@ Navigate to: dashboard.mailerlite.com -> Account -> Plan and billing -> Upgrade
 
 ---
 
-## Session Log: May 27, 2026
+## SESSION -- May 27, 2026 -- Banner Expiry Reset + TypeScript Fix
 
-### Banner Expiry Extended (8-day reset)
-- User requested reset of $19 founding member countdown banner
-- - Changed FoundingBanner.tsx expiry from 2026-06-02T23:59:59Z to 2026-06-04T23:59:59Z
-  - - Commit: "Extend $19 founding banner expiry from June 2 to June 4, 2026 (8-day reset)"
-    - - UPDATED ROLLBACK DATE: June 4 rollback (was June 2) -- see JUNE 4 ROLLBACK section below
-     
-      - ### JUNE 4 ROLLBACK -- CRITICAL (replaces June 2 rollback)
-      - Same steps as before, just on June 4, 2026:
-      - - MailerLite: Pause Solomon Challenge → open Emails 1, 2, 3 → remove P.P.S. about $19 founding price → save each → re-activate
-        - - Vercel: Settings → Environment Variables → change STRIPE_PRICE_ID from price_1TZXqADAMsgblXx3oA3yRaex back to price_1T447hDAMsgblXx3uX0PmdCc
-          - - Countdown banner expires June 4 automatically (FoundingBanner.tsx now set to 2026-06-04T23:59:59Z)
+### What Happened
 
-Last updated: May 26, 2026 -- Email 8 and 9 devotions rewritten. Duplication bug fixed. Automation active.
+John requested an 8-day reset of the $19 founding member countdown banner because the launch had been delayed from the original June 2 target.
+
+### Changes Made
+
+**1. FoundingBanner.tsx -- Expiry Date Extended (commit: 16dccbd)**
+
+- Changed banner expiry from `2026-06-02T23:59:59Z` to `2026-06-04T23:59:59Z`
+- 8 days from May 27, 2026 = June 4, 2026
+- Commit message: "Extend $19 founding banner expiry from June 2 to June 4, 2026 (8-day reset)"
+
+**2. Vercel Deploy FAILED -- TypeScript Compile Error (commit: bc47d46)**
+
+- After the date change commit, Vercel build failed immediately
+- Error: `Type error: Cannot find name 'h'. app/FoundingBanner.tsx:4:56`
+- Cause: Line 4 had a stray `h` character: `const END = new Date("2026-06-04T23:59:59Z").getTime();h`
+- This stray `h` was a pre-existing bug that had been present since a previous session (earlier "Fix: Remove stray character" commit had not fully removed it)
+- Fixed by opening FoundingBanner.tsx editor again and using Find/Replace: `.getTime();h` -> `.getTime();`
+- Commit message: "Fix: Remove stray 'h' from FoundingBanner line 4 -- TypeScript compile error"
+- Build went GREEN after this commit
+
+**3. NOTES.md -- Session log and rollback date updated (commit: e1fa2c6)**
+
+- Added initial May 27 session entry (later expanded -- this commit)
+- Updated critical rollback section: June 2 -> June 4
+
+### Key Technical Facts
+
+- FoundingBanner.tsx line 4 now reads: `const END = new Date("2026-06-04T23:59:59Z").getTime();`
+- Banner shows countdown to June 4, 2026 at 23:59:59 UTC
+- Banner disappears automatically when the countdown reaches zero
+- Confirmed LIVE on asksolomon.app -- banner showing ~8 days remaining after deploy
+
+### Lesson Learned
+
+When the GitHub CM6 editor Find/Replace tool fires, the keyboard shortcut (Ctrl+H or Ctrl+F) can sometimes land the key character IN the editor instead of opening the toolbar. This is how the stray `h` was introduced in a previous session. ALWAYS use the toolbar search button or verify line content after any find/replace operation in the GitHub editor.
+
+### CRITICAL: JUNE 4 ROLLBACK (replaces all previous June 2 / June 1 rollback deadlines)
+
+**On June 4, 2026, do ALL THREE of these:**
+
+1. **MailerLite** -- Pause Solomon Challenge automation -> open Emails 1, 2, 3 -> remove the P.P.S. about the $19 founding price -> save each -> re-activate
+2. **Vercel** -- Settings -> Environment Variables -> change `STRIPE_PRICE_ID` from `price_1TZXqADAMsgblXx3oA3yRaex` back to `price_1T447hDAMsgblXx3uX0PmdCc`
+3. **Banner** -- Expires automatically at June 4 midnight UTC (no action needed -- FoundingBanner.tsx handles it)
+
+**Why all three must happen same day:** Banner goes dark, but if Stripe price is still $19 and emails still say $19, the price no longer matches what the site was advertising. Rollback all three together.
+
+### Stripe Price IDs (for reference)
+- $19 founding price (ACTIVE until June 4): `price_1TZXqADAMsgblXx3oA3yRaex`
+- $29 regular price (restore June 4): `price_1T447hDAMsgblXx3uX0PmdCc`
+
+### Book Delivery System (verified end-to-end this prior session)
+- Both books confirmed loading for paying users
+- Book 1 (Success Secrets of Solomon): /book route -> /api/book/token -> /api/book/pdf -> 260-page PDF
+- Book 2 (Lessons from a Giant Killer): /giant route -> /api/giant/token -> /api/giant/pdf -> 44-page PDF
+- Test method: Navigate to /success?session_id=cs_test_fake123 -> sets localStorage("asksolomon_pro","1") -> both books load
+- NOTE: /api/book/token and /api/giant/token have no server-side auth -- token is issued to any caller. Access control is purely client-side localStorage check. Low priority fix but worth noting.
+
+### Automation Status (verified)
+- Simple welcome email automation: ACTIVE
+- Solomon Challenge automation: ACTIVE
+
+### MAILERLITE TRIAL -- STILL URGENT
+- Trial was expiring ~3 days from May 26 per previous session notes
+- MUST UPGRADE if not already done: dashboard.mailerlite.com -> Account -> Plan and billing -> Upgrade
+- Growing Business plan: $108/year, 500 subscriber cap
+- No automatic notification when approaching subscriber limit -- watch manually
+
+### Outstanding John Tasks
+- Record Reels (5-shot script from May 21 session)
+- Email book readers (warmest audience)
+- Social launch post
+- Product Hunt submission
+- PDF rename: upload sss-wisdom-book-jc2024.pdf to /public, delete old successsecrets.pdf
+- Google Search Console check: confirm sitemap now shows 35+ pages
+
+Last updated: May 27, 2026 -- Banner reset to June 4. Stray h TypeScript bug fixed. Rollback deadline moved to June 4.
