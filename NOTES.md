@@ -2305,4 +2305,20 @@ MAILERLITE TRIAL -- URGENT
 Trial expires in approximately 3 days from May 26. MUST UPGRADE before signups stop processing.
 Navigate to: dashboard.mailerlite.com -> Account -> Plan and billing -> Upgrade
 
+---
+
+## Session Log: May 27, 2026
+
+### Banner Expiry Extended (8-day reset)
+- User requested reset of $19 founding member countdown banner
+- - Changed FoundingBanner.tsx expiry from 2026-06-02T23:59:59Z to 2026-06-04T23:59:59Z
+  - - Commit: "Extend $19 founding banner expiry from June 2 to June 4, 2026 (8-day reset)"
+    - - UPDATED ROLLBACK DATE: June 4 rollback (was June 2) -- see JUNE 4 ROLLBACK section below
+     
+      - ### JUNE 4 ROLLBACK -- CRITICAL (replaces June 2 rollback)
+      - Same steps as before, just on June 4, 2026:
+      - - MailerLite: Pause Solomon Challenge → open Emails 1, 2, 3 → remove P.P.S. about $19 founding price → save each → re-activate
+        - - Vercel: Settings → Environment Variables → change STRIPE_PRICE_ID from price_1TZXqADAMsgblXx3oA3yRaex back to price_1T447hDAMsgblXx3uX0PmdCc
+          - - Countdown banner expires June 4 automatically (FoundingBanner.tsx now set to 2026-06-04T23:59:59Z)
+
 Last updated: May 26, 2026 -- Email 8 and 9 devotions rewritten. Duplication bug fixed. Automation active.
