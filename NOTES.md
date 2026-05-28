@@ -2307,7 +2307,116 @@ Navigate to: dashboard.mailerlite.com -> Account -> Plan and billing -> Upgrade
 
 ---
 
-## SESSION -- May 27, 2026 -- Banner Expiry Reset + TypeScript Fix
+## SESSION -- May 28, 2026 -- Critical Launch Bugs Fixed: Pro Access + Banner Hiding
+
+TWO CRITICAL BUGS IDENTIFIED AND FIXED THIS SESSION. Both would have destroyed the launch experience.
+
+ROOT CAUSE ANALYSIS
+
+Bug 1 -- Pro access not unlocking after payment (Rena's issue):
+
+The Stripe checkout route at app/api/stripe/checkout/route.ts originally had:
+  success_url: `${baseUrl}/success`
+This sent Stripe users to /success with NO ?session_id parameter.
+
+The success page (app/success/page.tsx) uses useEffect to check:
+  const sessionId = searchParams.get("session_id");
+  if (sessionId && sessionId.startsWith("cs_")) {
+    localStorage.setItem("asksolomon_pro", "1");
+  }
+Because session_id was null (not in the URL), localStorage was never set, and Pro never unlocked.
+
+This was already fixed in commit 84c6733 (15 hours before this session). But Rena's purchase happened BEFORE that fix.
+
+Bug 2 -- Founding banner still showing after purchase:
+
+FoundingBanner.tsx had NO check for isProUser(). The banner showed to ALL users including paying customers. After a user paid and got Pro, the banner continued to flash at them on every page -- humiliating UX for a paying customer.
+
+FIXES APPLIED THIS SESSION
+
+Fix 1 -- Banner hides for Pro users (commit 9b89ce7):
+
+Added isPro state to FoundingBanner.tsx
+useEffect reads localStorage.getItem("asksolomon_pro") === "1"
+Added line 27: if (isPro) return null;
+Banner now immediately disappears for any user with Pro access
+
+Deployed: GREEN -- verified live on asksolomon.app -- banner gone for Pro users
+
+Fix 2 (pre-existing, verified working) -- session_id in success_url (commit 84c6733):
+
+Verified the checkout route now includes ?session_id={CHECKOUT_SESSION_ID} in success_url
+Tested: fetch('/api/stripe/checkout', {method:'POST'}) returns a valid Stripe checkout URL
+Tested: /success?session_id=cs_rena_manual correctly sets localStorage("asksolomon_pro","1")
+Verified: localStorage "1" persists across page navigations on same browser
+
+RENA'S ACCESS -- HOW TO FIX
+
+Rena paid $19 on May 27, 2026 (confirmed via bank transaction screenshot - SUCCESSSECRETSBOOK.COM, $19.00).
+Her Pro access was NOT set because the checkout happened before the session_id fix (commit 84c6733).
+
+The manual URL that Claude previously suggested (https://asksolomon.app/success?session_id=cs_rena_manual) DOES work correctly -- it sets localStorage and unlocks Pro on whatever browser/device visits it.
+
+WHY RENA STILL DID NOT GET ACCESS:
+The most likely reason is that Rena tried the manual URL on a DIFFERENT browser or device than the one she paid on. localStorage is per-browser, per-device. Pro set on her computer will not transfer to her phone, and vice versa.
+
+INSTRUCTIONS FOR RENA (send her this):
+
+"Hi Rena! I'm so sorry for the confusion. Here's how to activate your lifetime access on any device you want to use:
+
+Open this link on the device/browser where you want to use the app:
+https://asksolomon.app/success?session_id=cs_rena_manual
+
+You'll see the 'You are in. Welcome to Pro.' screen -- that means it worked. You can now go to asksolomon.app and you'll have full Pro access with the books, Book Matches, and Book Index.
+
+If you switch to a different device later, just visit that link again on the new device. Once per browser/device."
+
+IMPORTANT NOTE ABOUT ARCHITECTURE LIMITATION:
+The app uses localStorage (client-side browser storage) for Pro status. This means:
+- Pro does NOT sync across devices automatically
+- Each new browser/device requires visiting the success URL once
+- This is a known architectural trade-off (no database = no server-side auth)
+- For now: instruct users to visit the success URL on each device they want to use
+- Long-term fix: add email-based session token or server-side verification
+
+VERIFICATION RESULTS
+
+Test 1 -- Banner hidden for Pro user (PASS):
+Visit asksolomon.app/success?session_id=cs_rena_manual -> localStorage set to "1" -> navigate to asksolomon.app -> NO banner visible. PRO badge in header. Book and Book Index links accessible.
+
+Test 2 -- Banner visible for non-Pro user (PASS):
+In a private/incognito window, visit asksolomon.app -> banner IS visible with countdown. This confirms banner still works for non-buyers.
+
+Test 3 -- Checkout route works (PASS):
+POST /api/stripe/checkout returns a valid cs_live_ Stripe checkout URL. The session includes correct success_url with {CHECKOUT_SESSION_ID} template.
+
+Test 4 -- Success URL sets Pro correctly (PASS):
+Clear localStorage, visit /success?session_id=cs_test_abc123 -> localStorage("asksolomon_pro") === "1". Pro is set. Book, Book Index accessible.
+
+COMMITS THIS SESSION
+9b89ce7 -- Fix: Hide founding banner for Pro users -- banner now disappears after purchase -- DEPLOYED GREEN
+
+LAUNCH READINESS ASSESSMENT (May 28, 2026)
+FIXED THIS SESSION:
+Banner hides after purchase (was showing to all users including buyers)
+Confirmed: session_id fix in checkout works for all new purchases
+
+STILL NEEDS JOHN'S ACTION:
+Send Rena the activation URL (see above instructions)
+MailerLite trial upgrade (URGENT -- trial expiring)
+Record Reels (5-shot script from May 21 notes)
+Email book readers (warmest audience)
+Social launch post + DM copy (ready to paste from May 27 session)
+Product Hunt submission
+
+JUNE 4 ROLLBACK -- CRITICAL (DO NOT FORGET):
+MailerLite: Remove $19 PS from Emails 1, 2, 3 in Solomon Challenge automation
+Vercel: Change STRIPE_PRICE_ID from price_1TZXqADAMsgblXx3oA3yRaex to price_1T447hDAMsgblXx3uX0PmdCc
+Banner expires June 4 automatically (no code action needed)
+
+Last updated: May 28, 2026 -- Two critical launch bugs fixed. Banner hides for Pro. Session_id fix verified. Rena activation instructions written.
+
+SESSION -- May 27, 2026 -- Banner Expiry Reset + TypeScript Fix
 
 ### What Happened
 
