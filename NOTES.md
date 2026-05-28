@@ -2307,7 +2307,43 @@ Navigate to: dashboard.mailerlite.com -> Account -> Plan and billing -> Upgrade
 
 ---
 
-## SESSION -- May 28, 2026 -- Critical Launch Bugs Fixed: Pro Access + Banner Hiding
+## SESSION -- May 28, 2026 -- Part 2: Test Access Page + Notes Correction
+
+MAILERLITE STATUS -- CORRECTED:
+MailerLite is PAID and ACTIVE. Growing Business plan. Trial warning in prior notes is STALE -- ignore any note saying "MailerLite trial urgent." John confirmed he upgraded and it is active.
+
+TEST ACCESS PAGE -- OWNER QA TOOL (commit 27ba41f):
+
+New page created: app/test-access/page.tsx
+Live URL: https://asksolomon.app/test-access?token=solomon2026
+Purpose: Allows John (or any device he owns) to activate Pro mode instantly without a real Stripe payment -- for QA testing across phones, browsers, and email accounts.
+
+HOW IT WORKS:
+- Visit the URL above on any device/browser
+- Page reads ?token=solomon2026 and sets localStorage("asksolomon_pro","1")
+- Shows green checkmark "Pro Access Activated" with a checklist of what to verify
+- Then click "Test the App" to go to asksolomon.app and confirm everything works
+
+WHAT TO CHECK ON EACH DEVICE:
+1. Banner is GONE from the top of the page
+2. Header shows PRO badge (not FREE)
+3. Book and Book Index links are visible in header
+4. Run a search (e.g. "I feel like a failure") -- Book Matches section appears below results
+5. Click "Read the Book" -- full PDF opens
+
+RESET TO FREE MODE (to test the free experience):
+- Visit: https://asksolomon.app/test-access?action=clear
+- This removes localStorage Pro and restores the free user view (banner shows again)
+- Useful to see exactly what a new visitor sees
+
+SECRET TOKEN: solomon2026 (keep private -- do not share publicly)
+
+STRIPE TEST TOKEN FOR RENA / MANUAL ACTIVATIONS:
+Any user who paid but did not get Pro can visit:
+https://asksolomon.app/success?session_id=cs_rena_manual
+This sets Pro on their browser. Must be done once per device/browser they want to use.
+
+SESSION -- May 28, 2026 -- Critical Launch Bugs Fixed: Pro Access + Banner Hiding
 
 TWO CRITICAL BUGS IDENTIFIED AND FIXED THIS SESSION. Both would have destroyed the launch experience.
 
