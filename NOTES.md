@@ -2307,7 +2307,143 @@ Navigate to: dashboard.mailerlite.com -> Account -> Plan and billing -> Upgrade
 
 ---
 
-## SESSION -- May 28, 2026 -- Part 2: Test Access Page + Notes Correction
+## PRE-LAUNCH MASTER CHECKLIST -- May 28, 2026
+FOR CLAUDE AND JOHN: Read this before every session until launch is complete. This is the single source of truth for launch readiness.
+
+=== WHAT BROKE THIS WEEK (honest record) ===
+
+1. STRIPE SUCCESS URL -- MISSING SESSION_ID (fixed May 27, commit 84c6733)
+   What happened: Checkout sent users to /success with no ?session_id= in the URL.
+   Result: localStorage never set. Pro never unlocked. Paying customers saw nothing change.
+   Real victim: Rena -- paid $19, got nothing.
+   Fix: Added ?session_id={CHECKOUT_SESSION_ID} to success_url in checkout route.
+   Status: FIXED. All new purchases work correctly.
+   Rena fix: Send her https://asksolomon.app/success?session_id=cs_rena_manual on the device she wants to use.
+
+2. FOUNDING BANNER SHOWING TO PRO USERS (fixed May 28, commit 9b89ce7)
+   What happened: FoundingBanner.tsx had no check for Pro status. Banner showed to everyone including buyers.
+   Result: A paying customer saw "Unlock Now -- $19" flashing at them after purchasing.
+   Fix: Added isPro check -- banner returns null if localStorage("asksolomon_pro") === "1".
+   Status: FIXED.
+
+3. TYPESCRIPT STRAY H CHARACTER (fixed May 27, commit bc47d46)
+   What happened: GitHub CM6 editor keyboard shortcut (Ctrl+H or Ctrl+F) landed a stray character in the code.
+   Result: Vercel build failed. Site was broken until fixed.
+   Fix: Removed stray h from FoundingBanner.tsx line 4.
+   Prevention: Always use toolbar search button in GitHub editor, never keyboard shortcuts while editor has focus.
+   Status: FIXED. Build green.
+
+4. EMAIL SENDER SHOWING "LLC JOHN CRADDOCK" (fixed May 25)
+   What happened: Each MailerLite email had its own sender override set to the old LLC name/Gmail.
+   Result: Emails looked unprofessional and personal rather than branded.
+   Fix: Changed all automation email senders to "Ask Solomon" / hello@asksolomon.app.
+   Status: FIXED across both automations (10 emails + 3 welcome emails).
+
+5. EMAIL FOOTER SHOWING HOME ADDRESS (fixed May 25)
+   What happened: Footer had hardcoded "208 Whistlewood Ct, Lynchburg" in individual email templates.
+   Result: Personal home address exposed in every email.
+   Fix: Changed to "Ask Solomon / 700 E Main St #2487, Richmond, VA 23219" in all emails.
+   Status: FIXED.
+
+6. SOLOMON CHALLENGE ARRIVING BEFORE WELCOME EMAIL (fixed May 25)
+   What happened: Both automations had the same trigger, Day 1 fired simultaneously with the welcome.
+   Fix: Moved Solomon Challenge to explicit opt-in -- user must click button in welcome email to start the 10-day series.
+   Status: FIXED. Welcome fires first. Challenge only fires if user clicks "Start My 10-Day Challenge."
+
+7. EMAIL 8 CONTENT DUPLICATION (fixed May 26, commit 11616c7)
+   What happened: Email 8 used a legacy template with 40 contenteditable blocks (standard is 16). Hidden blocks rendered on send.
+   Result: Email 8 showed the devotion content TWICE with old script fragments appended.
+   Fix: Cleared all extra blocks 13-36. Email 8 now clean.
+   Status: FIXED. Future edits to Email 8 must audit block count first.
+
+8. OG IMAGE SHOWING OLD VERCEL DOMAIN (fixed May 27, commit 6e8a9d5)
+   What happened: /public/og-image.png had ask-solomon.vercel.app baked into the image pixels.
+   Result: Social media link previews showed wrong URL.
+   Fix: Built new dynamic opengraph-image.tsx using Next.js ImageResponse API.
+   Status: FIXED. asksolomon.app/opengraph-image is live with correct URL.
+
+=== PRE-LAUNCH VERIFICATION CHECKLIST ===
+Run through every item below before posting the first public launch message.
+
+STRIPE & PAYMENT
+[ ] Visit asksolomon.app/upgrade -- page loads, shows $19 founding member price
+[ ] Click Unlock Now -- Stripe checkout opens (do not complete -- just verify it opens)
+[ ] Checkout shows "Ask Solomon -- Lifetime Access" and $19.00
+[ ] Cancel URL returns to /upgrade (not a 404)
+[ ] Verify STRIPE_PRICE_ID in Vercel is still price_1TZXqADAMsgblXx3oA3yRaex ($19 founding price)
+
+POST-PURCHASE FLOW
+[ ] Visit asksolomon.app/success?session_id=cs_test_launch2026 on a clean browser (incognito)
+[ ] Page shows "You are in. Welcome to Pro." -- no redirect away
+[ ] Banner is GONE on that browser after visiting success page
+[ ] PRO badge shows in header
+[ ] Book and Book Index links visible
+[ ] Search "I feel like a failure" -- Book Matches section appears with chapter/page references
+[ ] Click "Read the Book" -- PDF opens (Success Secrets of Solomon)
+
+BANNER BEHAVIOR
+[ ] Incognito/fresh browser: banner IS showing with countdown
+[ ] After visiting success URL: banner is GONE
+[ ] Banner countdown shows correct days remaining (should be ~6-7 days from May 28)
+
+EMAILS -- SEND A TEST TO YOURSELF BEFORE LAUNCH
+[ ] In MailerLite, pause Solomon Challenge automation
+[ ] Open Email 1 (Day 1) -- sender shows "Ask Solomon" not "John Craddock LLC"
+[ ] Footer shows "Ask Solomon / 700 E Main St #2487, Richmond, VA 23219"
+[ ] No home address anywhere
+[ ] Reactivate automation
+[ ] Do the same spot-check on Welcome email (simple automation)
+[ ] Send a test email to yourself from MailerLite and read it on your phone
+
+FOUNDING BANNER
+[ ] Banner shows "$19 Founding Member" with countdown clock
+[ ] Countdown shows correct number of days (expires June 4, 2026)
+[ ] Clicking banner goes to /upgrade
+[ ] Banner does NOT show to Pro users (verified above)
+
+APP FUNCTIONALITY SPOT-CHECK (do this on your PHONE)
+[ ] Search "I feel like a failure" -- wisdom card appears
+[ ] Search "I am afraid" -- wisdom card appears
+[ ] Search "my marriage is struggling" -- wisdom card appears
+[ ] All searches return a full response (headline, insight, reflection, next step)
+[ ] No broken text, no mojibake characters visible
+[ ] Hero chips ("I feel like a failure", "I can't control my anger" etc.) -- clicking each one runs a search
+
+BOOK ACCESS (Pro only -- activate with test-access first)
+[ ] Visit asksolomon.app/test-access?token=solomon2026 on phone
+[ ] Green "Pro Access Activated" screen shows
+[ ] Go to main app -- Book and Book Index visible in header
+[ ] Click Book -- PDF loads (Success Secrets of Solomon)
+[ ] Click Book Index -- all 30+ topics show with category tabs
+[ ] Run a search -- Book Matches section appears with specific chapter + page references
+
+RENA (founding customer -- needs manual fix)
+[ ] Send Rena: https://asksolomon.app/success?session_id=cs_rena_manual
+[ ] Tell her: open on each device/browser she wants to use, it activates immediately
+[ ] Confirm she can access the book and sees PRO badge
+[ ] She paid $19 on May 27. She deserves a personal apology and full access. She is your first founding member.
+
+=== JUNE 4 ROLLBACK (DO NOT MISS) ===
+On June 4, 2026 -- do ALL THREE same day:
+1. MailerLite: Pause Solomon Challenge -> open Emails 1, 2, 3 -> remove P.P.S. about $19 founding price -> save -> reactivate
+2. Vercel: Settings -> Environment Variables -> change STRIPE_PRICE_ID to price_1T447hDAMsgblXx3uX0PmdCc
+3. Banner: expires automatically at June 4 midnight UTC (no code needed)
+Note: If banner goes dark while emails still say $19 and Stripe still charges $19 = confusing mismatch. All three must happen same day.
+
+=== CURRENT DEPLOYMENT STATUS (May 28, 2026 end of day) ===
+Latest commits (all green):
+- fa7141d -- NOTES.md May 28 Part 2 corrections
+- 27ba41f -- Add /test-access page (owner QA tool)
+- e06fafa -- NOTES.md May 28 session log
+- 9b89ce7 -- Fix: Banner hides for Pro users
+- 84c6733 -- Fix: session_id added to Stripe success_url
+- 6e8a9d5 -- Add opengraph-image.tsx (correct URL)
+- bc47d46 -- Fix: stray h TypeScript error
+
+All critical launch bugs are fixed as of May 28, 2026.
+The app is launch-ready pending the manual verification checklist above.
+
+SESSION -- May 28, 2026 -- Part 2: Test Access Page + Notes Correction
 
 MAILERLITE STATUS -- CORRECTED:
 MailerLite is PAID and ACTIVE. Growing Business plan. Trial warning in prior notes is STALE -- ignore any note saying "MailerLite trial urgent." John confirmed he upgraded and it is active.
