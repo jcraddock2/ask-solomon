@@ -1,46 +1,20 @@
 // app/api/auth/verify/route.ts
-// Validates a magic link token and sets a Pro cookie valid for 1 year.
-// Token format: base64(email):base64(timestamp:secret_hash)
-// GET /api/auth/verify?token=xxx&email=yyy
-
-import { kv } from "@vercel/kv";
-
+// Validates magic link token, sets Pro cookie 1 year.
+import { Redis } from "@upstash/redis";
 export const runtime = "nodejs";
-
+const redis = new Redis({ url: process.env.UPSTASH_REDIS_REST_KV_REST_API_URL || "", token: process.env.UPSTASH_REDIS_REST_KV_REST_API_TOKEN || "" });
 export async function GET(req: Request) {
-    const { searchParams } = new URL(req.url);
-    const token = searchParams.get("token");
-    const email = searchParams.get("email");
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://asksolomon.app";
-
-  if (!token || !email) {
-        return Response.redirect(`${baseUrl}/login?error=invalid`);
-  }
-
-  // Look up token in KV store
-  const storedEmail = await kv.get<string>(`magic:${token}`);
-
-  if (!storedEmail || storedEmail.toLowerCase() !== email.toLowerCase()) {
-        return Response.redirect(`${baseUrl}/login?error=expired`);
-  }
-
-  // Verify this email is a Pro user
-  const isPro = await kv.get<string>(`pro:${email.toLowerCase()}`);
-
-  if (!isPro) {
-        return Response.redirect(`${baseUrl}/login?error=notpro`);
-  }
-
-  // Delete token so it can't be reused
-  await kv.del(`magic:${token}`);
-
-  // Set Pro cookie for 1 year
-  const oneYear = 60 * 60 * 24 * 365;
-    const response = Response.redirect(`${baseUrl}/`);
-    response.headers.set(
-          "Set-Cookie",
-          `asksolomon_pro=1; Path=/; Max-Age=${oneYear}; SameSite=Lax; Secure`
-        );
-
-  return response;
+      const { searchParams } = new URL(req.url);
+      const token = searchParams.get("token");
+      const email = searchParams.get("email");
+      const base = process.env.NEXT_PUBLIC_BASE_URL || "https://asksolomon.app";
+      if (!token || !email) return Response.redirect(`${base}/login?error=invalid`);
+      const stored = await redis.get<string>(`magic:${token}`);
+      if (!stored || stored.toLowerCase() !== email.toLowerCase()) return Response.redirect(`${base}/login?error=expired`);
+      const isPro = await redis.get(`pro:${email.toLowerCase()}`);
+      if (!isPro) return Response.redirect(`${base}/login?error=notpro`);
+      await redis.del(`magic:${token}`);
+      const res = Response.redirect(`${base}/`);
+      res.headers.set("Set-Cookie", `asksolomon_pro=1; Path=/; Max-Age=${60*60*24*365}; SameSite=Lax; Secure`);
+      return res;
 }
