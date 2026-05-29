@@ -2665,6 +2665,108 @@ When the GitHub CM6 editor Find/Replace tool fires, the keyboard shortcut (Ctrl+
 - Social launch post
 - Product Hunt submission
 - PDF rename: upload sss-wisdom-book-jc2024.pdf to /public, delete old successsecrets.pdf
+- 
+---
+
+## SESSION NOTES — May 29, 2026 (Sign-In / Auth System Build)
+
+### What Was Built This Session
+
+The entire magic link authentication system was built and deployed. Users now sign in passwordlessly via an email link. No OAuth, no passwords.
+
+---
+
+### Auth Flow (How It Works End-to-End)
+
+1. Customer pays on Stripe checkout
+2. 2. Stripe fires webhook → `/api/stripe/webhook/route.ts`
+   3. 3. Webhook saves `pro:{email} = "1"` in Upstash Redis
+      4. 4. Webhook immediately generates a magic link token (32-byte hex, 15-min TTL)
+         5. 5. Webhook emails the customer via MailerLite transactional API with subject "Your Ask Solomon access link"
+            6. 6. Customer clicks the link → `/api/auth/verify?token=...&email=...`
+               7. 7. Verify route checks token in Redis, checks `pro:{email}` exists, deletes token, sets cookie
+                  8. 8. Cookie: `asksolomon_pro=1; Path=/; Max-Age=315360000; SameSite=Lax; Secure` (10 years)
+                     9. 9. Customer is redirected to homepage, stays logged in for 10 years automatically
+                       
+                        10. If a customer ever needs to log in on a new device: they go to `/login`, enter their email, get a new magic link emailed instantly.
+                       
+                        11. ---
+                       
+                        12. ### Key Files (Auth System)
+                       
+                        13. | File | Purpose |
+                        14. |------|---------|
+                        15. | `app/login/page.tsx` | Login UI — email form, sends POST to /api/auth/send-link |
+                        16. | `app/api/auth/send-link/route.ts` | Checks Pro status, generates token, emails magic link |
+                        17. | `app/api/auth/verify/route.ts` | Validates token, sets 10-year Pro cookie |
+                        18. | `app/api/stripe/webhook/route.ts` | Saves Pro flag in Redis + auto-sends first magic link on purchase |
+                        19. | `app/lib/access.ts` | Checks `asksolomon_pro` cookie for page-level access gating |
+                       
+                        20. ---
+                       
+                        21. ### Commits Made This Session
+                       
+                        22. | Commit | Description |
+                        23. |--------|-------------|
+                        24. | `c51ccad` | Fix: remove stray emoji before "use client" in login/page.tsx |
+                        25. | `fd96169` | Fix: FoundingBanner.tsx duplicate JSX closing tags |
+                        26. | `9b9f7ee` | Fix: login/page.tsx multiple duplicate JSX closing tags |
+                        27. | `c5aaee6` | Fix: login/page.tsx Suspense tag + spurious blank line |
+                        28. | `463f221` | Fix: replace @vercel/kv with @upstash/redis in package.json |
+                        29. | `d43d29c` | Fix: extend Pro cookie from 1 year to 10 years |
+                        30. | `6f0c376` | Feat: send magic link email automatically after Stripe purchase |
+                       
+                        31. ---
+                       
+                        32. ### Environment Variables (all confirmed set in Vercel)
+                       
+                        33. | Variable | Purpose |
+                        34. |----------|---------|
+                        35. | `UPSTASH_REDIS_REST_KV_REST_API_URL` | Redis connection URL |
+                        36. | `UPSTASH_REDIS_REST_KV_REST_API_TOKEN` | Redis auth token |
+                        37. | `MAILERLITE_API_KEY` | MailerLite transactional email API key |
+                        38. | `STRIPE_SECRET_KEY` | Stripe payments (shows "Needs Attention" billing warning — not broken) |
+                        39. | `STRIPE_WEBHOOK_SECRET` | Validates incoming Stripe webhook signatures |
+                        40. | `STRIPE_PRICE_ID` | Stripe price for $19 lifetime access |
+                        41. | `NEXT_PUBLIC_BASE_URL` | https://asksolomon.app |
+                       
+                        42. ---
+                       
+                        43. ### Redis Key Schema
+                       
+                        44. | Key | Value | TTL | Purpose |
+                        45. |-----|-------|-----|---------|
+                        46. | `pro:{email}` | `"1"` | None (permanent) | Marks user as paid Pro |
+                        47. | `magic:{token}` | `{email}` | 900 seconds (15 min) | Magic link one-time token |
+                       
+                        48. ---
+                       
+                        49. ### What Still Needs Testing
+                       
+                        50. - [ ] **End-to-end purchase test**: Buy at /upgrade, confirm magic link email arrives, click it, confirm cookie is set and Pro content loads
+                            - [ ] - [ ] **New device login test**: Go to /login on a different browser, enter Pro email, confirm magic link arrives and works
+                            - [ ] - [ ] **Stripe webhook verified**: Check Stripe dashboard → Webhooks to confirm endpoint `https://asksolomon.app/api/stripe/webhook` is receiving events with 200 status
+                            - [ ] - [ ] **Upstash Redis check**: Log into upstash.com, confirm `pro:{email}` keys exist for paying customers
+                            - [ ] - [ ] **MailerLite plan**: Trial may have expired — check dashboard.mailerlite.com → Account → Plan and billing. Need Growing Business plan ($108/year)
+                           
+                            - [ ] ---
+                           
+                            - [ ] ### Outstanding John Tasks (from prior sessions, still open)
+                           
+                            - [ ] - Record Reels (5-shot script from May 21 session)
+                            - [ ] - Email book readers (warmest audience)
+                            - [ ] - Social launch post
+                            - [ ] - Product Hunt submission
+                            - [ ] - PDF rename: upload sss-wisdom-book-jc2024.pdf to /public, delete old successsecrets.pdf
+                            - [ ] - Google Search Console check: confirm sitemap now shows 35+ pages
+                           
+                            - [ ] ---
+                           
+                            - [ ] ### Founding Member Price Rollback (June 4, 2026)
+                           
+                            - [ ] - June 4: Change Stripe price from $19 back to $29 (price_1T447hDAMsgb1Xx3uX0PmdCc)
+                            - [ ] - June 4: Update all email copy from $19 to $29
+                            - [ ] - June 4: FoundingBanner.tsx expires automatically — no action needed
 - Google Search Console check: confirm sitemap now shows 35+ pages
 
 Last updated: May 27, 2026 -- Banner reset to June 4. Stray h TypeScript bug fixed. Rollback deadline moved to June 4.
