@@ -30,13 +30,13 @@ export default function FoundingBanner() {
     if (isPro) return null;
     return (
           <div onClick={() => window.location.href="/upgrade"} style={{ position:"fixed",top:0,left:0,right:0,zIndex:9999,background:"linear-gradient(90deg,#0d1b2a,#1a2e42,#0d1b2a)",borderBottom:"2px solid #d4af37",padding:"6px 16px",display:"flex",alignItems:"center",justifyContent:"center",gap:"10px",cursor:"pointer",flexWrap:"wrap" }}>
-                  <b style={{ background:"#d4af37",color:"#0d1b2a",fontWeight:900,fontSize:13,padding:"3px 10px",borderRadius:20,opacity:fl?1:0.4,transition:"opacity 0.6s",whiteSpace:"nowrap" }}>FOUNDING MEMBER: $19</b>b>
-                  <span style={{ color:"#f5e06e",fontWeight:700,fontSize:13,whiteSpace:"nowrap" }}>Lifetime access</span>span>
-                  <span style={{ color:"rgba(255,255,255,0.45)",textDecoration:"line-through",fontSize:13 }}>$29</span>span>
+                  <b style={{ background:"#d4af37",color:"#0d1b2a",fontWeight:900,fontSize:13,padding:"3px 10px",borderRadius:20,opacity:fl?1:0.4,transition:"opacity 0.6s",whiteSpace:"nowrap" }}>FOUNDING MEMBER: $19</b>
+                  <span style={{ color:"#f5e06e",fontWeight:700,fontSize:13,whiteSpace:"nowrap" }}>Lifetime access</span>
+                  <span style={{ color:"rgba(255,255,255,0.45)",textDecoration:"line-through",fontSize:13 }}>$29</span>
                   <span style={{ color:"#d4af37",fontSize:12,fontWeight:600,fontFamily:"monospace",whiteSpace:"nowrap" }}>
                     {`Expires: ${tl.d}d ${P(tl.h)}h ${P(tl.m)}m ${P(tl.s)}s`}
-                  </span>span>
-                  <b style={{ color:"#d4af37",fontSize:13,fontWeight:900,whiteSpace:"nowrap" }}>Unlock Now</b>b>
-              </div>div>
+                  </span>
+                  <b style={{ color:"#d4af37",fontSize:13,fontWeight:900,whiteSpace:"nowrap" }}>Unlock Now</b>
+              </div>
         );
 }
