@@ -2769,4 +2769,122 @@ The entire magic link authentication system was built and deployed. Users now si
                             - [ ] - June 4: FoundingBanner.tsx expires automatically — no action needed
 - Google Search Console check: confirm sitemap now shows 35+ pages
 
+
+---
+
+## SESSION NOTES — June 1, 2026 (Email Fixes + Countdown Reset)
+
+### What Was Done This Session
+
+Two areas of work: (1) fixing the post-purchase and magic-link email system that was silently failing, and (2) resetting the founding member countdown banner because the launch has been delayed for more testing.
+
+---
+
+### Part 1 — Email System Fixes
+
+Both `app/api/stripe/webhook/route.ts` and `app/api/auth/send-link/route.ts` were updated in the same commit (9bcd6c7) from the prior session. Documenting here for continuity.
+
+#### app/api/stripe/webhook/route.ts (post-purchase email)
+- **Fixed MailerLite endpoint:** was `/api/emails`, corrected to `/api/transactional-emails`
+- - **Extended magic link expiry:** was 900 seconds (15 min), now 604800 seconds (7 days)
+  - - **Added error logging:** if MailerLite returns non-200, logs `emailRes.status` + response body to Vercel logs
+    - - **Added MAILERLITE_API_KEY guard:** logs clear error if env var is missing instead of silently failing
+      - - **Updated email subject:** "Your Ask Solomon access link" → "Thank you! Here is your Ask Solomon access link"
+        - - **Updated email body:** mentions 7-day expiry and includes link to /login for future access on new devices
+         
+          - #### app/api/auth/send-link/route.ts (manual magic link for returning users)
+          - - Same MailerLite endpoint fix: `/api/emails` → `/api/transactional-emails`
+            - - Same 7-day expiry for magic tokens
+              - - Same error logging and MAILERLITE_API_KEY guard
+                - - Email subject: "Your Ask Solomon login link" (generic, no pricing — correct)
+                  - - Email body: clean, no deadline or price references — stays accurate permanently
+                   
+                    - #### What These Emails Do NOT Contain (intentional)
+                    - - No price ($19 or $29) in either email — correct, keeps them evergreen
+                      - - No launch deadline or countdown reference — correct
+                        - - Only the webhook email (post-purchase) references the founding member offer indirectly via subject line
+                         
+                          - ---
+
+                          ### Part 2 — Founding Member Countdown Banner Reset
+
+                          **File:** `app/FoundingBanner.tsx`
+                          **Commit:** `75da867` — "Reset founding member countdown to 9 days (June 10, 2026)"
+
+                          - **Before:** `const END = new Date("2026-06-04T23:59:59Z").getTime();` (already expired/past)
+                          - - **After:** `const END = new Date("2026-06-10T23:59:59Z").getTime();` (9 days from June 1, 2026)
+                           
+                            - **Reason for reset:** Launch has been delayed again due to ongoing issues needing testing before going live. A 9-day window gives more time to verify end-to-end purchase → email → access flow before the price reverts to $29.
+                           
+                            - ---
+
+                            ### Updated: Founding Member Price Rollback (NOW June 10, 2026)
+
+                            > **IMPORTANT: The rollback date has moved from June 4 → June 10, 2026.**
+                            > > Update the checklist below accordingly.
+                            > >
+                            > > - [ ] - June 10: Change Stripe price from $19 back to $29 (price_1T447hDAMsgblXx3uX0PmdCc)
+                            > > - [ ] - [ ] - June 10: Update all email copy from $19 to $29 if any emails reference the price
+                            > > - [ ] - [ ] - June 10: FoundingBanner.tsx expires automatically — no action needed (END date is June 10)
+                            > >
+                            > > - [ ] ---
+                            > >
+                            > > - [ ] ### Current State of Key Files (as of June 1, 2026)
+                            > >
+                            > > - [ ] | File | Status | Notes |
+                            > > - [ ] |------|--------|-------|
+                            > > - [ ] | `app/FoundingBanner.tsx` | ✅ Updated | Countdown ends June 10, 2026 at 23:59:59 UTC. Hides for Pro users. |
+                            > > - [ ] | `app/api/stripe/webhook/route.ts` | ✅ Fixed | Correct MailerLite endpoint, 7-day tokens, error logging |
+                            > > - [ ] | `app/api/auth/send-link/route.ts` | ✅ Fixed | Same fixes as webhook email |
+                            > > - [ ] | `app/api/auth/verify/route.ts` | ✅ Unchanged | Validates magic token, sets 10-year Pro cookie |
+                            > > - [ ] | `app/login/page.tsx` | ✅ Unchanged | Email form → POST to /api/auth/send-link |
+                            > > - [ ] | `app/upgrade/page.tsx` | ✅ Active | Shows $19 founding price, $29 strikethrough |
+                            > > - [ ] | `app/page.tsx` | ✅ Active | "Unlock Pro — $19 Founding Member" CTA |
+                            > >
+                            > > - [ ] ---
+                            > >
+                            > > - [ ] ### What Still Needs Testing (carry-forward from prior session)
+                            > >
+                            > > - [ ] - [ ] **End-to-end purchase test:** Buy at /upgrade, confirm magic link email arrives within 60 seconds, click it, confirm cookie is set and Pro content loads
+                            > > - [ ] - [ ] **New device login test:** Go to /login on a different browser, enter Pro email, confirm magic link arrives and works
+                            > > - [ ] - [ ] **Stripe webhook verified:** Check Stripe dashboard → Webhooks to confirm endpoint `https://asksolomon.app/api/stripe/webhook` is receiving events with 200 status
+                            > > - [ ] - [ ] **Upstash Redis check:** Log into upstash.com, confirm `pro:{email}` keys exist for paying customers
+                            > > - [ ] - [ ] **MailerLite plan:** Trial may have expired — check dashboard.mailerlite.com → Account → Plan and billing. Need Growing Business plan ($108/year) to send transactional emails reliably
+                            > >
+                            > > - [ ] ---
+                            > >
+                            > > - [ ] ### Outstanding John Tasks (still open from prior sessions)
+                            > >
+                            > > - [ ] - [ ] - Record Reels (5-shot script from May 21 session)
+                            > > - [ ] - [ ] - Email book readers (warmest audience)
+                            > > - [ ] - [ ] - Social launch post
+                            > > - [ ] - [ ] - Product Hunt submission
+                            > > - [ ] - [ ] - PDF rename: upload sss-wisdom-book-jc2024.pdf to /public, delete old successsecrets.pdf
+                            > > - [ ] - [ ] - Google Search Console check: confirm sitemap now shows 35+ pages
+                            > >
+                            > > - [ ] ---
+                            > >
+                            > > - [ ] ### Stripe Price IDs (for reference — do not lose these)
+                            > >
+                            > > - [ ] - $19 founding price (ACTIVE until June 10): `price_1TZXqADAMsgblXx3oA3yRaex`
+                            > > - [ ] - $29 regular price (restore June 10): `price_1T447hDAMsgblXx3uX0PmdCc`
+                            > > - [ ] - Env var to change in Vercel: `STRIPE_PRICE_ID`
+                            > >
+                            > > - [ ] ---
+                            > >
+                            > > - [ ] ### Environment Variables (all confirmed set in Vercel)
+                            > >
+                            > > - [ ] | Variable | Purpose |
+                            > > - [ ] |----------|---------|
+                            > > - [ ] | `UPSTASH_REDIS_REST_KV_REST_API_URL` | Redis URL |
+                            > > - [ ] | `UPSTASH_REDIS_REST_KV_REST_API_TOKEN` | Redis auth token |
+                            > > - [ ] | `STRIPE_SECRET_KEY` | Stripe API key |
+                            > > - [ ] | `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret |
+                            > > - [ ] | `STRIPE_PRICE_ID` | Currently set to $19 price — change to $29 on June 10 |
+                            > > - [ ] | `MAILERLITE_API_KEY` | MailerLite transactional email key — verify not expired |
+                            > > - [ ] | `NEXT_PUBLIC_BASE_URL` | https://asksolomon.app |
+                            > >
+                            > > - [ ] ---
+                            > >
+                            > > - [ ] Last updated: June 1, 2026 -- Email system fixed (webhook + send-link). Countdown banner reset to June 10, 2026 (9 days). Rollback date updated from June 4 to June 10.
 Last updated: May 27, 2026 -- Banner reset to June 4. Stray h TypeScript bug fixed. Rollback deadline moved to June 4.
