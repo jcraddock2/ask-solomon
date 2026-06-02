@@ -2886,5 +2886,106 @@ Both `app/api/stripe/webhook/route.ts` and `app/api/auth/send-link/route.ts` wer
                             > >
                             > > - [ ] ---
                             > >
-                            > > - [ ] Last updated: June 1, 2026 -- Email system fixed (webhook + send-link). Countdown banner reset to June 10, 2026 (9 days). Rollback date updated from June 4 to June 10.
+                            > > - [ ] Last updated: June 1, 2026 -- Email system fixed (webhook + send-link). Countdown banner reset to June 10, 2026 (9 days).
+                            > > - [ ]
+                            > > - [ ] ---
+                            > > - [ ]
+                            > > - [ ] ## SYSTEM CHECK — June 2, 2026 (Full Infrastructure Audit)
+                            > > - [ ]
+                            > > - [ ] > **FOR CLAUDE:** All items below were verified live. Read this before touching anything so you know exactly what state the system is in.
+                            > > - [ ]
+                            > > - [ ] ---
+                            > > - [ ]
+                            > > - [ ] ### ✅ Vercel Environment Variables — ALL CONFIRMED SET
+                            > > - [ ]
+                            > > - [ ] | Variable | Status | Value / Notes |
+                            > > - [ ] |----------|--------|--------------|
+                            > > - [ ] | `STRIPE_SECRET_KEY` | ✅ Set | Sensitive. Updated June 2. |
+                            > > - [ ] | `STRIPE_WEBHOOK_SECRET` | ✅ Set | Sensitive. Updated June 2. **⚠️ ROTATE THIS — see security note below.** |
+                            > > - [ ] | `STRIPE_PRICE_ID` | ✅ **Confirmed $19** | Value = `price_1TZXqADAMsgblXx3oA3yRaex` (founding member price). Updated May 21. |
+                            > > - [ ] | `UPSTASH_REDIS_REST_KV_URL` | ✅ Set | Added May 29 |
+                            > > - [ ] | `UPSTASH_REDIS_REST_KV_REST_API_TOKEN` | ✅ Set | Added May 29 |
+                            > > - [ ] | `UPSTASH_REDIS_REST_REDIS_URL` | ✅ Set | Added May 29 |
+                            > > - [ ] | `UPSTASH_REDIS_REST_READ_ONLY_TOKEN` | ✅ Set | Added May 29 |
+                            > > - [ ] | `SOLOMON_CHALLENGE_GROUP_ID` | ✅ Set | Added May 25 |
+                            > > - [ ] | `MAILERLITE_API_KEY` | ✅ Set | Added May 15 |
+                            > > - [ ] | `NEXT_PUBLIC_BASE_URL` | ✅ Set | https://asksolomon.app. Updated Feb 24. |
+                            > > - [ ] | `ADMIN_SECRET` | ✅ Set | Added June 1 |
+                            
+                            ---
+
+                            ### ✅ MailerLite — PAID PLAN ACTIVE, NO ACTION NEEDED
+
+                            - **Plan:** Growing Business ($15/month, auto-renewing)
+                            - - **Next payment due: June 27, 2026** — no interruption risk before the June 10 rollback deadline
+                              - - **Subscribers:** 7 of 1,000 used (0%)
+                                - - **Monthly emails sent:** 30 of Unlimited
+                                  - - **Previous concern ("trial may have expired") is CLOSED** — it is on a paid subscription, not a trial
+                                    -
+                                    - ---
+                                    -
+                                    - ### ✅ Stripe Webhook — ACTIVE, ENDPOINT CORRECT
+                                    -
+                                    - From John's screenshot (verified June 2, 2026):
+                                    - - **Status:** Active
+                                      - - **Endpoint URL:** `https://asksolomon.app/api/stripe/webhook` ✅
+                                        - - **Listening to:** 1 event (checkout.session.completed)
+                                          - - **Total deliveries this week:** 0 (no real purchases yet — expected)
+                                            - - **Failed deliveries:** 0
+                                              -
+                                              - ---
+                                              -
+                                              - ### 🚨 SECURITY ACTION REQUIRED: Rotate STRIPE_WEBHOOK_SECRET
+                                              -
+                                              - The Stripe webhook signing secret was accidentally exposed in a screenshot shared in the Claude chat. It must be rotated immediately.
+                                              -
+                                              - **Steps (John must do this):**
+                                              - 1. Go to dashboard.stripe.com → Workbench → Webhooks
+                                                2. 2. Click the webhook endpoint (exquisite-celebration)
+                                                   3. 3. Next to the signing secret, click the **rotate icon** (circular arrow)
+                                                      4. 4. Copy the new `whsec_...` value
+                                                         5. 5. Go to vercel.com → ask-solomon → Environment Variables → `STRIPE_WEBHOOK_SECRET` → Edit → paste the new value → Save
+                                                            6. 6. Redeploy (or Vercel will pick it up on next deploy automatically if you push any commit)
+                                                               7.
+                                                               8. **Until this is rotated, anyone with the old secret could forge Stripe events and grant themselves free Pro access.**
+                                                               9.
+                                                               10. ---
+                                                               11.
+                                                               12. ### ✅ End-to-End Access Flow — TESTED AND WORKING (June 2, 2026)
+                                                               13.
+                                                               14. All tests passed on asksolomon.app:
+                                                               15.
+                                                               16. | Test | Result |
+                                                               17. |------|--------|
+                                                               18. | `/success?session_id=cs_test_fake123` | ✅ "You are in. Welcome to Pro." page loaded |
+                                                               19. | Founding member banner after Pro set | ✅ Banner disappears for Pro users (hiding logic works) |
+                                                               20. | `/book` with Pro cookie | ✅ Success Secrets of Solomon PDF loaded (260 pages) |
+                                                               21. | "Bonus Book: Giant Killer" button | ✅ Visible |
+                                                               22. | `/login` page | ✅ Renders correctly with correct copy |
+                                                               23. | `/test-access` with no token | ✅ "Access Denied — Invalid or missing token" |
+                                                               24. | `/api/auth/send-link` POST (non-Pro email) | ✅ Returns `{"ok":true}` silently — correct |
+                                                               25. | Vercel logs (last 30 min) | ✅ 0 errors, 0 warnings, 0 fatal |
+                                                               26. | Countdown banner on live site | ✅ Showing "8d 10h 21m" — counting to June 10 |
+                                                               27.
+                                                               28. ---
+                                                               29.
+                                                               30. ### ⚠️ Upstash Redis — NOT YET VERIFIED DIRECTLY
+                                                               31.
+                                                               32. - Could not log into upstash.com console in this session (domain access issue)
+                                                                   - - Indirect evidence it works: `/api/auth/send-link` hit Redis without error (returned `{"ok":true}`)
+                                                                     - - No real `pro:{email}` keys exist yet — no real purchases have been made
+                                                                       - - **To verify:** Log into upstash.com → select the Redis database → Data Browser → search `pro:` to see any customer keys
+                                                                         -
+                                                                         - ---
+
+                                                                         ### What Remains Before Launch
+
+                                                                         - [ ] **John: Rotate STRIPE_WEBHOOK_SECRET** (exposed in screenshot — see security note above)
+                                                                         - [ ] - [ ] **End-to-end real purchase test:** Buy at /upgrade with a real card, confirm magic link email arrives, click it, confirm Pro access works
+                                                                         - [ ] - [ ] **Upstash Redis visual check:** Log into upstash.com and confirm database is connected
+                                                                         - [ ] - [ ] **Stripe webhook test delivery:** In Stripe dashboard → Webhooks → Send test event → confirm 200 response
+                                                                         - [ ]
+                                                                         - [ ] ---
+                                                                         - [ ]
+                                                                         - [ ] Last updated: June 2, 2026 -- Full system audit complete. All env vars confirmed. MailerLite paid and active. Stripe webhook active. End-to-end flow tested and working. CRITICAL: Rotate STRIPE_WEBHOOK_SECRET (exposed in screenshot).Rollback date updated from June 4 to June 10.
 Last updated: May 27, 2026 -- Banner reset to June 4. Stray h TypeScript bug fixed. Rollback deadline moved to June 4.
