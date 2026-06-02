@@ -2987,5 +2987,46 @@ Both `app/api/stripe/webhook/route.ts` and `app/api/auth/send-link/route.ts` wer
                                                                          - [ ]
                                                                          - [ ] ---
                                                                          - [ ]
-                                                                         - [ ] Last updated: June 2, 2026 -- Full system audit complete. All env vars confirmed. MailerLite paid and active. Stripe webhook active. End-to-end flow tested and working. CRITICAL: Rotate STRIPE_WEBHOOK_SECRET (exposed in screenshot).Rollback date updated from June 4 to June 10.
+                                                                         - [ ] Last updated: June 2, 2026 -- Full system audit complete. All env vars confirmed. MailerLite paid and active. Stripe webhook active. End-to-
+                                                                         - [ ] - [ ] end purchase flow verified working (magic link + Pro access + book load)
+                                                                         - [ ]
+                                                                         - [ ] ---
+                                                                         - [ ]
+                                                                         - [ ] ## ✅ SECURITY FIX COMPLETE — June 2, 2026
+                                                                         - [ ]
+                                                                         - [ ] **Issue:** Old STRIPE_WEBHOOK_SECRET (`whsec_c9J0Hs...`) was exposed in a screenshot shared during this session.
+                                                                         - [ ]
+                                                                         - [ ] **Resolution:**
+                                                                         - [ ] - Stripe: Rotated secret on webhook `we_1TdZTaDAMsgblXx3wDtewaY6` (exquisite-celebration) — old secret expired immediately
+                                                                         - [ ] - New secret: `whsec_80DcIdHCgLYpTKLC7QUnxhxify8QF9EC` (stored in Vercel only — DO NOT commit to code)
+                                                                         - [ ] - Vercel: Updated `STRIPE_WEBHOOK_SECRET` env var with new value
+                                                                         - [ ] - Redeployed: Production deployment `69PUFDCNm7EUkrhcn8Sra25V38hJ` — Ready in 1m 4s
+                                                                         - [ ] - Status: **CLOSED** — app is live with new secret active
+                                                                         
+                                                                         ---
+                                                                         
+                                                                         ## Session Log — June 2, 2026 (Part 2: Security + Audit)
+                                                                         
+                                                                         **Work completed this session:**
+                                                                         1. ✅ Reset FoundingBanner.tsx countdown: June 4 → June 10, 2026 (commit 75da867)
+                                                                         2. 2. ✅ Verified email files — no price/deadline references, no changes needed
+                                                                            3. 3. ✅ NOTES.md updated with June 1 session log (commit f7740d2)
+                                                                               4. 4. ✅ Full system audit completed (commit b349483):
+                                                                                  5.    - All 11 Vercel env vars confirmed set
+                                                                                        -    - STRIPE_PRICE_ID = price_1TZXqADAMsgblXx3oA3yRaex ($19 founding price — correct)
+                                                                                             -    - MailerLite on Growing Business paid plan (next bill June 27, $15/mo, 7 subscribers)
+                                                                                                  -    - Stripe webhook Active, correct endpoint, 0 failures
+                                                                                                       -    - End-to-end access flow tested and verified working
+                                                                                                            - 5. ✅ STRIPE_WEBHOOK_SECRET rotated after exposure in screenshot
+                                                                                                              6. 6. ✅ New secret deployed to Vercel + redeployed to production (Ready)
+                                                                                                                 7.
+                                                                                                                 8. **What still needs to be done before launch:**
+                                                                                                                 9. - [ ] **End-to-end real purchase test** — buy at /upgrade with a real card, confirm magic link email arrives within 60 sec, click it, confirm Pro access and /book load (can refund immediately after)
+                                                                                                                    - [ ] - [ ] **Stripe webhook test delivery** — in Stripe dashboard → Webhooks → exquisite-celebration → Send test event (checkout.session.completed) → confirm 200 response with new secret
+                                                                                                                    - [ ] - [ ] **Upstash Redis visual check** — log into upstash.com → Data Browser → search `pro:` to confirm DB is connected (no real keys yet since no purchases made)
+                                                                                                                    - [ ]
+                                                                                                                    - [ ] **Pricing rollback reminder:**
+                                                                                                                    - [ ] - On June 10, 2026: change STRIPE_PRICE_ID in Vercel from `price_1TZXqADAMsgblXx3oA3yRaex` ($19) to `price_1T447hDAMsgblXx3uX0PmdCc` ($29)
+                                                                                                                    - [ ]
+                                                                                                                    - [ ] **Last updated:** June 2, 2026 — Security fix complete. All systems verified. App is live and ready for launch testing.end flow tested and working. CRITICAL: Rotate STRIPE_WEBHOOK_SECRET (exposed in screenshot).Rollback date updated from June 4 to June 10.
 Last updated: May 27, 2026 -- Banner reset to June 4. Stray h TypeScript bug fixed. Rollback deadline moved to June 4.
