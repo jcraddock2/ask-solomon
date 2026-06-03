@@ -48,7 +48,7 @@ function SuccessContent() {
           margin: "0 0 12px",
           lineHeight: 1.2,
         }}>
-          You are in. Welcome to Pro.
+          You are in. Welcome to Lifetime Access.
         </h1>
         <p style={{
           fontSize: 17,
@@ -96,7 +96,7 @@ function SuccessContent() {
           textAlign: "left",
         }}>
           <div style={{ fontSize: 13, color: "#d4af37", fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 10 }}>
-            Try Your First Pro Search
+            Try Your First Search
           </div>
           <div style={{ fontSize: 15, color: "rgba(220,200,140,0.9)", lineHeight: 1.6 }}>
             Type something real. Something you are actually facing right now. Watch how the Book Matches section points you to the exact page in Solomon&apos;s wisdom that speaks to it.
