@@ -1,6 +1,6 @@
 // app/api/auth/send-link/route.ts
 // Sends a fresh magic link to an existing Lifetime Access subscriber for cross-device access.
-// Uses Resend for reliable transactional delivery.
+// Uses Resend for reliable transactional delivery. Token TTL is 10 years (effectively permanent for Lifetime).
 import { Redis } from "@upstash/redis";
 import { randomBytes } from "crypto";
 
@@ -20,7 +20,7 @@ async function sendMagicLink(norm: string, link: string): Promise<boolean> {
         const from = process.env.RESEND_FROM || "Ask Solomon <onboarding@resend.dev>";
         const html = `<div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;padding:24px;color:#1a1a1a;">
         <h2 style="color:#1a1a1a;">Your Ask Solomon access link</h2>
-        <p>Click the button below to access your Lifetime Access on this device. This link is valid for 7 days.</p>
+        <p>Click the button below to access your Lifetime Access on this device.</p>
         <p style="text-align:center;margin:32px 0;">
         <a href="${link}" style="background:#6b46c1;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;display:inline-block;font-weight:bold;">Access Ask Solomon</a>
         </p>
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
         const isPro = await redis.get(`pro:${norm}`);
         if (!isPro) return Response.json({ ok: true });
         const token = randomBytes(32).toString("hex");
-        await redis.set(`magic:${token}`, norm, { ex: 604800 });
+        await redis.set(`magic:${token}`, norm, { ex: 315360000 });
         const link = `${baseUrl}/api/auth/verify?token=${token}&email=${encodeURIComponent(norm)}`;
         const sent = await sendMagicLink(norm, link);
         if (!sent) return Response.json({ error: "Email send failed" }, { status: 500 });
