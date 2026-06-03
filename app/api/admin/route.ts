@@ -1,5 +1,5 @@
 // app/api/admin/route.ts
-// Admin endpoint: manually grant Pro access + send magic link.
+// Admin endpoint: manually grant Lifetime Access + send magic link via Resend.
 // Protected by ADMIN_SECRET env var. POST { secret, email }
 import { Redis } from "@upstash/redis";
 import { randomBytes } from "crypto";
@@ -9,40 +9,54 @@ export const runtime = "nodejs";
 const redis = new Redis({
     url: process.env.UPSTASH_REDIS_REST_KV_REST_API_URL || "",
     token: process.env.UPSTASH_REDIS_REST_KV_REST_API_TOKEN || "",
-  });
+});
 
 export async function POST(req: Request) {
     const { secret, email } = await req.json();
     const adminSecret = process.env.ADMIN_SECRET;
     if (!adminSecret || secret !== adminSecret) {
-          return Response.json({ error: "Unauthorized" }, { status: 401 });
-        }
+        return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
     if (!email || !email.includes("@")) {
-          return Response.json({ error: "Invalid email" }, { status: 400 });
-        }
+        return Response.json({ error: "Invalid email" }, { status: 400 });
+    }
     const norm = email.toLowerCase().trim();
-    // Set Pro flag in Redis permanently
     await redis.set(`pro:${norm}`, "1");
-    // Generate magic link token (15 min)
     const token = randomBytes(32).toString("hex");
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://asksolomon.app";
-    await redis.set(`magic:${token}`, norm, { ex: 900 });
+    await redis.set(`magic:${token}`, norm, { ex: 604800 });
     const link = `${baseUrl}/api/auth/verify?token=${token}&email=${encodeURIComponent(norm)}`;
-    // Send magic link email via MailerLite
-    const mlKey = process.env.MAILERLITE_API_KEY;
     let emailSent = false;
-    if (mlKey) {
-          const res = await fetch("https://connect.mailerlite.com/api/emails", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json", "Authorization": `Bearer ${mlKey}` },
-                  body: JSON.stringify({
-                            from: { email: "hello@asksolomon.app", name: "Ask Solomon" },
-                            to: [{ email: norm }],
-                            subject: "Your Ask Solomon access link",
-                            html: `<div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#0d1b2a;color:#fff;border-radius:8px"><div style="font-size:22px;font-weight:800;color:#d4af37;margin-bottom:8px">Ask Solomon</div><h2 style="color:#fff;margin-bottom:8px">Welcome to Pro!</h2><p style="color:rgba(255,255,255,0.85);font-size:15px;line-height:1.6;margin-bottom:24px">Your access is confirmed. Click below to activate Pro on any device — no password needed.</p><a href="${link}" style="display:inline-block;padding:14px 28px;background:linear-gradient(135deg,#d4af37,#f5e06e);color:#0d1b2a;font-weight:800;font-size:15px;border-radius:6px;text-decoration:none">Access Ask Solomon</a><p style="margin-top:20px;font-size:12px;color:rgba(255,255,255,0.4)">This link expires in 15 minutes. After clicking, your browser remembers you for 10 years.</p></div>`,
-                          }),
-                });
-          emailSent = res.ok;
+    const apiKey = process.env.RESEND_API_KEY;
+    if (apiKey) {
+        const from = process.env.RESEND_FROM || "Ask Solomon <onboarding@resend.dev>";
+        const html = `<div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;padding:24px;color:#1a1a1a;">
+        <h2 style="color:#1a1a1a;">Your Ask Solomon access link</h2>
+        <p>Click the button below to access your Lifetime Access on this device. This link is valid for 7 days.</p>
+        <p style="text-align:center;margin:32px 0;">
+        <a href="${link}" style="background:#6b46c1;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;display:inline-block;font-weight:bold;">Access Ask Solomon</a>
+        </p>
+        <p style="font-size:13px;color:#666;word-break:break-all;">${link}</p>
+        </div>`;
+        try {
+            const res = await fetch("https://api.resend.com/emails", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${apiKey}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    from,
+                    to: norm,
+                    subject: "Your Ask Solomon access link",
+                    html,
+                }),
+            });
+            emailSent = res.ok;
+            if (!res.ok) console.error("Resend send failed:", res.status, await res.text());
+        } catch (err) {
+            console.error("Resend send threw:", err);
         }
+    }
     return Response.json({ ok: true, proSet: true, emailSent, link });
-  }
+}
