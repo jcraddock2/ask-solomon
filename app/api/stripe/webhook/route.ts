@@ -67,7 +67,7 @@ export async function POST(req: Request) {
       await redis.set(`pro:${norm}`, "1");
       const token = randomBytes(32).toString("hex");
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://asksolomon.app";
-      await redis.set(`magic:${token}`, norm, { ex: 604800 });
+      await redis.set(`magic:${token}`, norm, { ex: 315360000 });
       const link = `${baseUrl}/api/auth/verify?token=${token}&email=${encodeURIComponent(norm)}`;
       await sendMagicLink(norm, link);
     }
