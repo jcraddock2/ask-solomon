@@ -1,7 +1,6 @@
 // app/api/stripe/webhook/route.ts
 // Stripe webhook: on payment, marks customer as Lifetime Access in Redis,
-// stores their magic link in the MailerLite magic_link custom field, and
-// assigns them to the "Lifetime Access" group (which triggers the email automation).
+// then emails them a magic link via Resend for cross-device access.
 import Stripe from "stripe";
 import { Redis } from "@upstash/redis";
 import { randomBytes } from "crypto";
@@ -15,40 +14,40 @@ const redis = new Redis({
 });
 
 async function sendMagicLink(norm: string, link: string) {
-  const mlKey = process.env.MAILERLITE_API_KEY;
-  const groupId = process.env.LIFETIME_GROUP_ID;
-  if (!mlKey || !groupId) {
-    console.error("MAILERLITE_API_KEY or LIFETIME_GROUP_ID not set — magic link not sent for:", norm);
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.error("RESEND_API_KEY not set - magic link not sent for:", norm);
     return;
   }
-  const headers = {
-    "Authorization": `Bearer ${mlKey}`,
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-  };
-  // Step 1: upsert subscriber and set the magic_link field (creates if new, updates if existing).
-const upsertRes = await fetch("https://connect.mailerlite.com/api/subscribers", {
-  method: "POST",
-  headers,
-  body: JSON.stringify({ email: norm, fields: { magic_link: link } }),
-});
-  if (!upsertRes.ok) {
-    console.error("MailerLite upsert failed:", upsertRes.status, await upsertRes.text());
-    return;
-  }
-  const data = await upsertRes.json();
-  const subscriberId = data?.data?.id;
-  if (!subscriberId) {
-    console.error("MailerLite upsert returned no subscriber id for:", norm);
-    return;
-  }
-  // Step 2: assign to the Lifetime Access group (reliable for new AND existing subscribers).
-const groupRes = await fetch(`https://connect.mailerlite.com/api/subscribers/${subscriberId}/groups/${groupId}`, {
-  method: "POST",
-  headers,
-});
-  if (!groupRes.ok) {
-    console.error("MailerLite group assign failed:", groupRes.status, await groupRes.text());
+  const from = process.env.RESEND_FROM || "Ask Solomon <onboarding@resend.dev>";
+  const html = `<div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;padding:24px;color:#1a1a1a;">
+  <h2 style="color:#1a1a1a;">Welcome to Ask Solomon Lifetime Access</h2>
+  <p>Thank you for your purchase. Click the button below to access Ask Solomon on this or any device. This link is valid for 7 days.</p>
+  <p style="text-align:center;margin:32px 0;">
+  <a href="${link}" style="background:#6b46c1;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;display:inline-block;font-weight:bold;">Access Ask Solomon</a>
+  </p>
+  <p style="font-size:13px;color:#666;">If the button does not work, copy and paste this link into your browser:</p>
+  <p style="font-size:13px;color:#666;word-break:break-all;">${link}</p>
+  </div>`;
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from,
+        to: norm,
+        subject: "Welcome to Ask Solomon - Your Access Link",
+        html,
+      }),
+    });
+    if (!res.ok) {
+      console.error("Resend send failed:", res.status, await res.text());
+    }
+  } catch (err) {
+    console.error("Resend send threw:", err);
   }
 }
 
