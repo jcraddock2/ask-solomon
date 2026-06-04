@@ -32,7 +32,7 @@ export async function POST(req: Request) {
         const from = process.env.RESEND_FROM || "Ask Solomon <onboarding@resend.dev>";
         const html = `<div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;padding:24px;color:#1a1a1a;">
         <h2 style="color:#1a1a1a;">Your Ask Solomon access link</h2>
-        <p>Click the button below to access your Lifetime Access on this device. This link is valid for 7 days.</p>
+              <p>Click the button below to access your Lifetime Access on this device. This link gives you permanent access and does not expire.</p>
         <p style="text-align:center;margin:32px 0;">
         <a href="${link}" style="background:#6b46c1;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;display:inline-block;font-weight:bold;">Access Ask Solomon</a>
         </p>
