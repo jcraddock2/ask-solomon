@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 const ERRORS: Record<string, string> = {
     invalid: "Invalid link. Please request a new one.",
     expired: "Link expired. Please request a new one.",
-    notpro: "That email does not have Pro access. Did you use a different email at checkout?",
+    notpro: "That email does not have Lifetime access. Did you use a different email at checkout?",
 };
 
 function LoginForm() {
@@ -29,14 +29,14 @@ function LoginForm() {
         <main style={page}>
                 <div style={card}>
                           <div style={{ fontSize: 22, fontWeight: 800, color: "#d4af37", marginBottom: 6 }}>Ask Solomon</div>
-                          <div style={{ fontSize: 19, fontWeight: 700, color: "#fff", marginBottom: 8 }}>Access your Pro account</div>
-                          <div style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", marginBottom: 24 }}>Enter the email you used at checkout. We will send a link to activate Pro on this device.</div>
+                          <div style={{ fontSize: 19, fontWeight: 700, color: "#fff", marginBottom: 8 }}>Access your Lifetime Access</div>
+                          <div style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", marginBottom: 24 }}>Enter the email you used at checkout. We will send a link to activate Lifetime Access on this device.</div>
                   {err && <div style={{ background: "rgba(220,50,50,0.15)", border: "1px solid rgba(220,50,50,0.4)", borderRadius: 6, padding: "11px 14px", marginBottom: 18, color: "#ff9999", fontSize: 13 }}>{ERRORS[err] || "Something went wrong."}</div>}
                   {sent ? (
                     <div style={{ background: "rgba(212,175,55,0.1)", border: "1px solid rgba(212,175,55,0.4)", borderRadius: 6, padding: "20px", textAlign: "center" }}>
                                   <div style={{ fontSize: 26, marginBottom: 6 }}>📬</div>
                                   <div style={{ color: "#f5e06e", fontWeight: 700, marginBottom: 6 }}>Check your email</div>
-                                  <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 13 }}>If {email} has Pro access, a login link is on its way. Expires in 15 minutes.</div>
+                    <div style={{ color: "rgba(255,255,255,0.7)", fontSize: 13 }}>If {email} has Lifetime Access, a login link is on its way. Expires in 15 minutes.</div>
                     </div>
                   ) : (
                     <form onSubmit={submit}>
