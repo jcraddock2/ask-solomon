@@ -55,6 +55,6 @@ Previously email sent from `onboarding@resend.dev` (shared Resend domain), which
       - Real-world inbox test from a NON-Yahoo address (Gmail/Outlook) that owns Lifetime/Pro access, to prove the last-mile delivery to a real inbox (not spam). Only confirmed Pro test address so far is jcraddock2@yahoo.com.
       - Leftover MailerLite DNS records (from May 25) still in the Vercel zone — left for owner to optionally delete: mailerlite-domain-verification TXT, v=spf1 a mx include:_spf.mlsend.com ?all TXT, litesrv._domainkey CNAME -> litesrv._domainkey.mlsend.com.
       - Optional: rebrand NEXT_PUBLIC_BASE_URL from ask-solomon-ten.vercel.app to asksolomon.app so magic-link URLs use the branded domain.
-      - Reminder (not this session): on June 10, 2026 switch STRIPE_PRICE_ID from the $19 founding price to the $29 price.
+- Reminder (not this session): on June 13, 2026 switch STRIPE_PRICE_ID from the $19 founding price to the $29 price. (Extended from June 10 to June 13; owner switches manually when ready.)
       - Old exposed Resend API keys — owner is not concerned; deprioritized.
       
