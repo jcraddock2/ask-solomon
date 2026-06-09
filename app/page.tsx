@@ -1713,6 +1713,7 @@ const applySituation = (situationQuery: string) => {
                   setUrl({ q: val });
                 }}
                 ref={searchInputRef}
+                data-search-fix="vv2"
                 onFocus={() => {
                   setSearchFocused(true);
                   // After the mobile keyboard opens and shrinks the visual viewport,
