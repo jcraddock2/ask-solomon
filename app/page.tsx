@@ -1,7 +1,7 @@
 // app/page.tsx
 "use client";
 
-import React, { Suspense, useEffect, useMemo, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isProUser } from "./lib/access";
 import { searchProverbsScored } from "./lib/proverbs";
@@ -229,6 +229,7 @@ function PageInner() {
   const [todayFocusKey, setTodayFocusKey] = useState<string>("");
 
   const [searchFocused, setSearchFocused] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
   const [promotedProverbRef, setPromotedProverbRef] = useState<string>("");
 
   const [shareTemplate, setShareTemplate] =
@@ -1711,12 +1712,20 @@ const applySituation = (situationQuery: string) => {
                   setTodayFocusKey("");
                   setUrl({ q: val });
                 }}
-                onFocus={() => setSearchFocused(true)}
+                ref={searchInputRef}
+                onFocus={() => {
+                  setSearchFocused(true);
+                  // After the mobile keyboard opens and resizes the viewport,
+                  // bring the input fully into view so it isn't hidden behind the keyboard.
+                  setTimeout(() => {
+                    searchInputRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+                  }, 300);
+                }}
                 onBlur={() => setSearchFocused(false)}
                 placeholder="Search a keyword (e.g., fear, diligence, counsel)…"
                 style={{
                   flex: 1,
-                  minWidth: 260,
+                  minWidth: 0,
                   border: searchFocused
                     ? "1px solid rgba(99,102,241,0.55)"
                     : "1px solid rgba(0,0,0,0.12)",
