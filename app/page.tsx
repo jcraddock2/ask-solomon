@@ -1433,7 +1433,7 @@ const applySituation = (situationQuery: string) => {
         <section style={cardStyle}>
           <div
             style={{
-              position: "sticky",
+              position: searchFocused ? "static" : "sticky",
               top: 10,
               zIndex: 10,
               background: "rgba(248,250,252,0.88)",
@@ -1715,11 +1715,27 @@ const applySituation = (situationQuery: string) => {
                 ref={searchInputRef}
                 onFocus={() => {
                   setSearchFocused(true);
-                  // After the mobile keyboard opens and resizes the viewport,
-                  // bring the input fully into view so it isn't hidden behind the keyboard.
-                  setTimeout(() => {
-                    searchInputRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
-                  }, 300);
+                  // After the mobile keyboard opens and shrinks the visual viewport,
+                  // scroll the input above the keyboard. We try a few times because the
+                  // keyboard animation timing varies across devices/browsers.
+                  const bringIntoView = () => {
+                    const input = searchInputRef.current;
+                    if (!input) return;
+                    const vv = window.visualViewport;
+                    const rect = input.getBoundingClientRect();
+                    if (vv) {
+                      const visibleBottom = vv.offsetTop + vv.height;
+                      const desiredTop = vv.offsetTop + 12;
+                      if (rect.bottom > visibleBottom - 8 || rect.top < vv.offsetTop) {
+                        window.scrollBy({ top: rect.top - desiredTop, behavior: "smooth" });
+                      }
+                    } else {
+                      input.scrollIntoView({ block: "start", behavior: "smooth" });
+                    }
+                  };
+                  setTimeout(bringIntoView, 150);
+                  setTimeout(bringIntoView, 350);
+                  setTimeout(bringIntoView, 600);
                 }}
                 onBlur={() => setSearchFocused(false)}
                 placeholder="Search a keyword (e.g., fear, diligence, counsel)…"
