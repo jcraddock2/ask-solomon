@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import FoundingBanner from "./FoundingBanner";
 
@@ -48,6 +48,15 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://asksolomon.app",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  // Make the layout resize when the on-screen keyboard opens so inputs near
+  // the bottom are not hidden behind it (supported on Chrome/Android; iOS
+  // continues to rely on native scroll-into-view of the focused field).
+  interactiveWidget: "resizes-content",
 };
 
 const jsonLd = {
