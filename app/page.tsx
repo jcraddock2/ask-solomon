@@ -1620,7 +1620,7 @@ const applySituation = (situationQuery: string) => {
                   return (<>
 
       {/* Pro Conversion Nudge — appears after 2nd free search */}
-      {showProNudge && !isProUser() && (
+      {showProNudge && !isProUser() && !searchFocused && (
         <div style={{
           position: 'fixed', bottom: 24, right: 24, zIndex: 9999,
           background: '#0d1b2a', border: '1px solid #c9a227',
