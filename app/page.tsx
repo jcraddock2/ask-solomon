@@ -246,23 +246,20 @@ function PageInner() {
   // on focus, ask the browser to scroll the input into the visible area.
   useEffect(() => {
     if (!searchFocused) return;
-    const scrollToInput = () => {
-      const el = searchInputRef.current;
-      if (!el) return;
+    // Search bar now lives at the TOP of the filter card (v4), so it is
+    // already above the keyboard. We only do ONE gentle scroll-into-view
+    // (block:"nearest") in case the page was scrolled down when the user
+    // tapped. No repeated timers / no visualViewport loop -> no jumpiness.
+    const el = searchInputRef.current;
+    if (!el) return;
+    const id = window.setTimeout(() => {
       try {
-        el.scrollIntoView({ block: "center", behavior: "smooth" });
+        el.scrollIntoView({ block: "nearest" });
       } catch {
         el.scrollIntoView();
       }
-    };
-    scrollToInput();
-    const timers = [120, 320, 550, 800].map((ms) => window.setTimeout(scrollToInput, ms));
-    const vv = window.visualViewport;
-    if (vv) vv.addEventListener("resize", scrollToInput);
-    return () => {
-      timers.forEach((t) => window.clearTimeout(t));
-      if (vv) vv.removeEventListener("resize", scrollToInput);
-    };
+    }, 60);
+    return () => window.clearTimeout(id);
   }, [searchFocused]);
   const [promotedProverbRef, setPromotedProverbRef] = useState<string>("");
 
@@ -1500,7 +1497,7 @@ const applySituation = (situationQuery: string) => {
                   setUrl({ q: val });
                 }}
                 ref={searchInputRef}
-                data-search-fix="top4"
+                data-search-fix="top5"
                 onFocus={() => {
                   setSearchFocused(true);
                 }}
