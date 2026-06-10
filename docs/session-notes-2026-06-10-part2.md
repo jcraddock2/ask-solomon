@@ -50,3 +50,24 @@ Next options, in order:
 - Duplicate "Hope" topic chip appears twice.
 - June 13, 2026: switch STRIPE_PRICE_ID from 19 to 29 dollars.
 - Two Vercel projects deploy from same repo (ask-solomon, ask-solomon-icd1).
+
+
+---
+
+## Follow-up (same day): Pro upsell popup was blocking the search on mobile
+
+User feedback: the v3 scroll fix made mobile search "some better" (it scrolls up now),
+but the "UNLOCK THE FULL LIBRARY / Unlock Pro $19" nudge popped up and covered the search.
+
+Cause: the nudge is a position:fixed card (bottom-right) triggered after the first search
+(searchCount >= 1) for non-pro users. With the keyboard up, it overlapped the search area.
+
+Fix (commit 3b34b05): added !searchFocused to the nudge's render guard:
+  {showProNudge && !isProUser() && !searchFocused && ( ... )}
+So the upsell is hidden WHILE the user is typing in the search box, and reappears when they
+tap away. The upsell feature itself is unchanged - it just no longer blocks active typing.
+
+Verified live on asksolomon.app: while the search input is focused the nudge stays hidden.
+(Note: this browser session has localStorage asksolomon_pro=1, so isProUser() is true here and
+the nudge is fully suppressed regardless - could not visually reproduce the nudge, but the
+!searchFocused guard is confirmed present in the live bundle.)
