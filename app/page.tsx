@@ -230,11 +230,7 @@ function PageInner() {
 
   const [searchFocused, setSearchFocused] = useState(false);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
-  // Mobile keyboard fix: when the search input is focused on a small screen,
   const searchWrapRef = useRef<HTMLDivElement | null>(null);
-  // we float the search row above the on-screen keyboard on small screens so
-  // the keyboard can't cover it. searchKbBottom tracks the keyboard height.
-  const [searchKbBottom, setSearchKbBottom] = useState(0);
   const [isNarrow, setIsNarrow] = useState(false);
   useEffect(() => {
     const mq = () => setIsNarrow(typeof window !== "undefined" && window.innerWidth <= 640);
@@ -242,38 +238,32 @@ function PageInner() {
     window.addEventListener("resize", mq);
     return () => window.removeEventListener("resize", mq);
   }, []);
+  // Mobile keyboard fix (v3 - "scroll" approach):
+  // iOS Safari does NOT resize the layout when the keyboard opens and it will
+  // NOT scroll a position:fixed element above the keyboard. The previous
+  // fixed-position attempts therefore always stayed under the keyboard.
+  // The reliable cross-browser fix is to keep the input in normal flow and,
+  // on focus, ask the browser to scroll the input into the visible area.
   useEffect(() => {
-    if (!searchFocused || !isNarrow) {
-      setSearchKbBottom(0);
-      return;
-    }
+    if (!searchFocused) return;
+    const scrollToInput = () => {
+      const el = searchInputRef.current;
+      if (!el) return;
+      try {
+        el.scrollIntoView({ block: "center", behavior: "smooth" });
+      } catch {
+        el.scrollIntoView();
+      }
+    };
+    scrollToInput();
+    const timers = [120, 320, 550, 800].map((ms) => window.setTimeout(scrollToInput, ms));
     const vv = window.visualViewport;
-    const update = () => {
-      if (vv) {
-        const gap = Math.max(0, window.innerHeight - (vv.height + vv.offsetTop));
-        setSearchKbBottom(gap);
-      } else {
-        setSearchKbBottom(0);
-      }
-    };
-    update();
-    const t1 = window.setTimeout(update, 250);
-    const t2 = window.setTimeout(update, 600);
-    if (vv) {
-      vv.addEventListener("resize", update);
-      vv.addEventListener("scroll", update);
-    }
-    window.addEventListener("scroll", update, { passive: true });
+    if (vv) vv.addEventListener("resize", scrollToInput);
     return () => {
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
-      if (vv) {
-        vv.removeEventListener("resize", update);
-        vv.removeEventListener("scroll", update);
-      }
-      window.removeEventListener("scroll", update);
+      timers.forEach((t) => window.clearTimeout(t));
+      if (vv) vv.removeEventListener("resize", scrollToInput);
     };
-  }, [searchFocused, isNarrow]);
+  }, [searchFocused]);
   const [promotedProverbRef, setPromotedProverbRef] = useState<string>("");
 
   const [shareTemplate, setShareTemplate] =
@@ -1753,19 +1743,7 @@ const applySituation = (situationQuery: string) => {
                   alignItems: "center",
                   flex: "1 1 100%",
                   width: "100%",
-                  ...(searchFocused && isNarrow
-                    ? {
-                        position: "fixed",
-                        left: 12,
-                        right: 12,
-                        bottom: searchKbBottom + 8,
-                        zIndex: 2000,
-                        background: "#ffffff",
-                        padding: 10,
-                        borderRadius: 14,
-                        boxShadow: "0 -6px 24px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.06)",
-                      }
-                    : {}),
+                  scrollMarginBottom: 120,
                 }}
               >
                 <input
@@ -1778,7 +1756,7 @@ const applySituation = (situationQuery: string) => {
                   setUrl({ q: val });
                 }}
                 ref={searchInputRef}
-                data-search-fix="pin2"
+                data-search-fix="scroll3"
                 onFocus={() => {
                   setSearchFocused(true);
                 }}
@@ -1787,6 +1765,7 @@ const applySituation = (situationQuery: string) => {
                 style={{
                   flex: 1,
                   minWidth: 0,
+                  scrollMarginBottom: 120,
                   border: searchFocused
                     ? "1px solid rgba(99,102,241,0.55)"
                     : "1px solid rgba(0,0,0,0.12)",
