@@ -1478,6 +1478,67 @@ const applySituation = (situationQuery: string) => {
               marginBottom: 14,
             }}
           >
+
+              <div
+                ref={searchWrapRef}
+                style={{
+                  display: "flex",
+                  gap: 10,
+                  alignItems: "center",
+                  flex: "1 1 100%",
+                  width: "100%",
+                  scrollMarginBottom: 120,
+                }}
+              >
+                <input
+                value={q}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setQ(val);
+                  setTodayFocusOn(false);
+                  setTodayFocusKey("");
+                  setUrl({ q: val });
+                }}
+                ref={searchInputRef}
+                data-search-fix="top4"
+                onFocus={() => {
+                  setSearchFocused(true);
+                }}
+                onBlur={() => setSearchFocused(false)}
+                placeholder="Search a keyword (e.g., fear, diligence, counsel)…"
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  scrollMarginBottom: 120,
+                  border: searchFocused
+                    ? "1px solid rgba(99,102,241,0.55)"
+                    : "1px solid rgba(0,0,0,0.12)",
+                  borderRadius: 14,
+                  padding: "10px 12px",
+                  fontWeight: 800,
+                  outline: "none",
+                  background: "rgba(255,255,255,0.95)",
+                  boxShadow: searchFocused
+                    ? "0 0 0 5px rgba(99,102,241,0.18), 0 12px 28px rgba(0,0,0,0.08)"
+                    : "none",
+                  transition: "box-shadow 140ms ease, border 140ms ease",
+                }}
+              />
+<button
+  type="button"
+  onClick={clearAllFilters}
+  style={{
+    ...headerBtn,
+    background: "rgba(99,102,241,0.10)",
+    border: "1px solid rgba(99,102,241,0.18)",
+    color: "#4338ca",
+    fontWeight: 900,
+  }}
+>
+  Clear Filters
+</button>
+              </div>
+
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
               {asArray(MODES).map((m: any) => {
                 const modeKey = getModeKey(m);
@@ -1735,65 +1796,6 @@ const applySituation = (situationQuery: string) => {
                 </div>
               </div>
 
-              <div
-                ref={searchWrapRef}
-                style={{
-                  display: "flex",
-                  gap: 10,
-                  alignItems: "center",
-                  flex: "1 1 100%",
-                  width: "100%",
-                  scrollMarginBottom: 120,
-                }}
-              >
-                <input
-                value={q}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setQ(val);
-                  setTodayFocusOn(false);
-                  setTodayFocusKey("");
-                  setUrl({ q: val });
-                }}
-                ref={searchInputRef}
-                data-search-fix="scroll3"
-                onFocus={() => {
-                  setSearchFocused(true);
-                }}
-                onBlur={() => setSearchFocused(false)}
-                placeholder="Search a keyword (e.g., fear, diligence, counsel)…"
-                style={{
-                  flex: 1,
-                  minWidth: 0,
-                  scrollMarginBottom: 120,
-                  border: searchFocused
-                    ? "1px solid rgba(99,102,241,0.55)"
-                    : "1px solid rgba(0,0,0,0.12)",
-                  borderRadius: 14,
-                  padding: "10px 12px",
-                  fontWeight: 800,
-                  outline: "none",
-                  background: "rgba(255,255,255,0.95)",
-                  boxShadow: searchFocused
-                    ? "0 0 0 5px rgba(99,102,241,0.18), 0 12px 28px rgba(0,0,0,0.08)"
-                    : "none",
-                  transition: "box-shadow 140ms ease, border 140ms ease",
-                }}
-              />
-<button
-  type="button"
-  onClick={clearAllFilters}
-  style={{
-    ...headerBtn,
-    background: "rgba(99,102,241,0.10)",
-    border: "1px solid rgba(99,102,241,0.18)",
-    color: "#4338ca",
-    fontWeight: 900,
-  }}
->
-  Clear Filters
-</button>
-              </div>
 </div>
 
 {q.trim().length > 0 && (
