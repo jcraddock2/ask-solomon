@@ -230,6 +230,45 @@ function PageInner() {
 
   const [searchFocused, setSearchFocused] = useState(false);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
+  // Mobile keyboard fix: when the search input is focused on a small screen,
+  // we pin the search controls to the top of the *visible* viewport so the
+  // on-screen keyboard can't cover them. searchBarTop tracks the visible top.
+  const searchWrapRef = useRef<HTMLDivElement | null>(null);
+  const [searchBarTop, setSearchBarTop] = useState(0);
+  const [searchWrapHeight, setSearchWrapHeight] = useState(0);
+  const [isNarrow, setIsNarrow] = useState(false);
+  useEffect(() => {
+    const mq = () => setIsNarrow(typeof window !== "undefined" && window.innerWidth <= 640);
+    mq();
+    window.addEventListener("resize", mq);
+    return () => window.removeEventListener("resize", mq);
+  }, []);
+  useEffect(() => {
+    if (!searchFocused || !isNarrow) {
+      setSearchBarTop(0);
+      return;
+    }
+    const vv = window.visualViewport;
+    const update = () => {
+      setSearchBarTop(vv ? Math.max(0, vv.offsetTop) : 0);
+      if (searchWrapRef.current) {
+        setSearchWrapHeight(searchWrapRef.current.offsetHeight);
+      }
+    };
+    update();
+    if (vv) {
+      vv.addEventListener("resize", update);
+      vv.addEventListener("scroll", update);
+    }
+    window.addEventListener("scroll", update, { passive: true });
+    return () => {
+      if (vv) {
+        vv.removeEventListener("resize", update);
+        vv.removeEventListener("scroll", update);
+      }
+      window.removeEventListener("scroll", update);
+    };
+  }, [searchFocused, isNarrow]);
   const [promotedProverbRef, setPromotedProverbRef] = useState<string>("");
 
   const [shareTemplate, setShareTemplate] =
@@ -1431,12 +1470,22 @@ const applySituation = (situationQuery: string) => {
         )}
 
         <section style={cardStyle}>
+          {/* Spacer keeps page layout stable when the search bar is pinned to the top on mobile */}
+          {searchFocused && isNarrow && searchWrapHeight > 0 && (
+            <div aria-hidden="true" style={{ height: searchWrapHeight }} />
+          )}
           <div
+            ref={searchWrapRef}
             style={{
-              position: searchFocused ? "static" : "sticky",
-              top: 10,
-              zIndex: 10,
-              background: "rgba(248,250,252,0.88)",
+              position: (searchFocused && isNarrow) ? "fixed" : "sticky",
+              top: (searchFocused && isNarrow) ? searchBarTop : 10,
+              left: (searchFocused && isNarrow) ? 0 : undefined,
+              right: (searchFocused && isNarrow) ? 0 : undefined,
+              marginLeft: (searchFocused && isNarrow) ? "auto" : undefined,
+              marginRight: (searchFocused && isNarrow) ? "auto" : undefined,
+              maxWidth: (searchFocused && isNarrow) ? 720 : undefined,
+              zIndex: (searchFocused && isNarrow) ? 1000 : 10,
+              background: (searchFocused && isNarrow) ? "rgba(248,250,252,0.98)" : "rgba(248,250,252,0.88)",
               backdropFilter: "blur(10px)",
               WebkitBackdropFilter: "blur(10px)",
               border: "1px solid rgba(0,0,0,0.06)",
@@ -1713,30 +1762,9 @@ const applySituation = (situationQuery: string) => {
                   setUrl({ q: val });
                 }}
                 ref={searchInputRef}
-                data-search-fix="vv2"
+                data-search-fix="pin1"
                 onFocus={() => {
                   setSearchFocused(true);
-                  // After the mobile keyboard opens and shrinks the visual viewport,
-                  // scroll the input above the keyboard. We try a few times because the
-                  // keyboard animation timing varies across devices/browsers.
-                  const bringIntoView = () => {
-                    const input = searchInputRef.current;
-                    if (!input) return;
-                    const vv = window.visualViewport;
-                    const rect = input.getBoundingClientRect();
-                    if (vv) {
-                      const visibleBottom = vv.offsetTop + vv.height;
-                      const desiredTop = vv.offsetTop + 12;
-                      if (rect.bottom > visibleBottom - 8 || rect.top < vv.offsetTop) {
-                        window.scrollBy({ top: rect.top - desiredTop, behavior: "smooth" });
-                      }
-                    } else {
-                      input.scrollIntoView({ block: "start", behavior: "smooth" });
-                    }
-                  };
-                  setTimeout(bringIntoView, 150);
-                  setTimeout(bringIntoView, 350);
-                  setTimeout(bringIntoView, 600);
                 }}
                 onBlur={() => setSearchFocused(false)}
                 placeholder="Search a keyword (e.g., fear, diligence, counsel)…"
