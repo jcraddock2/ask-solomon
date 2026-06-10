@@ -231,11 +231,10 @@ function PageInner() {
   const [searchFocused, setSearchFocused] = useState(false);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   // Mobile keyboard fix: when the search input is focused on a small screen,
-  // we pin the search controls to the top of the *visible* viewport so the
-  // on-screen keyboard can't cover them. searchBarTop tracks the visible top.
   const searchWrapRef = useRef<HTMLDivElement | null>(null);
-  const [searchBarTop, setSearchBarTop] = useState(0);
-  const [searchWrapHeight, setSearchWrapHeight] = useState(0);
+  // we float the search row above the on-screen keyboard on small screens so
+  // the keyboard can't cover it. searchKbBottom tracks the keyboard height.
+  const [searchKbBottom, setSearchKbBottom] = useState(0);
   const [isNarrow, setIsNarrow] = useState(false);
   useEffect(() => {
     const mq = () => setIsNarrow(typeof window !== "undefined" && window.innerWidth <= 640);
@@ -245,23 +244,29 @@ function PageInner() {
   }, []);
   useEffect(() => {
     if (!searchFocused || !isNarrow) {
-      setSearchBarTop(0);
+      setSearchKbBottom(0);
       return;
     }
     const vv = window.visualViewport;
     const update = () => {
-      setSearchBarTop(vv ? Math.max(0, vv.offsetTop) : 0);
-      if (searchWrapRef.current) {
-        setSearchWrapHeight(searchWrapRef.current.offsetHeight);
+      if (vv) {
+        const gap = Math.max(0, window.innerHeight - (vv.height + vv.offsetTop));
+        setSearchKbBottom(gap);
+      } else {
+        setSearchKbBottom(0);
       }
     };
     update();
+    const t1 = window.setTimeout(update, 250);
+    const t2 = window.setTimeout(update, 600);
     if (vv) {
       vv.addEventListener("resize", update);
       vv.addEventListener("scroll", update);
     }
     window.addEventListener("scroll", update, { passive: true });
     return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
       if (vv) {
         vv.removeEventListener("resize", update);
         vv.removeEventListener("scroll", update);
@@ -1470,24 +1475,12 @@ const applySituation = (situationQuery: string) => {
         )}
 
         <section style={cardStyle}>
-          {/* Spacer keeps page layout stable when the search bar is pinned to the top on mobile */}
-          {searchFocused && isNarrow && searchWrapHeight > 0 && (
-            <div aria-hidden="true" style={{ height: searchWrapHeight }} />
-          )}
+          {/* Filter/mode block - normal flow. The search row floats above the keyboard on mobile (below). */}
           <div
-            ref={searchWrapRef}
             style={{
-              position: (searchFocused && isNarrow) ? "fixed" : "sticky",
-              top: (searchFocused && isNarrow) ? searchBarTop : 10,
-              left: (searchFocused && isNarrow) ? 0 : undefined,
-              right: (searchFocused && isNarrow) ? 0 : undefined,
-              marginLeft: (searchFocused && isNarrow) ? "auto" : undefined,
-              marginRight: (searchFocused && isNarrow) ? "auto" : undefined,
-              maxWidth: (searchFocused && isNarrow) ? 720 : undefined,
-              zIndex: (searchFocused && isNarrow) ? 1000 : 10,
-              background: (searchFocused && isNarrow) ? "rgba(248,250,252,0.98)" : "rgba(248,250,252,0.88)",
-              backdropFilter: "blur(10px)",
-              WebkitBackdropFilter: "blur(10px)",
+              position: "relative",
+              zIndex: 10,
+              background: "#ffffff",
               border: "1px solid rgba(0,0,0,0.06)",
               borderRadius: 18,
               padding: 12,
@@ -1752,7 +1745,30 @@ const applySituation = (situationQuery: string) => {
                 </div>
               </div>
 
-              <input
+              <div
+                ref={searchWrapRef}
+                style={{
+                  display: "flex",
+                  gap: 10,
+                  alignItems: "center",
+                  flex: "1 1 100%",
+                  width: "100%",
+                  ...(searchFocused && isNarrow
+                    ? {
+                        position: "fixed",
+                        left: 12,
+                        right: 12,
+                        bottom: searchKbBottom + 8,
+                        zIndex: 2000,
+                        background: "#ffffff",
+                        padding: 10,
+                        borderRadius: 14,
+                        boxShadow: "0 -6px 24px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.06)",
+                      }
+                    : {}),
+                }}
+              >
+                <input
                 value={q}
                 onChange={(e) => {
                   const val = e.target.value;
@@ -1762,7 +1778,7 @@ const applySituation = (situationQuery: string) => {
                   setUrl({ q: val });
                 }}
                 ref={searchInputRef}
-                data-search-fix="pin1"
+                data-search-fix="pin2"
                 onFocus={() => {
                   setSearchFocused(true);
                 }}
@@ -1798,6 +1814,7 @@ const applySituation = (situationQuery: string) => {
 >
   Clear Filters
 </button>
+              </div>
 </div>
 
 {q.trim().length > 0 && (
