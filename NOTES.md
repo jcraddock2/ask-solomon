@@ -261,6 +261,17 @@ Body: Welcome them, explain what Ask Solomon is, share one example search, link 
 
 ## Session History
 
+### Session — June 15, 2026
+
+**Analytics migration: Plausible → Vercel Analytics**
+- ✅ Removed Plausible <Script> + `next/script` import from app/layout.tsx
+- ✅ Added `import { Analytics } from "@vercel/analytics/react"` and `<Analytics />` in the body of app/layout.tsx
+- ✅ Added `@vercel/analytics` (^1.3.1) to package.json dependencies (required or the build fails on the import)
+- ✅ Updated README.md and NOTES.md tech-stack references from Plausible to Vercel Analytics
+- ✅ Enabled Web Analytics on the Vercel project (Hobby tier — free: 50,000 events/month, 30-day history, no custom events)
+- ℹ️ Currently tracks PAGE VIEWS only (no custom click/event tracking). To track clicks (e.g. Founding banner, upgrade, search, Stripe checkout) we'd add `plausible`-style custom events — Vercel calls these custom events and they require the Pro tier ($20/mo) or staying on pageviews only.
+- ℹ️ Data appears in Vercel dashboard → ask-solomon → Analytics. Allow ~30s + some navigation for first views.
+
 ### Session — May 15, 2026 (current)
 
 **Overnight audit results:**
