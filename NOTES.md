@@ -35,7 +35,7 @@ Ask Solomon is a Next.js web app where users search for biblical wisdom from Pro
 | Deployment | Vercel (500+ deployments, green on main) |
 | Database | None — all content in TypeScript files |
 | Payment | Stripe ($29 lifetime unlock) |
-| Analytics | Plausible (asksolomon.app — privacy-first, no cookies) |
+| Analytics | Vercel Analytics (asksolomon.app — privacy-first, no cookies) |
 | Email | Formspree (endpoint: https://formspree.io/f/xzdolzzl) |
 | Editor | GitHub web editor uses CodeMirror 6 |
 
@@ -58,7 +58,7 @@ const view = document.querySelector('.cm-content').cmTile.view;
 | app/book-index/page.tsx | Topic index for the book — 30 topics, searchable |
 | app/upgrade/page.tsx | Stripe upgrade/purchase page (rewritten May 14) |
 | app/success/page.tsx | Post-purchase page — sets localStorage Pro unlock |
-| app/layout.tsx | Root layout — SEO, OG tags, Plausible script |
+| app/layout.tsx | Root layout — SEO, OG tags, Vercel Analytics component |
 
 ### Library Files (app/lib/)
 | File | Purpose |
@@ -140,7 +140,7 @@ The search and wisdom response are intentionally FREE — this is the marketing 
 - Book Matches tease card (shows chapter title + blurred excerpt + gold CTA for free users)
 - Upgrade page (dark navy/gold hero, honest copy, 247-page devotional, $29 anchor)
 - Email capture form (Formspree, shown after search results for free users)
-- Plausible analytics (asksolomon.app — verified and active)
+- Vercel Analytics (asksolomon.app — privacy-first, no cookies)
 - OG image (og-image.png in /public)
 - Custom domain (asksolomon.app — Vercel + layout.tsx updated)
 - isProUser() reads localStorage correctly (not hardcoded)
@@ -1145,7 +1145,7 @@ The Solomon Challenge — 10 Days email automation is fully built in MailerLite.
                                                                             - **Day 7 (Final Day):**
                                                                             - - "Tonight at midnight" email broadcast
                                                                               - - Final social post: "Last hours for founding member price"
-                                                                                - - Personal DMs to anyone who clicked but did not buy (if trackable via Plausible)
+                                                                                - - Personal DMs to anyone who clicked but did not buy (if trackable via Vercel Analytics)
                                                                                  
                                                                                   - ---
 
