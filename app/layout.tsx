@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
+import { Analytics } from "@vercel/analytics/react";
 import FoundingBanner from "./FoundingBanner";
 
 export const metadata: Metadata = {
@@ -111,13 +111,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        {/* Plausible Analytics — privacy-first, no cookies, GDPR compliant */}
-        <Script
-          defer
-          data-domain="asksolomon.app"
-          src="https://plausible.io/js/script.js"
-          strategy="afterInteractive"
-        />
               <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#0d1b2a" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -134,6 +127,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         }}
       >
       <FoundingBanner />
+        <Analytics />
         {children}
       </body>
     </html>
