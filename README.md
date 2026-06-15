@@ -27,7 +27,7 @@ Type something like *"I feel overwhelmed"* or *"I lost my job"* and Ask Solomon 
 | 📚 **Book connections** | Every wisdom response links to *Success Secrets of Solomon* (chapters + page numbers) |
 | 🔓 **Lifetime Pro unlock** | $29 via Stripe for full book access |
 | 📧 **Weekly wisdom email** | Free subscribers get a weekly verse via Formspree |
-| 📊 **Privacy-first analytics** | Plausible (no cookies, GDPR compliant) |
+| 📊 **Privacy-first analytics** | Vercel Analytics (no cookies, privacy-first) |
 | ⚡ **Zero external AI costs** | All intelligence built from curated Proverbs data |
 
 ---
@@ -42,7 +42,7 @@ Type something like *"I feel overwhelmed"* or *"I lost my job"* and Ask Solomon 
 | Deployment | Vercel (auto-deploy from `main`) |
 | Payments | Stripe ($29 lifetime) |
 | Email capture | Formspree |
-| Analytics | Plausible |
+| Analytics | Vercel Analytics |
 | Database | None — all content in TypeScript files |
 
 ---
