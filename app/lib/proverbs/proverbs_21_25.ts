@@ -107,10 +107,10 @@ export const PROVERBS_21_25: ProverbEntry[] = [
     "Proverbs 23:7",
     "Inner thoughts shape direction",
     "As a person thinks within, so they become; the inner life shapes the outer path.",
-    ["mindset", "identity", "direction"],
-    ["thinks", "heart", "mindset", "identity", "inner", "direction"],
-    ["confidence", "direction", "growth"],
-    ["insecure", "uncertain", "reflective"]
+    ["mindset", "identity", "direction", "attitude", "heart", "self-control"],
+    ["thinks", "heart", "mindset", "identity", "inner", "direction", "attitude", "bad attitude", "as he thinketh", "thoughts", "self-control", "perspective"],
+    ["confidence", "direction", "growth", "self-control", "attitude"],
+    ["insecure", "uncertain", "reflective", "intentional"]
   ),
 
   createProverb(
