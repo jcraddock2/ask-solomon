@@ -205,6 +205,24 @@ const INTENT_EXPANSIONS: Record<string, string[]> = {
     "offended",
     "offense",
   ],
+  attitude: [
+    "attitude",
+    "heart",
+    "guard your heart",
+    "mindset",
+    "thoughts",
+    "thinks",
+    "inner",
+    "self-control",
+    "gratitude",
+    "humility",
+    "pride",
+    "patience",
+    "bitterness",
+    "perspective",
+    "identity",
+    "direction",
+  ],
   relationships: [
     "relationship",
     "relationships",
@@ -1050,6 +1068,16 @@ function scoreProverbItem(item: ProverbEntry, query: string): ScoredProverbResul
     ["identity", "confidence", "wisdom", "healing", "purpose"],
     ["heart", "upright", "honor", "wisdom", "confidence", "life", "favor"],
     34
+  );
+
+  boostLane(
+    "attitude / heart",
+    ["attitude", "my attitude", "bad attitude", "negative attitude", "help with my attitude", "fix my attitude", "change my attitude", "adjust my attitude", "mindset", "negativity", "so negative", "the way i think", "how i think", "guard my heart", "state of my heart"],
+    ["direction", "confidence", "growth", "relationships", "restraint", "self-control", "wisdom"],
+    ["vulnerable", "careful", "intentional", "reflective", "insecure", "uncertain"],
+    ["heart", "mindset", "identity", "self-control", "attitude", "humility", "protection", "foundation", "gratitude", "patience"],
+    ["heart", "guard your heart", "everything flows", "thinks", "mindset", "inner", "self-control", "attitude", "thoughts", "identity"],
+    46
   );
 
   boostLane(
