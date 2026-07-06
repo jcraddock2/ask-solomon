@@ -2218,6 +2218,27 @@ export function getWisdomResponse(query: string): WisdomResponse | null {
               };
       }
 
+  // ATTITUDE / MINDSET / NEGATIVITY / SELF-CONTROL OF THE HEART
+  if (includesAny(q, [
+    "attitude", "my attitude", "bad attitude", "negative attitude",
+    "help with my attitude", "fix my attitude", "change my attitude",
+    "adjust my attitude", "attitude adjustment", "attitude problem",
+    "bad mood", "negative mindset", "negativity", "so negative",
+    "pessimistic", "cynical", "always complaining", "i complain",
+    "ungrateful", "entitled", "bitter", "resentful", "chip on my shoulder",
+    "grumpy", "irritable", "moody", "sour", "hard hearted", "stubborn"
+  ])) {
+    return {
+      emotionalState: "aware that your attitude is working against you and ready to change it",
+      deeperMeaning: "Solomon taught that life flows from the heart. Your attitude is not just a mood -- it is the outward reading of the inner condition you are guarding or neglecting.",
+      searchLanes: ["self-control", "wisdom", "peace"],
+      headline: "Your Attitude Is a Choice You Make Before the Day Makes It For You",
+      insight: "Solomon said to guard your heart with all diligence, because out of it flow the issues of life. A bad attitude is rarely about the circumstance in front of you -- it is about what you have allowed to take root inside you. Bitterness, pride, and ingratitude grow quietly until they color everything you see and sour everyone around you. The wise person does not wait to feel better before they act better. They take responsibility for the inner soil, pull the weeds early, and choose gratitude and self-control on purpose. A humble, grateful heart is not a personality type you are born with. It is a discipline you practice until it becomes who you are.",
+      reflection: "Where is your attitude leaking out and costing you -- in your home, your work, your relationships? What are you actually feeding your heart each day, and is it producing the person you want to be?",
+      nextStep: "Name one recurring situation that triggers your worst attitude. Decide in advance how the wiser version of you will respond to it. Then start each day by writing down three specific things you are genuinely grateful for -- gratitude is the fastest way to reset a heart that has gone sour.",
+      bookConnection: "Success Secrets of Solomon -- Guarding the Heart and The Power of a Right Attitude (see Character and Self-Control chapters)",
+    };
+  }
 
 
 return null;
