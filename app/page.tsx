@@ -35,6 +35,7 @@ function safeParse<T>(raw: string | null, fallback: T): T {
 
 const SITUATION_PRESETS = [
   { label: "I'm Angry", value: "I feel angry and I cannot control it" },
+  { label: "Fix My Attitude", value: "I want help with my attitude" },
   { label: "I'm Overwhelmed", value: "I feel overwhelmed and I am carrying too much" },
   { label: "Need Direction", value: "I need direction and I feel lost" },
   { label: "Money Stress", value: "I am stressed about money and finances" },
