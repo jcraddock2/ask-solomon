@@ -1016,10 +1016,10 @@ createProverb(
     "Proverbs 4:23",
     "Guard your heart because everything flows from it",
     "Above all else, guard your heart, for everything you do flows from it.",
-    ["heart", "protection", "foundation"],
-    ["guard your heart", "everything flows", "heart", "protection", "foundation", "source"],
-    ["direction", "confidence", "relationships"],
-    ["vulnerable", "careful", "intentional"]
+    ["heart", "protection", "foundation", "attitude", "mindset", "self-control"],
+    ["guard your heart", "everything flows", "heart", "protection", "foundation", "source", "attitude", "bad attitude", "mindset", "self-control", "issues of life", "thoughts"],
+    ["direction", "confidence", "relationships", "self-control", "attitude", "growth"],
+    ["vulnerable", "careful", "intentional", "reflective"]
   ),
   createProverb(
     "Proverbs 4:24",
